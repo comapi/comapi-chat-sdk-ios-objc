@@ -1,0 +1,17 @@
+{
+	"eventId": "2e611475-e12c-4d2f-9430-1f30cf6b4064",
+	"apiSpaceId": "MOCK_API_SPACE_ID",
+	"name": "conversationMessage.read",
+	"context": {
+		"createdBy": "dominik.kowalski"
+	},
+	"messageId": "myId",
+	"conversationEventId": 2,
+	"publishedOn":"2016-10-06T06:45:26.904Z",
+	"payload": {
+		"messageId":"myId",
+		"conversationId":"myConversation",
+		"profileId":"dominik.kowalski",
+		"timestamp":"2016-10-06T06:45:26.910Z"
+	}
+}
