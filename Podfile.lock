@@ -1,0 +1,23 @@
+PODS:
+  - CMPComapiFoundation (0.0.1):
+    - SocketRocket
+  - SocketRocket (0.5.1)
+
+DEPENDENCIES:
+  - CMPComapiFoundation (from `/Users/dominik.kowalski/Documents/comapi-sdk-ios-objc`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - SocketRocket
+
+EXTERNAL SOURCES:
+  CMPComapiFoundation:
+    :path: "/Users/dominik.kowalski/Documents/comapi-sdk-ios-objc"
+
+SPEC CHECKSUMS:
+  CMPComapiFoundation: d84cc626f3f4d35163787087f9f545fdba4cd2b3
+  SocketRocket: d57c7159b83c3c6655745cd15302aa24b6bae531
+
+PODFILE CHECKSUM: bf07c09b5c9a4d246dd7b6045ff92fe6ee50d19c
+
+COCOAPODS: 1.5.3

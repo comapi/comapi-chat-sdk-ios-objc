@@ -1,0 +1,587 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		896015BB21B82D6600370AF2 /* CMPInternalConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 896015B321B82D6600370AF2 /* CMPInternalConfig.h */; };
+		896015BC21B82D6600370AF2 /* CMPInternalConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 896015B421B82D6600370AF2 /* CMPInternalConfig.m */; };
+		896015BD21B82D6600370AF2 /* CMPComapiChatClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 896015B621B82D6600370AF2 /* CMPComapiChatClient.m */; };
+		896015BE21B82D6600370AF2 /* CMPComapiChatClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 896015B721B82D6600370AF2 /* CMPComapiChatClient.h */; };
+		896015BF21B82D6600370AF2 /* CMPChatResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 896015B921B82D6600370AF2 /* CMPChatResult.m */; };
+		896015C021B82D6600370AF2 /* CMPChatResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 896015BA21B82D6600370AF2 /* CMPChatResult.h */; };
+		896015C321B83D9F00370AF2 /* CMPComapiChat.h in Headers */ = {isa = PBXBuildFile; fileRef = 896015C121B83D9F00370AF2 /* CMPComapiChat.h */; };
+		896015C421B83D9F00370AF2 /* CMPComapiChat.m in Sources */ = {isa = PBXBuildFile; fileRef = 896015C221B83D9F00370AF2 /* CMPComapiChat.m */; };
+		896015C721B83E9700370AF2 /* CMPLifecycleDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 896015C621B83E9700370AF2 /* CMPLifecycleDelegate.h */; };
+		8998F4A221B800AA00BD6C52 /* CMPComapiChat.h in Headers */ = {isa = PBXBuildFile; fileRef = 8998F4A021B800AA00BD6C52 /* CMPComapiChat.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8998F4B321B8012F00BD6C52 /* CMPComapiChat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8998F49D21B800AA00BD6C52 /* CMPComapiChat.framework */; };
+		D6BF1B42484D1D5B7A8857C6 /* Pods_CMPComapiChat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8877426D41BD80F9ED16F3D /* Pods_CMPComapiChat.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		8998F4B421B8012F00BD6C52 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8998F49421B800AA00BD6C52 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8998F49C21B800AA00BD6C52;
+			remoteInfo = CMPComapiChat;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		2036E91E28AEA41DBF76BD8A /* Pods-CMPComapiChat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CMPComapiChat.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CMPComapiChat/Pods-CMPComapiChat.debug.xcconfig"; sourceTree = "<group>"; };
+		896015B321B82D6600370AF2 /* CMPInternalConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPInternalConfig.h; sourceTree = "<group>"; };
+		896015B421B82D6600370AF2 /* CMPInternalConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPInternalConfig.m; sourceTree = "<group>"; };
+		896015B621B82D6600370AF2 /* CMPComapiChatClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPComapiChatClient.m; sourceTree = "<group>"; };
+		896015B721B82D6600370AF2 /* CMPComapiChatClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPComapiChatClient.h; sourceTree = "<group>"; };
+		896015B921B82D6600370AF2 /* CMPChatResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPChatResult.m; sourceTree = "<group>"; };
+		896015BA21B82D6600370AF2 /* CMPChatResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPChatResult.h; sourceTree = "<group>"; };
+		896015C121B83D9F00370AF2 /* CMPComapiChat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPComapiChat.h; sourceTree = "<group>"; };
+		896015C221B83D9F00370AF2 /* CMPComapiChat.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPComapiChat.m; sourceTree = "<group>"; };
+		896015C621B83E9700370AF2 /* CMPLifecycleDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPLifecycleDelegate.h; sourceTree = "<group>"; };
+		8998F49D21B800AA00BD6C52 /* CMPComapiChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CMPComapiChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8998F4A021B800AA00BD6C52 /* CMPComapiChat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPComapiChat.h; sourceTree = "<group>"; };
+		8998F4A121B800AA00BD6C52 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8998F4AE21B8012F00BD6C52 /* CMPComapiChatTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CMPComapiChatTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8998F4B221B8012F00BD6C52 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A8877426D41BD80F9ED16F3D /* Pods_CMPComapiChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CMPComapiChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC81906D1E821AF7F99C7A0A /* Pods-CMPComapiChat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CMPComapiChat.release.xcconfig"; path = "Pods/Target Support Files/Pods-CMPComapiChat/Pods-CMPComapiChat.release.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8998F49A21B800AA00BD6C52 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D6BF1B42484D1D5B7A8857C6 /* Pods_CMPComapiChat.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8998F4AB21B8012F00BD6C52 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8998F4B321B8012F00BD6C52 /* CMPComapiChat.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0B44DEE873025F419517B092 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A8877426D41BD80F9ED16F3D /* Pods_CMPComapiChat.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5B42C1BE35DDE52134FC08A2 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				2036E91E28AEA41DBF76BD8A /* Pods-CMPComapiChat.debug.xcconfig */,
+				BC81906D1E821AF7F99C7A0A /* Pods-CMPComapiChat.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		896015AF21B82D6600370AF2 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		896015B021B82D6600370AF2 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				896015B121B82D6600370AF2 /* Comapi */,
+				896015B821B82D6600370AF2 /* Model */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		896015B121B82D6600370AF2 /* Comapi */ = {
+			isa = PBXGroup;
+			children = (
+				896015C521B83E1C00370AF2 /* Delegates */,
+				896015B221B82D6600370AF2 /* Config */,
+				896015B521B82D6600370AF2 /* Client */,
+				896015C121B83D9F00370AF2 /* CMPComapiChat.h */,
+				896015C221B83D9F00370AF2 /* CMPComapiChat.m */,
+			);
+			path = Comapi;
+			sourceTree = "<group>";
+		};
+		896015B221B82D6600370AF2 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				896015B321B82D6600370AF2 /* CMPInternalConfig.h */,
+				896015B421B82D6600370AF2 /* CMPInternalConfig.m */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		896015B521B82D6600370AF2 /* Client */ = {
+			isa = PBXGroup;
+			children = (
+				896015B721B82D6600370AF2 /* CMPComapiChatClient.h */,
+				896015B621B82D6600370AF2 /* CMPComapiChatClient.m */,
+			);
+			path = Client;
+			sourceTree = "<group>";
+		};
+		896015B821B82D6600370AF2 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				896015B921B82D6600370AF2 /* CMPChatResult.m */,
+				896015BA21B82D6600370AF2 /* CMPChatResult.h */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		896015C521B83E1C00370AF2 /* Delegates */ = {
+			isa = PBXGroup;
+			children = (
+				896015C621B83E9700370AF2 /* CMPLifecycleDelegate.h */,
+			);
+			path = Delegates;
+			sourceTree = "<group>";
+		};
+		8998F49321B800AA00BD6C52 = {
+			isa = PBXGroup;
+			children = (
+				8998F49F21B800AA00BD6C52 /* CMPComapiChat */,
+				8998F4AF21B8012F00BD6C52 /* CMPComapiChatTests */,
+				896015B021B82D6600370AF2 /* Sources */,
+				896015AF21B82D6600370AF2 /* Tests */,
+				8998F49E21B800AA00BD6C52 /* Products */,
+				5B42C1BE35DDE52134FC08A2 /* Pods */,
+				0B44DEE873025F419517B092 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		8998F49E21B800AA00BD6C52 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8998F49D21B800AA00BD6C52 /* CMPComapiChat.framework */,
+				8998F4AE21B8012F00BD6C52 /* CMPComapiChatTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8998F49F21B800AA00BD6C52 /* CMPComapiChat */ = {
+			isa = PBXGroup;
+			children = (
+				8998F4A021B800AA00BD6C52 /* CMPComapiChat.h */,
+				8998F4A121B800AA00BD6C52 /* Info.plist */,
+			);
+			path = CMPComapiChat;
+			sourceTree = "<group>";
+		};
+		8998F4AF21B8012F00BD6C52 /* CMPComapiChatTests */ = {
+			isa = PBXGroup;
+			children = (
+				8998F4B221B8012F00BD6C52 /* Info.plist */,
+			);
+			path = CMPComapiChatTests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		8998F49821B800AA00BD6C52 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				896015C021B82D6600370AF2 /* CMPChatResult.h in Headers */,
+				896015BE21B82D6600370AF2 /* CMPComapiChatClient.h in Headers */,
+				896015BB21B82D6600370AF2 /* CMPInternalConfig.h in Headers */,
+				896015C321B83D9F00370AF2 /* CMPComapiChat.h in Headers */,
+				8998F4A221B800AA00BD6C52 /* CMPComapiChat.h in Headers */,
+				896015C721B83E9700370AF2 /* CMPLifecycleDelegate.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		8998F49C21B800AA00BD6C52 /* CMPComapiChat */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8998F4A521B800AA00BD6C52 /* Build configuration list for PBXNativeTarget "CMPComapiChat" */;
+			buildPhases = (
+				4F252D4234E74271833BA801 /* [CP] Check Pods Manifest.lock */,
+				8998F49821B800AA00BD6C52 /* Headers */,
+				8998F49921B800AA00BD6C52 /* Sources */,
+				8998F49A21B800AA00BD6C52 /* Frameworks */,
+				8998F49B21B800AA00BD6C52 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CMPComapiChat;
+			productName = CMPComapiChat;
+			productReference = 8998F49D21B800AA00BD6C52 /* CMPComapiChat.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		8998F4AD21B8012F00BD6C52 /* CMPComapiChatTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8998F4B621B8012F00BD6C52 /* Build configuration list for PBXNativeTarget "CMPComapiChatTests" */;
+			buildPhases = (
+				8998F4AA21B8012F00BD6C52 /* Sources */,
+				8998F4AB21B8012F00BD6C52 /* Frameworks */,
+				8998F4AC21B8012F00BD6C52 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8998F4B521B8012F00BD6C52 /* PBXTargetDependency */,
+			);
+			name = CMPComapiChatTests;
+			productName = CMPComapiChatTests;
+			productReference = 8998F4AE21B8012F00BD6C52 /* CMPComapiChatTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8998F49421B800AA00BD6C52 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1010;
+				ORGANIZATIONNAME = "Donky Networks Limited";
+				TargetAttributes = {
+					8998F49C21B800AA00BD6C52 = {
+						CreatedOnToolsVersion = 10.1;
+					};
+					8998F4AD21B8012F00BD6C52 = {
+						CreatedOnToolsVersion = 10.1;
+					};
+				};
+			};
+			buildConfigurationList = 8998F49721B800AA00BD6C52 /* Build configuration list for PBXProject "CMPComapiChat" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 8998F49321B800AA00BD6C52;
+			productRefGroup = 8998F49E21B800AA00BD6C52 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8998F49C21B800AA00BD6C52 /* CMPComapiChat */,
+				8998F4AD21B8012F00BD6C52 /* CMPComapiChatTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8998F49B21B800AA00BD6C52 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8998F4AC21B8012F00BD6C52 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		4F252D4234E74271833BA801 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-CMPComapiChat-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8998F49921B800AA00BD6C52 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				896015BD21B82D6600370AF2 /* CMPComapiChatClient.m in Sources */,
+				896015BC21B82D6600370AF2 /* CMPInternalConfig.m in Sources */,
+				896015BF21B82D6600370AF2 /* CMPChatResult.m in Sources */,
+				896015C421B83D9F00370AF2 /* CMPComapiChat.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8998F4AA21B8012F00BD6C52 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		8998F4B521B8012F00BD6C52 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8998F49C21B800AA00BD6C52 /* CMPComapiChat */;
+			targetProxy = 8998F4B421B8012F00BD6C52 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		8998F4A321B800AA00BD6C52 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		8998F4A421B800AA00BD6C52 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		8998F4A621B800AA00BD6C52 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2036E91E28AEA41DBF76BD8A /* Pods-CMPComapiChat.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = JE27K8BAX2;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = CMPComapiChat/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.donkynetworks.CMPComapiChat;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8998F4A721B800AA00BD6C52 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BC81906D1E821AF7F99C7A0A /* Pods-CMPComapiChat.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = JE27K8BAX2;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = CMPComapiChat/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.donkynetworks.CMPComapiChat;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		8998F4B721B8012F00BD6C52 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JE27K8BAX2;
+				INFOPLIST_FILE = CMPComapiChatTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.donkynetworks.CMPComapiChatTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8998F4B821B8012F00BD6C52 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JE27K8BAX2;
+				INFOPLIST_FILE = CMPComapiChatTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.donkynetworks.CMPComapiChatTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8998F49721B800AA00BD6C52 /* Build configuration list for PBXProject "CMPComapiChat" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8998F4A321B800AA00BD6C52 /* Debug */,
+				8998F4A421B800AA00BD6C52 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8998F4A521B800AA00BD6C52 /* Build configuration list for PBXNativeTarget "CMPComapiChat" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8998F4A621B800AA00BD6C52 /* Debug */,
+				8998F4A721B800AA00BD6C52 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8998F4B621B8012F00BD6C52 /* Build configuration list for PBXNativeTarget "CMPComapiChatTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8998F4B721B8012F00BD6C52 /* Debug */,
+				8998F4B821B8012F00BD6C52 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 8998F49421B800AA00BD6C52 /* Project object */;
+}
