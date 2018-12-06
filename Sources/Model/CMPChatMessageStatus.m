@@ -16,19 +16,24 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatResult.h"
+#import "CMPChatMessageStatus.h"
 
-@implementation CMPChatResult
+@implementation CMPChatMessageStatus
 
-- (instancetype)initWithError:(NSError *)error success:(BOOL)success {
+- (instancetype)initWithConversationID:(NSString *)conversationID messageID:(NSString *)messageID profileID:(NSString *)profileID conversationEventID:(NSNumber *)conversationEventID messageStatus:(CMPLocalMessageStatus)messageStatus {
     self = [super init];
     
     if (self) {
-        _error = error;
-        _isSuccessful = success;
+        self.conversationID = conversationID;
+        self.messageID = messageID;
+        self.profileID = profileID;
+        self.conversationEventID = conversationEventID;
+        self.messageStatus = messageStatus;
     }
-
+    
     return self;
 }
+
+
 
 @end

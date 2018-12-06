@@ -16,19 +16,20 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatResult.h"
+#import <CMPComapiFoundation/CMPRole.h>
 
-@implementation CMPChatResult
+NS_ASSUME_NONNULL_BEGIN
 
-- (instancetype)initWithError:(NSError *)error success:(BOOL)success {
-    self = [super init];
-    
-    if (self) {
-        _error = error;
-        _isSuccessful = success;
-    }
+typedef NS_ENUM(NSInteger, CMPChatRole) {
+    CMPChatRoleOwner,
+    CMPChatRoleParticipant
+} NS_SWIFT_NAME(ChatRole);
 
-    return self;
-}
+@interface CMPChatRoleParser : NSObject
+
++ (NSString *)parseChatRole:(CMPChatRole)role;
++ (CMPChatRole)parseRole:(CMPRole)role;
 
 @end
+
+NS_ASSUME_NONNULL_END

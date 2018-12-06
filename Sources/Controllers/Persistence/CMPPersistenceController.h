@@ -16,19 +16,12 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatResult.h"
+#import <Foundation/Foundation.h>
 
-@implementation CMPChatResult
+NS_ASSUME_NONNULL_BEGIN
 
-- (instancetype)initWithError:(NSError *)error success:(BOOL)success {
-    self = [super init];
-    
-    if (self) {
-        _error = error;
-        _isSuccessful = success;
-    }
-
-    return self;
-}
+@interface CMPPersistenceController : NSObject
 
 @end
+
+NS_ASSUME_NONNULL_END

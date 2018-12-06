@@ -16,19 +16,19 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatResult.h"
+#import <CMPComapiFoundation/CMPRoleAttributes.h>
 
-@implementation CMPChatResult
+NS_ASSUME_NONNULL_BEGIN
 
-- (instancetype)initWithError:(NSError *)error success:(BOOL)success {
-    self = [super init];
-    
-    if (self) {
-        _error = error;
-        _isSuccessful = success;
-    }
+@interface CMPChatRoleAttributes : NSObject
 
-    return self;
-}
+@property (nonatomic) BOOL canSend;
+@property (nonatomic) BOOL canRemoveParticipants;
+@property (nonatomic) BOOL canAddParticipants;
+
+- (instancetype)initWithCanSend:(BOOL)canSend canAddParticipants:(BOOL)canAddParticipants canRemoveParticipants:(BOOL)canRemoveParticipants;
+- (instancetype)initWithRoleAttributes:(CMPRoleAttributes *)roleAttributes;
 
 @end
+
+NS_ASSUME_NONNULL_END

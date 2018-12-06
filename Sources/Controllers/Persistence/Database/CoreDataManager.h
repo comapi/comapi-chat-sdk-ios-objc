@@ -16,19 +16,20 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatResult.h"
+#import <CoreData/CoreData.h>
 
-@implementation CMPChatResult
+NS_ASSUME_NONNULL_BEGIN
 
-- (instancetype)initWithError:(NSError *)error success:(BOOL)success {
-    self = [super init];
-    
-    if (self) {
-        _error = error;
-        _isSuccessful = success;
-    }
+@interface CoreDataManager : NSObject
 
-    return self;
-}
+@property (nonatomic, strong, readonly) NSPersistentContainer *persistentContainer;
+@property (nonatomic, strong, readonly) NSManagedObjectContext *mainContext;
+
+- (instancetype)init;
+
+- (void)configureWithCompletion:(void(^)(NSError * _Nullable))completion;
+- (void)saveContextWithCompletion:(void(^)(NSError * _Nullable))completion;
 
 @end
+
+NS_ASSUME_NONNULL_END

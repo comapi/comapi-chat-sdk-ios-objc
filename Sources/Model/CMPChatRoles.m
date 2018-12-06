@@ -16,18 +16,29 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatResult.h"
+#import "CMPChatRoles.h"
 
-@implementation CMPChatResult
+@implementation CMPChatRoles
 
-- (instancetype)initWithError:(NSError *)error success:(BOOL)success {
+- (instancetype)initWithOwnerAttributes:(CMPChatRoleAttributes *)ownerAttributes participantAttributes:(CMPChatRoleAttributes *)participantAttributes {
     self = [super init];
     
     if (self) {
-        _error = error;
-        _isSuccessful = success;
+        self.ownerAttributes = ownerAttributes;
+        self.participantAttributes = participantAttributes;
     }
+    
+    return self;
+}
 
+- (instancetype)initWithRoles:(CMPRoles *)roles {
+    self = [super init];
+    
+    if (self) {
+        self.ownerAttributes = [[CMPChatRoleAttributes alloc] initWithRoleAttributes:roles.owner];
+        self.participantAttributes = [[CMPChatRoleAttributes alloc] initWithRoleAttributes:roles.participant];
+    }
+    
     return self;
 }
 

@@ -16,19 +16,28 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatResult.h"
+#import "CMPChatMessagePart.h"
+#import "CMPChatMessageStatus.h"
+#import "CMPChatMessageContext.h"
 
-@implementation CMPChatResult
+#import <CMPComapiFoundation/CMPMessage.h>
 
-- (instancetype)initWithError:(NSError *)error success:(BOOL)success {
-    self = [super init];
-    
-    if (self) {
-        _error = error;
-        _isSuccessful = success;
-    }
+NS_ASSUME_NONNULL_BEGIN
 
-    return self;
-}
+@interface CMPChatMessage : NSObject
+
+@property (nonatomic, strong, nullable) NSString *id;
+@property (nonatomic, strong, nullable) NSNumber *sentEventID;
+@property (nonatomic, strong, nullable) NSDictionary<NSString *, id> *metadata;
+@property (nonatomic, strong, nullable) NSDictionary<NSString *, CMPChatMessageStatus *> *statusUpdates;
+@property (nonatomic, strong, nullable) NSArray<CMPChatMessagePart *> *parts;
+@property (nonatomic, strong, nullable) CMPChatMessageContext *context;
+
+- (instancetype)initWithID:(nullable NSString *)ID sentEventID:(nullable NSString *)sentEventID metadata:(nullable NSDictionary<NSString *, id> *)metadata context:(nullable CMPChatMessageContext *)context parts:(nullable NSArray<CMPChatMessagePart *> *)parts statusUpdates:(nullable NSDictionary<NSString *, CMPChatMessageStatus *> *)statusUpdates;
+- (instancetype)initWithMessage:(CMPMessage *)message;
+
+- (void)addStatusUpdate:(CMPChatMessageStatus *)statusUpdate;
 
 @end
+
+NS_ASSUME_NONNULL_END

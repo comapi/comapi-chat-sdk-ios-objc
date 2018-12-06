@@ -16,18 +16,33 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatResult.h"
+#import "CMPChatMessageContext.h"
 
-@implementation CMPChatResult
+@implementation CMPChatMessageContext
 
-- (instancetype)initWithError:(NSError *)error success:(BOOL)success {
+- (instancetype)initWithConversationID:(NSString *)conversationID from:(CMPMessageParticipant *)from sentBy:(NSString *)sentBy sentOn:(NSDate *)sentOn {
     self = [super init];
     
     if (self) {
-        _error = error;
-        _isSuccessful = success;
+        self.conversationID = conversationID;
+        self.from = from;
+        self.sentBy = sentBy;
+        self.sentOn = sentOn;
     }
+    
+    return self;
+}
 
+- (instancetype)initWithMessageContext:(CMPMessageContext *)messageContext {
+    self = [super init];
+    
+    if (self) {
+        self.conversationID = messageContext.conversationID;
+        self.from = messageContext.from;
+        self.sentBy = messageContext.sentBy;
+        self.sentOn = messageContext.sentOn;
+    }
+    
     return self;
 }
 

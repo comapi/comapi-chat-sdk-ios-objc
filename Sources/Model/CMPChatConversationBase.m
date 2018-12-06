@@ -16,18 +16,21 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatResult.h"
+#import "CMPChatConversationBase.h"
 
-@implementation CMPChatResult
+@implementation CMPChatConversationBase
 
-- (instancetype)initWithError:(NSError *)error success:(BOOL)success {
+- (instancetype)initWithID:(NSString *)id firstLocalEventID:(NSNumber *)firstLocalEventID lastLocalEventID:(NSNumber *)lastLocalEventID latestRemoteEventID:(NSNumber *)latestRemoteEventID eTag:(NSString *)eTag updatedOn:(NSDate *)updatedOn {
     self = [super init];
     
     if (self) {
-        _error = error;
-        _isSuccessful = success;
+        self.firstLocalEventID = firstLocalEventID;
+        self.lastLocalEventID = lastLocalEventID;
+        self.latestRemoteEventID = latestRemoteEventID;
+        self.eTag = eTag;
+        self.updatedOn = updatedOn;
     }
-
+    
     return self;
 }
 

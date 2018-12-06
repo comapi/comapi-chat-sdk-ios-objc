@@ -23,10 +23,21 @@
 @interface CMPComapiChatClient ()
 
 @property (nonatomic, strong, readonly) CMPComapiClient *client;
-@property (nonatomic, weak) id<CMPLifecycleDelegate> lifecycleDelegate;
+@property (nonatomic, weak, readonly) id<CMPLifecycleDelegate> lifecycleDelegate;
 
 @end
 
 @implementation CMPComapiChatClient
+
+- (instancetype)initWithClient:(CMPComapiClient *)client lifecycleDelegate:(id<CMPLifecycleDelegate>)delegate {
+    self = [super init];
+    
+    if (self) {
+        _client = client;
+        _lifecycleDelegate = delegate;
+    }
+    
+    return self;
+}
 
 @end

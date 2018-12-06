@@ -16,19 +16,23 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatResult.h"
+#import <Foundation/Foundation.h>
 
-@implementation CMPChatResult
+#import "CMPChatConversationBase.h"
+#import "CMPChatRoles.h"
 
-- (instancetype)initWithError:(NSError *)error success:(BOOL)success {
-    self = [super init];
-    
-    if (self) {
-        _error = error;
-        _isSuccessful = success;
-    }
+NS_ASSUME_NONNULL_BEGIN
 
-    return self;
-}
+@interface CMPChatConversation : CMPChatConversationBase
+
+@property (nonatomic) BOOL isPublic;
+@property (nonatomic, strong, nullable) NSString *name;
+@property (nonatomic, strong, nullable) NSString *conversationDescription;
+@property (nonatomic, strong, nullable) CMPChatRoles *roles;
+
+- (instancetype)initWithID:(nullable NSString *)ID firstLocalEventID:(nullable NSNumber *)firstLocalEventID lastLocalEventID:(nullable NSNumber *)lastLocalEventID latestRemoteEventID:(nullable NSNumber *)latestRemoteEventID eTag:(nullable NSString *)eTag updatedOn:(nullable NSDate *)updatedOn name:(nullable NSString *)name conversationDescription:(nullable NSString *)description roles:(nullable CMPChatRoles *)roles isPublic:(BOOL)isPublic;
+- (instancetype)initWithConversation:(CMPConversation *)conversation;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -16,18 +16,29 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatResult.h"
+#import "CMPChatMessageParticipant.h"
 
-@implementation CMPChatResult
+@implementation CMPChatMessageParticipant
 
-- (instancetype)initWithError:(NSError *)error success:(BOOL)success {
+- (instancetype)initWithID:(NSString *)id name:(NSString *)name {
     self = [super init];
     
     if (self) {
-        _error = error;
-        _isSuccessful = success;
+        self.id = id;
+        self.name = name;
     }
+    
+    return self;
+}
 
+- (instancetype)initWithMessageParticipant:(CMPMessageParticipant *)participant {
+    self = [super init];
+    
+    if (self) {
+        self.id = participant.id;
+        self.name = participant.name;
+    }
+    
     return self;
 }
 

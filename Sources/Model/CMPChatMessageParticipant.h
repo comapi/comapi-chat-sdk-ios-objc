@@ -16,19 +16,18 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatResult.h"
+#import <CMPComapiFoundation/CMPMessageParticipant.h>
 
-@implementation CMPChatResult
+NS_ASSUME_NONNULL_BEGIN
 
-- (instancetype)initWithError:(NSError *)error success:(BOOL)success {
-    self = [super init];
-    
-    if (self) {
-        _error = error;
-        _isSuccessful = success;
-    }
+@interface CMPChatMessageParticipant : NSObject
 
-    return self;
-}
+@property (nonatomic, strong, nullable) NSString *id;
+@property (nonatomic, strong, nullable) NSString *name;
+
+- (instancetype)initWithID:(NSString *)id name:(NSString *)name;
+- (instancetype)initWithMessageParticipant:(CMPMessageParticipant *)participant;
 
 @end
+
+NS_ASSUME_NONNULL_END

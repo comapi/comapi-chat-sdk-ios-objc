@@ -16,19 +16,19 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatResult.h"
+#import <Foundation/Foundation.h>
 
-@implementation CMPChatResult
+NS_ASSUME_NONNULL_BEGIN
 
-- (instancetype)initWithError:(NSError *)error success:(BOOL)success {
-    self = [super init];
-    
-    if (self) {
-        _error = error;
-        _isSuccessful = success;
-    }
+typedef NS_ENUM(NSInteger, CMPLocalMessageStatus) {
+    CMPLocalMessageStatusSending,
+    CMPLocalMessageStatusDelivered,
+    CMPLocalMessageStatusRead,
+    CMPLocalMessageStatusError
+} NS_SWIFT_NAME(LocalMessageStatus);
 
-    return self;
-}
+@interface CMPLocalMessageStatusParser : NSObject
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -16,18 +16,31 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatResult.h"
+#import "CMPChatRoleAttributes.h"
 
-@implementation CMPChatResult
+@implementation CMPChatRoleAttributes
 
-- (instancetype)initWithError:(NSError *)error success:(BOOL)success {
+- (instancetype)initWithCanSend:(BOOL)canSend canAddParticipants:(BOOL)canAddParticipants canRemoveParticipants:(BOOL)canRemoveParticipants {
     self = [super init];
     
     if (self) {
-        _error = error;
-        _isSuccessful = success;
+        self.canSend = canSend;
+        self.canAddParticipants = canAddParticipants;
+        self.canRemoveParticipants = canRemoveParticipants;
     }
+    
+    return self;
+}
 
+- (instancetype)initWithRoleAttributes:(CMPRoleAttributes *)roleAttributes {
+    self = [super init];
+    
+    if (self) {
+        self.canSend = roleAttributes.canSend;
+        self.canAddParticipants = roleAttributes.canAddParticipants;
+        self.canRemoveParticipants = roleAttributes.canRemoveParticipants;
+    }
+    
     return self;
 }
 
