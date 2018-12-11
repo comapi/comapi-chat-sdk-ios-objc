@@ -16,8 +16,11 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPStoreTransaction.h"
+#import <UIKit/UIKit.h>
+#import "AppDelegate.h"
 
-@implementation CMPStoreTransaction
-
-@end
+int main(int argc, char * argv[]) {
+    @autoreleasepool {
+        return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
+    }
+}

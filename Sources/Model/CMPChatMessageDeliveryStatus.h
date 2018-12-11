@@ -16,19 +16,20 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <CoreData/CoreData.h>
+#import <CMPComapiFoundation/CMPMessageDeliveryStatus.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CoreDataManager : NSObject
+typedef NS_ENUM(NSInteger, CMPChatMessageDeliveryStatus) {
+    CMPChatMessageDeliveryStatusSending,
+    CMPChatMessageDeliveryStatusDelivered,
+    CMPChatMessageDeliveryStatusRead,
+    CMPChatMessageDeliveryStatusError
+} NS_SWIFT_NAME(ChatMessageDeliveryStatus);
 
-@property (nonatomic, strong, readonly) NSPersistentContainer *persistentContainer;
-@property (nonatomic, strong, readonly) NSManagedObjectContext *mainContext;
+@interface CMPChatMessageDeliveryStatusParser : NSObject
 
-- (instancetype)init;
-
-- (void)configureWithCompletion:(void(^)(NSError * _Nullable))completion;
-- (void)saveContextWithCompletion:(void(^)(NSError * _Nullable))completion;
++ (CMPChatMessageDeliveryStatus)parseStatus:(CMPMessageDeliveryStatus)status;
 
 @end
 

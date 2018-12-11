@@ -20,7 +20,7 @@
 
 @implementation CMPChatMessageStatus
 
-- (instancetype)initWithConversationID:(NSString *)conversationID messageID:(NSString *)messageID profileID:(NSString *)profileID conversationEventID:(NSNumber *)conversationEventID messageStatus:(CMPLocalMessageStatus)messageStatus {
+- (instancetype)initWithConversationID:(NSString *)conversationID messageID:(NSString *)messageID profileID:(NSString *)profileID conversationEventID:(NSNumber *)conversationEventID timestamp:(NSDate *)timestamp messageStatus:(CMPChatMessageDeliveryStatus)messageStatus {
     self = [super init];
     
     if (self) {
@@ -28,6 +28,7 @@
         self.messageID = messageID;
         self.profileID = profileID;
         self.conversationEventID = conversationEventID;
+        self.timestamp = timestamp;
         self.messageStatus = messageStatus;
     }
     

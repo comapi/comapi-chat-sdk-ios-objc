@@ -31,4 +31,15 @@
     return self;
 }
 
+- (instancetype)initWithComapiResult:(CMPResult<id> *)result {
+    self = [super init];
+    
+    if (self) {
+        _isSuccessful = result.object != nil;
+        _error = result.error;
+    }
+    
+    return self;
+}
+
 @end

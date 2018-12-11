@@ -17,7 +17,50 @@
 //
 
 #import "CMPPersistenceController.h"
+#import "CMPChatConversationBase.h"
+#import "CMPChatStore.h"
+
+#import <CMPComapiFoundation/CMPLogger.h>
 
 @implementation CMPPersistenceController
+
+- (instancetype)initWithFactory:(CMPStoreFactory *)factory adapter:(CMPModelAdapter *)adapter coreDataManager:(CMPCoreDataManager *)manager {
+    self = [super init];
+    
+    if (self) {
+        _factory = factory;
+        _adapter = adapter;
+        _manager = manager;
+    }
+    
+    return self;
+}
+
+- (void)getConversationForID:(NSString *)conversationID completion:(void(^)(CMPChatConversationBase *))completion {
+    [_factory executeTransaction:^(id<CMPChatStore> store, NSError * error) {
+        [store beginTransaction];
+        CMPChatConversationBase *conversation = [store getConversationForConversationID:conversationID];
+        [store endTransaction];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completion(conversation);
+        });
+    }];
+}
+
+-
+
+//Observable<ChatConversationBase> getConversation(@NonNull String conversationId) {
+//
+//    return Observable.create(emitter -> storeFactory.execute(new StoreTransaction<ChatStore>() {
+//        @Override
+//        protected void execute(ChatStore store) {
+//            store.beginTransaction();
+//            ChatConversationBase c = store.getConversation(conversationId);
+//            store.endTransaction();
+//            emitter.onNext(c);
+//            emitter.onCompleted();
+//        }
+//    }), Emitter.BackpressureMode.BUFFER);
+//}
 
 @end

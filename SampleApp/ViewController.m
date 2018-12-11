@@ -16,19 +16,35 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
+#import "ViewController.h"
+#import "ChatStoreImplem.h"
+#import "CMPStoreFactory.h"
 
-NS_ASSUME_NONNULL_BEGIN
+@interface ViewController () <CMPStoreFactoryBuildable>
 
-typedef NS_ENUM(NSInteger, CMPLocalMessageStatus) {
-    CMPLocalMessageStatusSending,
-    CMPLocalMessageStatusDelivered,
-    CMPLocalMessageStatusRead,
-    CMPLocalMessageStatusError
-} NS_SWIFT_NAME(LocalMessageStatus);
-
-@interface CMPLocalMessageStatusParser : NSObject
+@property (nonatomic, strong) CMPStoreFactory *factory;
 
 @end
 
-NS_ASSUME_NONNULL_END
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    _factory = [[CMPStoreFactory alloc] init];
+    [_factory executeTransaction:^(id<CMPChatStore> store, NSError * error) {
+        if (error) {
+            NSLog(@"%@", error);
+        } else {
+            [store clearDatabase];
+        }
+    }];
+    // Do any additional setup after loading the view, typically from a nib.
+}
+
+- (void)buildWithCompletion:(void (^)(id<CMPChatStore> _Nullable, NSError * _Nullable))completion {
+    NSLog(@"building store");
+    ChatStoreImplem *store = [[ChatStoreImplem alloc] init];
+    completion(store, nil);
+}
+
+@end

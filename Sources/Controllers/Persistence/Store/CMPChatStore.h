@@ -17,105 +17,33 @@
 //
 
 #import "CMPChatConversation.h"
+#import "CMPChatMessage.h"
+#import "CMPChatMessageStatus.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @protocol CMPChatStore <NSObject>
 
+#pragma mark - Conversations
+
 - (CMPChatConversationBase *)getConversationForConversationID:(NSString *)conversationID;
 - (NSArray<CMPChatConversationBase *> *)getAllConversations;
 - (BOOL)upsertConversation:(CMPChatConversation *)conversation;
-- (BOOL)updateConversation:(CMPChatConversationBase)conversation;
-- (BOOL)deleteConversation:(CMPChatConversationBase)conversation;
+- (BOOL)updateConversation:(CMPChatConversationBase *)conversation;
+- (BOOL)deleteConversation:(CMPChatConversationBase *)conversation;
 
-///**
-// * Get conversation from persistence store.
-// *
-// * @param conversationId Unique global conversation identifier.
-// * @return Conversation from persistence store.
-// */
-//public abstract ChatConversationBase getConversation(String conversationId);
-//
-///**
-// * Get all conversations from persistence store.
-// *
-// * @return All conversations from persistence store.
-// */
-//public abstract List<ChatConversationBase> getAllConversations();
-//
-///**
-// * Insert or update conversation in persistence store.
-// *
-// * @param conversation Conversation to insert or update.
-// * @return True if operation was successful.
-// */
-//public abstract boolean upsert(ChatConversation conversation);
-//
-///**
-// * Update conversation in persistence store.
-// *
-// * @param conversation Conversation to update.
-// * @return True if operation was successful.
-// */
-//public abstract boolean update(ChatConversationBase conversation);
-//
-///**
-// * Delete conversation from persistence store.
-// *
-// * @param conversationId Unique global conversation identifier of an conversation to delete.
-// * @return True if operation was successful.
-// */
-//public abstract boolean deleteConversation(String conversationId);
-//
-///**
-// * Insert or update message in persistence store.
-// *
-// * @param message Message to insert or update.
-// * @return True if operation was successful.
-// */
-//public abstract boolean upsert(ChatMessage message);
-//
-///**
-// * Update stored {@link ChatMessage} with a new {@link ChatMessageStatus}. The chat message is unique for a combination of messageId, profileId and {@link LocalMessageStatus} value.
-// *
-// * @param status Chat message status for the {@link ChatMessage} with id {@link ChatMessageStatus#getMessageId()}
-// * @return True if operation was successful.
-// */
-//public abstract boolean update(ChatMessageStatus status);
-//
-///**
-// * Delete all messages from persistence store that are related to given conversation.
-// *
-// * @param conversationId Unique global conversation identifier.
-// * @return True if operation was successful.
-// */
-//public abstract boolean deleteAllMessages(String conversationId);
-//
-///**
-// * Delete message from persistence store.
-// *
-// * @param conversationId Unique global conversation identifier.
-// * @param messageId      Unique global message identifier.
-// * @return True if operation was successful.
-// */
-//public abstract boolean deleteMessage(String conversationId, String messageId);
-//
-///**
-// * Delete all content of persistence store that is related to current user.
-// *
-// * @return True if operation was successful.
-// */
-//public abstract boolean clearDatabase();
-//
-///**
-// * Begin transaction. From this point calling other methods of this class will queue store updates and inserts to be executed when {@link ChatStore#endTransaction()} on same instance is called.
-// */
-//public abstract void beginTransaction();
-//
-///**
-// * End transaction. Execute queued store updates and inserts.
-// */
-//public abstract void endTransaction();
+#pragma mark - Messages
+
+- (BOOL)upsertMessage:(CMPChatMessage *)message;
+- (BOOL)updateMessageStatus:(CMPChatMessageStatus *)messageStatus;
+- (BOOL)deleteAllMessagesForConversationID:(NSString *)conversationID;
+- (BOOL)deleteMessageForConversationID:(NSString *)conversationID messageID:(NSString *)messageID;
+
+#pragma mark - Database operations
+
+- (BOOL)clearDatabase;
+- (void)beginTransaction;
+- (void)endTransaction;
 
 @end
 

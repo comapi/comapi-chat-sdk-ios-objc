@@ -15,12 +15,34 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
+#import "CMPChatMessage.h"
+#import "CMPChatMessageStatus.h"
+#import "CMPChatMessageParticipant.h"
+#import "CMPChatManagedOrphanedEvent.h"
 
-#import <Foundation/Foundation.h>
+#import <CMPComapiFoundation/CMPMessage.h>
+#import <CMPComapiFoundation/CMPMessageStatus.h>
+#import <CMPComapiFoundation/CMPGetMessagesResult.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPStoreTransaction : NSObject
+@interface CMPModelAdapter : NSObject
+
+#pragma mark - MessageStatus
+
+- (NSArray<CMPChatMessageStatus *> *)adaptStatusesForConversationID:(NSString *)conversationID messageID:(NSString *)messageID statuses:(NSDictionary<NSString *, CMPMessageStatus *> *)statuses;
+
+#pragma mark - Participants
+
+- (NSArray<CMPChatMessageParticipant *> *)adaptParticipants:(NSArray<CMPMessageParticipant *> *)participants;
+
+#pragma mark - Messages
+
+- (NSArray<CMPChatMessage *> *)adaptMessages:(NSArray<CMPMessage *> *)messages;
+
+#pragma mark - Events
+
+- (NSArray<CMPChatMessageStatus *> *)adaptEvents:(NSArray<CMPChatManagedOrphanedEvent *> *)events;
 
 @end
 

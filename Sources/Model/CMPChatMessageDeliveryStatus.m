@@ -16,18 +16,19 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <CMPComapiFoundation/CMPResult.h>
+#import "CMPChatMessageDeliveryStatus.h"
 
-NS_ASSUME_NONNULL_BEGIN
+@implementation CMPChatMessageDeliveryStatusParser
 
-@interface CMPChatResult : NSObject
-
-@property (nonatomic, readonly) BOOL isSuccessful;
-@property (nonatomic, strong, nullable, readonly) NSError *error;
-
-- (instancetype)initWithError:(nullable NSError *)error success:(BOOL)success;
-- (instancetype)initWithComapiResult:(CMPResult<id> *)result;
++ (CMPChatMessageDeliveryStatus)parseStatus:(CMPMessageDeliveryStatus)status {
+    switch (status) {
+        case CMPMessageDeliveryStatusRead:
+            return CMPChatMessageDeliveryStatusRead;
+        case CMPMessageDeliveryStatusDelivered:
+            return CMPChatMessageDeliveryStatusDelivered;
+        default:
+            return -1;
+    }
+}
 
 @end
-
-NS_ASSUME_NONNULL_END

@@ -16,7 +16,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPLocalMessageStatus.h"
+#import "CMPChatMessageDeliveryStatus.h"
 
 #import <CMPComapiFoundation/CMPMessageStatus.h>
 
@@ -28,9 +28,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSString *messageID;
 @property (nonatomic, strong, nullable) NSString *profileID;
 @property (nonatomic, strong, nullable) NSNumber *conversationEventID;
-@property (nonatomic) CMPLocalMessageStatus messageStatus;
+@property (nonatomic, strong, nullable) NSDate *timestamp;
+@property (nonatomic) CMPChatMessageDeliveryStatus messageStatus;
 
-- (instancetype)initWithConversationID:(NSString *)conversationID messageID:(NSString *)messageID profileID:(NSString *)profileID conversationEventID:(NSNumber *)conversationEventID messageStatus:(CMPLocalMessageStatus)messageStatus;
+- (instancetype)initWithConversationID:(nullable NSString *)conversationID messageID:(nullable NSString *)messageID profileID:(nullable NSString *)profileID conversationEventID:(nullable NSNumber *)conversationEventID timestamp:(nullable NSDate *)timestamp messageStatus:(CMPChatMessageDeliveryStatus)messageStatus;
 
 @end
 

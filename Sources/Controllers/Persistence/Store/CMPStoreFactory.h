@@ -16,17 +16,22 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <CMPComapiFoundation/CMPResult.h>
+#import "CMPChatStore.h"
+#import "CMPStoreResult.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatResult : NSObject
+@protocol CMPStoreFactoryBuildable <NSObject>
 
-@property (nonatomic, readonly) BOOL isSuccessful;
-@property (nonatomic, strong, nullable, readonly) NSError *error;
+- (void)buildWithCompletion:(void(^)(id<CMPChatStore> _Nullable, NSError * _Nullable))completion;
 
-- (instancetype)initWithError:(nullable NSError *)error success:(BOOL)success;
-- (instancetype)initWithComapiResult:(CMPResult<id> *)result;
+@end
+
+@interface CMPStoreFactory : NSObject
+
+@property (nonatomic, weak) id<CMPStoreFactoryBuildable> builder;
+
+- (void)executeTransaction:(void(^)(id<CMPChatStore> _Nullable, NSError * _Nullable))transaction;
 
 @end
 

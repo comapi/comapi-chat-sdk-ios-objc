@@ -16,8 +16,21 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPLocalMessageStatus.h"
+#import "CMPStoreFactory.h"
 
-@implementation CMPLocalMessageStatusParser
+#import <CMPComapiFoundation/CMPLogger.h>
+
+@implementation CMPStoreFactory
+
+- (void)executeTransaction:(void (^)(id<CMPChatStore> _Nullable, NSError * _Nullable))transaction {
+    [_builder buildWithCompletion:^(id<CMPChatStore> store, NSError * err) {
+        if (err) {
+            logWithLevel(CMPLogLevelError, @"Chat store: error", err.localizedDescription, nil);
+            transaction(nil, err);
+        } else {
+            transaction(store, nil);
+        }
+    }];
+}
 
 @end

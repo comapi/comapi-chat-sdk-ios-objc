@@ -16,17 +16,15 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <CMPComapiFoundation/CMPResult.h>
+#import <CoreData/CoreData.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatResult : NSObject
+@interface CMPChatManagedOrphanedEvent : NSManagedObject
 
-@property (nonatomic, readonly) BOOL isSuccessful;
-@property (nonatomic, strong, nullable, readonly) NSError *error;
-
-- (instancetype)initWithError:(nullable NSError *)error success:(BOOL)success;
-- (instancetype)initWithComapiResult:(CMPResult<id> *)result;
+@property (nonatomic, strong, nullable) NSString *id;
+@property (nonatomic, strong, nullable) NSString *messageID;
+@property (nonatomic, strong, nullable) NSData *eventData;
 
 @end
 

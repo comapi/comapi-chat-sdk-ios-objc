@@ -16,12 +16,86 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
+#import "CMPStoreFactory.h"
+#import "CMPModelAdapter.h"
+#import "CMPCoreDataManager.h"
+#import "CMPChatConversation.h"
+
+#import <CMPComapiFoundation/CMPGetMessagesResult.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPPersistenceController : NSObject
 
+@property (nonatomic, strong, readonly) CMPStoreFactory *factory;
+@property (nonatomic, strong, readonly) CMPModelAdapter *adapter;
+@property (nonatomic, strong, readonly) CMPCoreDataManager *manager;
+
+- (instancetype)initWithFactory:(CMPStoreFactory *)factory adapter:(CMPModelAdapter *)adapter coreDataManager:(CMPCoreDataManager *)manager;
+
+- (void)getConversationForID:(NSString *)conversationID completion:(void(^)(CMPChatConversationBase *))completion;
+- (void)processOrphanedEvents:(CMPComapiResult<CMPGetMessagesResult *> *)eventsResult
+//Observable<ComapiResult<MessagesQueryResponse>> processOrphanedEvents(ComapiResult<MessagesQueryResponse> result, final ChatController.OrphanedEventsToRemoveListener removeListener) {
+//
+//    if (result.isSuccessful() && result.getResult() != null) {
+//
+//        final MessagesQueryResponse response = result.getResult();
+//
+//        final List<MessageReceived> messages = response.getMessages();
+//        final String[] ids = new String[messages.size()];
+//
+//        if (!messages.isEmpty()) {
+//            for (int i = 0; i < messages.size(); i++) {
+//                ids[i] = messages.get(i).getMessageId();
+//            }
+//        }
+//
+//        return db.save(response.getOrphanedEvents())
+//        .flatMap(count -> db.queryOrphanedEvents(ids))
+//        .flatMap(toDelete -> Observable.create(emitter ->
+//                                               storeFactory.execute(new StoreTransaction<ChatStore>() {
+//
+//            @Override
+//            protected void execute(ChatStore store) {
+//
+//                if (!toDelete.isEmpty()) {
+//
+//                    storeFactory.execute(new StoreTransaction<ChatStore>() {
+//                        @Override
+//                        protected void execute(ChatStore store) {
+//
+//                            store.beginTransaction();
+//
+//                            List<ChatMessageStatus> statuses = modelAdapter.adaptEvents(toDelete);
+//
+//                            if (!statuses.isEmpty()) {
+//                                for (ChatMessageStatus status : statuses) {
+//                                    store.update(status);
+//                                }
+//                            }
+//
+//                            String[] ids = new String[toDelete.size()];
+//                            for (int i = 0; i < toDelete.size(); i++) {
+//                                ids[i] = toDelete.get(i).id();
+//                            }
+//                            removeListener.remove(ids);
+//
+//                            store.endTransaction();
+//
+//                            emitter.onNext(result);
+//                            emitter.onCompleted();
+//                        }
+//                    });
+//                } else {
+//                    emitter.onNext(result);
+//                    emitter.onCompleted();
+//                }
+//            }
+//        }), Emitter.BackpressureMode.BUFFER));
+//    } else {
+//        return Observable.fromCallable(() -> result);
+//    }
+//}
 @end
 
 NS_ASSUME_NONNULL_END

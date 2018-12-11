@@ -16,13 +16,13 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CoreDataManager.h"
+#import "CMPCoreDataManager.h"
 
 #import <CMPComapiFoundation/CMPLogger.h>
 
 NSString *const kModelName = @"ComapiChatModel";
 
-@implementation CoreDataManager
+@implementation CMPCoreDataManager
 
 @synthesize persistentContainer = _persistentContainer;
 @synthesize mainContext = _mainContext;

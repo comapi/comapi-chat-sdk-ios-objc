@@ -43,7 +43,7 @@
         self.sentEventID = message.sentEventID;
         self.metadata = message.metadata;
         self.context = [[CMPChatMessageContext alloc] initWithMessageContext:message.context];
-        NSMutableArray<CMPChatMessagePart *> *parts = [NSMutableArray alloc];
+        NSMutableArray<CMPChatMessagePart *> *parts = [NSMutableArray new];
         [message.parts enumerateObjectsUsingBlock:^(CMPMessagePart * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             [parts addObject:[[CMPChatMessagePart alloc] initWithMessage:obj]];
         }];
