@@ -17,6 +17,7 @@
 //
 
 #import <CoreData/CoreData.h>
+#import <CMPComapiFoundation/CMPOrphanedEvent.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -25,6 +26,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSString *id;
 @property (nonatomic, strong, nullable) NSString *messageID;
 @property (nonatomic, strong, nullable) NSData *eventData;
+
+- (void)populateWithOrphanedEvent:(CMPOrphanedEvent *)event;
 
 @end
 

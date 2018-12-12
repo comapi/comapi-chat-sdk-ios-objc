@@ -22,10 +22,14 @@
 
 NSString *const kModelName = @"ComapiChatModel";
 
+@interface CMPCoreDataManager ()
+
+@end
+
 @implementation CMPCoreDataManager
 
-@synthesize persistentContainer = _persistentContainer;
 @synthesize mainContext = _mainContext;
+@synthesize workerContext = _workerContext;
 
 - (instancetype)init {
     self = [super init];
@@ -33,6 +37,8 @@ NSString *const kModelName = @"ComapiChatModel";
     if (self) {
         _persistentContainer = [[NSPersistentContainer alloc] initWithName:kModelName];
         _mainContext = _persistentContainer.viewContext;
+        _workerContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+        _workerContext.parentContext = _mainContext;
     }
     
     return self;
@@ -48,11 +54,11 @@ NSString *const kModelName = @"ComapiChatModel";
     return _persistentContainer.viewContext;
 }
 
-- (void)saveContextWithCompletion:(void (^)(NSError * _Nullable))completion {
-    [_mainContext performBlock:^{
-        if ([self->_mainContext hasChanges]) {
+- (void)saveContext:(NSManagedObjectContext *)context completion:(void (^)(NSError * _Nullable))completion {
+    [context performBlock:^{
+        if ([context hasChanges]) {
             NSError *err;
-            [self->_mainContext save:&err];
+            [context save:&err];
             if (err) {
                 logWithLevel(CMPLogLevelError, @"Core Data: error", err, nil);
             }
@@ -64,6 +70,19 @@ NSString *const kModelName = @"ComapiChatModel";
             dispatch_async(dispatch_get_main_queue(), ^{
                 completion(nil);
             });
+        }
+    }];
+}
+
+- (void)saveToDiskWithCompletion:(void (^)(NSError * _Nullable))completion {
+    __weak typeof(self) weakSelf = self;
+    [self saveContext:_workerContext completion:^(NSError * _Nullable workerErr) {
+        if (workerErr) {
+            completion(workerErr);
+        } else {
+            [weakSelf saveContext:weakSelf.mainContext completion:^(NSError * _Nullable mainErr) {
+                completion(mainErr);
+            }];
         }
     }];
 }

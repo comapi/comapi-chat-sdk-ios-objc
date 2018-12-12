@@ -61,6 +61,8 @@
 		896CB9AF21BAA7A3003FB3DF /* CMPStoreResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 896CB9AD21BAA7A3003FB3DF /* CMPStoreResult.h */; };
 		896CB9B021BAA7A3003FB3DF /* CMPStoreResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 896CB9AE21BAA7A3003FB3DF /* CMPStoreResult.m */; };
 		896CB9B421BAAC25003FB3DF /* ChatStoreImplem.m in Sources */ = {isa = PBXBuildFile; fileRef = 896CB9B321BAAC25003FB3DF /* ChatStoreImplem.m */; };
+		8995262121C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 8995261F21C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.h */; };
+		8995262221C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 8995262021C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.m */; };
 		8998F4A221B800AA00BD6C52 /* CMPComapiChat.h in Headers */ = {isa = PBXBuildFile; fileRef = 8998F4A021B800AA00BD6C52 /* CMPComapiChat.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8998F4B321B8012F00BD6C52 /* CMPComapiChat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8998F49D21B800AA00BD6C52 /* CMPComapiChat.framework */; };
 		921D51DCF41E1F9065D73E98 /* Pods_SampleApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84CDB181FE771D22257557DD /* Pods_SampleApp.framework */; };
@@ -152,6 +154,8 @@
 		896CB9AE21BAA7A3003FB3DF /* CMPStoreResult.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPStoreResult.m; sourceTree = "<group>"; };
 		896CB9B221BAAC25003FB3DF /* ChatStoreImplem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChatStoreImplem.h; sourceTree = "<group>"; };
 		896CB9B321BAAC25003FB3DF /* ChatStoreImplem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChatStoreImplem.m; sourceTree = "<group>"; };
+		8995261F21C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSManagedObjectContext+CMPOrphanedEvent.h"; sourceTree = "<group>"; };
+		8995262021C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObjectContext+CMPOrphanedEvent.m"; sourceTree = "<group>"; };
 		8998F49D21B800AA00BD6C52 /* CMPComapiChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CMPComapiChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8998F4A021B800AA00BD6C52 /* CMPComapiChat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPComapiChat.h; sourceTree = "<group>"; };
 		8998F4A121B800AA00BD6C52 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -355,6 +359,8 @@
 			children = (
 				896015D821B931C400370AF2 /* CMPCoreDataManager.h */,
 				896015D921B931C400370AF2 /* CMPCoreDataManager.m */,
+				8995261F21C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.h */,
+				8995262021C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.m */,
 			);
 			path = Database;
 			sourceTree = "<group>";
@@ -442,6 +448,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				896CB97921B96CD1003FB3DF /* CMPChatMessage.h in Headers */,
+				8995262121C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.h in Headers */,
 				892F49BB21BE981A00FA52C9 /* CMPChatMessageDeliveryStatus.h in Headers */,
 				896CB9AF21BAA7A3003FB3DF /* CMPStoreResult.h in Headers */,
 				896CB98521B97979003FB3DF /* CMPChatMessagePart.h in Headers */,
@@ -677,6 +684,7 @@
 				896015BD21B82D6600370AF2 /* CMPComapiChatClient.m in Sources */,
 				896CB97221B95DA9003FB3DF /* CMPChatConversationBase.m in Sources */,
 				896CB98A21B97AFC003FB3DF /* CMPChatMessageParticipant.m in Sources */,
+				8995262221C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.m in Sources */,
 				896CB9B021BAA7A3003FB3DF /* CMPStoreResult.m in Sources */,
 				896CB97A21B96CD1003FB3DF /* CMPChatMessage.m in Sources */,
 				896CB99221BA981C003FB3DF /* CMPStoreFactory.m in Sources */,

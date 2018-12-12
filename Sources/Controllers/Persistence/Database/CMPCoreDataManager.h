@@ -18,18 +18,21 @@
 
 #import <CoreData/CoreData.h>
 
+
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPCoreDataManager : NSObject
 
 @property (nonatomic, strong, readonly) NSPersistentContainer *persistentContainer;
 @property (nonatomic, strong, readonly) NSManagedObjectContext *mainContext;
+@property (nonatomic, strong, readonly) NSManagedObjectContext *workerContext;
 
 - (instancetype)init;
 
 - (void)configureWithCompletion:(void(^)(NSError * _Nullable))completion;
-- (void)saveContextWithCompletion:(void(^)(NSError * _Nullable))completion;
-
+- (void)saveContext:(NSManagedObjectContext *)context completion:(void (^)(NSError * _Nullable))completion;
+- (void)saveToDiskWithCompletion:(void (^)(NSError * _Nullable))completion;
 @end
 
 NS_ASSUME_NONNULL_END

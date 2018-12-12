@@ -34,7 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithFactory:(CMPStoreFactory *)factory adapter:(CMPModelAdapter *)adapter coreDataManager:(CMPCoreDataManager *)manager;
 
 - (void)getConversationForID:(NSString *)conversationID completion:(void(^)(CMPChatConversationBase *))completion;
-- (void)processOrphanedEvents:(CMPComapiResult<CMPGetMessagesResult *> *)eventsResult
+//- (void)processOrphanedEvents:(CMPGetMessagesResult *)eventsResult completion:()
 //Observable<ComapiResult<MessagesQueryResponse>> processOrphanedEvents(ComapiResult<MessagesQueryResponse> result, final ChatController.OrphanedEventsToRemoveListener removeListener) {
 //
 //    if (result.isSuccessful() && result.getResult() != null) {

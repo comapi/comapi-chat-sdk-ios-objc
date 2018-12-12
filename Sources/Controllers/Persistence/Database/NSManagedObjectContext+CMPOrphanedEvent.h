@@ -16,36 +16,22 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPPersistenceController.h"
-#import "CMPChatConversationBase.h"
-#import "CMPChatStore.h"
+#import "CMPCoreDataManager.h"
+#import "CMPChatManagedOrphanedEvent.h"
 
-#import <CMPComapiFoundation/CMPLogger.h>
+#import <CMPComapiFoundation/CMPOrphanedEvent.h>
 
-@implementation CMPPersistenceController
+NS_ASSUME_NONNULL_BEGIN
 
-- (instancetype)initWithFactory:(CMPStoreFactory *)factory adapter:(CMPModelAdapter *)adapter coreDataManager:(CMPCoreDataManager *)manager {
-    self = [super init];
-    
-    if (self) {
-        _factory = factory;
-        _adapter = adapter;
-        _manager = manager;
-    }
-    
-    return self;
-}
+@interface NSManagedObjectContext (CMPOrphanedEvent)
 
-- (void)getConversationForID:(NSString *)conversationID completion:(void(^)(CMPChatConversationBase *))completion {
-    [_factory executeTransaction:^(id<CMPChatStore> store, NSError * error) {
-        [store beginTransaction];
-        CMPChatConversationBase *conversation = [store getConversationForConversationID:conversationID];
-        [store endTransaction];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            completion(conversation);
-        });
-    }];
-}
+- (void)queryOrphanedEventForID:(NSString *)eventID completion:(void(^)(CMPChatManagedOrphanedEvent * _Nullable, NSError * _Nullable))completion;
+- (void)queryAllOrphanedEventsWithCompletion:(void(^)(NSArray<CMPChatManagedOrphanedEvent *> * _Nullable, NSError * _Nullable))completion;
 
+- (void)upsertOrphanedEvents:(NSArray<CMPOrphanedEvent *> *)orphanedEvents completion:(void(^)(BOOL, NSError * _Nullable))completion;
+
+- (void)deleteOrphanedEventsForIDs:(NSArray<NSString *> *)eventIDs completion:(void(^)(BOOL, NSError * _Nullable))completion;
 
 @end
+
+NS_ASSUME_NONNULL_END

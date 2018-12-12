@@ -24,4 +24,8 @@
 @dynamic messageID;
 @dynamic eventData;
 
+- (void)populateWithOrphanedEvent:(CMPOrphanedEvent *)event {
+
+}
+
 @end
