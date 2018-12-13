@@ -16,21 +16,31 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <CoreData/CoreData.h>
+#import "NSManagedObjectContext+CMPUtility.h"
 
-NS_ASSUME_NONNULL_BEGIN
+#import <CMPComapiFoundation/CMPLogger.h>
 
-@interface CMPCoreDataManager : NSObject
+@implementation NSManagedObjectContext (CMPUtility)
 
-@property (nonatomic, strong, readonly) NSPersistentContainer *persistentContainer;
-@property (nonatomic, strong, readonly) NSManagedObjectContext *mainContext;
-@property (nonatomic, strong, readonly) NSManagedObjectContext *workerContext;
-
-- (instancetype)init;
-
-- (void)configureWithCompletion:(void(^)(NSError * _Nullable))completion;
-- (void)saveToDiskWithCompletion:(void (^)(NSError * _Nullable))completion;
+- (void)saveWithCompletion:(void (^)(NSError * _Nullable))completion {
+    __weak typeof(self) weakSelf = self;
+    [self performBlock:^{
+        if ([weakSelf hasChanges]) {
+            NSError *err;
+            [weakSelf save:&err];
+            if (err) {
+                logWithLevel(CMPLogLevelError, @"Core Data: error", err, nil);
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(err);
+            });
+        } else {
+            logWithLevel(CMPLogLevelVerbose, @"Core Data: no new changes.", nil);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(nil);
+            });
+        }
+    }];
+}
 
 @end
-
-NS_ASSUME_NONNULL_END

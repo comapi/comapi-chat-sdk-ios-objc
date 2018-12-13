@@ -27,7 +27,7 @@
         case CMPMessageDeliveryStatusDelivered:
             return CMPChatMessageDeliveryStatusDelivered;
         default:
-            return -1;
+            return CMPChatMessageDeliveryStatusUnknown;
     }
 }
 

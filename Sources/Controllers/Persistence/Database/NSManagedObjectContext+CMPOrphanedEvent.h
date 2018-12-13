@@ -18,6 +18,7 @@
 
 #import "CMPCoreDataManager.h"
 #import "CMPChatManagedOrphanedEvent.h"
+#import "NSArray+CMPUtility.h"
 
 #import <CMPComapiFoundation/CMPOrphanedEvent.h>
 
@@ -25,12 +26,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NSManagedObjectContext (CMPOrphanedEvent)
 
-- (void)queryOrphanedEventForID:(NSString *)eventID completion:(void(^)(CMPChatManagedOrphanedEvent * _Nullable, NSError * _Nullable))completion;
-- (void)queryAllOrphanedEventsWithCompletion:(void(^)(NSArray<CMPChatManagedOrphanedEvent *> * _Nullable, NSError * _Nullable))completion;
+- (void)queryOrphanedEventsForIDs:(NSArray<NSString *> *)IDs completion:(void(^)(NSArray<CMPChatManagedOrphanedEvent *> * _Nullable, NSError * _Nullable))completion;
 
-- (void)upsertOrphanedEvents:(NSArray<CMPOrphanedEvent *> *)orphanedEvents completion:(void(^)(BOOL, NSError * _Nullable))completion;
+- (void)upsertOrphanedEvents:(NSArray<CMPOrphanedEvent *> *)orphanedEvents completion:(void(^)(NSInteger, NSError * _Nullable))completion;
 
-- (void)deleteOrphanedEventsForIDs:(NSArray<NSString *> *)eventIDs completion:(void(^)(BOOL, NSError * _Nullable))completion;
+- (void)deleteOrphanedEventsForIDs:(NSArray<NSString *> *)IDs completion:(void(^)(NSInteger, NSError * _Nullable))completion;
 
 @end
 

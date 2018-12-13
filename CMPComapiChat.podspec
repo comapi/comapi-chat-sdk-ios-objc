@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             =	'CMPComapiChat'
-  s.version          =	'0.0.1'
+  s.version          =	'1.0.0'
   s.license          = 	'MIT'
   s.summary          =	'Chat SDK for Comapi. Extends Foundation with additional logic for Chat apps.'
   s.description      = <<-DESC
@@ -13,7 +13,7 @@ For more information about the integration please visit [the website](http://doc
   s.source           = { :git => 'https://github.com/comapi/comapi-chat-sdk-ios-objc.git', :branch => 'dev' }
   s.social_media_url = 'https://twitter.com/comapimessaging'
 
-  s.platform     = :ios, '10.0'
+  s.platform     = :ios, '9.0'
   s.requires_arc = true
 
   s.source_files = 'Sources/**/*.{h,m}'

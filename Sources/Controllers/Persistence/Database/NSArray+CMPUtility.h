@@ -16,20 +16,14 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <CoreData/CoreData.h>
+#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPCoreDataManager : NSObject
+@interface NSArray<__covariant T> (CMPUtility)
 
-@property (nonatomic, strong, readonly) NSPersistentContainer *persistentContainer;
-@property (nonatomic, strong, readonly) NSManagedObjectContext *mainContext;
-@property (nonatomic, strong, readonly) NSManagedObjectContext *workerContext;
-
-- (instancetype)init;
-
-- (void)configureWithCompletion:(void(^)(NSError * _Nullable))completion;
-- (void)saveToDiskWithCompletion:(void (^)(NSError * _Nullable))completion;
+- (BOOL)contains:(BOOL(^)(T))block;
+- (NSArray<id> *)map:(id(^)(T))block;
 
 @end
 

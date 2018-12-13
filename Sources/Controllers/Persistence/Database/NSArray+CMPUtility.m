@@ -16,21 +16,28 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <CoreData/CoreData.h>
+#import "NSArray+CMPUtility.h"
 
-NS_ASSUME_NONNULL_BEGIN
+@implementation NSArray (CMPUtility)
 
-@interface CMPCoreDataManager : NSObject
+- (BOOL)contains:(BOOL(^)(id element))block {
+    __block BOOL contains = NO;
+    [self enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        contains = block(obj);
+        if (contains) {
+            *stop = YES;
+        }
+    }];
+    return contains;
+}
 
-@property (nonatomic, strong, readonly) NSPersistentContainer *persistentContainer;
-@property (nonatomic, strong, readonly) NSManagedObjectContext *mainContext;
-@property (nonatomic, strong, readonly) NSManagedObjectContext *workerContext;
-
-- (instancetype)init;
-
-- (void)configureWithCompletion:(void(^)(NSError * _Nullable))completion;
-- (void)saveToDiskWithCompletion:(void (^)(NSError * _Nullable))completion;
+- (NSArray<id> *)map:(id(^)(id element))block {
+    __block NSMutableArray *mapped = [NSMutableArray new];
+    [self enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        id val = block(obj);
+        [mapped addObject:val];
+    }];
+    return mapped;
+}
 
 @end
-
-NS_ASSUME_NONNULL_END

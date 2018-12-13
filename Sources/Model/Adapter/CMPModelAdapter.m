@@ -56,19 +56,18 @@
 
 - (NSArray<CMPChatMessageStatus *> *)adaptEvents:(NSArray<CMPChatManagedOrphanedEvent *> *)events {
     NSMutableArray<CMPChatMessageStatus *> *adapted = [NSMutableArray new];
+    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+    formatter.numberStyle = NSNumberFormatterNoStyle;
     
     [events enumerateObjectsUsingBlock:^(CMPChatManagedOrphanedEvent * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        CMPEvent *event = [CMPEventParser parseEventForData:obj.eventData];
-        switch (event.type) {
-            case CMPEventTypeConversationMessageRead: {
-                CMPConversationMessageEventRead *read = (CMPConversationMessageEventRead *)event;
-                CMPChatMessageStatus *status = [[CMPChatMessageStatus alloc] initWithConversationID:read.payload.conversationID messageID:read.payload.messageID profileID:read.payload.profileID conversationEventID:read.conversationEventID timestamp:read.payload.timestamp messageStatus:CMPChatMessageDeliveryStatusRead];
+        switch (obj.eventType) {
+            case CMPChatMessageDeliveryStatusRead: {
+                CMPChatMessageStatus *status = [[CMPChatMessageStatus alloc] initWithConversationID:obj.conversationID messageID:obj.messageID profileID:obj.profileID conversationEventID:[formatter numberFromString:obj.eventID] timestamp:obj.timestamp messageStatus:CMPChatMessageDeliveryStatusRead];
                 [adapted addObject:status];
                 break;
             }
             case CMPEventTypeConversationMessageDelivered: {
-                CMPConversationMessageEventDelivered *delivered = (CMPConversationMessageEventDelivered *)event;
-                CMPChatMessageStatus *status = [[CMPChatMessageStatus alloc] initWithConversationID:delivered.payload.conversationID messageID:delivered.payload.messageID profileID:delivered.payload.profileID conversationEventID:delivered.conversationEventID timestamp:delivered.payload.timestamp messageStatus:CMPChatMessageDeliveryStatusDelivered];
+                CMPChatMessageStatus *status = [[CMPChatMessageStatus alloc] initWithConversationID:obj.conversationID messageID:obj.messageID profileID:obj.profileID conversationEventID:[formatter numberFromString:obj.eventID] timestamp:obj.timestamp messageStatus:CMPChatMessageDeliveryStatusDelivered];
                 [adapted addObject:status];
                 break;
             }

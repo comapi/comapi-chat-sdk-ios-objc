@@ -24,7 +24,8 @@ typedef NS_ENUM(NSInteger, CMPChatMessageDeliveryStatus) {
     CMPChatMessageDeliveryStatusSending,
     CMPChatMessageDeliveryStatusDelivered,
     CMPChatMessageDeliveryStatusRead,
-    CMPChatMessageDeliveryStatusError
+    CMPChatMessageDeliveryStatusError,
+    CMPChatMessageDeliveryStatusUnknown
 } NS_SWIFT_NAME(ChatMessageDeliveryStatus);
 
 @interface CMPChatMessageDeliveryStatusParser : NSObject

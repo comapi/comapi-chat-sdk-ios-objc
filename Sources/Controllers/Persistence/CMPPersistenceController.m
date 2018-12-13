@@ -19,6 +19,8 @@
 #import "CMPPersistenceController.h"
 #import "CMPChatConversationBase.h"
 #import "CMPChatStore.h"
+#import "NSManagedObjectContext+CMPOrphanedEvent.h"
+#import "NSArray+CMPUtility.h"
 
 #import <CMPComapiFoundation/CMPLogger.h>
 
@@ -47,5 +49,44 @@
     }];
 }
 
+- (void)processOrphanedEvents:(CMPGetMessagesResult *)eventsResult completion:(void (^)(NSError * _Nullable))completion {
+    NSArray<CMPMessage *> *messages = eventsResult.messages;
+    NSArray<CMPOrphanedEvent *> *orphanedEvents = eventsResult.orphanedEvents;
+    __weak typeof(self) weakSelf = self;
+    
+    if (messages && orphanedEvents) {
+        NSArray<NSString *> *ids = [messages map:^id (CMPMessage * obj) { return obj.id; }];
+        [_manager.workerContext upsertOrphanedEvents:orphanedEvents completion:^(NSInteger inserted, NSError * _Nullable error) {
+            if (error) {
+                completion(error);
+            } else {
+                [weakSelf.manager.workerContext queryOrphanedEventsForIDs:ids completion:^(NSArray<CMPChatManagedOrphanedEvent *> * _Nullable toDelete, NSError * _Nullable error) {
+                    if (error) {
+                        completion(error);
+                    } else {
+                        [weakSelf.factory executeTransaction:^(id<CMPChatStore> _Nullable store, NSError * _Nullable error) {
+                            [store beginTransaction];
+                            NSArray<CMPChatMessageStatus *> *statuses = [weakSelf.adapter adaptEvents:toDelete];
+                            [statuses enumerateObjectsUsingBlock:^(CMPChatMessageStatus * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                                [store updateMessageStatus:obj];
+                            }];
+                            NSArray<NSString *> *toDeleteIDs = [toDelete map:^id _Nonnull(CMPChatManagedOrphanedEvent * obj) { return obj.id; }];
+                            [weakSelf.manager.workerContext deleteOrphanedEventsForIDs:toDeleteIDs completion:^(NSInteger deleted, NSError * _Nullable error) {
+                                [store endTransaction];
+                                if (error) {
+                                    completion(error);
+                                } else {
+                                    [weakSelf.manager saveToDiskWithCompletion:^(NSError * _Nullable error) {
+                                        completion(error);
+                                    }];
+                                }
+                            }];
+                        }];
+                    }
+                }];
+            }
+        }];
+    }
+}
 
 @end

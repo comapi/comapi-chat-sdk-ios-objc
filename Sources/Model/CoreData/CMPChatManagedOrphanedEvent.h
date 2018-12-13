@@ -16,6 +16,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+#import "CMPChatMessageDeliveryStatus.h"
+
 #import <CoreData/CoreData.h>
 #import <CMPComapiFoundation/CMPOrphanedEvent.h>
 
@@ -23,9 +25,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPChatManagedOrphanedEvent : NSManagedObject
 
-@property (nonatomic, strong, nullable) NSString *id;
+@property (nonatomic, strong, nullable) NSNumber *id;
 @property (nonatomic, strong, nullable) NSString *messageID;
-@property (nonatomic, strong, nullable) NSData *eventData;
+@property (nonatomic, strong, nullable) NSString *profileID;
+@property (nonatomic, strong, nullable) NSString *conversationID;
+@property (nonatomic, strong, nullable) NSString *eventID;
+@property (nonatomic, strong, nullable) NSString *name;
+@property (nonatomic, strong, nullable) NSNumber *isPublicConversation;
+@property (nonatomic, strong, nullable) NSDate *timestamp;
+
+@property (nonatomic, readonly) CMPChatMessageDeliveryStatus eventType;
 
 - (void)populateWithOrphanedEvent:(CMPOrphanedEvent *)event;
 

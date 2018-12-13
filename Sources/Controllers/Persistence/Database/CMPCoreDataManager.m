@@ -17,6 +17,7 @@
 //
 
 #import "CMPCoreDataManager.h"
+#import "NSManagedObjectContext+CMPUtility.h"
 
 #import <CMPComapiFoundation/CMPLogger.h>
 
@@ -54,34 +55,14 @@ NSString *const kModelName = @"ComapiChatModel";
     return _persistentContainer.viewContext;
 }
 
-- (void)saveContext:(NSManagedObjectContext *)context completion:(void (^)(NSError * _Nullable))completion {
-    [context performBlock:^{
-        if ([context hasChanges]) {
-            NSError *err;
-            [context save:&err];
-            if (err) {
-                logWithLevel(CMPLogLevelError, @"Core Data: error", err, nil);
-            }
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completion(err);
-            });
-        } else {
-            logWithLevel(CMPLogLevelVerbose, @"Core Data: no new changes.", nil);
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completion(nil);
-            });
-        }
-    }];
-}
-
 - (void)saveToDiskWithCompletion:(void (^)(NSError * _Nullable))completion {
     __weak typeof(self) weakSelf = self;
-    [self saveContext:_workerContext completion:^(NSError * _Nullable workerErr) {
-        if (workerErr) {
-            completion(workerErr);
+    [_workerContext saveWithCompletion:^(NSError * _Nullable err) {
+        if (err) {
+            completion(err);
         } else {
-            [weakSelf saveContext:weakSelf.mainContext completion:^(NSError * _Nullable mainErr) {
-                completion(mainErr);
+            [weakSelf.mainContext saveWithCompletion:^(NSError * _Nullable err) {
+                completion(err);
             }];
         }
     }];

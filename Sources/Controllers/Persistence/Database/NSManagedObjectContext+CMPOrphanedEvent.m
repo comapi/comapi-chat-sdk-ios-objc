@@ -17,42 +17,135 @@
 //
 
 #import "NSManagedObjectContext+CMPOrphanedEvent.h"
+#import "NSManagedObjectContext+CMPUtility.h"
+
+#import <CMPComapiFoundation/CMPLogger.h>
 
 NSString *const kCMPOrphanedEventEntityName = @"CMPChatManagedOrphanedEvent";
 
 @implementation NSManagedObjectContext (CMPOrphanedEvent)
 
-- (void)deleteOrphanedEventsForIDs:(NSArray<NSString *> *)eventIDs completion:(void(^)(BOOL, NSError * _Nullable))completion {
+- (void)upsertOrphanedEvents:(NSArray<CMPOrphanedEvent *> *)orphanedEvents completion:(void (^)(NSInteger, NSError * _Nullable))completion {
     __weak typeof(self) weakSelf = self;
     [weakSelf performBlock:^{
-        NSEntityDescription *description = [NSEntityDescription entityForName:kCMPOrphanedEventEntityName inManagedObjectContext:weakSelf];
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:kCMPOrphanedEventEntityName];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K IN %@", @"id", orphanedEvents];
+        request.predicate = predicate;
         
-    }];
-}
-
-- (void)upsertOrphanedEvents:(NSArray<CMPChatManagedOrphanedEvent *> *)orphanedEvents completion:(void (^)(BOOL, NSError * _Nullable))completion {
-    __weak typeof(self) weakSelf = self;
-    [weakSelf performBlock:^{
-        NSEntityDescription *description = [NSEntityDescription entityForName:kCMPOrphanedEventEntityName inManagedObjectContext:weakSelf];
-        [orphanedEvents enumerateObjectsUsingBlock:^(CMPChatManagedOrphanedEvent * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSError *err;
+        NSArray<CMPChatManagedOrphanedEvent *> *result = [weakSelf executeFetchRequest:request error:&err];
+        if (err) {
+            logWithLevel(CMPLogLevelError, @"Core Data: error", err, nil);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(0, err);
+            });
+        } else if (result) {
+            __block NSInteger inserted = 0;
+            __block NSInteger existing = 0;
             
-        }];
+            NSMutableArray<CMPChatManagedOrphanedEvent *> *newEntries = [NSMutableArray new];
+            [orphanedEvents enumerateObjectsUsingBlock:^(CMPOrphanedEvent * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                if ([result contains:^BOOL(CMPChatManagedOrphanedEvent * _Nonnull element) { return [element.id isEqualToNumber:obj.id]; }]) {
+                    existing += 1;
+                    return;
+                } else {
+                    inserted += 1;
+                    NSEntityDescription *entity = [NSEntityDescription entityForName:kCMPOrphanedEventEntityName inManagedObjectContext:weakSelf];
+                    CMPChatManagedOrphanedEvent *newEvent = [[CMPChatManagedOrphanedEvent alloc] initWithEntity:entity insertIntoManagedObjectContext:weakSelf];
+                    [newEvent populateWithOrphanedEvent:obj];
+                    [newEntries addObject: newEvent];
+                }
+            }];
+            
+            [newEntries enumerateObjectsUsingBlock:^(CMPChatManagedOrphanedEvent * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                [weakSelf insertObject:obj];
+            }];
+            
+            
+            [weakSelf saveWithCompletion:^(NSError * _Nullable err) {
+                if (err) {
+                    logWithLevel(CMPLogLevelError, @"Core Data: error", err, nil);
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        completion(0, err);
+                    });
+                } else {
+                    logWithLevel(CMPLogLevelInfo, [NSString stringWithFormat:@"Core Data: from %ld events, inserted %ld new events, %ld were updated", (long)orphanedEvents.count, (long)inserted, (long)existing], nil);
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        completion(inserted, nil);
+                    });
+                }
+            }];
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(0, nil);
+            });
+        }
     }];
 }
 
-- (void)queryOrphanedEventForID:(NSString *)eventID completion:(void (^)(CMPChatManagedOrphanedEvent * _Nullable, NSError * _Nullable))completion {
+- (void)queryOrphanedEventsForIDs:(NSArray<NSString *> *)IDs completion:(void (^)(NSArray<CMPChatManagedOrphanedEvent *> * _Nullable, NSError * _Nullable))completion {
     __weak typeof(self) weakSelf = self;
     [weakSelf performBlock:^{
-        NSEntityDescription *description = [NSEntityDescription entityForName:kCMPOrphanedEventEntityName inManagedObjectContext:weakSelf];
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:kCMPOrphanedEventEntityName];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K IN %@", @"id", IDs];
+        request.predicate = predicate;
         
+        NSError *err;
+        NSArray<CMPChatManagedOrphanedEvent *> *result = [weakSelf executeFetchRequest:request error:&err];
+        
+        if (err) {
+            logWithLevel(CMPLogLevelError, @"Core Data: error", err, nil);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(result, err);
+            });
+        } else {
+            logWithLevel(CMPLogLevelInfo, @"Core Data: fetched %ld events.", (long)result.count, nil);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(result, nil);
+            });
+        }
     }];
 }
 
-- (void)queryAllOrphanedEventsWithCompletion:(void (^)(NSArray<CMPChatManagedOrphanedEvent *> * _Nullable, NSError * _Nullable))completion {
+- (void)deleteOrphanedEventsForIDs:(NSArray<NSString *> *)IDs completion:(void (^)(NSInteger, NSError * _Nullable))completion {
     __weak typeof(self) weakSelf = self;
     [weakSelf performBlock:^{
-        NSEntityDescription *description = [NSEntityDescription entityForName:kCMPOrphanedEventEntityName inManagedObjectContext:weakSelf];
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:kCMPOrphanedEventEntityName];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K IN %@", @"id", IDs];
+        request.predicate = predicate;
         
+        NSError *err;
+        NSArray<CMPChatManagedOrphanedEvent *> *result = [weakSelf executeFetchRequest:request error:&err];
+        if (err) {
+            logWithLevel(CMPLogLevelError, @"Core Data: error", err, nil);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(0, err);
+            });
+        } else if (result) {
+            __block NSInteger deleted = 0;
+            [result enumerateObjectsUsingBlock:^(CMPChatManagedOrphanedEvent * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                [weakSelf deleteObject:obj];
+                deleted += 1;
+            }];
+            
+            [weakSelf saveWithCompletion:^(NSError * _Nullable err) {
+                if (err) {
+                    logWithLevel(CMPLogLevelError, @"Core Data: error", err, nil);
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        completion(0, err);
+                    });
+                } else {
+                    logWithLevel(CMPLogLevelInfo, @"Core Data: deleted %ld events.", (long)result.count, nil);
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        completion(deleted, nil);
+                    });
+                }
+            }];
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(0, nil);
+            });
+        }
     }];
 }
 

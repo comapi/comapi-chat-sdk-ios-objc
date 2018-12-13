@@ -25,12 +25,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPChatConversation : CMPChatConversationBase
 
-@property (nonatomic) BOOL isPublic;
+@property (nonatomic, strong, nullable) NSNumber *isPublic;
 @property (nonatomic, strong, nullable) NSString *name;
 @property (nonatomic, strong, nullable) NSString *conversationDescription;
 @property (nonatomic, strong, nullable) CMPChatRoles *roles;
 
-- (instancetype)initWithID:(nullable NSString *)ID firstLocalEventID:(nullable NSNumber *)firstLocalEventID lastLocalEventID:(nullable NSNumber *)lastLocalEventID latestRemoteEventID:(nullable NSNumber *)latestRemoteEventID eTag:(nullable NSString *)eTag updatedOn:(nullable NSDate *)updatedOn name:(nullable NSString *)name conversationDescription:(nullable NSString *)description roles:(nullable CMPChatRoles *)roles isPublic:(BOOL)isPublic;
+- (instancetype)initWithID:(nullable NSString *)ID firstLocalEventID:(nullable NSNumber *)firstLocalEventID lastLocalEventID:(nullable NSNumber *)lastLocalEventID latestRemoteEventID:(nullable NSNumber *)latestRemoteEventID eTag:(nullable NSString *)eTag updatedOn:(nullable NSDate *)updatedOn name:(nullable NSString *)name conversationDescription:(nullable NSString *)description roles:(nullable CMPChatRoles *)roles isPublic:(nullable NSNumber *)isPublic;
 - (instancetype)initWithConversation:(CMPConversation *)conversation;
 
 @end

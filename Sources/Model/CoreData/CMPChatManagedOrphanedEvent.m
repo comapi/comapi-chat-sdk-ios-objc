@@ -20,12 +20,39 @@
 
 @implementation CMPChatManagedOrphanedEvent
 
+@synthesize eventType = _eventType;
+
 @dynamic id;
 @dynamic messageID;
-@dynamic eventData;
+@dynamic profileID;
+@dynamic conversationID;
+@dynamic eventID;
+@dynamic name;
+@dynamic isPublicConversation;
+@dynamic timestamp;
+
+- (CMPChatMessageDeliveryStatus)eventType {
+    if ([self.name isEqualToString:@"delivered"]) {
+        return CMPChatMessageDeliveryStatusDelivered;
+    } else if ([self.name isEqualToString:@"read"]) {
+        return CMPChatMessageDeliveryStatusRead;
+    } else {
+        return CMPChatMessageDeliveryStatusUnknown;
+    }
+}
+
 
 - (void)populateWithOrphanedEvent:(CMPOrphanedEvent *)event {
-
+    self.id = event.id;
+    self.messageID = event.data.payload.messageID;
+    self.profileID = event.data.profileID != nil ? event.data.profileID : event.data.payload.profileID;
+    self.conversationID = event.data.payload.conversationID;
+    self.eventID = event.data.eventID;
+    self.name = event.data.name;
+    self.isPublicConversation = event.data.payload.isPublicConversation;
+    self.timestamp = event.data.payload.timestamp;
 }
+
+
 
 @end

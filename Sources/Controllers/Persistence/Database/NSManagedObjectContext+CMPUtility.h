@@ -20,16 +20,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPCoreDataManager : NSObject
+@interface NSManagedObjectContext (CMPUtility)
 
-@property (nonatomic, strong, readonly) NSPersistentContainer *persistentContainer;
-@property (nonatomic, strong, readonly) NSManagedObjectContext *mainContext;
-@property (nonatomic, strong, readonly) NSManagedObjectContext *workerContext;
-
-- (instancetype)init;
-
-- (void)configureWithCompletion:(void(^)(NSError * _Nullable))completion;
-- (void)saveToDiskWithCompletion:(void (^)(NSError * _Nullable))completion;
+- (void)saveWithCompletion:(void (^)(NSError * _Nullable))completion;
 
 @end
 
