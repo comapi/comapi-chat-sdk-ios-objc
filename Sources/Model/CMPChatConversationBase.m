@@ -34,4 +34,19 @@
     return self;
 }
 
+- (nonnull id)copyWithZone:(nullable NSZone *)zone {
+    CMPChatConversationBase *copy = [[CMPChatConversationBase alloc] init];
+    
+    copy.id = self.id;
+    copy.firstLocalEventID = self.firstLocalEventID;
+    copy.lastLocalEventID = self.lastLocalEventID;
+    copy.latestRemoteEventID = self.latestRemoteEventID;
+    copy.eTag = self.eTag;
+    copy.updatedOn = self.updatedOn;
+    
+    return copy;
+}
+
 @end
+
+

@@ -16,21 +16,39 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPComapiChat.h"
-#import "CMPComapiChatClient.h"
+#import "NSArray+CMPUtility.h"
 
-#import <CMPComapiFoundation/CMPComapiClient.h>
+@implementation NSArray (CMPUtility)
 
-NS_ASSUME_NONNULL_BEGIN
+- (BOOL)contains:(BOOL(^)(id))block {
+    __block BOOL contains = NO;
+    [self enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        contains = block(obj);
+        if (contains) {
+            *stop = YES;
+        }
+    }];
+    return contains;
+}
 
-@interface CMPComapiChatClient ()
+- (NSArray<id> *)map:(id(^)(id))block {
+    __block NSMutableArray *mapped = [NSMutableArray new];
+    [self enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        id val = block(obj);
+        [mapped addObject:val];
+    }];
+    return mapped;
+}
 
-- (instancetype)initWithClient:(CMPComapiClient *)client lifecycleDelegate:(id<CMPLifecycleDelegate>)delegate;
+- (NSArray<id> *)filter:(BOOL (^)(id))block {
+    __block NSMutableArray *filtered = [NSMutableArray new];
+    [self enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        BOOL inclusive = block(obj);
+        if (inclusive) {
+            [filtered addObject:obj];
+        }
+    }];
+    return filtered;
+}
 
 @end
-
-@implementation CMPComapiChat
-
-@end
-
-NS_ASSUME_NONNULL_END

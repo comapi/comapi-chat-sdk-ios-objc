@@ -22,13 +22,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPCoreDataManager : NSObject
 
-@property (nonatomic, strong, readonly) NSPersistentContainer *persistentContainer;
 @property (nonatomic, strong, readonly) NSManagedObjectContext *mainContext;
 @property (nonatomic, strong, readonly) NSManagedObjectContext *workerContext;
 
-- (instancetype)init;
+- (instancetype)initWithCompletion:(void(^)(NSError * _Nullable))completion;
 
-- (void)configureWithCompletion:(void(^)(NSError * _Nullable))completion;
 - (void)saveToDiskWithCompletion:(void (^)(NSError * _Nullable))completion;
 
 @end

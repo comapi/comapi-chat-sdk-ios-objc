@@ -61,6 +61,10 @@
 		896CB9AF21BAA7A3003FB3DF /* CMPStoreResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 896CB9AD21BAA7A3003FB3DF /* CMPStoreResult.h */; };
 		896CB9B021BAA7A3003FB3DF /* CMPStoreResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 896CB9AE21BAA7A3003FB3DF /* CMPStoreResult.m */; };
 		896CB9B421BAAC25003FB3DF /* ChatStoreImplem.m in Sources */ = {isa = PBXBuildFile; fileRef = 896CB9B321BAAC25003FB3DF /* ChatStoreImplem.m */; };
+		896E30E121C3F561008CC785 /* CMPEventsHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 896E30DF21C3F561008CC785 /* CMPEventsHandler.h */; };
+		896E30E221C3F561008CC785 /* CMPEventsHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 896E30E021C3F561008CC785 /* CMPEventsHandler.m */; };
+		896E30E621C3F5E1008CC785 /* CMPChatConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 896E30E421C3F5E1008CC785 /* CMPChatConstants.h */; };
+		896E30E721C3F5E1008CC785 /* CMPChatConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 896E30E521C3F5E1008CC785 /* CMPChatConstants.m */; };
 		8995262121C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 8995261F21C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.h */; };
 		8995262221C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 8995262021C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.m */; };
 		8998F4A221B800AA00BD6C52 /* CMPComapiChat.h in Headers */ = {isa = PBXBuildFile; fileRef = 8998F4A021B800AA00BD6C52 /* CMPComapiChat.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -158,6 +162,10 @@
 		896CB9AE21BAA7A3003FB3DF /* CMPStoreResult.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPStoreResult.m; sourceTree = "<group>"; };
 		896CB9B221BAAC25003FB3DF /* ChatStoreImplem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChatStoreImplem.h; sourceTree = "<group>"; };
 		896CB9B321BAAC25003FB3DF /* ChatStoreImplem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChatStoreImplem.m; sourceTree = "<group>"; };
+		896E30DF21C3F561008CC785 /* CMPEventsHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPEventsHandler.h; sourceTree = "<group>"; };
+		896E30E021C3F561008CC785 /* CMPEventsHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPEventsHandler.m; sourceTree = "<group>"; };
+		896E30E421C3F5E1008CC785 /* CMPChatConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPChatConstants.h; sourceTree = "<group>"; };
+		896E30E521C3F5E1008CC785 /* CMPChatConstants.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPChatConstants.m; sourceTree = "<group>"; };
 		8995261F21C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSManagedObjectContext+CMPOrphanedEvent.h"; sourceTree = "<group>"; };
 		8995262021C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObjectContext+CMPOrphanedEvent.m"; sourceTree = "<group>"; };
 		8998F49D21B800AA00BD6C52 /* CMPComapiChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CMPComapiChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -250,6 +258,7 @@
 		896015B021B82D6600370AF2 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				896E30DD21C3E681008CC785 /* Utility */,
 				896015D421B9318E00370AF2 /* Resources */,
 				896015C821B9286A00370AF2 /* Controllers */,
 				896015B121B82D6600370AF2 /* Comapi */,
@@ -261,6 +270,8 @@
 		896015B121B82D6600370AF2 /* Comapi */ = {
 			isa = PBXGroup;
 			children = (
+				896E30E321C3F5CF008CC785 /* Constants */,
+				896E30DE21C3F54C008CC785 /* Handlers */,
 				896015C521B83E1C00370AF2 /* Delegates */,
 				896015B221B82D6600370AF2 /* Config */,
 				896015B521B82D6600370AF2 /* Client */,
@@ -371,8 +382,6 @@
 				89C0143521C2CA6600799B3B /* NSManagedObjectContext+CMPUtility.m */,
 				8995261F21C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.h */,
 				8995262021C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.m */,
-				89C0143021C2A3FA00799B3B /* NSArray+CMPUtility.h */,
-				89C0143121C2A3FA00799B3B /* NSArray+CMPUtility.m */,
 			);
 			path = Database;
 			sourceTree = "<group>";
@@ -409,6 +418,33 @@
 				896CB9B321BAAC25003FB3DF /* ChatStoreImplem.m */,
 			);
 			path = Store;
+			sourceTree = "<group>";
+		};
+		896E30DD21C3E681008CC785 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				89C0143021C2A3FA00799B3B /* NSArray+CMPUtility.h */,
+				89C0143121C2A3FA00799B3B /* NSArray+CMPUtility.m */,
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
+		896E30DE21C3F54C008CC785 /* Handlers */ = {
+			isa = PBXGroup;
+			children = (
+				896E30DF21C3F561008CC785 /* CMPEventsHandler.h */,
+				896E30E021C3F561008CC785 /* CMPEventsHandler.m */,
+			);
+			path = Handlers;
+			sourceTree = "<group>";
+		};
+		896E30E321C3F5CF008CC785 /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				896E30E421C3F5E1008CC785 /* CMPChatConstants.h */,
+				896E30E521C3F5E1008CC785 /* CMPChatConstants.m */,
+			);
+			path = Constants;
 			sourceTree = "<group>";
 		};
 		8998F49321B800AA00BD6C52 = {
@@ -468,6 +504,8 @@
 				896015DA21B931C400370AF2 /* CMPCoreDataManager.h in Headers */,
 				896015C021B82D6600370AF2 /* CMPChatResult.h in Headers */,
 				89C0143221C2A3FA00799B3B /* NSArray+CMPUtility.h in Headers */,
+				896E30E621C3F5E1008CC785 /* CMPChatConstants.h in Headers */,
+				896E30E121C3F561008CC785 /* CMPEventsHandler.h in Headers */,
 				896CB97121B95DA9003FB3DF /* CMPChatConversationBase.h in Headers */,
 				896015D121B929A200370AF2 /* CMPChatStore.h in Headers */,
 				896015CC21B9290000370AF2 /* CMPPersistenceController.h in Headers */,
@@ -701,6 +739,7 @@
 				896CB98A21B97AFC003FB3DF /* CMPChatMessageParticipant.m in Sources */,
 				8995262221C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.m in Sources */,
 				896CB9B021BAA7A3003FB3DF /* CMPStoreResult.m in Sources */,
+				896E30E721C3F5E1008CC785 /* CMPChatConstants.m in Sources */,
 				896CB97A21B96CD1003FB3DF /* CMPChatMessage.m in Sources */,
 				896CB99221BA981C003FB3DF /* CMPStoreFactory.m in Sources */,
 				896015D721B931AA00370AF2 /* ComapiChatModel.xcdatamodeld in Sources */,
@@ -709,6 +748,7 @@
 				896CB96221B95221003FB3DF /* CMPChatConversation.m in Sources */,
 				896CB97621B9624F003FB3DF /* CMPChatParticipant.m in Sources */,
 				892F49CB21BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.m in Sources */,
+				896E30E221C3F561008CC785 /* CMPEventsHandler.m in Sources */,
 				892F49B821BE7C3100FA52C9 /* CMPModelAdapter.m in Sources */,
 				89C0143321C2A3FA00799B3B /* NSArray+CMPUtility.m in Sources */,
 				896CB98621B97979003FB3DF /* CMPChatMessagePart.m in Sources */,

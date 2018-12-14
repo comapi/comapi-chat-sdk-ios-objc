@@ -16,28 +16,10 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "NSArray+CMPUtility.h"
+#import "CMPEventsHandler.h"
 
-@implementation NSArray (CMPUtility)
 
-- (BOOL)contains:(BOOL(^)(id element))block {
-    __block BOOL contains = NO;
-    [self enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        contains = block(obj);
-        if (contains) {
-            *stop = YES;
-        }
-    }];
-    return contains;
-}
 
-- (NSArray<id> *)map:(id(^)(id element))block {
-    __block NSMutableArray *mapped = [NSMutableArray new];
-    [self enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        id val = block(obj);
-        [mapped addObject:val];
-    }];
-    return mapped;
-}
+@implementation CMPEventsHandler
 
 @end

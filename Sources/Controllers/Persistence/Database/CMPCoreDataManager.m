@@ -32,27 +32,49 @@ NSString *const kModelName = @"ComapiChatModel";
 @synthesize mainContext = _mainContext;
 @synthesize workerContext = _workerContext;
 
-- (instancetype)init {
+
+- (instancetype)initWithCompletion:(void (^)(NSError * _Nullable))completion {
     self = [super init];
     
     if (self) {
-        _persistentContainer = [[NSPersistentContainer alloc] initWithName:kModelName];
-        _mainContext = _persistentContainer.viewContext;
+        NSURL *modelURL = [[NSBundle mainBundle] URLForResource:[NSString stringWithFormat:@"Sources/Resources/%@", kModelName] withExtension:@"momd"];
+        NSAssert(modelURL, @"Failed to locate momd bundle in application");
+
+        NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
+        NSAssert(mom, @"Failed to initialize mom from URL: %@", modelURL);
+        
+        NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
+        
+        _mainContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+        [_mainContext setPersistentStoreCoordinator:coordinator];
+        
         _workerContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
         _workerContext.parentContext = _mainContext;
+        
+        __weak typeof(self) weakSelf = self;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            NSPersistentStoreCoordinator *psc = [weakSelf.mainContext persistentStoreCoordinator];
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            NSURL *documentsURL = [[fileManager URLsForDirectory:NSDocumentationDirectory inDomains:NSUserDomainMask] lastObject];
+            NSURL *storeURL = [documentsURL URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.sqlite", kModelName]];
+            
+            NSError *err = nil;
+            NSPersistentStore *store = [psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&err];
+            if (!store) {
+                logWithLevel(CMPLogLevelError, @"Core Data: error", err, nil);
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                    completion(err);
+                });
+            } else {
+                logWithLevel(CMPLogLevelInfo, @"Core Data: initialized.", nil);
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                    completion(nil);
+                });
+            }
+        });
     }
     
     return self;
-}
-
-- (void)configureWithCompletion:(void (^)(NSError * _Nullable))completion {
-    [_persistentContainer loadPersistentStoresWithCompletionHandler:^(NSPersistentStoreDescription * _Nonnull description, NSError * _Nullable err) {
-        completion(err);
-    }];
-}
-
-- (NSManagedObjectContext *)mainContext {
-    return _persistentContainer.viewContext;
 }
 
 - (void)saveToDiskWithCompletion:(void (^)(NSError * _Nullable))completion {

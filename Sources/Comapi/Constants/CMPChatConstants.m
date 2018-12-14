@@ -16,21 +16,6 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPComapiChat.h"
-#import "CMPComapiChatClient.h"
+#import "CMPChatConstants.h"
 
-#import <CMPComapiFoundation/CMPComapiClient.h>
-
-NS_ASSUME_NONNULL_BEGIN
-
-@interface CMPComapiChatClient ()
-
-- (instancetype)initWithClient:(CMPComapiClient *)client lifecycleDelegate:(id<CMPLifecycleDelegate>)delegate;
-
-@end
-
-@implementation CMPComapiChat
-
-@end
-
-NS_ASSUME_NONNULL_END
+NSString *const kCMPMessageTemporaryId = @"tempIdiOS";

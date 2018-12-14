@@ -20,7 +20,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatConversationBase : NSObject
+@interface CMPChatConversationBase : NSObject <NSCopying>
 
 @property (nonatomic, strong, nullable) NSString *id;
 @property (nonatomic, strong, nullable) NSString *eTag;
