@@ -47,4 +47,19 @@
     return self;
 }
 
+- (id)copyWithZone:(NSZone *)zone {
+    CMPChatConversation *copy = [[CMPChatConversation alloc] init];
+    copy.id = self.id;
+    copy.firstLocalEventID = self.firstLocalEventID;
+    copy.lastLocalEventID = self.lastLocalEventID;
+    copy.latestRemoteEventID = self.latestRemoteEventID;
+    copy.eTag = self.eTag;
+    copy.updatedOn = self.updatedOn;
+    copy.name = self.name;
+    copy.conversationDescription = self.conversationDescription;
+    copy.roles = [self.roles copy];
+    copy.isPublic = self.isPublic;
+    return copy;
+}
+
 @end

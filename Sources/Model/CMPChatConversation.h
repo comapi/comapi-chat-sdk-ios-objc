@@ -23,7 +23,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatConversation : CMPChatConversationBase
+@interface CMPChatConversation : CMPChatConversationBase <NSCopying>
 
 @property (nonatomic, strong, nullable) NSNumber *isPublic;
 @property (nonatomic, strong, nullable) NSString *name;

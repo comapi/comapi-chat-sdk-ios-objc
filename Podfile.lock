@@ -1,5 +1,5 @@
 PODS:
-  - CMPComapiChat (0.0.1):
+  - CMPComapiChat (1.0.0):
     - CMPComapiFoundation
   - CMPComapiFoundation (1.0.0):
     - SocketRocket
@@ -26,7 +26,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/comapi/comapi-sdk-ios-objc.git
 
 SPEC CHECKSUMS:
-  CMPComapiChat: 9227a75cabefbe207a3479e91ff850ed82cced2d
+  CMPComapiChat: 221646a7235e894447dc33eeeb3c0340e2e3b0d1
   CMPComapiFoundation: d5cc1f2d403f6704554c8901fdedecf194f29873
   SocketRocket: d57c7159b83c3c6655745cd15302aa24b6bae531
 
