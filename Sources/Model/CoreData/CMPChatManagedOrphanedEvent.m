@@ -41,7 +41,6 @@
     }
 }
 
-
 - (void)populateWithOrphanedEvent:(CMPOrphanedEvent *)event {
     self.id = event.id;
     self.messageID = event.data.payload.messageID;
@@ -52,7 +51,5 @@
     self.isPublicConversation = event.data.payload.isPublicConversation;
     self.timestamp = event.data.payload.timestamp;
 }
-
-
 
 @end

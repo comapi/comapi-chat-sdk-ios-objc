@@ -16,10 +16,12 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPEventsHandler.h"
+#import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
 
-
-@implementation CMPEventsHandler
+@interface CMPChatController : NSObject
 
 @end
+
+NS_ASSUME_NONNULL_END

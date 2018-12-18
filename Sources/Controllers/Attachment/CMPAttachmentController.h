@@ -16,22 +16,11 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <CoreData/CoreData.h>
+#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol CMPCoreDataManagable <NSObject>
-
-@property (nonatomic, strong, readonly) NSManagedObjectContext *mainContext;
-@property (nonatomic, strong, readonly) NSManagedObjectContext *workerContext;
-
-- (void)saveToDiskWithCompletion:(void (^)(NSError * _Nullable))completion;
-
-@end
-
-@interface CMPCoreDataManager : NSObject <CMPCoreDataManagable>
-
-- (instancetype)initWithCompletion:(void(^)(NSError * _Nullable))completion;
+@interface CMPAttachmentController : NSObject
 
 @end
 

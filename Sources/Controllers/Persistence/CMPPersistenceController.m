@@ -25,7 +25,12 @@
 #import "CMPChatMessageDeliveryStatus.h"
 
 #import <CMPComapiFoundation/CMPLogger.h>
-#import <CMPComapiFoundation/CMPMessageStatusUpdate.h>
+
+@interface CMPPersistenceController ()
+
+- (BOOL)updateConversationFromEventForStore:(id<CMPChatStore>)store conversationID:(NSString *)conversationID eventID:(NSNumber *)eventID updatedOn:(NSDate *)updatedOn;
+
+@end
 
 @implementation CMPPersistenceController
 
@@ -41,25 +46,37 @@
     return self;
 }
 
-- (void)getConversationForID:(NSString *)conversationID completion:(void(^)(CMPChatConversationBase *))completion {
+- (void)getConversationForID:(NSString *)conversationID completion:(void(^)(CMPChatConversationBase *, NSError * _Nullable))completion {
     [_factory executeTransaction:^(id<CMPChatStore> store, NSError * error) {
-        [store beginTransaction];
-        CMPChatConversationBase *conversation = [store getConversationForID:conversationID];
-        [store endTransaction];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            completion(conversation);
-        });
+        if (error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(nil, error);
+            });
+        } else {
+            [store beginTransaction];
+            CMPChatConversationBase *conversation = [store getConversationForID:conversationID];
+            [store endTransaction];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(conversation, nil);
+            });
+        }
     }];
 }
 
-- (void)getAllConversationsWithCompletion:(void(^)(NSArray<CMPChatConversationBase *> * _Nullable))completion {
+- (void)getAllConversationsWithCompletion:(void(^)(NSArray<CMPChatConversationBase *> * _Nullable, NSError * _Nullable))completion {
     [_factory executeTransaction:^(id<CMPChatStore> _Nullable store, NSError * _Nullable error) {
-        [store beginTransaction];
-        NSArray<CMPChatConversationBase *> *conversations = [store getAllConversations];
-        [store endTransaction];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            completion(conversations);
-        });
+        if (error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(nil, error);
+            });
+        } else {
+            [store beginTransaction];
+            NSArray<CMPChatConversationBase *> *conversations = [store getAllConversations];
+            [store endTransaction];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(conversations, nil);
+            });
+        }
     }];
 }
 
@@ -189,41 +206,48 @@
     }];
 }
 
-- (void)processMessagesResultForID:(NSString *)ID result:(CMPGetMessagesResult *)result completion:(void(^)(CMPGetMessagesResult *))completion {
+- (void)processMessagesResultForID:(NSString *)ID result:(CMPGetMessagesResult *)result completion:(void(^)(CMPGetMessagesResult *, NSError * _Nullable))completion {
     __weak typeof(self) weakSelf = self;
     if (result.messages) {
         [_factory executeTransaction:^(id<CMPChatStore> _Nullable store, NSError * _Nullable error) {
-            [store beginTransaction];
-            NSArray<CMPChatMessage *> *messages = [weakSelf.adapter adaptMessages:result.messages];
-            __block NSDate *updatedOn = [NSDate dateWithTimeIntervalSince1970:0];
-            [messages enumerateObjectsUsingBlock:^(CMPChatMessage * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                [store upsertMessage:obj];
-                if ([obj.context.sentOn compare:updatedOn] == NSOrderedDescending) {
-                    updatedOn = obj.context.sentOn;
+            if (error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    completion(result, error);
+                });
+            } else {
+                [store beginTransaction];
+                NSArray<CMPChatMessage *> *messages = [weakSelf.adapter adaptMessages:result.messages];
+                __block NSDate *updatedOn = [NSDate dateWithTimeIntervalSince1970:0];
+                [messages enumerateObjectsUsingBlock:^(CMPChatMessage * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    [store upsertMessage:obj];
+                    if ([obj.context.sentOn compare:updatedOn] == NSOrderedDescending) {
+                        updatedOn = obj.context.sentOn;
+                    }
+                }];
+                CMPChatConversationBase *savedConversation = [store getConversationForID:ID];
+                NSNumber *firstLocal = [NSNumber numberWithInteger:MIN([result.earliestEventID integerValue], [savedConversation.firstLocalEventID integerValue])];
+                NSNumber *lastLocal = [NSNumber numberWithInteger:MAX([result.latestEventID integerValue], [savedConversation.lastLocalEventID integerValue])];
+                NSNumber *lastRemote = [NSNumber numberWithInteger:MAX([result.latestEventID integerValue], [savedConversation.latestRemoteEventID integerValue])];
+                NSDate *updatedOnDate = [NSDate dateWithTimeIntervalSince1970:MAX([savedConversation.updatedOn timeIntervalSinceNow], [updatedOn timeIntervalSinceNow])];
+                if (savedConversation) {
+                    CMPChatConversationBase *updateConversation = [[CMPChatConversationBase alloc] initWithID:savedConversation.id
+                                                                                            firstLocalEventID:savedConversation.firstLocalEventID ? firstLocal : savedConversation.firstLocalEventID
+                                                                                             lastLocalEventID:savedConversation.lastLocalEventID ? lastLocal : savedConversation.lastLocalEventID
+                                                                                          latestRemoteEventID:savedConversation.latestRemoteEventID ? lastRemote : savedConversation.latestRemoteEventID
+                                                                                                         eTag:savedConversation.eTag
+                                                                                                    updatedOn:updatedOnDate];
+                    [store updateConversation:updateConversation];
                 }
-            }];
-            CMPChatConversationBase *savedConversation = [store getConversationForID:ID];
-            NSNumber *firstLocal = [NSNumber numberWithInteger:MIN([result.earliestEventID integerValue], [savedConversation.firstLocalEventID integerValue])];
-            NSNumber *lastLocal = [NSNumber numberWithInteger:MAX([result.latestEventID integerValue], [savedConversation.lastLocalEventID integerValue])];
-            NSNumber *lastRemote = [NSNumber numberWithInteger:MAX([result.latestEventID integerValue], [savedConversation.latestRemoteEventID integerValue])];
-            NSDate *updatedOnDate = [NSDate dateWithTimeIntervalSince1970:MAX([savedConversation.updatedOn timeIntervalSinceNow], [updatedOn timeIntervalSinceNow])];
-            if (savedConversation) {
-                CMPChatConversationBase *updateConversation = [[CMPChatConversationBase alloc] initWithID:savedConversation.id
-                                                                                        firstLocalEventID:savedConversation.firstLocalEventID ? firstLocal : savedConversation.firstLocalEventID
-                                                                                         lastLocalEventID:savedConversation.lastLocalEventID ? lastLocal : savedConversation.lastLocalEventID
-                                                                                      latestRemoteEventID:savedConversation.latestRemoteEventID ? lastRemote : savedConversation.latestRemoteEventID
-                                                                                                     eTag:savedConversation.eTag
-                                                                                                updatedOn:updatedOnDate];
-                [store updateConversation:updateConversation];
+                [store endTransaction];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    completion(result, nil);
+                });
             }
-            [store endTransaction];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completion(result);
-            });
         }];
     } else {
+        logWithLevel(CMPLogLevelWarning, @"Data Store: messages are nil, skipping...");
         dispatch_async(dispatch_get_main_queue(), ^{
-            completion(result);
+            completion(result, nil);
         });
     }
 }
@@ -272,6 +296,11 @@
                 }];
             }
         }];
+    } else {
+        logWithLevel(CMPLogLevelWarning, [NSString stringWithFormat:@"Data store: cannot proceed with messages equal to - %@ and orphaned events equal to - %@, skipping...", messages, orphanedEvents]);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completion(nil);
+        });
     }
 }
 
@@ -298,10 +327,10 @@
                 [store deleteMessageForConversationID:message.context.conversationID messageID:tempID];
             }
             if (!message.sentEventID) {
-                message.sentEventID = @(-1);
+                message.sentEventID = @(-1L);
             }
-            if ([message.sentEventID isEqualToNumber:@(-1)]) {
-                if (conversation != nil && ![conversation.lastLocalEventID isEqualToNumber:@(-1)]) {
+            if ([message.sentEventID isEqualToNumber:@(-1L)]) {
+                if (conversation != nil && ![conversation.lastLocalEventID isEqualToNumber:@(-1L)]) {
                     message.sentEventID = @([conversation.lastLocalEventID integerValue] + 1);
                 }
                 CMPChatMessageStatus *status = [[CMPChatMessageStatus alloc] initWithConversationID:message.context.conversationID messageID:message.id profileID:message.context.from.id conversationEventID:nil timestamp:[NSDate date] messageStatus:CMPChatMessageDeliveryStatusSending];
@@ -329,7 +358,7 @@
             if ([conversation.lastLocalEventID compare:eventID] == NSOrderedAscending) {
                 newConversation.lastLocalEventID = eventID;
             }
-            if ([conversation.firstLocalEventID compare:@(-1)] == NSOrderedSame) {
+            if ([conversation.firstLocalEventID compare:@(-1L)] == NSOrderedSame) {
                 newConversation.firstLocalEventID = eventID;
             }
             if ([conversation.updatedOn compare:updatedOn] == NSOrderedAscending) {

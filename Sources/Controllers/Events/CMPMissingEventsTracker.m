@@ -16,16 +16,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
+#import "CMPMissingEventsTracker.h"
 
-NS_ASSUME_NONNULL_BEGIN
-
-@interface NSArray<__covariant T> (CMPUtility)
-
-- (BOOL)contains:(BOOL(^)(T))block;
-- (NSArray<id> *)map:(id(^)(T))block;
-- (NSArray<T> *)filter:(BOOL(^)(T))block;
+@implementation CMPMissingEventsTracker
 
 @end
-
-NS_ASSUME_NONNULL_END

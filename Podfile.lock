@@ -22,7 +22,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   CMPComapiFoundation:
-    :commit: 2dd5e944cd7bc85ee1dc902e45ea12266876f0b0
+    :commit: 865d715750ec6987205ed77826190389eff3424a
     :git: https://github.com/comapi/comapi-sdk-ios-objc.git
 
 SPEC CHECKSUMS:
@@ -30,6 +30,6 @@ SPEC CHECKSUMS:
   CMPComapiFoundation: d5cc1f2d403f6704554c8901fdedecf194f29873
   SocketRocket: d57c7159b83c3c6655745cd15302aa24b6bae531
 
-PODFILE CHECKSUM: 13662c36b627ce67214275129b47c6a8fcbd67fa
+PODFILE CHECKSUM: fdefdb9a99b085192a8f564a917242a2eb82d0f9
 
 COCOAPODS: 1.5.3

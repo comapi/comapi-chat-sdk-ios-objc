@@ -20,7 +20,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPEventsHandler : NSObject
+@protocol CMPMissingEventsDelegate <NSObject>
+
+- (void)missingEventsForID:(NSString *)ID from:(NSInteger)from limit:(NSInteger)limit;
 
 @end
 
