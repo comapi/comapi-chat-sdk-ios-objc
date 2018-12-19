@@ -22,7 +22,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   CMPComapiFoundation:
-    :commit: 865d715750ec6987205ed77826190389eff3424a
+    :commit: 25b101c4ca17640fb0765e3a2606692835cb473d
     :git: https://github.com/comapi/comapi-sdk-ios-objc.git
 
 SPEC CHECKSUMS:

@@ -16,10 +16,10 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
-
 #import "CMPChatConversationBase.h"
 #import "CMPChatRoles.h"
+
+#import <CMPComapiFoundation/CMPEvent.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -32,6 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithID:(nullable NSString *)ID firstLocalEventID:(nullable NSNumber *)firstLocalEventID lastLocalEventID:(nullable NSNumber *)lastLocalEventID latestRemoteEventID:(nullable NSNumber *)latestRemoteEventID eTag:(nullable NSString *)eTag updatedOn:(nullable NSDate *)updatedOn name:(nullable NSString *)name conversationDescription:(nullable NSString *)description roles:(nullable CMPChatRoles *)roles isPublic:(nullable NSNumber *)isPublic;
 - (instancetype)initWithConversation:(CMPConversation *)conversation;
+- (instancetype)initWithEvent:(CMPEvent *)event;
 
 @end
 

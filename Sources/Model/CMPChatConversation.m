@@ -18,6 +18,8 @@
 
 #import "CMPChatConversation.h"
 
+#import <CMPComapiFoundation/CMPConversationEvents.h>
+
 @implementation CMPChatConversation
 
 - (instancetype)initWithID:(NSString *)id firstLocalEventID:(NSNumber *)firstLocalEventID lastLocalEventID:(NSNumber *)lastLocalEventID latestRemoteEventID:(NSNumber *)latestRemoteEventID eTag:(NSString *)eTag updatedOn:(NSDate *)updatedOn name:(NSString *)name conversationDescription:(NSString *)description roles:(CMPChatRoles *)roles isPublic:(NSNumber *)isPublic {
@@ -46,6 +48,98 @@
     
     return self;
 }
+
+- (instancetype)initWithEvent:(CMPEvent *)event {
+    self = [super init];
+    switch (event.type) {
+        case CMPEventTypeConversationCreate: {
+            CMPConversationEventCreate *conversationEvent = (CMPConversationEventCreate *)event;
+            
+            self.id = conversationEvent.conversationID;
+            self.name = conversationEvent.payload.name;
+            self.roles = [[CMPChatRoles alloc] initWithRoles:conversationEvent.payload.roles];
+            
+            break;
+        }
+        case CMPEventTypeConversationUpdate: {
+            CMPConversationEventUpdate *conversationUpdate = (CMPConversationEventUpdate *)event;
+            
+            self.id = conversationUpdate.conversationID;
+            self.name = conversationUpdate.name;
+            self.conversationDescription = conversationUpdate.payload.eventDescription;
+            self.roles = [[CMPChatRoles alloc] initWithRoles:conversationUpdate.payload.roles];
+            
+            break;
+        }
+        case CMPEventTypeConversationUndelete: {
+            CMPConversationEventUndelete *conversationUndelete = (CMPConversationEventUndelete *)event;
+            
+            self.id = conversationUndelete.conversationID;
+            self.name = conversationUndelete.name;
+            self.conversationDescription = conversationUndelete.payload.eventDescription;
+            self.roles = [[CMPChatRoles alloc] initWithRoles:conversationUndelete.payload.roles];
+            
+            break;
+        }
+        default:
+            return nil;
+    }
+    
+    return self;
+}
+
+//public Builder populate(ConversationUndeleteEvent event) {
+//    conversation.conversationId = event.getConversation().getId();
+//    conversation.name = event.getConversation().getName();
+//    conversation.description = event.getConversation().getDescription();
+//    conversation.ownerRoles = event.getConversation().getRoles().getOwner();
+//    conversation.participantRoles = event.getConversation().getRoles().getParticipant();
+//    conversation.eTag = event.getETag();
+//    return this;
+//}
+//
+//public Builder populate(Conversation details) {
+//    conversation.conversationId = details.getId();
+//    conversation.name = details.getName();
+//    conversation.description = details.getDescription();
+//    conversation.ownerRoles = details.getRoles().getOwner();
+//    conversation.participantRoles = details.getRoles().getParticipant();
+//    conversation.latestRemoteEventId = details.getLatestSentEventId();
+//    conversation.eTag = details.getETag();
+//    return this;
+//}
+//
+//public Builder populate(ConversationDetails details, String eTag) {
+//    conversation.conversationId = details.getId();
+//    conversation.name = details.getName();
+//    conversation.description = details.getDescription();
+//    conversation.ownerRoles = details.getRoles().getOwner();
+//    conversation.participantRoles = details.getRoles().getParticipant();
+//    conversation.eTag = eTag;
+//    return this;
+//}
+//
+//public Builder populate(ChatConversationBase base) {
+//    conversation.conversationId = base.getConversationId();
+//    conversation.updatedOn = base.getUpdatedOn();
+//    conversation.latestRemoteEventId = base.getLastRemoteEventId();
+//    conversation.lastLocalEventId = base.getLastLocalEventId();
+//    conversation.firstLocalEventId = base.getFirstLocalEventId();
+//    conversation.eTag = base.getETag();
+//    return this;
+//}
+//
+//public Builder populate(ChatConversation base) {
+//    populate((ChatConversationBase) base);
+//    conversation.description = base.description;
+//    conversation.name = base.name;
+//    conversation.ownerRoles = base.getOwnerPrivileges();
+//    conversation.participantRoles = base.getParticipantPrivileges();
+//    conversation.isPublic = base.isPublic();
+//    conversation.eTag = base.getETag();
+//    return this;
+//}
+
 
 - (id)copyWithZone:(NSZone *)zone {
     CMPChatConversation *copy = [[CMPChatConversation alloc] init];

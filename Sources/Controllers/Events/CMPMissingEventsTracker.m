@@ -20,4 +20,55 @@
 
 @implementation CMPMissingEventsTracker
 
+- (BOOL)checkEventForConversationID:(NSString *)conversationID conversationEventID:(NSNumber *)conversationEventID delegate:(id<CMPMissingEventsDelegate>)delegate {
+
+}
+
 @end
+
+
+//public class MissingEventsTracker {
+//
+//    public interface MissingEventsListener {
+//        void missingEvents(String conversationId, long from, int limit);
+//    }
+//
+//    private Map<String, TreeSet<Long>> idsPerConversation;
+//
+//    public MissingEventsTracker() {
+//        idsPerConversation = new ConcurrentHashMap<>();
+//    }
+//
+//    /**
+//     * Check conversation event id for duplicates or missing events.
+//     *
+//     * @param conversationId      Unique identifier of an conversation.
+//     * @param conversationEventId Unique per conversation, monotonically increasing conversation event id.
+//     * @return True if event with a given id already processed.
+//     */
+//    public boolean checkEventId(String conversationId, long conversationEventId, MissingEventsListener missingEventsListener) {
+//
+//        if (!idsPerConversation.containsKey(conversationId)) {
+//            TreeSet<Long> ids = new TreeSet<>();
+//            boolean added = ids.add(conversationEventId);
+//            idsPerConversation.put(conversationId, ids);
+//            return !added;
+//        } else {
+//
+//            TreeSet<Long> ids = idsPerConversation.get(conversationId);
+//
+//            long last = ids.last();
+//            boolean added = ids.add(conversationEventId);
+//
+//            if (last < conversationEventId - 1) {
+//                missingEventsListener.missingEvents(conversationId, last + 1, (int) (conversationEventId - last));
+//            }
+//
+//            while (ids.size() > 10) {
+//                ids.pollFirst();
+//            }
+//
+//            return !added;
+//        }
+//    }
+//}

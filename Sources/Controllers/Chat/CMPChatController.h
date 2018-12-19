@@ -22,6 +22,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPChatController : NSObject
 
+- (void)handleSocketConnected;
+- (void)handleSocketDisconnectedWithError:(NSError * _Nullable)error;
+
 @end
 
 NS_ASSUME_NONNULL_END

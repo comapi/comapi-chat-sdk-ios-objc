@@ -24,17 +24,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPStateDelegateAdapter: NSObject <CMPStateDelegate>
+@interface CMPEventsController : NSObject <CMPStateDelegate, CMPEventDelegate>
 
-@end
 
-@interface CMPEventDelegateAdapter: NSObject <CMPEventDelegate>
 
-@end
-
-@interface CMPEventsController : NSObject
-
-- (instancetype)initWithPersistenceController:(CMPPersistenceController *)persistenceController chatController:(CMPChatController *)chatController
+- (instancetype)initWithPersistenceController:(CMPPersistenceController *)persistenceController chatController:(CMPChatController *)chatController;
 
 @end
 
