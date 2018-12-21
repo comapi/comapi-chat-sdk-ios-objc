@@ -18,10 +18,54 @@
 
 #import "CMPMissingEventsTracker.h"
 
+@interface CMPMissingEventsTracker ()
+
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSMutableArray<NSNumber *> *> *idsPerConverastion;
+
+@end
+
 @implementation CMPMissingEventsTracker
 
-- (BOOL)checkEventForConversationID:(NSString *)conversationID conversationEventID:(NSNumber *)conversationEventID delegate:(id<CMPMissingEventsDelegate>)delegate {
+- (instancetype)init {
+    self = [super init];
+    
+    if (self) {
+        _idsPerConverastion = [NSMutableDictionary new];
+    }
+    
+    return self;
+}
 
+- (BOOL)checkEventForConversationID:(NSString *)conversationID conversationEventID:(NSNumber *)conversationEventID delegate:(id<CMPMissingEventsDelegate>)delegate {
+    if (_idsPerConverastion[conversationID] == nil) {
+        NSMutableArray<NSNumber *> *ids = [NSMutableArray new];
+        [ids addObject:conversationEventID];
+        @synchronized(_idsPerConverastion) {
+            _idsPerConverastion[conversationID] = ids;
+        }
+        return NO;
+    } else {
+        @synchronized(_idsPerConverastion) {
+            NSMutableArray<NSNumber *> *ids = _idsPerConverastion[conversationID];
+            NSNumber *last = [ids lastObject];
+            
+            BOOL added = NO;
+            if (![ids containsObject:conversationEventID]) {
+                added = YES;
+                [ids addObject:conversationEventID];
+            }
+            
+            if (last.integerValue < conversationEventID.integerValue - 1) {
+                [delegate missingEventsForID:conversationID from:last.integerValue + 1 limit:conversationEventID.integerValue - last.integerValue];
+            }
+            
+            while (ids.count > 10) {
+                [ids removeObjectAtIndex:0];
+            }
+            
+            return added;
+        }
+    }
 }
 
 @end

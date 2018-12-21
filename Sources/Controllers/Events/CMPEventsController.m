@@ -20,81 +20,122 @@
 #import "CMPChatConversation.h"
 
 #import <CMPComapiFoundation/CMPEvent.h>
+#import <CMPComapiFoundation/CMPConversationMessageEvents.h>
 
 @interface CMPEventsController ()
 
 @property (nonatomic, weak, readonly) CMPPersistenceController *persistenceController;
 @property (nonatomic, weak, readonly) CMPChatController *chatController;
+@property (nonatomic, weak, readonly) CMPMissingEventsTracker *tracker;
+@property (nonatomic, weak, readonly) id<CMPMissingEventsDelegate> delegate;
 
 @end
 
 @implementation CMPEventsController
 
-- (instancetype)initWithPersistenceController:(CMPPersistenceController *)persistenceController chatController:(CMPChatController *)chatController {
+- (instancetype)initWithPersistenceController:(CMPPersistenceController *)persistenceController chatController:(CMPChatController *)chatController missingEventsTracker:(CMPMissingEventsTracker *)tracker chatConfig:(CMPChatConfig *)config {
     self = [super init];
     
     if (self) {
         _persistenceController = persistenceController;
         _chatController = chatController;
+        _tracker = tracker;
     }
     
     return self;
 }
 
-//public class EventsHandler {
-//
-//    public final static String MESSAGE_METADATA_TEMP_ID = "tempIdAndroid";
-//
-//    private MessagingListenerAdapter messagingListenerAdapter;
-//
-//    private StateListenerAdapter stateListenerAdapter;
-//
-//    private ChatController controller;
-//
-//    private PersistenceController persistenceController;
-//
-//    private MissingEventsTracker tracker;
-//
-//    private MissingEventsTracker.MissingEventsListener missingEventsListener;
-//
-//    private ObservableExecutor observableExecutor;
-//
-//    void init(PersistenceController store, ChatController controller, MissingEventsTracker tracker, ChatConfig config) {
-//        this.persistenceController = store;
-//        this.controller = controller;
-//        this.messagingListenerAdapter = new MessagingListenerAdapter();
-//        this.stateListenerAdapter = new StateListenerAdapter();
-//        this.tracker = tracker;
-//        this.observableExecutor = config.getObservableExecutor();
-//        this.missingEventsListener = controller::queryMissingEvents;
-//    }
-//
-//    /**
-//     * Listener for messaging events that can be registered in Foundation library.
-//     *
-//     * @return Listener for messaging events.
-//     */
-//    MessagingListenerAdapter getMessagingListenerAdapter() {
-//        return messagingListenerAdapter;
-//    }
-//
-//    StateListener getStateListenerAdapter() {
-//        return stateListenerAdapter;
-//    }
-//
-//    class StateListenerAdapter extends StateListener {
-//
-//        @Override
-//        public void onSocketConnected() {
-//            controller.handleSocketConnected();
-//        }
-//
-//        @Override
-//        public void onSocketDisconnected() {
-//            controller.handleSocketDisconnected();
-//        }
-//    }
-//
+#pragma mark - CMPMissingEventsDelegate
+
+- (void)missingEventsForID:(NSString *)ID from:(NSInteger)from limit:(NSInteger)limit {
+    [_chatController queryMissingEventsForConversationID:ID from:from limit:limit];
+}
+
+#pragma mark - CMPStateDelegate
+
+- (void)didConnectSocket {
+    [_chatController handleSocketConnected];
+}
+
+- (void)didDisconnectSocketWithError:(NSError * _Nullable)error {
+    [_chatController handleSocketDisconnectedWithError:error];
+}
+
+- (void)didEndSessionWithError:(NSError * _Nullable)error {}
+
+- (void)didStartSession {}
+
+#pragma mark - CMPEventDelegate
+
+- (void)client:(nonnull CMPComapiClient *)client didReceiveEvent:(nonnull CMPEvent *)event {
+    switch (event.type) {
+        case CMPEventTypeConversationCreate: {
+            CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithEvent:event];
+            if (conversation) {
+                [_persistenceController upsertConversations:@[conversation] completion:^(BOOL success, NSError * _Nullable error) {
+                    
+                }];
+            }
+            break;
+        }
+        case CMPEventTypeConversationUpdate: {
+            CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithEvent:event];
+            if (conversation) {
+                [_persistenceController upsertConversations:@[conversation] completion:^(BOOL success, NSError * _Nullable error) {
+                    
+                }];
+            }
+            break;
+        }
+        case CMPEventTypeConversationDelete: {
+            CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithEvent:event];
+            if (conversation) {
+                [_persistenceController upsertConversations:@[conversation] completion:^(BOOL success, NSError * _Nullable error) {
+                    
+                }];
+            }
+            break;
+        }
+        case CMPEventTypeConversationUndelete:{
+            CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithEvent:event];
+            if (conversation) {
+                [_persistenceController upsertConversations:@[conversation] completion:^(BOOL success, NSError * _Nullable error) {
+                    
+                }];
+            }
+            break;
+        }
+        case CMPEventTypeConversationParticipantAdded: {
+
+            break;
+        }
+            
+        case CMPEventTypeConversationParticipantTyping:
+
+            break;
+        case CMPEventTypeConversationParticipantTypingOff:
+
+            break;
+        case CMPEventTypeSocketInfo:
+            break;
+        case CMPEventTypeProfileUpdate:
+            break;
+        case CMPEventTypeConversationMessageDelivered:
+            break;
+        case CMPEventTypeConversationMessageSent: {
+            CMPConversationMessageEventSent *e = (CMPConversationMessageEventSent *)event;
+            [_tracker checkEventForConversationID:e.payload.context.conversationID conversationEventID:e.conversationEventID delegate:self];
+            [_chatController handle]
+            break;
+        }
+        case CMPEventTypeConversationMessageRead: {
+            
+        }
+            break;
+        default:
+            break;
+    }
+}
 //    class MessagingListenerAdapter extends MessagingListener {
 //
 //        @Override
@@ -167,29 +208,6 @@
 //    }
 //}
 
-#pragma mark - CMPStateDelegate
 
-- (void)didConnectSocket {
-    [_chatController handleSocketConnected];
-}
-
-- (void)didDisconnectSocketWithError:(NSError * _Nullable)error {
-    [_chatController handleSocketDisconnectedWithError:error];
-}
-
-- (void)didEndSessionWithError:(NSError * _Nullable)error {}
-
-- (void)didStartSession {}
-
-#pragma mark - CMPEventDelegate
-
-- (void)client:(nonnull CMPComapiClient *)client didReceiveEvent:(nonnull CMPEvent *)event {
-    CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithEvent:event];
-    if (conversation) {
-        [_persistenceController upsertConversations:@[conversation] completion:^(BOOL success, NSError * _Nullable error) {
-            
-        }];
-    }
-}
 
 @end

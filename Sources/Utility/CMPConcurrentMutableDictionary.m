@@ -16,16 +16,16 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPMissingEventsDelegate.h"
+#import "CMPConcurrentMutableDictionary.h"
 
-NS_ASSUME_NONNULL_BEGIN
+@interface CMPConcurrentMutableDictionary ()
 
-@interface CMPMissingEventsTracker : NSObject
-
-- (instancetype)init;
-
-- (BOOL)checkEventForConversationID:(NSString *)conversationID conversationEventID:(NSNumber *)conversationEventID delegate:(id<CMPMissingEventsDelegate>)delegate;
+@property (nonatomic, strong, readonly) NSLock *lock;
+@property (nonatomic, strong, readonly) NSMutableDictionary *dictionary;
 
 @end
 
-NS_ASSUME_NONNULL_END
+@implementation CMPConcurrentMutableDictionary
+
+
+@end

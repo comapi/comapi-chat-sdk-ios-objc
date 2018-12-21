@@ -18,17 +18,17 @@
 
 #import "CMPPersistenceController.h"
 #import "CMPChatController.h"
+#import "CMPMissingEventsTracker.h"
+#import "CMPChatConfig.h"
 
 #import <CMPComapiFoundation/CMPEventDelegate.h>
 #import <CMPComapiFoundation/CMPStateDelegate.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPEventsController : NSObject <CMPStateDelegate, CMPEventDelegate>
+@interface CMPEventsController : NSObject <CMPStateDelegate, CMPEventDelegate, CMPMissingEventsDelegate>
 
-
-
-- (instancetype)initWithPersistenceController:(CMPPersistenceController *)persistenceController chatController:(CMPChatController *)chatController;
+- (instancetype)initWithPersistenceController:(CMPPersistenceController *)persistenceController chatController:(CMPChatController *)chatController missingEventsTracker:(CMPMissingEventsTracker *)tracker chatConfig:(CMPChatConfig *)config;
 
 @end
 
