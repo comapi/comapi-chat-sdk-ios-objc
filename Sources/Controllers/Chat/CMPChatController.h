@@ -21,6 +21,7 @@
 #import "CMPModelAdapter.h"
 #import "CMPInternalConfig.h"
 #import "CMPChatMessage.h"
+#import "CMPCallLimiter.h"
 
 #import <CMPComapiFoundation/CMPComapiClient.h>
 
