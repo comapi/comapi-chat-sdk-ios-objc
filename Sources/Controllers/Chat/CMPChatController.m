@@ -18,6 +18,8 @@
 
 #import "CMPChatController.h"
 #import "CMPCallLimiter.h"
+#import "CMPChatResult.h"
+#import "CMPRetryManager.h"
 
 #import <CMPComapiFoundation/CMPMessageStatusUpdate.h>
 
@@ -91,65 +93,197 @@ NSInteger const kETagNotValid = 412;
     return _client != nil ? [_client getProfileID] : nil;
 }
 
-- (void)markDeliveredForConversationID:(NSString *)ID messageIDs:(NSArray<NSString *> *)IDs {
+- (void)markDeliveredForConversationID:(NSString *)ID messageIDs:(NSArray<NSString *> *)IDs completion:(void(^)(CMPChatResult *))completion {
     if ([self isConfigured]) {
-        [_client.services.messaging updateStatusForMessagesWithIDs:IDs status:CMPMessageDeliveryStatusDelivered conversationID:ID timestamp:[NSDate date] completion:^(CMPResult<NSNumber *> * result) {
-            
+        __weak typeof(self) weakSelf = self;
+        [CMPRetryManager retryBlock:^(void (^successBlock)(BOOL)) {
+            [weakSelf.client.services.messaging updateStatusForMessagesWithIDs:IDs status:CMPMessageDeliveryStatusDelivered conversationID:ID timestamp:[NSDate date] completion:^(CMPResult<NSNumber *> * result) {
+                BOOL success = !result.error && result.object;
+                successBlock(success);
+                if (success) {
+                    completion([[CMPChatResult alloc] initWithComapiResult:result]);
+                }
+            }];
+        } attempts:3 interval:3];
+    }
+}
+
+- (void)handleNonLocalConversationForID:(NSString *)ID completion:(void(^)(CMPChatResult *))completion {
+    if ([self isConfigured]) {
+        __weak typeof(self) weakSelf = self;
+        [self.client.services.messaging getConversationWithConversationID:ID completion:^(CMPResult<CMPConversation *> * result) {
+            if (result.error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    completion([[CMPChatResult alloc] initWithComapiResult:result]);
+                });
+            } else if (result.object) {
+                [weakSelf.persistenceController upsertConversations:@[[[CMPChatConversation alloc] initWithConversation:result.object]] completion:^(BOOL success, NSError * _Nullable err) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        completion([[CMPChatResult alloc] initWithError:err success:success]);
+                    });
+                }];
+            }
         }];
     }
 }
-//Observable<ComapiResult<Void>> markDelivered(String conversationId, Set<String> ids) {
-//
-//    final List<MessageStatusUpdate> updates = new ArrayList<>();
-//    updates.add(MessageStatusUpdate.builder().setMessagesIds(ids).setStatus(MessageStatus.delivered).setTimestamp(DateHelper.getCurrentUTC()).build());
-//
-//    return checkState().flatMap(client -> client.service().messaging().updateMessageStatus(conversationId, updates)
-//                                .retryWhen(observable -> {
-//        return observable.zipWith(Observable.range(1, 3), (Func2<Throwable, Integer, Integer>) (throwable, integer) -> integer).flatMap(new Func1<Integer, Observable<Long>>() {
-//            @Override
-//            public Observable<Long> call(Integer retryCount) {
-//                return Observable.timer((long) Math.pow(1, retryCount), TimeUnit.SECONDS);
-//            }
-//        });
-//    }
-//                                           ));
-//}
 
 - (void)handleMessage:(CMPChatMessage *)message completion:(void(^)(BOOL, NSError * _Nullable))completion {
     NSString *sender = message.context.sentBy;
     
+    __block BOOL updateStoreSuccess;
+    __block CMPChatResult *markDeliveredResult;
+    
+    dispatch_group_t group = dispatch_group_create();
+    
+    dispatch_group_enter(group);
     [_persistenceController updateStoreWithNewMessage:message completion:^(BOOL success, NSError * _Nullable error) {
-        if (error) {
-            completion(NO, error);
+        updateStoreSuccess = success;
+        dispatch_group_leave(group);
+    }];
+    
+    
+    if (sender != nil && ![sender isEqualToString:@""] && [sender isEqualToString:[self getProfileID]]) {
+        NSArray<NSString *> *ids = [NSArray arrayWithObjects:message.id, nil];
+
+        dispatch_group_enter(group);
+        [self markDeliveredForConversationID:message.context.conversationID messageIDs:ids completion:^(CMPChatResult * result) {
+            markDeliveredResult = result;
+            dispatch_group_leave(group);
+        }];
+    }
+    
+    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+        completion(updateStoreSuccess && markDeliveredResult.isSuccessful, markDeliveredResult.error);
+    });
+}
+
+- (void)handleParticipantsAddedForID:(NSString *)ID completion:(void(^)(CMPChatResult *))completion {
+    [_persistenceController getConversationForID:ID completion:^(CMPChatConversationBase * conversation, NSError * error) {
+        if (!conversation) {
+            [self handleNonLocalConversationForID:ID completion:^(CMPChatResult * result) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    completion(result);
+                });
+            }];
         } else {
-            if (sender != nil && ![sender isEqualToString:@""] && [sender isEqualToString:[self getProfileID]]) {
-                NSMutableSet<NSString *> *ids = [NSMutableSet new];
-                [ids addObject:message.id];
-                
-                
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion([[CMPChatResult alloc] initWithError:nil success:YES]);
+            });
+        }
+    }];
+}
+
+///**
+// * Handle failure when sending message.
+// *
+// * @param mp Message processor holding message sending details.
+// * @param t  Thrown exception.
+// * @return Observable with Chat SDK result.
+// */
+//private Observable<ChatResult> handleMessageError(MessageProcessor mp, Throwable t) {
+//    return persistenceController.updateStoreForSentError(mp.getConversationId(), mp.getTempId(), mp.getSender())
+//    .map(success -> new ChatResult(false, new ChatResult.Error(0, t)));
+//}
+
+- (void)handleMessageError:()err{}
+
+///**
+// * Gets next page of messages and saves them using {@link ChatStore} implementation.
+// *
+// * @param conversationId ID of a conversation in which participant is typing a message.
+// * @return Observable with the result.
+// */
+//Observable<ChatResult> getPreviousMessages(final String conversationId) {
+//
+//    return persistenceController.getConversation(conversationId)
+//    .map(conversation -> conversation != null ? conversation.getFirstLocalEventId() : null)
+//    .flatMap(from -> {
+//
+//        final Long queryFrom;
+//
+//        if (from != null) {
+//
+//            if (from == 0) {
+//                return Observable.fromCallable(() -> new ChatResult(true, null));
+//            } else if (from > 0) {
+//                queryFrom = from - 1;
+//            } else {
+//                queryFrom = null;
+//            }
+//        } else {
+//            queryFrom = null;
+//        }
+//
+//        return checkState().flatMap(client -> client.service().messaging().queryMessages(conversationId, queryFrom, messagesPerQuery))
+//        .flatMap(result -> persistenceController.processMessageQueryResponse(conversationId, result))
+//        .flatMap(result -> persistenceController.processOrphanedEvents(result, orphanedEventsToRemoveListener))
+//        .map(result -> new ChatResult(result.isSuccessful(), result.isSuccessful() ? null : new ChatResult.Error(result)));
+//    });
+//}
+
+- (void)getPreviousMessagesForID:(NSString *)ID completion:(void(^)(CMPChatResult *))completion {
+    __weak typeof(self) weakSelf = self;
+    [_persistenceController getConversationForID:ID completion:^(CMPChatConversationBase * conversation, NSError * _Nullable error) {
+        if (error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion([[CMPChatResult alloc] initWithError:error success:NO]);
+            });
+        } else if (conversation) {
+            NSNumber *from = conversation.firstLocalEventID;
+            NSNumber *queryFrom;
+            if (from) {
+                if ([from isEqualToNumber:@(0)]) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        completion([[CMPChatResult alloc] initWithError:nil success:YES]);
+                    });
+                } else if (from.integerValue > 0) {
+                    queryFrom = @(from.integerValue - 1);
+                }
+            }
+            if ([self isConfigured]) {
+                [self.client.services.messaging getMessagesWithConversationID:ID from:queryFrom.integerValue completion:^(CMPResult<CMPGetMessagesResult *> * result) {
+                    if (result.error) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            completion([[CMPChatResult alloc] initWithError:error success:NO]);
+                        });
+                    } else {
+                        [weakSelf.persistenceController processMessagesResultForID:ID result:result.object completion:^(CMPGetMessagesResult * result, NSError * error) {
+                            if (error) {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    completion([[CMPChatResult alloc] initWithError:error success:NO]);
+                                });
+                            } else {
+                                [weakSelf.persistenceController processOrphanedEvents:result completion:^(NSError * _Nullable error) {
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        completion([[CMPChatResult alloc] initWithError:error success:error == nil]);
+                                    });
+                                }];
+                            }
+                        }];
+                    }
+                }];
             }
         }
     }];
 }
 
-//    public Observable<Boolean> handleMessage(final ChatMessage message) {
-//
-//        String sender = message.getSentBy();
-//
-//        Observable<Boolean> replaceMessages = persistenceController.updateStoreWithNewMessage(message, noConversationListener);
-//
-//        if (!TextUtils.isEmpty(sender) && !sender.equals(getProfileId())) {
-//
-//            final Set<String> ids = new HashSet<>();
-//            ids.add(message.getMessageId());
-//
-//            return Observable.zip(replaceMessages, markDelivered(message.getConversationId(), ids), (saved, result) -> saved && result.isSuccessful());
-//
-//        } else {
-//
-//            return replaceMessages;
-//        }
+- (void)handleConversationCreated:(CMPResult<CMPConversation *> *)conversation completion:(void(^)(CMPChatResult *))completion {
+    //if (conversation)
+}
+
+///**
+// * Handles conversation create service response.
+// *
+// * @param result Service call response.
+// * @return Observable emitting result of operations.
+// */
+//Observable<ChatResult> handleConversationCreated(ComapiResult<ConversationDetails> result) {
+//    if (result.isSuccessful()) {
+//        return persistenceController.upsertConversation(ChatConversation.builder().populate(result.getResult(), result.getETag()).build()).map(success -> adapter.adaptResult(result, success));
+//    } else {
+//        return Observable.fromCallable(() -> adapter.adaptResult(result));
 //    }
+//}
 
 //private static final int ETAG_NOT_VALID = 412;
 //
@@ -257,33 +391,9 @@ NSInteger const kETagNotValid = 412;
 //             });
 //}
 //
-///**
-// * Handle participant added to a conversation Foundation SDK event.
-// *
-// * @param conversationId Unique conversation id.
-// * @return Observable with Chat SDK result.
-// */
-//public Observable<ChatResult> handleParticipantsAdded(final String conversationId) {
-//    return persistenceController.getConversation(conversationId).flatMap(conversation -> {
-//        if (conversation == null) {
-//            return handleNoLocalConversation(conversationId);
-//        } else {
-//            return Observable.fromCallable(() -> new ChatResult(true, null));
-//        }
-//    });
-//}
+
 //
-///**
-// * Handle failure when sending message.
-// *
-// * @param mp Message processor holding message sending details.
-// * @param t  Thrown exception.
-// * @return Observable with Chat SDK result.
-// */
-//private Observable<ChatResult> handleMessageError(MessageProcessor mp, Throwable t) {
-//    return persistenceController.updateStoreForSentError(mp.getConversationId(), mp.getTempId(), mp.getSender())
-//    .map(success -> new ChatResult(false, new ChatResult.Error(0, t)));
-//}
+
 //
 ///**
 // * Checks if controller state is correct.
@@ -300,24 +410,7 @@ NSInteger const kETagNotValid = 412;
 //    }
 //}
 //
-///**
-// * When SDK detects missing conversation it makes query in services and saves in the saves locally.
-// *
-// * @param conversationId Unique identifier of an conversation.
-// * @return Observable to handle missing local conversation data.
-// */
-//Observable<ChatResult> handleNoLocalConversation(String conversationId) {
-//
-//    return checkState().flatMap(client -> client.service().messaging().getConversation(conversationId)
-//                                .flatMap(result -> {
-//        if (result.isSuccessful() && result.getResult() != null) {
-//            return persistenceController.upsertConversation(ChatConversation.builder().populate(result.getResult(), result.getETag()).build())
-//            .map(success -> new ChatResult(success, success ? null : new ChatResult.Error(0, "External store reported failure.", "Error when inserting conversation "+conversationId)));
-//        } else {
-//            return Observable.fromCallable(() -> adapter.adaptResult(result));
-//        }
-//    }));
-//}
+
 //
 ///**
 // * Mark messages in a conversations as delivered.
@@ -327,39 +420,7 @@ NSInteger const kETagNotValid = 412;
 // */
 
 //
-///**
-// * Gets next page of messages and saves them using {@link ChatStore} implementation.
-// *
-// * @param conversationId ID of a conversation in which participant is typing a message.
-// * @return Observable with the result.
-// */
-//Observable<ChatResult> getPreviousMessages(final String conversationId) {
-//
-//    return persistenceController.getConversation(conversationId)
-//    .map(conversation -> conversation != null ? conversation.getFirstLocalEventId() : null)
-//    .flatMap(from -> {
-//
-//        final Long queryFrom;
-//
-//        if (from != null) {
-//
-//            if (from == 0) {
-//                return Observable.fromCallable(() -> new ChatResult(true, null));
-//            } else if (from > 0) {
-//                queryFrom = from - 1;
-//            } else {
-//                queryFrom = null;
-//            }
-//        } else {
-//            queryFrom = null;
-//        }
-//
-//        return checkState().flatMap(client -> client.service().messaging().queryMessages(conversationId, queryFrom, messagesPerQuery))
-//        .flatMap(result -> persistenceController.processMessageQueryResponse(conversationId, result))
-//        .flatMap(result -> persistenceController.processOrphanedEvents(result, orphanedEventsToRemoveListener))
-//        .map(result -> new ChatResult(result.isSuccessful(), result.isSuccessful() ? null : new ChatResult.Error(result)));
-//    });
-//}
+
 //
 ///**
 // * Gets profile id from Foundation for the active user.
@@ -394,19 +455,7 @@ NSInteger const kETagNotValid = 412;
 //    });
 //}
 //
-///**
-// * Handles conversation create service response.
-// *
-// * @param result Service call response.
-// * @return Observable emitting result of operations.
-// */
-//Observable<ChatResult> handleConversationCreated(ComapiResult<ConversationDetails> result) {
-//    if (result.isSuccessful()) {
-//        return persistenceController.upsertConversation(ChatConversation.builder().populate(result.getResult(), result.getETag()).build()).map(success -> adapter.adaptResult(result, success));
-//    } else {
-//        return Observable.fromCallable(() -> adapter.adaptResult(result));
-//    }
-//}
+
 //
 ///**
 // * Handles conversation delete service response.

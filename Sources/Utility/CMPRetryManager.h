@@ -20,7 +20,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPConcurrentMutableDictionary : NSMutableDictionary
+@interface CMPRetryManager : NSObject
+
++ (void)retryBlock:(void (^)(void(^)(BOOL)))block attempts:(NSUInteger)attempts interval:(NSUInteger)interval;
 
 @end
 
