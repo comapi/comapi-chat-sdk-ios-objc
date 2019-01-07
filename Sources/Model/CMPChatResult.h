@@ -24,7 +24,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, readonly) BOOL isSuccessful;
 @property (nonatomic, strong, nullable, readonly) NSError *error;
+@property (nonatomic, strong, nullable) NSString *eTag;
 
+- (instancetype)initWithError:(nullable NSError *)error success:(BOOL)success eTag:(NSString *)eTag;
 - (instancetype)initWithError:(nullable NSError *)error success:(BOOL)success;
 - (instancetype)initWithComapiResult:(CMPResult<id> *)result;
 

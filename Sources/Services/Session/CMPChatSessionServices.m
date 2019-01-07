@@ -16,37 +16,32 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatConversationBase.h"
+#import "CMPChatSessionServices.h"
 
-@implementation CMPChatConversationBase
+@interface CMPChatSessionServices ()
 
-- (instancetype)initWithID:(NSString *)id firstLocalEventID:(NSNumber *)firstLocalEventID lastLocalEventID:(NSNumber *)lastLocalEventID latestRemoteEventID:(NSNumber *)latestRemoteEventID eTag:(NSString *)eTag updatedOn:(NSDate *)updatedOn {
+@property (nonatomic, strong, readonly) CMPComapiClient *foundation;
+
+@end
+
+@implementation CMPChatSessionServices
+
+- (instancetype)initWithFoundation:(CMPComapiClient *)foundation {
     self = [super init];
     
     if (self) {
-        self.firstLocalEventID = firstLocalEventID;
-        self.lastLocalEventID = lastLocalEventID;
-        self.latestRemoteEventID = latestRemoteEventID;
-        self.eTag = eTag;
-        self.updatedOn = updatedOn;
+        _foundation = foundation;
     }
     
     return self;
 }
 
-- (nonnull id)copyWithZone:(nullable NSZone *)zone {
-    CMPChatConversationBase *copy = [[CMPChatConversationBase alloc] init];
-    
-    copy.id = self.id;
-    copy.firstLocalEventID = self.firstLocalEventID;
-    copy.lastLocalEventID = self.lastLocalEventID;
-    copy.latestRemoteEventID = self.latestRemoteEventID;
-    copy.eTag = self.eTag;
-    copy.updatedOn = self.updatedOn;
-    
-    return copy;
+- (void)startSessionWithCompletion:(void (^)(void))completion failure:(void (^)(NSError * _Nullable))failure {
+    [_foundation.services.session startSessionWithCompletion:completion failure:failure];
+}
+
+- (void)endSessionWithCompletion:(void (^)(CMPResult<NSNumber *> * _Nonnull))completion {
+    [_foundation.services.session endSessionWithCompletion:completion];
 }
 
 @end
-
-

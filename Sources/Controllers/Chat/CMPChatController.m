@@ -22,6 +22,7 @@
 #import "CMPRetryManager.h"
 
 #import <CMPComapiFoundation/CMPMessageStatusUpdate.h>
+#import <CMPComapiFoundation/CMPLogger.h>
 
 NSInteger const kETagNotValid = 412;
 
@@ -113,14 +114,10 @@ NSInteger const kETagNotValid = 412;
         __weak typeof(self) weakSelf = self;
         [self.client.services.messaging getConversationWithConversationID:ID completion:^(CMPResult<CMPConversation *> * result) {
             if (result.error) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    completion([[CMPChatResult alloc] initWithComapiResult:result]);
-                });
+                completion([[CMPChatResult alloc] initWithComapiResult:result]);
             } else if (result.object) {
                 [weakSelf.persistenceController upsertConversations:@[[[CMPChatConversation alloc] initWithConversation:result.object]] completion:^(BOOL success, NSError * _Nullable err) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        completion([[CMPChatResult alloc] initWithError:err success:success]);
-                    });
+                    completion([[CMPChatResult alloc] initWithError:err success:success]);
                 }];
             }
         }];
@@ -158,17 +155,13 @@ NSInteger const kETagNotValid = 412;
 }
 
 - (void)handleParticipantsAddedForID:(NSString *)ID completion:(void(^)(CMPChatResult *))completion {
-    [_persistenceController getConversationForID:ID completion:^(CMPChatConversationBase * conversation, NSError * error) {
+    [_persistenceController getConversationForID:ID completion:^(CMPChatConversation * conversation, NSError * error) {
         if (!conversation) {
             [self handleNonLocalConversationForID:ID completion:^(CMPChatResult * result) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    completion(result);
-                });
+                completion(result);
             }];
         } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completion([[CMPChatResult alloc] initWithError:nil success:YES]);
-            });
+            completion([[CMPChatResult alloc] initWithError:nil success:YES]);
         }
     }];
 }
@@ -187,55 +180,17 @@ NSInteger const kETagNotValid = 412;
 
 - (void)handleMessageError:()err{}
 
-///**
-// * Gets next page of messages and saves them using {@link ChatStore} implementation.
-// *
-// * @param conversationId ID of a conversation in which participant is typing a message.
-// * @return Observable with the result.
-// */
-//Observable<ChatResult> getPreviousMessages(final String conversationId) {
-//
-//    return persistenceController.getConversation(conversationId)
-//    .map(conversation -> conversation != null ? conversation.getFirstLocalEventId() : null)
-//    .flatMap(from -> {
-//
-//        final Long queryFrom;
-//
-//        if (from != null) {
-//
-//            if (from == 0) {
-//                return Observable.fromCallable(() -> new ChatResult(true, null));
-//            } else if (from > 0) {
-//                queryFrom = from - 1;
-//            } else {
-//                queryFrom = null;
-//            }
-//        } else {
-//            queryFrom = null;
-//        }
-//
-//        return checkState().flatMap(client -> client.service().messaging().queryMessages(conversationId, queryFrom, messagesPerQuery))
-//        .flatMap(result -> persistenceController.processMessageQueryResponse(conversationId, result))
-//        .flatMap(result -> persistenceController.processOrphanedEvents(result, orphanedEventsToRemoveListener))
-//        .map(result -> new ChatResult(result.isSuccessful(), result.isSuccessful() ? null : new ChatResult.Error(result)));
-//    });
-//}
-
 - (void)getPreviousMessagesForID:(NSString *)ID completion:(void(^)(CMPChatResult *))completion {
     __weak typeof(self) weakSelf = self;
-    [_persistenceController getConversationForID:ID completion:^(CMPChatConversationBase * conversation, NSError * _Nullable error) {
+    [_persistenceController getConversationForID:ID completion:^(CMPChatConversation * conversation, NSError * _Nullable error) {
         if (error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completion([[CMPChatResult alloc] initWithError:error success:NO]);
-            });
+            completion([[CMPChatResult alloc] initWithError:error success:NO]);
         } else if (conversation) {
             NSNumber *from = conversation.firstLocalEventID;
             NSNumber *queryFrom;
             if (from) {
                 if ([from isEqualToNumber:@(0)]) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        completion([[CMPChatResult alloc] initWithError:nil success:YES]);
-                    });
+                    completion([[CMPChatResult alloc] initWithError:nil success:YES]);
                 } else if (from.integerValue > 0) {
                     queryFrom = @(from.integerValue - 1);
                 }
@@ -243,20 +198,14 @@ NSInteger const kETagNotValid = 412;
             if ([self isConfigured]) {
                 [self.client.services.messaging getMessagesWithConversationID:ID from:queryFrom.integerValue completion:^(CMPResult<CMPGetMessagesResult *> * result) {
                     if (result.error) {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            completion([[CMPChatResult alloc] initWithError:error success:NO]);
-                        });
+                        completion([[CMPChatResult alloc] initWithError:error success:NO]);
                     } else {
                         [weakSelf.persistenceController processMessagesResultForID:ID result:result.object completion:^(CMPGetMessagesResult * result, NSError * error) {
                             if (error) {
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                    completion([[CMPChatResult alloc] initWithError:error success:NO]);
-                                });
+                                completion([[CMPChatResult alloc] initWithError:error success:NO]);
                             } else {
                                 [weakSelf.persistenceController processOrphanedEvents:result completion:^(NSError * _Nullable error) {
-                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                        completion([[CMPChatResult alloc] initWithError:error success:error == nil]);
-                                    });
+                                    completion([[CMPChatResult alloc] initWithError:error success:error == nil]);
                                 }];
                             }
                         }];
@@ -267,20 +216,110 @@ NSInteger const kETagNotValid = 412;
     }];
 }
 
-- (void)handleConversationCreated:(CMPResult<CMPConversation *> *)conversation completion:(void(^)(CMPChatResult *))completion {
-    //if (conversation)
+- (void)handleConversationCreated:(CMPResult<CMPConversation *> *)result completion:(void(^)(CMPChatResult *))completion {
+    if (result.error) {
+        completion([[CMPChatResult alloc] initWithComapiResult:result]);
+    } else {
+        [_persistenceController upsertConversations:@[[[CMPChatConversation alloc] initWithConversation:result.object eTag:result.eTag]] completion:^(BOOL success, NSError * _Nullable error) {
+            completion([[CMPChatResult alloc] initWithError:error success:success eTag:result.eTag]);
+        }];
+    }
+}
+
+- (void)handleConversationDeletedForID:(NSString *)ID result:(CMPResult<NSNumber *> *)result completion:(void(^)(CMPChatResult *))completion {
+    if (result.code != kETagNotValid) {
+        [_persistenceController deleteConversationForID:ID completion:^(BOOL success, NSError * _Nullable error) {
+            completion([[CMPChatResult alloc] initWithError:error success:success]);
+        }];
+    } else {
+        if ([self isConfigured]) {
+            __weak typeof(self) weakSelf = self;
+            [_client.services.messaging getConversationWithConversationID:ID completion:^(CMPResult<CMPConversation *> * _result) {
+                if (_result.error) {
+                    completion([[CMPChatResult alloc] initWithError:result.error success:NO]);
+                } else if (_result.object) {
+                    [weakSelf.persistenceController upsertConversations:@[[[CMPChatConversation alloc] initWithConversation:_result.object eTag:_result.eTag]] completion:^(BOOL success, NSError * _Nullable error) {
+                        completion([[CMPChatResult alloc] initWithError:error success:success]);
+                    }];
+                }
+            }];
+        }
+    }
 }
 
 ///**
-// * Handles conversation create service response.
+// * Handles conversation delete service response.
 // *
-// * @param result Service call response.
+// * @param conversationId Unique identifier of an conversation.
+// * @param result         Service call response.
 // * @return Observable emitting result of operations.
 // */
-//Observable<ChatResult> handleConversationCreated(ComapiResult<ConversationDetails> result) {
-//    if (result.isSuccessful()) {
-//        return persistenceController.upsertConversation(ChatConversation.builder().populate(result.getResult(), result.getETag()).build()).map(success -> adapter.adaptResult(result, success));
+//Observable<ChatResult> handleConversationDeleted(String conversationId, ComapiResult<Void> result) {
+//    if (result.getCode() != ETAG_NOT_VALID) {
+//        return persistenceController.deleteConversation(conversationId).map(success -> adapter.adaptResult(result, success));
 //    } else {
+//        return checkState().flatMap(client -> client.service().messaging().getConversation(conversationId)
+//                                    .flatMap(newResult -> {
+//            if (newResult.isSuccessful()) {
+//                return persistenceController.upsertConversation(ChatConversation.builder().populate(newResult.getResult(), newResult.getETag()).build())
+//                .flatMap(success -> Observable.fromCallable(() -> new ChatResult(false, success ? new ChatResult.Error(ETAG_NOT_VALID, "Conversation updated, try delete again.", "Conversation "+conversationId+" updated in response to  wrong eTag error when deleting.") : new ChatResult.Error(0, "Error updating custom store.", null))));
+//            } else {
+//                return Observable.fromCallable(() -> adapter.adaptResult(newResult));
+//            }
+//        }));
+//    }
+//}
+
+- (void)handleConversationUpdated:(CMPConversationUpdate *)update result:(CMPResult<CMPConversation *> *)result completion:(void(^)(CMPChatResult *))completion {
+    if (result.object && !result.error) {
+        [_persistenceController upsertConversations:@[[[CMPChatConversation alloc] initWithConversation:result.object eTag:result.eTag]] completion:^(BOOL success, NSError * _Nullable error) {
+            completion([[CMPChatResult alloc] initWithError:error success:success]);
+        }];
+    } else if (result.code == kETagNotValid) {
+        if ([self isConfigured]) {
+            __weak typeof(self) weakSelf = self;
+            [_client.services.messaging getConversationWithConversationID:update.id completion:^(CMPResult<CMPConversation *> * _result) {
+                if (!_result.error && _result.object) {
+                    [weakSelf.persistenceController upsertConversations:@[[[CMPChatConversation alloc] initWithConversation:_result.object eTag:_result.eTag]] completion:^(BOOL success, NSError * _Nullable error) {
+                        completion([[CMPChatResult alloc] initWithError:error success:success eTag:_result.eTag]);
+                    }];
+                } else {
+                    completion([[CMPChatResult alloc] initWithError:result.error success:result.object]);
+                }
+            }];
+        }
+    } else {
+        completion([[CMPChatResult alloc] initWithError:result.error success:result.object]);
+    }
+}
+
+///**
+// * Handles conversation update service response.
+// *
+// * @param request Service API request object.
+// * @param result  Service call response.
+// * @return Observable emitting result of operations.
+// */
+//Observable<ChatResult> handleConversationUpdated(ConversationUpdate request, ComapiResult<ConversationDetails> result) {
+//
+//    if (result.isSuccessful()) {
+//
+//        return persistenceController.upsertConversation(ChatConversation.builder().populate(result.getResult(), result.getETag()).build()).map(success -> adapter.adaptResult(result, success));
+//    }
+//    if (result.getCode() == ETAG_NOT_VALID) {
+//
+//        return checkState().flatMap(client -> client.service().messaging().getConversation(request.getId())
+//                                    .flatMap(newResult -> {
+//            if (newResult.isSuccessful()) {
+//
+//                return persistenceController.upsertConversation(ChatConversation.builder().populate(newResult.getResult(), newResult.getETag()).build())
+//                .flatMap(success -> Observable.fromCallable(() -> new ChatResult(false, success ? new ChatResult.Error(ETAG_NOT_VALID, "Conversation updated, try delete again.", "Conversation "+request.getId()+" updated in response to  wrong eTag error when updating."): new ChatResult.Error(1500, "Error updating custom store.", null))));
+//            } else {
+//                return Observable.fromCallable(() -> adapter.adaptResult(newResult));
+//            }
+//        }));
+//    } else {
+//
 //        return Observable.fromCallable(() -> adapter.adaptResult(result));
 //    }
 //}
@@ -457,59 +496,17 @@ NSInteger const kETagNotValid = 412;
 //
 
 //
-///**
-// * Handles conversation delete service response.
-// *
-// * @param conversationId Unique identifier of an conversation.
-// * @param result         Service call response.
-// * @return Observable emitting result of operations.
-// */
-//Observable<ChatResult> handleConversationDeleted(String conversationId, ComapiResult<Void> result) {
-//    if (result.getCode() != ETAG_NOT_VALID) {
-//        return persistenceController.deleteConversation(conversationId).map(success -> adapter.adaptResult(result, success));
-//    } else {
-//        return checkState().flatMap(client -> client.service().messaging().getConversation(conversationId)
-//                                    .flatMap(newResult -> {
-//            if (newResult.isSuccessful()) {
-//                return persistenceController.upsertConversation(ChatConversation.builder().populate(newResult.getResult(), newResult.getETag()).build())
-//                .flatMap(success -> Observable.fromCallable(() -> new ChatResult(false, success ? new ChatResult.Error(ETAG_NOT_VALID, "Conversation updated, try delete again.", "Conversation "+conversationId+" updated in response to  wrong eTag error when deleting.") : new ChatResult.Error(0, "Error updating custom store.", null))));
-//            } else {
-//                return Observable.fromCallable(() -> adapter.adaptResult(newResult));
-//            }
-//        }));
-//    }
-//}
-//
-///**
-// * Handles conversation update service response.
-// *
-// * @param request Service API request object.
-// * @param result  Service call response.
-// * @return Observable emitting result of operations.
-// */
-//Observable<ChatResult> handleConversationUpdated(ConversationUpdate request, ComapiResult<ConversationDetails> result) {
-//
-//    if (result.isSuccessful()) {
-//
-//        return persistenceController.upsertConversation(ChatConversation.builder().populate(result.getResult(), result.getETag()).build()).map(success -> adapter.adaptResult(result, success));
-//    }
-//    if (result.getCode() == ETAG_NOT_VALID) {
-//
-//        return checkState().flatMap(client -> client.service().messaging().getConversation(request.getId())
-//                                    .flatMap(newResult -> {
-//            if (newResult.isSuccessful()) {
-//
-//                return persistenceController.upsertConversation(ChatConversation.builder().populate(newResult.getResult(), newResult.getETag()).build())
-//                .flatMap(success -> Observable.fromCallable(() -> new ChatResult(false, success ? new ChatResult.Error(ETAG_NOT_VALID, "Conversation updated, try delete again.", "Conversation "+request.getId()+" updated in response to  wrong eTag error when updating."): new ChatResult.Error(1500, "Error updating custom store.", null))));
-//            } else {
-//                return Observable.fromCallable(() -> adapter.adaptResult(newResult));
-//            }
-//        }));
-//    } else {
-//
-//        return Observable.fromCallable(() -> adapter.adaptResult(result));
-//    }
-//}
+
+- (void)handleMessageStatusToUpdateForID:(NSString *)ID statusUpdates:(NSArray<CMPMessageStatusUpdate *> *)statusUpdates result:(CMPResult *)result completion:(void(^)(CMPChatResult *))completion {
+    if (result.object && !result.error && statusUpdates.count > 0) {
+        [_persistenceController upsertMessageStatusesForConversationID:ID profileID:[self getProfileID] statuses:statusUpdates completion:^(BOOL success, NSError * _Nullable error) {
+            completion([[CMPChatResult alloc] initWithError:error success:success]);
+        }];
+    } else {
+        completion([[CMPChatResult alloc] initWithComapiResult:result]);
+    }
+}
+
 //
 ///**
 // * Handles message status update service response.
@@ -525,6 +522,15 @@ NSInteger const kETagNotValid = 412;
 //        return Observable.fromCallable(() -> adapter.adaptResult(result));
 //    }
 //}
+
+- (void)upsertTempMessage:(CMPChatMessage *)message completion:(void(^)(BOOL))completion {
+    [_persistenceController updateStoreWithNewMessage:message completion:^(BOOL success, NSError * _Nullable error) {
+        if (error) {
+            logWithLevel(CMPLogLevelError, @"Error saving temp message: %@", error.localizedDescription, nil);
+        }
+        completion(success);
+    }];
+}
 //
 ///**
 // * Insert temporary message to the store for the ui to be responsive.
@@ -538,6 +544,16 @@ NSInteger const kETagNotValid = 412;
 //    .onErrorReturn(t -> false);
 //}
 //
+
+- (void)updateStoreWithSentMessage:(CMPChatMessage *)message completion:(void(^)(BOOL))completion {
+//    [_persistenceController updateStoreWithNewMessage:message completion:^(BOOL success, NSError * _Nullable error) {
+//        if (error) {
+//            logWithLevel(CMPLogLevelError, @"Error saving temp message: %@", error.localizedDescription, nil);
+//        }
+//        completion(success);
+//    }];
+}
+
 ///**
 // * Handles message send service response. Will delete temporary message object. Same message but with correct message id will be inserted instead.
 // *
@@ -553,6 +569,17 @@ NSInteger const kETagNotValid = 412;
 //    }
 //}
 //
+
+- (void)synchronizeConversationsWithCompletion:(void(^)(CMPChatResult *))completion {
+    if ([self isConfigured]) {
+        __weak typeof(self) weakSelf = self;
+        [_client.services.messaging getConversationsWithProfileID:[self getProfileID] isPublic:NO completion:^(CMPResult<NSArray<CMPConversation *> *> * result) {
+            [weakSelf.persistenceController getAllConversationsWithCompletion:^(NSArray<CMPChatConversation *> * _Nullable conversations, NSError * _Nullable error) {
+                
+            }];
+        }];
+    }
+}
 ///**
 // * Updates all conversation states.
 // *
@@ -854,86 +881,6 @@ NSInteger const kETagNotValid = 412;
 //    return map;
 //}
 //
-//class ConversationComparison {
-//
-//    boolean remoteCallSuccessful = true;
-//    boolean isSuccessful = false;
-//
-//    List<ChatConversation> conversationsToAdd;
-//    List<ChatConversationBase> conversationsToDelete;
-//    List<ChatConversation> conversationsToUpdate;
-//
-//    /**
-//     * Creates remote and local conversation list comparison.
-//     *
-//     * @param successful     Was remote service call successful.
-//     * @param downloadedList Remote list.
-//     * @param savedList      Local list.
-//     */
-//    ConversationComparison(boolean successful, Map<String, Conversation> downloadedList, Map<String, ChatConversationBase> savedList) {
-//
-//        remoteCallSuccessful = successful;
-//        conversationsToDelete = new ArrayList<>();
-//        conversationsToUpdate = new ArrayList<>();
-//        conversationsToAdd = new ArrayList<>();
-//
-//        Map<String, ChatConversationBase> savedListProcessed = new HashMap<>(savedList);
-//
-//        for (String key : downloadedList.keySet()) {
-//            if (savedListProcessed.containsKey(key)) {
-//
-//                ChatConversationBase saved = savedListProcessed.get(key);
-//                if (saved.getLastLocalEventId() != -1L) {
-//                    conversationsToUpdate.add(ChatConversation.builder()
-//                                              .populate(downloadedList.get(key))
-//                                              .setFirstLocalEventId(saved.getFirstLocalEventId())
-//                                              .setLastLocalEventId(saved.getLastLocalEventId())
-//                                              .build());
-//                }
-//            } else {
-//                conversationsToAdd.add(ChatConversation.builder().populate(downloadedList.get(key)).build());
-//            }
-//
-//            savedListProcessed.remove(key);
-//        }
-//
-//        if (!savedListProcessed.isEmpty()) {
-//            conversationsToDelete.addAll(savedListProcessed.values());
-//        }
-//    }
-//
-//    /**
-//     * Checks local conversation if it needs to be updated and creates comaprison object.
-//     *
-//     * @param remoteLastEventId Last event id in a conversation known by he server.
-//     * @param conversation      Conversation object to check.
-//     */
-//    public ConversationComparison(Long remoteLastEventId, ChatConversationBase conversation) {
-//
-//        conversationsToDelete = new ArrayList<>();
-//        conversationsToUpdate = new ArrayList<>();
-//        conversationsToAdd = new ArrayList<>();
-//
-//        if (conversation != null && remoteLastEventId != null) {
-//            if (conversation.getLastRemoteEventId() != null && conversation.getLastRemoteEventId() != -1L && remoteLastEventId > conversation.getLastRemoteEventId()) {
-//                conversationsToUpdate.add(ChatConversation.builder().populate(conversation).setLastRemoteEventId(remoteLastEventId).build());
-//            }
-//        }
-//
-//        if (remoteLastEventId == null || remoteLastEventId == -1L) {
-//            remoteCallSuccessful = false;
-//        }
-//    }
-//
-//    /**
-//     * Set if processing of conversations was successful.
-//     *
-//     * @param isSuccessful TRue if processing of conversations was successful.
-//     */
-//    void addSuccess(boolean isSuccessful) {
-//        this.isSuccessful = isSuccessful && remoteCallSuccessful;
-//    }
-//}
-//}
+
 
 @end

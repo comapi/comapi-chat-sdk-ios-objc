@@ -22,6 +22,7 @@
 #import "CMPInternalConfig.h"
 #import "CMPChatMessage.h"
 #import "CMPCallLimiter.h"
+#import "CMPChatResult.h"
 
 #import <CMPComapiFoundation/CMPComapiClient.h>
 
@@ -36,6 +37,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)queryMissingEventsForConversationID:(NSString *)ID from:(NSInteger)from limit:(NSInteger)limit;
 - (void)handleMessage:(CMPChatMessage *)message completion:(void(^)(BOOL, NSError * _Nullable))completion;
 
+- (void)handleConversationDeletedForID:(NSString *)ID result:(CMPResult<NSNumber *> *)result completion:(void(^)(CMPChatResult *))completion;
+- (void)handleConversationCreated:(CMPResult<CMPConversation *> *)result completion:(void(^)(CMPChatResult *))completion;
+- (void)handleConversationUpdated:(CMPConversationUpdate *)update result:(CMPResult<CMPConversation *> *)result completion:(void(^)(CMPChatResult *))completion;
 
 @end
 

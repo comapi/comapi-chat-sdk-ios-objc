@@ -16,21 +16,43 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <CMPComapiFoundation/CMPConversation.h>
+#import <CMPComapiFoundation/CMPResult.h>
+#import <CMPComapiFoundation/CMPComapiClient.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatConversationBase : NSObject <NSCopying>
+@interface CMPChatSessionServices : NSObject
 
-@property (nonatomic, strong, nullable) NSString *id;
-@property (nonatomic, strong, nullable) NSString *eTag;
-@property (nonatomic, strong, nullable) NSDate *updatedOn;
-@property (nonatomic, strong, nullable) NSNumber *firstLocalEventID;
-@property (nonatomic, strong, nullable) NSNumber *lastLocalEventID;
-@property (nonatomic, strong, nullable) NSNumber *latestRemoteEventID;
+- (instancetype)initWithFoundation:(CMPComapiClient *)foundation;
 
-- (instancetype)initWithID:(nullable NSString *)id firstLocalEventID:(nullable NSNumber *)firstLocalEventID lastLocalEventID:(nullable NSNumber *)lastLocalEventID latestRemoteEventID:(nullable NSNumber *)latestRemoteEventID eTag:(nullable NSString *)eTag updatedOn:(nullable NSDate *)updatedOn;
+- (void)startSessionWithCompletion:(void(^)(void))completion failure:(void(^)(NSError * _Nullable))failure NS_SWIFT_NAME(startSession(completion:failure:));
+- (void)endSessionWithCompletion:(void (^)(CMPResult<NSNumber *> *))completion NS_SWIFT_NAME(endSession(completion:));
 
 @end
 
 NS_ASSUME_NONNULL_END
+
+//public class SessionService {
+//
+//    private SessionService() {
+//
+//    }
+//
+//    /**
+//     * Create and start new ComapiImpl session.
+//     *
+//     * @return Observable to subscribe to. Returns Session details.
+//     */
+//    public Observable<Session> startSession() {
+//        return foundation.service().session().startSession();
+//    }
+//
+//    /**
+//     * Ends currently active session.
+//     *
+//     * @return Observable to subscribe to.
+//     */
+//    public Observable<ChatResult> endSession() {
+//        return foundation.service().session().endSession().map(modelAdapter::adaptResult);
+//    }
+//}

@@ -16,35 +16,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatConversation.h"
-#import "CMPChatMessage.h"
-#import "CMPChatMessageStatus.h"
+#import "CMPChatServices.h"
 
-NS_ASSUME_NONNULL_BEGIN
-
-@protocol CMPChatStore <NSObject>
-
-#pragma mark - Conversations
-
-- (CMPChatConversation *)getConversationForID:(NSString *)ID;
-- (NSArray<CMPChatConversation *> *)getAllConversations;
-- (BOOL)upsertConversation:(CMPChatConversation *)conversation;
-- (BOOL)updateConversation:(CMPChatConversation *)conversation;
-- (BOOL)deleteConversationForID:(NSString *)ID;
-
-#pragma mark - Messages
-
-- (BOOL)upsertMessage:(CMPChatMessage *)message;
-- (BOOL)updateMessageStatus:(CMPChatMessageStatus *)messageStatus;
-- (BOOL)deleteAllMessagesForConversationID:(NSString *)conversationID;
-- (BOOL)deleteMessageForConversationID:(NSString *)conversationID messageID:(NSString *)messageID;
-
-#pragma mark - Database operations
-
-- (BOOL)clearDatabase;
-- (void)beginTransaction;
-- (void)endTransaction;
+@implementation CMPChatServices
 
 @end
-
-NS_ASSUME_NONNULL_END
