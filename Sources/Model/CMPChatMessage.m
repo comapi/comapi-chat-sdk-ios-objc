@@ -45,7 +45,25 @@
         self.context = [[CMPChatMessageContext alloc] initWithMessageContext:message.context];
         NSMutableArray<CMPChatMessagePart *> *parts = [NSMutableArray new];
         [message.parts enumerateObjectsUsingBlock:^(CMPMessagePart * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            [parts addObject:[[CMPChatMessagePart alloc] initWithMessage:obj]];
+            [parts addObject:[[CMPChatMessagePart alloc] initWithMessagePart:obj]];
+        }];
+        self.parts = parts;
+    }
+    
+    return self;
+}
+
+- (instancetype)initWithSentEvent:(CMPConversationMessageEventSent *)event {
+    self = [super init];
+    
+    if (self) {
+        self.id = event.payload.messageID;
+        self.sentEventID = event.conversationEventID;
+        self.context = [[CMPChatMessageContext alloc] initWithMessageContext:event.payload.context];
+        self.metadata = event.payload.metadata;
+        NSMutableArray<CMPChatMessagePart *> *parts = [NSMutableArray new];
+        [event.payload.parts enumerateObjectsUsingBlock:^(CMPMessagePart * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [parts addObject:[[CMPChatMessagePart alloc] initWithMessagePart:obj]];
         }];
         self.parts = parts;
     }

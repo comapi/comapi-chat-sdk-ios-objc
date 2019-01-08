@@ -21,6 +21,7 @@
 #import "CMPChatResult.h"
 #import "CMPRetryManager.h"
 
+#import <CMPComapiFoundation/CMPConversationMessageEvents.h>
 #import <CMPComapiFoundation/CMPMessageStatusUpdate.h>
 #import <CMPComapiFoundation/CMPLogger.h>
 
@@ -75,8 +76,13 @@ NSInteger const kETagNotValid = 412;
     return self;
 }
 
-- (BOOL)isConfigured {
-    return _client != nil;
+- (nullable CMPComapiClient *)withClient {
+    if (_client) {
+        return _client;
+    } else {
+        logWithLevel(CMPLogLevelError, @"Client is nil, returning...", nil);
+        return nil;
+    }
 }
 
 - (void)handleSocketConnected {
@@ -95,33 +101,29 @@ NSInteger const kETagNotValid = 412;
 }
 
 - (void)markDeliveredForConversationID:(NSString *)ID messageIDs:(NSArray<NSString *> *)IDs completion:(void(^)(CMPChatResult *))completion {
-    if ([self isConfigured]) {
-        __weak typeof(self) weakSelf = self;
-        [CMPRetryManager retryBlock:^(void (^successBlock)(BOOL)) {
-            [weakSelf.client.services.messaging updateStatusForMessagesWithIDs:IDs status:CMPMessageDeliveryStatusDelivered conversationID:ID timestamp:[NSDate date] completion:^(CMPResult<NSNumber *> * result) {
-                BOOL success = !result.error && result.object;
-                successBlock(success);
-                if (success) {
-                    completion([[CMPChatResult alloc] initWithComapiResult:result]);
-                }
-            }];
-        } attempts:3 interval:3];
-    }
+    __weak typeof(self) weakSelf = self;
+    [CMPRetryManager retryBlock:^(void (^successBlock)(BOOL)) {
+        [[weakSelf withClient].services.messaging updateStatusForMessagesWithIDs:IDs status:CMPMessageDeliveryStatusDelivered conversationID:ID timestamp:[NSDate date] completion:^(CMPResult<NSNumber *> * result) {
+            BOOL success = !result.error && result.object;
+            successBlock(success);
+            if (success) {
+                completion([[CMPChatResult alloc] initWithComapiResult:result]);
+            }
+        }];
+    } attempts:3 interval:3];
 }
 
 - (void)handleNonLocalConversationForID:(NSString *)ID completion:(void(^)(CMPChatResult *))completion {
-    if ([self isConfigured]) {
-        __weak typeof(self) weakSelf = self;
-        [self.client.services.messaging getConversationWithConversationID:ID completion:^(CMPResult<CMPConversation *> * result) {
-            if (result.error) {
-                completion([[CMPChatResult alloc] initWithComapiResult:result]);
-            } else if (result.object) {
-                [weakSelf.persistenceController upsertConversations:@[[[CMPChatConversation alloc] initWithConversation:result.object]] completion:^(BOOL success, NSError * _Nullable err) {
-                    completion([[CMPChatResult alloc] initWithError:err success:success]);
-                }];
-            }
-        }];
-    }
+    __weak typeof(self) weakSelf = self;
+    [[weakSelf withClient].services.messaging getConversationWithConversationID:ID completion:^(CMPResult<CMPConversation *> * result) {
+        if (result.error) {
+            completion([[CMPChatResult alloc] initWithComapiResult:result]);
+        } else if (result.object) {
+            [weakSelf.persistenceController upsertConversations:@[[[CMPChatConversation alloc] initWithConversation:result.object]] completion:^(BOOL success, NSError * _Nullable err) {
+                completion([[CMPChatResult alloc] initWithError:err success:success]);
+            }];
+        }
+    }];
 }
 
 - (void)handleMessage:(CMPChatMessage *)message completion:(void(^)(BOOL, NSError * _Nullable))completion {
@@ -195,23 +197,21 @@ NSInteger const kETagNotValid = 412;
                     queryFrom = @(from.integerValue - 1);
                 }
             }
-            if ([self isConfigured]) {
-                [self.client.services.messaging getMessagesWithConversationID:ID from:queryFrom.integerValue completion:^(CMPResult<CMPGetMessagesResult *> * result) {
-                    if (result.error) {
-                        completion([[CMPChatResult alloc] initWithError:error success:NO]);
-                    } else {
-                        [weakSelf.persistenceController processMessagesResultForID:ID result:result.object completion:^(CMPGetMessagesResult * result, NSError * error) {
-                            if (error) {
-                                completion([[CMPChatResult alloc] initWithError:error success:NO]);
-                            } else {
-                                [weakSelf.persistenceController processOrphanedEvents:result completion:^(NSError * _Nullable error) {
-                                    completion([[CMPChatResult alloc] initWithError:error success:error == nil]);
-                                }];
-                            }
-                        }];
-                    }
-                }];
-            }
+            [[weakSelf withClient].services.messaging getMessagesWithConversationID:ID from:queryFrom.integerValue completion:^(CMPResult<CMPGetMessagesResult *> * result) {
+                if (result.error) {
+                    completion([[CMPChatResult alloc] initWithError:error success:NO]);
+                } else {
+                    [weakSelf.persistenceController processMessagesResultForID:ID result:result.object completion:^(CMPGetMessagesResult * result, NSError * error) {
+                        if (error) {
+                            completion([[CMPChatResult alloc] initWithError:error success:NO]);
+                        } else {
+                            [weakSelf.persistenceController processOrphanedEvents:result completion:^(NSError * _Nullable error) {
+                                completion([[CMPChatResult alloc] initWithError:error success:error == nil]);
+                            }];
+                        }
+                    }];
+                }
+            }];
         }
     }];
 }
@@ -232,18 +232,16 @@ NSInteger const kETagNotValid = 412;
             completion([[CMPChatResult alloc] initWithError:error success:success]);
         }];
     } else {
-        if ([self isConfigured]) {
-            __weak typeof(self) weakSelf = self;
-            [_client.services.messaging getConversationWithConversationID:ID completion:^(CMPResult<CMPConversation *> * _result) {
-                if (_result.error) {
-                    completion([[CMPChatResult alloc] initWithError:result.error success:NO]);
-                } else if (_result.object) {
-                    [weakSelf.persistenceController upsertConversations:@[[[CMPChatConversation alloc] initWithConversation:_result.object eTag:_result.eTag]] completion:^(BOOL success, NSError * _Nullable error) {
-                        completion([[CMPChatResult alloc] initWithError:error success:success]);
-                    }];
-                }
-            }];
-        }
+        __weak typeof(self) weakSelf = self;
+        [[weakSelf withClient].services.messaging getConversationWithConversationID:ID completion:^(CMPResult<CMPConversation *> * _result) {
+            if (_result.error) {
+                completion([[CMPChatResult alloc] initWithError:result.error success:NO]);
+            } else if (_result.object) {
+                [weakSelf.persistenceController upsertConversations:@[[[CMPChatConversation alloc] initWithConversation:_result.object eTag:_result.eTag]] completion:^(BOOL success, NSError * _Nullable error) {
+                    completion([[CMPChatResult alloc] initWithError:error success:success]);
+                }];
+            }
+        }];
     }
 }
 
@@ -276,20 +274,18 @@ NSInteger const kETagNotValid = 412;
             completion([[CMPChatResult alloc] initWithError:error success:success]);
         }];
     } else if (result.code == kETagNotValid) {
-        if ([self isConfigured]) {
-            __weak typeof(self) weakSelf = self;
-            [_client.services.messaging getConversationWithConversationID:update.id completion:^(CMPResult<CMPConversation *> * _result) {
-                if (!_result.error && _result.object) {
-                    [weakSelf.persistenceController upsertConversations:@[[[CMPChatConversation alloc] initWithConversation:_result.object eTag:_result.eTag]] completion:^(BOOL success, NSError * _Nullable error) {
-                        completion([[CMPChatResult alloc] initWithError:error success:success eTag:_result.eTag]);
-                    }];
-                } else {
-                    completion([[CMPChatResult alloc] initWithError:result.error success:result.object]);
-                }
-            }];
-        }
+        __weak typeof(self) weakSelf = self;
+        [[weakSelf withClient].services.messaging getConversationWithConversationID:update.id completion:^(CMPResult<CMPConversation *> * _result) {
+            if (!_result.error && _result.object) {
+                [weakSelf.persistenceController upsertConversations:@[[[CMPChatConversation alloc] initWithConversation:_result.object eTag:_result.eTag]] completion:^(BOOL success, NSError * _Nullable error) {
+                    completion([[CMPChatResult alloc] initWithError:error success:success eTag:_result.eTag]);
+                }];
+            } else {
+                completion([[CMPChatResult alloc] initWithError:result.error success:result.object != nil]);
+            }
+        }];
     } else {
-        completion([[CMPChatResult alloc] initWithError:result.error success:result.object]);
+        completion([[CMPChatResult alloc] initWithError:result.error success:result.object != nil]);
     }
 }
 
@@ -571,14 +567,12 @@ NSInteger const kETagNotValid = 412;
 //
 
 - (void)synchronizeConversationsWithCompletion:(void(^)(CMPChatResult *))completion {
-    if ([self isConfigured]) {
-        __weak typeof(self) weakSelf = self;
-        [_client.services.messaging getConversationsWithProfileID:[self getProfileID] isPublic:NO completion:^(CMPResult<NSArray<CMPConversation *> *> * result) {
-            [weakSelf.persistenceController getAllConversationsWithCompletion:^(NSArray<CMPChatConversation *> * _Nullable conversations, NSError * _Nullable error) {
-                
-            }];
+    __weak typeof(self) weakSelf = self;
+    [[self withClient].services.messaging getConversationsWithProfileID:[self getProfileID] isPublic:NO completion:^(CMPResult<NSArray<CMPConversation *> *> * result) {
+        [weakSelf.persistenceController getAllConversationsWithCompletion:^(NSArray<CMPChatConversation *> * _Nullable conversations, NSError * _Nullable error) {
+            
         }];
-    }
+    }];
 }
 ///**
 // * Updates all conversation states.
@@ -709,7 +703,20 @@ NSInteger const kETagNotValid = 412;
 //    })
 //    .flatMap(res -> Observable.from(successes).all(Boolean::booleanValue));
 //}
-//
+
+- (void)queryEventsRecursively:(NSString *)conversationID lastEventID:(NSNumber *)lastEventID count:(NSNumber *)count completion:(void(^)(CMPResult<NSArray<CMPEvent *> *> *))completion {
+    __weak typeof(self) weakSelf = self;
+    [[self withClient].services.messaging queryEventsWithConversationID:conversationID limit:_eventsPerQuery from:lastEventID.integerValue completion:^(CMPResult<NSArray<CMPEvent *> *> * result) {
+        [weakSelf processEventsQuery:result completion:^(CMPResult<NSArray<CMPEvent *> *> * result) {
+            if (result.object && result.object.count >= weakSelf.eventsPerQuery && count.integerValue < _maxEventQueries) {
+                [weakSelf queryEventsRecursively:conversationID lastEventID:@(lastEventID.integerValue + result.object.count) count:@(count.integerValue + 1) completion:completion];
+            } else {
+                completion(result);
+            }
+        }];
+    }];
+}
+
 ///**
 // * Synchronise missing events for particular conversation.
 // *
@@ -732,7 +739,59 @@ NSInteger const kETagNotValid = 412;
 //        }
 //    });
 //}
-//
+
+- (void)processEventsQuery:(CMPResult<NSArray<CMPEvent *> *> *)queryResult completion:(void(^)(CMPResult<NSArray<CMPEvent *> *> *))completion {
+    __weak typeof(self) weakSelf = self;
+    NSArray<CMPEvent *> *events = queryResult.object;
+    if (events != nil && events.count > 0) {
+        __block BOOL result;
+        dispatch_group_t group = dispatch_group_create();
+        
+        [events enumerateObjectsUsingBlock:^(CMPEvent * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            switch (obj.type) {
+                case CMPEventTypeConversationMessageRead: {
+                    dispatch_group_enter(group);
+                    CMPChatMessageStatus *status = [[CMPChatMessageStatus alloc] initWithReadEvent:(CMPConversationMessageEventRead *)obj];
+                    [weakSelf.persistenceController upsertMessageStatus:status completion:^(BOOL success, NSError * _Nullable error) {
+                        result = result && success;
+                        dispatch_group_leave(group);
+                    }];
+                    
+                    break;
+                }
+                case CMPEventTypeConversationMessageSent: {
+                    dispatch_group_enter(group);
+                    CMPChatMessage *msg = [[CMPChatMessage alloc] initWithSentEvent:(CMPConversationMessageEventSent *) obj];
+                    [weakSelf.persistenceController updateStoreWithNewMessage:msg completion:^(BOOL success, NSError * _Nullable error) {
+                        result = result && success;
+                        dispatch_group_leave(group);
+                    }];
+                    
+                    break;
+                }
+                case CMPEventTypeConversationMessageDelivered: {
+                    dispatch_group_enter(group);
+                    CMPChatMessageStatus *status = [[CMPChatMessageStatus alloc] initWithDeliveredEvent:(CMPConversationMessageEventDelivered *)obj];
+                    [weakSelf.persistenceController upsertMessageStatus:status completion:^(BOOL success, NSError * _Nullable error) {
+                        result = result && success;
+                        dispatch_group_leave(group);
+                    }];
+                    break;
+                }
+                default:
+                    break;
+            }
+        }];
+        
+        dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+            completion(queryResult);
+        });
+    } else {
+        logWithLevel(CMPLogLevelWarning, @"Events array empty or nil, returning...");
+        completion(queryResult);
+    }
+}
+
 ///**
 // * Process the event query response. Calls appropraiate persistance controller methods for received events.
 // *
@@ -771,7 +830,32 @@ NSInteger const kETagNotValid = 412;
 //
 //    return Observable.fromCallable(() -> result);
 //}
-//
+
+- (NSArray<CMPChatConversation *> *)limitNumberOfConversations:(NSArray<CMPChatConversation *> *)conversations {
+    NSMutableArray<CMPChatConversation *> *nonEmptyConversations = [NSMutableArray new];
+    
+    [conversations enumerateObjectsUsingBlock:^(CMPChatConversation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (obj.latestRemoteEventID != nil && [obj.latestRemoteEventID integerValue] >= 0) {
+            [nonEmptyConversations addObject:obj];
+        }
+    }];
+    
+    NSMutableArray<CMPChatConversation *> *limitedList = [NSMutableArray new];
+    
+    if (nonEmptyConversations.count <= _maxConversationsSynced) {
+        limitedList = [[NSMutableArray alloc] initWithArray:nonEmptyConversations copyItems:YES];
+    } else {
+        [nonEmptyConversations sortUsingComparator:^NSComparisonResult(CMPChatConversation * obj1, CMPChatConversation * obj2) {
+            return [obj1.updatedOn compare:obj2.updatedOn];
+        }];
+        for (int i = 0; i < _maxConversationsSynced; i++) {
+            [limitedList addObject:nonEmptyConversations[i]];
+        }
+    }
+    
+    return nil;
+}
+
 ///**
 // * Limits number of conversations to check and synchronise. Emty conversations wont be synchronised. The synchronisation will take place for twenty conversations updated most recently.
 // *
@@ -830,7 +914,14 @@ NSInteger const kETagNotValid = 412;
 //        return replaceMessages;
 //    }
 //}
-//
+
+- (void)queryMissingEventsForConversationID:(NSString *)ID from:(NSInteger)from limit:(NSInteger)limit {
+    __weak typeof(self) weakSelf = self;
+    [[self withClient].services.messaging queryEventsWithConversationID:ID limit:limit from:from completion:^(CMPResult<NSArray<CMPEvent *> *> * result) {
+        //[weakSelf ]
+    }];
+}
+
 ///**
 // * Query missing events as {@link com.comapi.chat.internal.MissingEventsTracker} reported.
 // *
@@ -843,6 +934,19 @@ NSInteger const kETagNotValid = 412;
 //                    .flatMap((result) -> processEventsQueryResponse(result, new ArrayList<>())));
 //}
 //
+
+
+- (NSDictionary<NSString *, CMPChatConversation *> *)dictionaryFromSavedConversations:(NSArray<CMPChatConversation *> *)conversations {
+    NSMutableDictionary<NSString *, CMPChatConversation *> *dict = [NSMutableDictionary new];
+    
+    [conversations enumerateObjectsUsingBlock:^(CMPChatConversation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        dict[obj.id] = obj;
+    }];
+    
+    return dict;
+}
+
+
 ///**
 // * Creates map of conversations based on conversationId for internal purpose.
 // *
@@ -861,7 +965,9 @@ NSInteger const kETagNotValid = 412;
 //
 //    return map;
 //}
-//
+
+
+
 ///**
 // * Creates map of conversations based on conversationId for internal purpose.
 // *

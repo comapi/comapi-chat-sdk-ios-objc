@@ -34,15 +34,15 @@
     return self;
 }
 
-- (instancetype)initWithMessage:(CMPMessagePart *)message {
+- (instancetype)initWithMessagePart:(CMPMessagePart *)messagePart {
     self = [super init];
     
     if (self) {
-        self.name = message.name;
-        self.type = message.type;
-        self.url = message.url;
-        self.data = message.data;
-        self.size = message.size;
+        self.name = messagePart.name;
+        self.type = messagePart.type;
+        self.url = messagePart.url;
+        self.data = messagePart.data;
+        self.size = messagePart.size;
     }
     
     return self;

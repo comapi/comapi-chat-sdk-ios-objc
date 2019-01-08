@@ -21,6 +21,7 @@
 #import "CMPChatMessageContext.h"
 
 #import <CMPComapiFoundation/CMPMessage.h>
+#import <CMPComapiFoundation/CMPConversationMessageEvents.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -35,6 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithID:(nullable NSString *)ID sentEventID:(nullable NSString *)sentEventID metadata:(nullable NSDictionary<NSString *, id> *)metadata context:(nullable CMPChatMessageContext *)context parts:(nullable NSArray<CMPChatMessagePart *> *)parts statusUpdates:(nullable NSDictionary<NSString *, CMPChatMessageStatus *> *)statusUpdates;
 - (instancetype)initWithMessage:(CMPMessage *)message;
+- (instancetype)initWithSentEvent:(CMPConversationMessageEventSent *)event;
 
 - (void)addStatusUpdate:(CMPChatMessageStatus *)statusUpdate;
 
