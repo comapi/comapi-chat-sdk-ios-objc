@@ -14,29 +14,25 @@
 // IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-//
 
-#import "CMPChatMessagePart.h"
-#import "CMPChatMessageStatus.h"
-#import "CMPChatMessageContext.h"
+#import "CMPChatAttachment.h"
+#import "CMPChatMessage.h"
 
-#import <CMPComapiFoundation/CMPMessage.h>
+#import <CMPComapiFoundation/CMPSendMessagesResult.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatMessage : NSObject
+extern NSString *const PART_TYPE_UPLOADING;
+extern NSString *const PART_TYPE_ERROR;
 
-@property (nonatomic, strong, nullable) NSString *id;
-@property (nonatomic, strong, nullable) NSNumber *sentEventID;
-@property (nonatomic, strong, nullable) NSDictionary<NSString *, id> *metadata;
-@property (nonatomic, strong, nullable) NSDictionary<NSString *, CMPChatMessageStatus *> *statusUpdates;
-@property (nonatomic, strong, nullable) NSArray<CMPChatMessagePart *> *parts;
-@property (nonatomic, strong, nullable) CMPChatMessageContext *context;
+@interface CMPMessageProcessor : NSObject
 
-- (instancetype)initWithID:(nullable NSString *)ID sentEventID:(nullable NSNumber *)sentEventID metadata:(nullable NSDictionary<NSString *, id> *)metadata context:(nullable CMPChatMessageContext *)context parts:(nullable NSArray<CMPChatMessagePart *> *)parts statusUpdates:(nullable NSDictionary<NSString *, CMPChatMessageStatus *> *)statusUpdates;
-- (instancetype)initWithMessage:(CMPMessage *)message;
+@property (nonatomic, strong, readonly) NSString *tempMessageId;
 
-- (void)addStatusUpdate:(CMPChatMessageStatus *)statusUpdate;
+- (instancetype)initWithMessage:(CMPChatMessage *) message toConversationWithID:(NSString *) conversationId from:(NSString *) sender;
+
+- (CMPChatMessage *)createPreUploadMessageWithAttachments:(NSArray<CMPChatAttachment *> *) attachments;
+- (CMPChatMessage *)createPostUploadMessageWithAttachments:(NSArray<CMPChatAttachment *> *) attachments;
 
 @end
 

@@ -14,30 +14,13 @@
 // IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-//
 
-#import "CMPChatMessagePart.h"
-#import "CMPChatMessageStatus.h"
-#import "CMPChatMessageContext.h"
+#import <Foundation/Foundation.h>
 
-#import <CMPComapiFoundation/CMPMessage.h>
+@implementation NSString(CMPBase64)
 
-NS_ASSUME_NONNULL_BEGIN
-
-@interface CMPChatMessage : NSObject
-
-@property (nonatomic, strong, nullable) NSString *id;
-@property (nonatomic, strong, nullable) NSNumber *sentEventID;
-@property (nonatomic, strong, nullable) NSDictionary<NSString *, id> *metadata;
-@property (nonatomic, strong, nullable) NSDictionary<NSString *, CMPChatMessageStatus *> *statusUpdates;
-@property (nonatomic, strong, nullable) NSArray<CMPChatMessagePart *> *parts;
-@property (nonatomic, strong, nullable) CMPChatMessageContext *context;
-
-- (instancetype)initWithID:(nullable NSString *)ID sentEventID:(nullable NSNumber *)sentEventID metadata:(nullable NSDictionary<NSString *, id> *)metadata context:(nullable CMPChatMessageContext *)context parts:(nullable NSArray<CMPChatMessagePart *> *)parts statusUpdates:(nullable NSDictionary<NSString *, CMPChatMessageStatus *> *)statusUpdates;
-- (instancetype)initWithMessage:(CMPMessage *)message;
-
-- (void)addStatusUpdate:(CMPChatMessageStatus *)statusUpdate;
+- (NSString *)toBase64String {
+    return [[self dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:kNilOptions];
+}
 
 @end
-
-NS_ASSUME_NONNULL_END

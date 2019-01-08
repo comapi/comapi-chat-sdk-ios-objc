@@ -14,29 +14,25 @@
 // IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-//
 
-#import "CMPChatMessagePart.h"
-#import "CMPChatMessageStatus.h"
-#import "CMPChatMessageContext.h"
+#import "CMPContentData.h"
 
-#import <CMPComapiFoundation/CMPMessage.h>
+#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatMessage : NSObject
+@interface CMPChatAttachment: NSObject
 
-@property (nonatomic, strong, nullable) NSString *id;
-@property (nonatomic, strong, nullable) NSNumber *sentEventID;
-@property (nonatomic, strong, nullable) NSDictionary<NSString *, id> *metadata;
-@property (nonatomic, strong, nullable) NSDictionary<NSString *, CMPChatMessageStatus *> *statusUpdates;
-@property (nonatomic, strong, nullable) NSArray<CMPChatMessagePart *> *parts;
-@property (nonatomic, strong, nullable) CMPChatMessageContext *context;
+@property (nonatomic, nullable) NSString *folder;
+@property (nonatomic, nullable) NSString *name;
+@property (nonatomic, nullable) NSString *type;
+@property (nonatomic, nullable) NSString *attachmentId;
+@property (nonatomic, nullable) NSURL *url;
+@property (nonatomic, nullable) NSNumber *size;
+@property (nonatomic, nullable) NSError *error;
+@property (nonatomic, strong, nonnull, readonly) CMPContentData *data;
 
-- (instancetype)initWithID:(nullable NSString *)ID sentEventID:(nullable NSNumber *)sentEventID metadata:(nullable NSDictionary<NSString *, id> *)metadata context:(nullable CMPChatMessageContext *)context parts:(nullable NSArray<CMPChatMessagePart *> *)parts statusUpdates:(nullable NSDictionary<NSString *, CMPChatMessageStatus *> *)statusUpdates;
-- (instancetype)initWithMessage:(CMPMessage *)message;
-
-- (void)addStatusUpdate:(CMPChatMessageStatus *)statusUpdate;
+- (instancetype)initWithContentData:(CMPContentData *)data;
 
 @end
 
