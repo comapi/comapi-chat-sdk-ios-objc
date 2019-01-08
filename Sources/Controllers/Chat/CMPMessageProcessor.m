@@ -21,14 +21,14 @@
 #import <CMPComapiFoundation/CMPContentData.h>
 #import <Foundation/Foundation.h>
 
-NSString * const PART_TYPE_UPLOADING = @"comapi/upl";
-NSString * const PART_TYPE_ERROR = @"comapi/error";
-NSString * const MESSAGE_METADATA_TEMP_ID = @"tempIdIOS";
+NSString * const PART_TYPE_UPLOADING = @"kComapiUpl";
+NSString * const PART_TYPE_ERROR = @"kComapiErr";
+NSString * const MESSAGE_METADATA_TEMP_ID = @"kTempIdIOS";
 int const MAX_PART_DATA_LENGTH = 13333;
 
 @interface CMPMessageProcessor()
 
-@property (nonatomic, strong, readonly) NSArray<CMPChatAttachment *> *additionalAttchments;
+@property (nonatomic, strong, readonly) NSArray<CMPChatAttachment *> *additionalAttachments;
 @property (nonatomic, strong, readonly) NSMutableArray<CMPChatMessagePart *> *preProcessedParts;
 
 
@@ -55,7 +55,7 @@ int const MAX_PART_DATA_LENGTH = 13333;
     }
     
     NSMutableArray *parts = [[NSMutableArray alloc] initWithArray:_preProcessedParts];
-    
+
     if (attachments != nil) {
         for (int i = 0; i < attachments.count; i++) {
             CMPMessagePart *p = [self createTempPart:attachments[i]];
@@ -63,9 +63,9 @@ int const MAX_PART_DATA_LENGTH = 13333;
         }
     }
     
-    if (_additionalAttchments != nil) {
-        for (int i = 0; i < _additionalAttchments.count; i++) {
-            CMPMessagePart *p = [self createTempPart:_additionalAttchments[i]];
+    if (_additionalAttachments != nil) {
+        for (int i = 0; i < _additionalAttachments.count; i++) {
+            CMPMessagePart *p = [self createTempPart:_additionalAttachments[i]];
             [parts addObject:p];
         }
     }
@@ -85,15 +85,15 @@ int const MAX_PART_DATA_LENGTH = 13333;
     return [self createTempMessageWithParts:parts metadata:_message.metadata context:_message.context];
 }
 
-- (CMPMessagePart *) createTempPart: (CMPChatAttachment *) attchament {
-    return [[CMPMessagePart alloc] initWithName:nil type:PART_TYPE_UPLOADING url:nil data:attchament.type size:0];
+- (CMPMessagePart *) createTempPart: (CMPChatAttachment *) attachament {
+    return [[CMPMessagePart alloc] initWithName:nil type:PART_TYPE_UPLOADING url:nil data:attachament.type size:0];
 }
 
-- (CMPMessagePart *) createFinalPart: (CMPChatAttachment *) attchament {
-    if (attchament.error != nil) {
-        return [[CMPMessagePart alloc] initWithName:nil type:PART_TYPE_ERROR url:nil data:attchament.type size:0];
+- (CMPMessagePart *) createFinalPart: (CMPChatAttachment *) attachament {
+    if (attachament.error != nil) {
+        return [[CMPMessagePart alloc] initWithName:nil type:PART_TYPE_ERROR url:nil data:attachament.type size:0];
     } else {
-        return [[CMPMessagePart alloc] initWithName: (attchament.name != nil ? attchament.name : attchament.attachmentId) type:attchament.type url:attchament.url data:nil size:attchament.size];
+        return [[CMPMessagePart alloc] initWithName: (attachament.name != nil ? attachament.name : attachament.attachmentId) type:attachament.type url:attachament.url data:nil size:attachament.size];
     }
 }
 
@@ -112,7 +112,7 @@ int const MAX_PART_DATA_LENGTH = 13333;
     
     if (initialParts.count > 0) {
         
-        NSMutableArray <CMPChatAttachment *> *largeAtachments = [NSMutableArray array];
+        NSMutableArray <CMPChatAttachment *> *largeAttachments = [NSMutableArray array];
         NSMutableArray <CMPChatMessagePart *> *removedParts = [NSMutableArray array];
         
         for (int i = 0; i < initialParts.count; i++) {
@@ -120,7 +120,7 @@ int const MAX_PART_DATA_LENGTH = 13333;
             if (part.data != nil && part.data.length > MAX_PART_DATA_LENGTH) {
                 NSString *str = [part.data toBase64String];
                 CMPChatAttachment  *largeAtachment = [[CMPChatAttachment alloc] initWithContentData: [[CMPContentData alloc] initWithBase64Data:str type:part.type name:part.name]];
-                [largeAtachments addObject:largeAtachment];
+                [largeAttachments addObject:largeAtachment];
                 [removedParts addObject:part];
             }
         }

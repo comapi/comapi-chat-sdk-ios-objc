@@ -42,7 +42,7 @@
     }
 }
 
-- (void)uploadAttachment:(nonnull NSArray<CMPChatAttachment *> *) attachments atIndex:(int) i withCompletion: (nonnull UploadCompleted) completed {
+- (void)uploadAttachment:(nonnull NSArray<CMPChatAttachment *> *) attachments atIndex:(NSUInteger) i withCompletion: (nonnull UploadCompleted) completed {
     CMPChatAttachment* a = [attachments objectAtIndex:i];
     [_client.services.messaging uploadContent: a.data folder: a.folder completion:^(CMPResult<CMPContentUploadResult *> * result) {
         if (a.error != nil) {
@@ -50,7 +50,7 @@
         } else {
             a.url = result.object.url;
         }
-        int next = i+1;
+        NSUInteger next = i+1;
         if (next < attachments.count) {
             [self uploadAttachment:attachments atIndex: next withCompletion:completed];
         } else {
