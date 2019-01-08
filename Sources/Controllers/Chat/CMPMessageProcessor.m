@@ -21,9 +21,9 @@
 #import <CMPComapiFoundation/CMPContentData.h>
 #import <Foundation/Foundation.h>
 
-NSString * const PART_TYPE_UPLOADING = @"kComapiUpl";
-NSString * const PART_TYPE_ERROR = @"kComapiErr";
-NSString * const MESSAGE_METADATA_TEMP_ID = @"kTempIdIOS";
+NSString * const kPartTypeUploading = @"comapi/upl";
+NSString * const kPartTypeError = @"comapi/err";
+NSString * const kKeyMessageTempId = @"tempIdIOS";
 int const MAX_PART_DATA_LENGTH = 13333;
 
 @interface CMPMessageProcessor()
@@ -86,12 +86,12 @@ int const MAX_PART_DATA_LENGTH = 13333;
 }
 
 - (CMPMessagePart *) createTempPart: (CMPChatAttachment *) attachament {
-    return [[CMPMessagePart alloc] initWithName:nil type:PART_TYPE_UPLOADING url:nil data:attachament.type size:0];
+    return [[CMPMessagePart alloc] initWithName:nil type:kPartTypeUploading url:nil data:attachament.type size:0];
 }
 
 - (CMPMessagePart *) createFinalPart: (CMPChatAttachment *) attachament {
     if (attachament.error != nil) {
-        return [[CMPMessagePart alloc] initWithName:nil type:PART_TYPE_ERROR url:nil data:attachament.type size:0];
+        return [[CMPMessagePart alloc] initWithName:nil type:kPartTypeError url:nil data:attachament.type size:0];
     } else {
         return [[CMPMessagePart alloc] initWithName: (attachament.name != nil ? attachament.name : attachament.attachmentId) type:attachament.type url:attachament.url data:nil size:attachament.size];
     }
@@ -103,7 +103,7 @@ int const MAX_PART_DATA_LENGTH = 13333;
     [combinedParts addObjectsFromArray:tempParts];
     
     NSMutableDictionary *mutableMetadata = [[NSMutableDictionary alloc] initWithDictionary:metadata];
-    [mutableMetadata setObject:_tempMessageId forKey:MESSAGE_METADATA_TEMP_ID];
+    [mutableMetadata setObject:_tempMessageId forKey:kKeyMessageTempId];
     
     return [[CMPChatMessage alloc] initWithID:_tempMessageId sentEventID:nil metadata:[[NSDictionary alloc] initWithDictionary:mutableMetadata] context:context parts:tempParts statusUpdates:nil];
 }
