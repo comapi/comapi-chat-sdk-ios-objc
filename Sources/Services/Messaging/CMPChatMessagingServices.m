@@ -50,7 +50,7 @@
 - (void)deleteConversation:(NSString *)conversationID eTag:(nullable NSString *)eTag completion:(void(^)(CMPChatResult *))completion {
     __weak typeof(self) weakSelf = self;
     [_foundation.services.messaging deleteConversationWithConversationID:conversationID eTag:eTag completion:^(CMPResult<NSNumber *> * result) {
-        [weakSelf.chatController handleConversationDeletedForID:conversationID result:result completion:completion];
+        [weakSelf.chatController handleConversationDeleted:conversationID result:result completion:completion];
     }];
 }
 

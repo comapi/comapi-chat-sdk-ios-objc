@@ -65,25 +65,4 @@
     return self;
 }
 
-//
-//public Builder populate(MessageDeliveredEvent event) {
-//    this.status.messageId = event.getMessageId();
-//    this.status.profileId = event.getProfileId();
-//    this.status.messageStatus = LocalMessageStatus.delivered;
-//    this.status.updatedOn = DateHelper.getUTCMilliseconds(event.getTimestamp());
-//    this.status.conversationId = event.getConversationId();
-//    this.status.conversationEventId = event.getConversationEventId();
-//    return this;
-//}
-//
-//public Builder populate(MessageReadEvent event) {
-//    this.status.messageId = event.getMessageId();
-//    this.status.profileId = event.getProfileId();
-//    this.status.messageStatus = LocalMessageStatus.read;
-//    this.status.updatedOn = DateHelper.getUTCMilliseconds(event.getTimestamp());
-//    this.status.conversationId = event.getConversationId();
-//    this.status.conversationEventId = event.getConversationEventId();
-//    return this;
-//}
-
 @end

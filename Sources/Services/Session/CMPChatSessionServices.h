@@ -31,28 +31,3 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
-
-//public class SessionService {
-//
-//    private SessionService() {
-//
-//    }
-//
-//    /**
-//     * Create and start new ComapiImpl session.
-//     *
-//     * @return Observable to subscribe to. Returns Session details.
-//     */
-//    public Observable<Session> startSession() {
-//        return foundation.service().session().startSession();
-//    }
-//
-//    /**
-//     * Ends currently active session.
-//     *
-//     * @return Observable to subscribe to.
-//     */
-//    public Observable<ChatResult> endSession() {
-//        return foundation.service().session().endSession().map(modelAdapter::adaptResult);
-//    }
-//}

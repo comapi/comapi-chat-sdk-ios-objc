@@ -105,59 +105,6 @@
     return self;
 }
 
-//public Builder populate(ConversationUndeleteEvent event) {
-//    conversation.conversationId = event.getConversation().getId();
-//    conversation.name = event.getConversation().getName();
-//    conversation.description = event.getConversation().getDescription();
-//    conversation.ownerRoles = event.getConversation().getRoles().getOwner();
-//    conversation.participantRoles = event.getConversation().getRoles().getParticipant();
-//    conversation.eTag = event.getETag();
-//    return this;
-//}
-//
-//public Builder populate(Conversation details) {
-//    conversation.conversationId = details.getId();
-//    conversation.name = details.getName();
-//    conversation.description = details.getDescription();
-//    conversation.ownerRoles = details.getRoles().getOwner();
-//    conversation.participantRoles = details.getRoles().getParticipant();
-//    conversation.latestRemoteEventId = details.getLatestSentEventId();
-//    conversation.eTag = details.getETag();
-//    return this;
-//}
-//
-//public Builder populate(ConversationDetails details, String eTag) {
-//    conversation.conversationId = details.getId();
-//    conversation.name = details.getName();
-//    conversation.description = details.getDescription();
-//    conversation.ownerRoles = details.getRoles().getOwner();
-//    conversation.participantRoles = details.getRoles().getParticipant();
-//    conversation.eTag = eTag;
-//    return this;
-//}
-//
-//public Builder populate(ChatConversationBase base) {
-//    conversation.conversationId = base.getConversationId();
-//    conversation.updatedOn = base.getUpdatedOn();
-//    conversation.latestRemoteEventId = base.getLastRemoteEventId();
-//    conversation.lastLocalEventId = base.getLastLocalEventId();
-//    conversation.firstLocalEventId = base.getFirstLocalEventId();
-//    conversation.eTag = base.getETag();
-//    return this;
-//}
-//
-//public Builder populate(ChatConversation base) {
-//    populate((ChatConversationBase) base);
-//    conversation.description = base.description;
-//    conversation.name = base.name;
-//    conversation.ownerRoles = base.getOwnerPrivileges();
-//    conversation.participantRoles = base.getParticipantPrivileges();
-//    conversation.isPublic = base.isPublic();
-//    conversation.eTag = base.getETag();
-//    return this;
-//}
-
-
 - (id)copyWithZone:(NSZone *)zone {
     CMPChatConversation *copy = [[CMPChatConversation alloc] init];
     

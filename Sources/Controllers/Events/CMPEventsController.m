@@ -48,7 +48,7 @@
 #pragma mark - CMPMissingEventsDelegate
 
 - (void)missingEventsForID:(NSString *)ID from:(NSInteger)from limit:(NSInteger)limit {
-    [_chatController queryMissingEventsForConversationID:ID from:from limit:limit];
+    [_chatController queryMissingEvents:ID from:from limit:limit];
 }
 
 #pragma mark - CMPStateDelegate
@@ -73,7 +73,7 @@
             CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithConversationCreateEvent:(CMPConversationEventCreate *)event];
             if (conversation) {
                 [_persistenceController upsertConversations:@[conversation] completion:^(BOOL success, NSError * _Nullable error) {
-                    
+                    // TODO: -
                 }];
             }
             break;
@@ -82,7 +82,7 @@
             CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithConversationUpdateEvent:(CMPConversationEventUpdate *)event];
             if (conversation) {
                 [_persistenceController upsertConversations:@[conversation] completion:^(BOOL success, NSError * _Nullable error) {
-                    
+                    // TODO: -
                 }];
             }
             break;
@@ -93,27 +93,20 @@
             CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithConversationUndeleteEvent:(CMPConversationEventUndelete *)event];
             if (conversation) {
                 [_persistenceController upsertConversations:@[conversation] completion:^(BOOL success, NSError * _Nullable error) {
-                    
+                    // TODO: -
                 }];
             }
             break;
         }
-        case CMPEventTypeConversationParticipantAdded: {
-            
+        case CMPEventTypeConversationParticipantAdded:
             break;
-        }
-            
         case CMPEventTypeConversationParticipantRemoved:
-            
             break;
         case CMPEventTypeConversationParticipantUpdated:
-            
             break;
         case CMPEventTypeConversationParticipantTyping:
-            
             break;
         case CMPEventTypeConversationParticipantTypingOff:
-            
             break;
         case CMPEventTypeSocketInfo:
             break;
@@ -125,15 +118,13 @@
             CMPConversationMessageEventSent *e = (CMPConversationMessageEventSent *)event;
             [_tracker checkEventForConversationID:e.payload.context.conversationID conversationEventID:e.conversationEventID delegate:self];
             [_chatController handleMessage:[[CMPChatMessage alloc] init] completion:^(BOOL success, NSError * _Nullable error) {
-                
+                // TODO: -
             }];
             break;
         }
         case CMPEventTypeConversationMessageRead: {
-            
-        }
             break;
-            
+        }
         case CMPEventTypeNone:
             break;
     }
