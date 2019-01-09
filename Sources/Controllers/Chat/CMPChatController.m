@@ -18,6 +18,8 @@
 
 #import "CMPChatController.h"
 #import "CMPCallLimiter.h"
+#import "CMPChatAttachment.h"
+#import "CMPMessageProcessor.h"
 
 #import <CMPComapiFoundation/CMPMessageStatusUpdate.h>
 
@@ -89,6 +91,18 @@ NSInteger const kETagNotValid = 412;
 
 - (nullable NSString *)getProfileID {
     return _client != nil ? [_client getProfileID] : nil;
+}
+
+- (void) sendMessage: (nonnull CMPChatMessage *) message withAttachments: (nullable NSArray<CMPChatAttachment *> *) attachments toConversationWithID: (nonnull NSString *) conversationId from:(NSString *) from {
+    //CMPMessageProcessor *processor = [[CMPMessageProcessor alloc] initWithMessage:message toConversationWithID:conversationId from:from];
+    //CMPChatMessage *messageToSave = [processor createPreUploadMessageWithAttachments:attachments];
+    // save message
+    // send attachments
+    //CMPChatMessage *messageToUpdate = [processor createPostUploadMessageWithAttachments:attachments];
+    // save message
+    // send message
+    // update id with processor.tempMessageId and eventId
+    
 }
 
 - (void)markDeliveredForConversationID:(NSString *)ID messageIDs:(NSArray<NSString *> *)IDs {
