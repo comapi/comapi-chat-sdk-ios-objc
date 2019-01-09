@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSURL *url;
 
 - (instancetype)initWithName:(nullable NSString *)name type:(nullable NSString *)type url:(nullable NSURL *)url data:(nullable NSString *)data size:(nullable NSNumber *)size;
-- (instancetype)initWithMessage:(CMPMessagePart *)message;
+- (instancetype)initWithMessagePart:(CMPMessagePart *)messagePart;
 
 @end
 

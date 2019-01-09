@@ -20,6 +20,18 @@
 
 @implementation CMPChatResult
 
+- (instancetype)initWithError:(NSError *)error success:(BOOL)success eTag:(NSString *)eTag {
+    self = [super init];
+    
+    if (self) {
+        _error = error;
+        _isSuccessful = success;
+        _eTag = eTag;
+    }
+    
+    return self;
+}
+
 - (instancetype)initWithError:(NSError *)error success:(BOOL)success {
     self = [super init];
     
@@ -37,6 +49,7 @@
     if (self) {
         _isSuccessful = result.object != nil;
         _error = result.error;
+        _eTag = result.eTag;
     }
     
     return self;

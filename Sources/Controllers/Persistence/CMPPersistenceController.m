@@ -17,7 +17,6 @@
 //
 
 #import "CMPPersistenceController.h"
-#import "CMPChatConversationBase.h"
 #import "CMPChatStore.h"
 #import "NSManagedObjectContext+CMPOrphanedEvent.h"
 #import "NSArray+CMPUtility.h"
@@ -46,7 +45,7 @@
     return self;
 }
 
-- (void)getConversationForID:(NSString *)conversationID completion:(void(^)(CMPChatConversationBase *, NSError * _Nullable))completion {
+- (void)getConversationForID:(NSString *)conversationID completion:(void(^)(CMPChatConversation *, NSError * _Nullable))completion {
     [_factory executeTransaction:^(id<CMPChatStore> store, NSError * error) {
         if (error) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -54,7 +53,7 @@
             });
         } else {
             [store beginTransaction];
-            CMPChatConversationBase *conversation = [store getConversationForID:conversationID];
+            CMPChatConversation *conversation = [store getConversationForID:conversationID];
             [store endTransaction];
             dispatch_async(dispatch_get_main_queue(), ^{
                 completion(conversation, nil);
@@ -63,7 +62,7 @@
     }];
 }
 
-- (void)getAllConversationsWithCompletion:(void(^)(NSArray<CMPChatConversationBase *> * _Nullable, NSError * _Nullable))completion {
+- (void)getAllConversationsWithCompletion:(void(^)(NSArray<CMPChatConversation *> * _Nullable, NSError * _Nullable))completion {
     [_factory executeTransaction:^(id<CMPChatStore> _Nullable store, NSError * _Nullable error) {
         if (error) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -71,7 +70,7 @@
             });
         } else {
             [store beginTransaction];
-            NSArray<CMPChatConversationBase *> *conversations = [store getAllConversations];
+            NSArray<CMPChatConversation *> *conversations = [store getAllConversations];
             [store endTransaction];
             dispatch_async(dispatch_get_main_queue(), ^{
                 completion(conversations, nil);
@@ -91,7 +90,7 @@
             __block BOOL success = YES;
             [conversations enumerateObjectsUsingBlock:^(CMPChatConversation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 CMPChatConversation *newConversation = [obj copy];
-                CMPChatConversationBase *savedConversation = [store getConversationForID:obj.id];
+                CMPChatConversation *savedConversation = [store getConversationForID:obj.id];
                 if (savedConversation == nil) {
                     newConversation.firstLocalEventID = @(-1L);
                     newConversation.lastLocalEventID = @(-1L);
@@ -140,8 +139,8 @@
             [store beginTransaction];
             __block BOOL success = YES;
             [conversations enumerateObjectsUsingBlock:^(CMPChatConversation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                CMPChatConversationBase *newConversation = [[CMPChatConversationBase alloc] init];
-                CMPChatConversationBase *savedConversation = [store getConversationForID:obj.id];
+                CMPChatConversation *newConversation = [[CMPChatConversation alloc] init];
+                CMPChatConversation *savedConversation = [store getConversationForID:obj.id];
                 if (savedConversation) {
                     newConversation.id = savedConversation.id;
                     newConversation.firstLocalEventID = savedConversation.firstLocalEventID;
@@ -186,7 +185,7 @@
     }];
 }
 
-- (void)deleteConversations:(NSArray<CMPChatConversationBase *> *)conversations completion:(void(^)(BOOL, NSError * _Nullable))completion {
+- (void)deleteConversations:(NSArray<CMPChatConversation *> *)conversations completion:(void(^)(BOOL, NSError * _Nullable))completion {
     [_factory executeTransaction:^(id<CMPChatStore> _Nullable store, NSError * _Nullable error) {
         if (error) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -195,7 +194,7 @@
         } else {
             [store beginTransaction];
             __block BOOL success = NO;
-            [conversations enumerateObjectsUsingBlock:^(CMPChatConversationBase * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [conversations enumerateObjectsUsingBlock:^(CMPChatConversation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 success = success && [store deleteConversationForID:obj.id];
             }];
             [store endTransaction];
@@ -224,18 +223,13 @@
                         updatedOn = obj.context.sentOn;
                     }
                 }];
-                CMPChatConversationBase *savedConversation = [store getConversationForID:ID];
+                CMPChatConversation *savedConversation = [store getConversationForID:ID];
                 NSNumber *firstLocal = [NSNumber numberWithInteger:MIN([result.earliestEventID integerValue], [savedConversation.firstLocalEventID integerValue])];
                 NSNumber *lastLocal = [NSNumber numberWithInteger:MAX([result.latestEventID integerValue], [savedConversation.lastLocalEventID integerValue])];
                 NSNumber *lastRemote = [NSNumber numberWithInteger:MAX([result.latestEventID integerValue], [savedConversation.latestRemoteEventID integerValue])];
                 NSDate *updatedOnDate = [NSDate dateWithTimeIntervalSince1970:MAX([savedConversation.updatedOn timeIntervalSinceNow], [updatedOn timeIntervalSinceNow])];
                 if (savedConversation) {
-                    CMPChatConversationBase *updateConversation = [[CMPChatConversationBase alloc] initWithID:savedConversation.id
-                                                                                            firstLocalEventID:savedConversation.firstLocalEventID ? firstLocal : savedConversation.firstLocalEventID
-                                                                                             lastLocalEventID:savedConversation.lastLocalEventID ? lastLocal : savedConversation.lastLocalEventID
-                                                                                          latestRemoteEventID:savedConversation.latestRemoteEventID ? lastRemote : savedConversation.latestRemoteEventID
-                                                                                                         eTag:savedConversation.eTag
-                                                                                                    updatedOn:updatedOnDate];
+                    CMPChatConversation *updateConversation = [[CMPChatConversation alloc] initWithID:savedConversation.id firstLocalEventID:savedConversation.firstLocalEventID ? firstLocal : savedConversation.firstLocalEventID lastLocalEventID:savedConversation.lastLocalEventID ? lastLocal : savedConversation.lastLocalEventID latestRemoteEventID:savedConversation.latestRemoteEventID ? lastRemote : savedConversation.latestRemoteEventID eTag:savedConversation.eTag updatedOn:updatedOnDate name:nil conversationDescription:nil roles:nil isPublic:nil];
                     [store updateConversation:updateConversation];
                 }
                 [store endTransaction];
@@ -305,7 +299,7 @@
 }
 
 - (void)deleteOrphanedEventsWithIDs:(NSArray<NSString *> *)IDs completion:(void(^)(NSInteger, NSError * _Nullable))completion {
-    return [_manager.workerContext deleteOrphanedEventsForIDs:IDs completion:^(NSInteger deleted, NSError * _Nullable error) {
+    [_manager.workerContext deleteOrphanedEventsForIDs:IDs completion:^(NSInteger deleted, NSError * _Nullable error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             completion(deleted, error);
         });
@@ -321,7 +315,7 @@
         } else {
             __block BOOL success = YES;
             [store beginTransaction];
-            CMPChatConversationBase *conversation = [store getConversationForID:message.context.conversationID];
+            CMPChatConversation *conversation = [store getConversationForID:message.context.conversationID];
             NSString *tempID = message.metadata ? message.metadata[kCMPMessageTemporaryId] : nil;
             if (tempID && ![tempID isEqualToString:@""]) {
                 [store deleteMessageForConversationID:message.context.conversationID messageID:tempID];
@@ -348,9 +342,9 @@
 }
 
 - (BOOL)updateConversationFromEventForStore:(id<CMPChatStore>)store conversationID:(NSString *)conversationID eventID:(NSNumber *)eventID updatedOn:(NSDate *)updatedOn {
-    CMPChatConversationBase *conversation = [store getConversationForID:conversationID];
+    CMPChatConversation *conversation = [store getConversationForID:conversationID];
     if (conversation) {
-        CMPChatConversationBase *newConversation = [conversation copy];
+        CMPChatConversation *newConversation = [conversation copy];
         if (eventID) {
             if ([conversation.latestRemoteEventID compare:eventID] == NSOrderedAscending) {
                 newConversation.latestRemoteEventID = eventID;

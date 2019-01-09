@@ -16,36 +16,20 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatMessagePart.h"
+#import "CMPChatProfileServices.h"
+#import "CMPChatSessionServices.h"
+#import "CMPChatMessagingServices.h"
 
-@implementation CMPChatMessagePart
+#import <Foundation/Foundation.h>
 
-- (instancetype)initWithName:(NSString *)name type:(NSString *)type url:(NSURL *)url data:(NSString *)data size:(NSNumber *)size {
-    self = [super init];
-    
-    if (self) {
-        self.name = name;
-        self.type = type;
-        self.url = url;
-        self.data = data;
-        self.size = size;
-    }
-    
-    return self;
-}
+NS_ASSUME_NONNULL_BEGIN
 
-- (instancetype)initWithMessagePart:(CMPMessagePart *)messagePart {
-    self = [super init];
-    
-    if (self) {
-        self.name = messagePart.name;
-        self.type = messagePart.type;
-        self.url = messagePart.url;
-        self.data = messagePart.data;
-        self.size = messagePart.size;
-    }
-    
-    return self;
-}
+@interface CMPChatServices : NSObject
+
+@property (nonatomic, strong, readonly) CMPChatProfileServices *profile;
+@property (nonatomic, strong, readonly) CMPChatSessionServices *session;
+@property (nonatomic, strong, readonly) CMPChatMessagingServices *messaging;
 
 @end
+
+NS_ASSUME_NONNULL_END

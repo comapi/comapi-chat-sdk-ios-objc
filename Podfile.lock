@@ -7,29 +7,22 @@ PODS:
 
 DEPENDENCIES:
   - CMPComapiChat (from `/Users/dominik.kowalski/Documents/comapi-chat-sdk-ios-objc`)
-  - CMPComapiFoundation (from `https://github.com/comapi/comapi-sdk-ios-objc.git`, branch `dev`)
+  - CMPComapiFoundation
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
+    - CMPComapiFoundation
     - SocketRocket
 
 EXTERNAL SOURCES:
   CMPComapiChat:
     :path: "/Users/dominik.kowalski/Documents/comapi-chat-sdk-ios-objc"
-  CMPComapiFoundation:
-    :branch: dev
-    :git: https://github.com/comapi/comapi-sdk-ios-objc.git
-
-CHECKOUT OPTIONS:
-  CMPComapiFoundation:
-    :commit: 25b101c4ca17640fb0765e3a2606692835cb473d
-    :git: https://github.com/comapi/comapi-sdk-ios-objc.git
 
 SPEC CHECKSUMS:
   CMPComapiChat: 221646a7235e894447dc33eeeb3c0340e2e3b0d1
-  CMPComapiFoundation: d5cc1f2d403f6704554c8901fdedecf194f29873
+  CMPComapiFoundation: 188f69fd19a8dcf3d0d4888e4a15b8b96a293d86
   SocketRocket: d57c7159b83c3c6655745cd15302aa24b6bae531
 
-PODFILE CHECKSUM: fdefdb9a99b085192a8f564a917242a2eb82d0f9
+PODFILE CHECKSUM: 4f8d51019147359dbe4ecb4ed0fbb7dc55e99b81
 
 COCOAPODS: 1.5.3

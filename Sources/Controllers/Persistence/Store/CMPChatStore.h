@@ -26,10 +26,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Conversations
 
-- (CMPChatConversationBase *)getConversationForID:(NSString *)ID;
-- (NSArray<CMPChatConversationBase *> *)getAllConversations;
+- (CMPChatConversation *)getConversationForID:(NSString *)ID;
+- (NSArray<CMPChatConversation *> *)getAllConversations;
 - (BOOL)upsertConversation:(CMPChatConversation *)conversation;
-- (BOOL)updateConversation:(CMPChatConversationBase *)conversation;
+- (BOOL)updateConversation:(CMPChatConversation *)conversation;
 - (BOOL)deleteConversationForID:(NSString *)ID;
 
 #pragma mark - Messages
