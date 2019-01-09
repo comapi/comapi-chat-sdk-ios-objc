@@ -35,6 +35,34 @@
     return self;
 }
 
+- (instancetype)initWithReadEvent:(CMPConversationMessageEventRead *)event {
+    self = [super init];
+    
+    if (self) {
+        self.messageID = event.payload.messageID;
+        self.profileID = event.payload.profileID;
+        self.messageStatus = CMPMessageDeliveryStatusRead;
+        self.timestamp = event.payload.timestamp;
+        self.conversationID = event.payload.conversationID;
+        self.conversationEventID = event.conversationEventID;
+    }
+    
+    return self;
+}
 
+- (instancetype)initWithDeliveredEvent:(CMPConversationMessageEventDelivered *)event {
+    self = [super init];
+    
+    if (self) {
+        self.messageID = event.payload.messageID;
+        self.profileID = event.payload.profileID;
+        self.messageStatus = CMPMessageDeliveryStatusDelivered;
+        self.timestamp = event.payload.timestamp;
+        self.conversationID = event.payload.conversationID;
+        self.conversationEventID = event.conversationEventID;
+    }
+    
+    return self;
+}
 
 @end

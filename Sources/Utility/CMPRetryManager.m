@@ -16,37 +16,36 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatConversationBase.h"
+#import "CMPRetryManager.h"
 
-@implementation CMPChatConversationBase
+@implementation CMPRetryManager
 
-- (instancetype)initWithID:(NSString *)id firstLocalEventID:(NSNumber *)firstLocalEventID lastLocalEventID:(NSNumber *)lastLocalEventID latestRemoteEventID:(NSNumber *)latestRemoteEventID eTag:(NSString *)eTag updatedOn:(NSDate *)updatedOn {
-    self = [super init];
-    
-    if (self) {
-        self.firstLocalEventID = firstLocalEventID;
-        self.lastLocalEventID = lastLocalEventID;
-        self.latestRemoteEventID = latestRemoteEventID;
-        self.eTag = eTag;
-        self.updatedOn = updatedOn;
-    }
-    
-    return self;
++ (void)retryBlock:(void (^)(void(^)(BOOL)))block attempts:(NSUInteger)attempts interval:(NSUInteger)interval {
+    [CMPRetryManager retryBlock:block currentAttempt:1 attempts:attempts interval:interval];
 }
 
-- (nonnull id)copyWithZone:(nullable NSZone *)zone {
-    CMPChatConversationBase *copy = [[CMPChatConversationBase alloc] init];
-    
-    copy.id = self.id;
-    copy.firstLocalEventID = self.firstLocalEventID;
-    copy.lastLocalEventID = self.lastLocalEventID;
-    copy.latestRemoteEventID = self.latestRemoteEventID;
-    copy.eTag = self.eTag;
-    copy.updatedOn = self.updatedOn;
-    
-    return copy;
++ (void)retryBlock:(void (^)(void(^)(BOOL)))block currentAttempt:(NSUInteger)currentAttempt attempts:(NSUInteger)attempts interval:(NSUInteger)interval {
+    if (currentAttempt == attempts) {
+        return;
+    } else if (currentAttempt == 1) {
+        block(^(BOOL success) {
+            if (success) {
+                return;
+            } else {
+                [CMPRetryManager retryBlock:block currentAttempt:currentAttempt+1 attempts:attempts interval:interval];
+            }
+        });
+    } else {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * interval), dispatch_get_main_queue(), ^{
+            block(^(BOOL success){
+                if (success) {
+                    return;
+                } else {
+                    [CMPRetryManager retryBlock:block currentAttempt:currentAttempt+1 attempts:attempts interval:interval];
+                }
+            });
+        });
+    }
 }
 
 @end
-
-

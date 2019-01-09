@@ -1,8 +1,8 @@
-platform :ios, '9.0'
+platform :ios, '10.0'
 use_frameworks!
 
 def shared
-pod 'CMPComapiFoundation', :git => 'https://github.com/comapi/comapi-sdk-ios-objc.git', :branch => 'dev'
+pod 'CMPComapiFoundation'
 end
 
 target 'CMPComapiChat' do
