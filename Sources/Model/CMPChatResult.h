@@ -16,6 +16,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+#import "CMPStoreResult.h"
+
 #import <CMPComapiFoundation/CMPResult.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -29,6 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithError:(nullable NSError *)error success:(BOOL)success eTag:(NSString *)eTag;
 - (instancetype)initWithError:(nullable NSError *)error success:(BOOL)success;
 - (instancetype)initWithComapiResult:(CMPResult<id> *)result;
+- (instancetype)initWithStoreResult:(CMPStoreResult<id> *)result;
 
 @end
 

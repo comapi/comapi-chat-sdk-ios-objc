@@ -17,33 +17,24 @@
 //
 
 #import "CMPChatConversation.h"
-#import "CMPChatMessage.h"
-#import "CMPChatMessageStatus.h"
+
+#import <CMPComapiFoundation/CMPConversation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol CMPChatStore <NSObject>
+@interface CMPConversationComparison : NSObject
 
-#pragma mark - Conversations
+@property (nonatomic) BOOL remoteCallSuccessful;
+@property (nonatomic) BOOL isSuccessful;
 
-- (CMPChatConversation *)getConversation:(NSString *)ID;
-- (NSArray<CMPChatConversation *> *)getAllConversations;
-- (BOOL)upsertConversation:(CMPChatConversation *)conversation;
-- (BOOL)updateConversation:(CMPChatConversation *)conversation;
-- (BOOL)deleteConversation:(NSString *)ID;
+@property (nonatomic, strong) NSMutableArray<CMPChatConversation *> *conversationsToAdd;
+@property (nonatomic, strong) NSMutableArray<CMPChatConversation *> *conversationsToDelete;
+@property (nonatomic, strong) NSMutableArray<CMPChatConversation *> *conversationsToUpdate;
 
-#pragma mark - Messages
+- (instancetype)initFrom:(NSDictionary<NSString *, CMPConversation *> *)downloadedList savedList:(NSDictionary<NSString *, CMPChatConversation *> *)savedList isSuccessful:(BOOL)isSuccessful;
+- (instancetype)initFrom:(NSNumber *)latestRemoteEventID conversation:(CMPChatConversation *)conversation;
 
-- (BOOL)upsertMessage:(CMPChatMessage *)message;
-- (BOOL)updateMessageStatus:(CMPChatMessageStatus *)messageStatus;
-- (BOOL)deleteAllMessages:(NSString *)conversationID;
-- (BOOL)deleteMessage:(NSString *)conversationID messageID:(NSString *)messageID;
-
-#pragma mark - Database operations
-
-- (BOOL)clearDatabase;
-- (void)beginTransaction;
-- (void)endTransaction;
+- (void)addSuccess:(BOOL)success;
 
 @end
 

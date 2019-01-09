@@ -17,6 +17,7 @@
 //
 
 #import "CMPStoreFactory.h"
+#import "CMPStoreResult.h"
 #import "CMPModelAdapter.h"
 #import "CMPCoreDataManager.h"
 #import "CMPChatConversation.h"
@@ -34,22 +35,23 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithFactory:(CMPStoreFactory *)factory adapter:(CMPModelAdapter *)adapter coreDataManager:(CMPCoreDataManager *)manager;
 
-- (void)getConversationForID:(NSString *)conversationID completion:(void(^)(CMPChatConversation *, NSError * _Nullable))completion;
-- (void)getAllConversationsWithCompletion:(void(^)(NSArray<CMPChatConversation *> * _Nullable, NSError * _Nullable))completion;
-- (void)upsertConversations:(NSArray<CMPChatConversation *> *)conversations completion:(void(^)(BOOL, NSError * _Nullable))completion;
-- (void)updateConversations:(NSArray<CMPChatConversation *> *)conversations completion:(void(^)(BOOL, NSError * _Nullable))completion;
-- (void)deleteConversationForID:(NSString *)ID completion:(void(^)(BOOL, NSError * _Nullable))completion;
-- (void)deleteConversations:(NSArray<CMPChatConversation *> *)conversations completion:(void(^)(BOOL, NSError * _Nullable))completion;
+- (void)getConversation:(NSString *)conversationID completion:(void(^)(CMPStoreResult<CMPChatConversation *> *))completion;
+- (void)getAllConversations:(void(^)(CMPStoreResult<NSArray<CMPChatConversation *> *> *))completion;
+- (void)upsertConversations:(NSArray<CMPChatConversation *> *)conversations completion:(void(^)(CMPStoreResult<NSNumber *> *))completion;
+- (void)updateConversations:(NSArray<CMPChatConversation *> *)conversations completion:(void(^)(CMPStoreResult<NSNumber *> *))completion;
+- (void)deleteConversation:(NSString *)ID completion:(void(^)(CMPStoreResult<NSNumber *> *))completion;
+- (void)deleteConversations:(NSArray<CMPChatConversation *> *)conversations completion:(void(^)(CMPStoreResult<NSNumber *> *))completion;
 
 - (void)processOrphanedEvents:(CMPGetMessagesResult *)eventsResult completion:(void(^)(NSError * _Nullable))completion;
-- (void)deleteOrphanedEventsWithIDs:(NSArray<NSString *> *)IDs completion:(void(^)(NSInteger, NSError * _Nullable))completion;
+- (void)deleteOrphanedEvents:(NSArray<NSString *> *)IDs completion:(void(^)(CMPStoreResult<NSNumber *> *))completion;
 
-- (void)processMessagesResultForID:(NSString *)ID result:(CMPGetMessagesResult *)result completion:(void(^)(CMPGetMessagesResult *, NSError * _Nullable))completion;
+- (void)processMessagesResult:(NSString *)ID result:(CMPGetMessagesResult *)result completion:(void(^)(CMPStoreResult<CMPGetMessagesResult *> *))completion;
 
-- (void)updateStoreWithNewMessage:(CMPChatMessage *)message completion:(void(^)(BOOL, NSError * _Nullable))completion;
+- (void)updateStoreWithNewMessage:(CMPChatMessage *)message completion:(void(^)(CMPStoreResult<NSNumber *> *))completion;
+- (void)updateStoreWithSentError:(NSString *)conversationID tempID:(NSString *)tempID profileID:(NSString *)profileID completion:(void(^)(CMPStoreResult<NSNumber *> *))completion;
 
-- (void)upsertMessageStatusesForConversationID:(NSString *)conversationID profileID:(NSString *)profileID statuses:(NSArray<CMPMessageStatusUpdate *> *)statuses completion:(void(^)(BOOL, NSError * _Nullable))completion;
-- (void)upsertMessageStatus:(CMPChatMessageStatus *)status completion:(void(^)(BOOL, NSError * _Nullable))completion;
+- (void)upsertMessageStatuses:(NSString *)conversationID profileID:(NSString *)profileID statuses:(NSArray<CMPMessageStatusUpdate *> *)statuses completion:(void(^)(CMPStoreResult<NSNumber *> *))completion;
+- (void)upsertMessageStatus:(CMPChatMessageStatus *)status completion:(void(^)(CMPStoreResult<NSNumber *> *))completion;
 
 @end
 
