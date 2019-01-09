@@ -24,7 +24,7 @@
 NSString * const kPartTypeUploading = @"comapi/upl";
 NSString * const kPartTypeError = @"comapi/err";
 NSString * const kKeyMessageTempId = @"tempIdIOS";
-int const MAX_PART_DATA_LENGTH = 13333;
+NSInteger const kMaxPartDataLength = 13333;
 
 @interface CMPMessageProcessor()
 
@@ -117,7 +117,7 @@ int const MAX_PART_DATA_LENGTH = 13333;
         
         for (int i = 0; i < initialParts.count; i++) {
             CMPChatMessagePart *part = initialParts[i];
-            if (part.data != nil && part.data.length > MAX_PART_DATA_LENGTH) {
+            if (part.data != nil && part.data.length > kMaxPartDataLength) {
                 NSString *str = [part.data toBase64String];
                 CMPChatAttachment  *largeAtachment = [[CMPChatAttachment alloc] initWithContentData: [[CMPContentData alloc] initWithBase64Data:str type:part.type name:part.name]];
                 [largeAttachments addObject:largeAtachment];

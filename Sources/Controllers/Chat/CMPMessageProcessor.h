@@ -22,8 +22,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-extern NSString *const PART_TYPE_UPLOADING;
-extern NSString *const PART_TYPE_ERROR;
+extern NSString *const kPartTypeUploading;
+extern NSString *const kPartTypeError;
+extern NSString *const kKeyMessageTempId;
 
 @interface CMPMessageProcessor : NSObject
 
