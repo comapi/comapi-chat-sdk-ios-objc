@@ -16,16 +16,22 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPConcurrentMutableDictionary.h"
+#import "CMPChatResult.h"
 
-@interface CMPConcurrentMutableDictionary ()
+#import <CMPComapiFoundation/CMPResult.h>
+#import <CMPComapiFoundation/CMPComapiClient.h>
 
-@property (nonatomic, strong, readonly) NSLock *lock;
-@property (nonatomic, strong, readonly) NSMutableDictionary *dictionary;
+NS_ASSUME_NONNULL_BEGIN
+
+@interface CMPChatProfileServices : NSObject
+
+- (instancetype)initWithFoundation:(CMPComapiClient *)foundation;
+
+- (void)getProfileForProfileID:(NSString *)ID completion:(void (^)(CMPResult<CMPProfile *> *))completion;
+- (void)updateProfileWithProfileID:(NSString *)ID attributes:(NSDictionary<NSString *, NSString *> *)attributes eTag:(NSString * _Nullable)eTag completion:(void(^)(CMPResult<CMPProfile *> *))completion;
+- (void)patchProfileWithProfileID:(NSString *)ID attributes:(NSDictionary<NSString *, NSString *> *)attributes eTag:(NSString * _Nullable)eTag completion:(void(^)(CMPResult<CMPProfile *> *))completion;
+- (void)queryProfilesWithQueryElements:(NSArray<CMPQueryElements *> *)queryElements completion:(void (^)(CMPResult<NSArray<CMPProfile *> *> *))completion;
 
 @end
 
-@implementation CMPConcurrentMutableDictionary
-
-
-@end
+NS_ASSUME_NONNULL_END

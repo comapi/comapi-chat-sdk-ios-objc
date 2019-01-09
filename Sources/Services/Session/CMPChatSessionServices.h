@@ -16,36 +16,18 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatMessagePart.h"
+#import <CMPComapiFoundation/CMPResult.h>
+#import <CMPComapiFoundation/CMPComapiClient.h>
 
-@implementation CMPChatMessagePart
+NS_ASSUME_NONNULL_BEGIN
 
-- (instancetype)initWithName:(NSString *)name type:(NSString *)type url:(NSURL *)url data:(NSString *)data size:(NSNumber *)size {
-    self = [super init];
-    
-    if (self) {
-        self.name = name;
-        self.type = type;
-        self.url = url;
-        self.data = data;
-        self.size = size;
-    }
-    
-    return self;
-}
+@interface CMPChatSessionServices : NSObject
 
-- (instancetype)initWithMessagePart:(CMPMessagePart *)messagePart {
-    self = [super init];
-    
-    if (self) {
-        self.name = messagePart.name;
-        self.type = messagePart.type;
-        self.url = messagePart.url;
-        self.data = messagePart.data;
-        self.size = messagePart.size;
-    }
-    
-    return self;
-}
+- (instancetype)initWithFoundation:(CMPComapiClient *)foundation;
+
+- (void)startSessionWithCompletion:(void(^)(void))completion failure:(void(^)(NSError * _Nullable))failure NS_SWIFT_NAME(startSession(completion:failure:));
+- (void)endSessionWithCompletion:(void (^)(CMPResult<NSNumber *> *))completion NS_SWIFT_NAME(endSession(completion:));
 
 @end
+
+NS_ASSUME_NONNULL_END

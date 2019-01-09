@@ -24,7 +24,7 @@
 
 - (NSArray<CMPChatMessageStatus *> *)adaptStatusesForConversationID:(NSString *)conversationID messageID:(NSString *)messageID statuses:(NSDictionary<NSString *,CMPMessageStatus *> *)statuses {
     NSMutableArray<CMPChatMessageStatus *> *adapted = [NSMutableArray new];
-
+    
     [statuses enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, CMPMessageStatus * _Nonnull obj, BOOL * _Nonnull stop) {
         CMPChatMessageDeliveryStatus status = [CMPChatMessageDeliveryStatusParser parseStatus:obj.status];
         CMPChatMessageStatus *messageStatus = [[CMPChatMessageStatus alloc] initWithConversationID:conversationID messageID:messageID profileID:key conversationEventID:nil timestamp:obj.timestamp messageStatus:status];
@@ -53,6 +53,7 @@
     
     return adapted;
 }
+
 
 - (NSArray<CMPChatMessageStatus *> *)adaptEvents:(NSArray<CMPChatManagedOrphanedEvent *> *)events {
     NSMutableArray<CMPChatMessageStatus *> *adapted = [NSMutableArray new];

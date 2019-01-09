@@ -48,7 +48,7 @@
 #pragma mark - CMPMissingEventsDelegate
 
 - (void)missingEventsForID:(NSString *)ID from:(NSInteger)from limit:(NSInteger)limit {
-    [_chatController queryMissingEventsForConversationID:ID from:from limit:limit];
+    [_chatController queryMissingEvents:ID from:from limit:limit];
 }
 
 #pragma mark - CMPStateDelegate
@@ -70,51 +70,43 @@
 - (void)client:(nonnull CMPComapiClient *)client didReceiveEvent:(nonnull CMPEvent *)event {
     switch (event.type) {
         case CMPEventTypeConversationCreate: {
-            CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithEvent:event];
+            CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithConversationCreateEvent:(CMPConversationEventCreate *)event];
             if (conversation) {
                 [_persistenceController upsertConversations:@[conversation] completion:^(BOOL success, NSError * _Nullable error) {
-                    
+                    // TODO: -
                 }];
             }
             break;
         }
         case CMPEventTypeConversationUpdate: {
-            CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithEvent:event];
+            CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithConversationUpdateEvent:(CMPConversationEventUpdate *)event];
             if (conversation) {
                 [_persistenceController upsertConversations:@[conversation] completion:^(BOOL success, NSError * _Nullable error) {
-                    
+                    // TODO: -
                 }];
             }
             break;
         }
-        case CMPEventTypeConversationDelete: {
-            CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithEvent:event];
+        case CMPEventTypeConversationDelete:
+            break;
+        case CMPEventTypeConversationUndelete: {
+            CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithConversationUndeleteEvent:(CMPConversationEventUndelete *)event];
             if (conversation) {
                 [_persistenceController upsertConversations:@[conversation] completion:^(BOOL success, NSError * _Nullable error) {
-                    
+                    // TODO: -
                 }];
             }
             break;
         }
-        case CMPEventTypeConversationUndelete:{
-            CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithEvent:event];
-            if (conversation) {
-                [_persistenceController upsertConversations:@[conversation] completion:^(BOOL success, NSError * _Nullable error) {
-                    
-                }];
-            }
+        case CMPEventTypeConversationParticipantAdded:
             break;
-        }
-        case CMPEventTypeConversationParticipantAdded: {
-
+        case CMPEventTypeConversationParticipantRemoved:
             break;
-        }
-            
+        case CMPEventTypeConversationParticipantUpdated:
+            break;
         case CMPEventTypeConversationParticipantTyping:
-
             break;
         case CMPEventTypeConversationParticipantTypingOff:
-
             break;
         case CMPEventTypeSocketInfo:
             break;
@@ -125,14 +117,15 @@
         case CMPEventTypeConversationMessageSent: {
             CMPConversationMessageEventSent *e = (CMPConversationMessageEventSent *)event;
             [_tracker checkEventForConversationID:e.payload.context.conversationID conversationEventID:e.conversationEventID delegate:self];
-            
+            [_chatController handleMessage:[[CMPChatMessage alloc] init] completion:^(BOOL success, NSError * _Nullable error) {
+                // TODO: -
+            }];
             break;
         }
         case CMPEventTypeConversationMessageRead: {
-            
-        }
             break;
-        default:
+        }
+        case CMPEventTypeNone:
             break;
     }
 }

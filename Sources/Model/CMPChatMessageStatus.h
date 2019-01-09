@@ -19,6 +19,7 @@
 #import "CMPChatMessageDeliveryStatus.h"
 
 #import <CMPComapiFoundation/CMPMessageStatus.h>
+#import <CMPComapiFoundation/CMPConversationMessageEvents.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -32,6 +33,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) CMPChatMessageDeliveryStatus messageStatus;
 
 - (instancetype)initWithConversationID:(nullable NSString *)conversationID messageID:(nullable NSString *)messageID profileID:(nullable NSString *)profileID conversationEventID:(nullable NSNumber *)conversationEventID timestamp:(nullable NSDate *)timestamp messageStatus:(CMPChatMessageDeliveryStatus)messageStatus;
+
+- (instancetype)initWithReadEvent:(CMPConversationMessageEventRead *)event;
+- (instancetype)initWithDeliveredEvent:(CMPConversationMessageEventDelivered *)event;
 
 @end
 

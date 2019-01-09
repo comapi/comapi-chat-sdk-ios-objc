@@ -16,20 +16,13 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <CMPComapiFoundation/CMPConversation.h>
+#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatConversationBase : NSObject <NSCopying>
+@interface CMPRetryManager : NSObject
 
-@property (nonatomic, strong, nullable) NSString *id;
-@property (nonatomic, strong, nullable) NSString *eTag;
-@property (nonatomic, strong, nullable) NSDate *updatedOn;
-@property (nonatomic, strong, nullable) NSNumber *firstLocalEventID;
-@property (nonatomic, strong, nullable) NSNumber *lastLocalEventID;
-@property (nonatomic, strong, nullable) NSNumber *latestRemoteEventID;
-
-- (instancetype)initWithID:(nullable NSString *)id firstLocalEventID:(nullable NSNumber *)firstLocalEventID lastLocalEventID:(nullable NSNumber *)lastLocalEventID latestRemoteEventID:(nullable NSNumber *)latestRemoteEventID eTag:(nullable NSString *)eTag updatedOn:(nullable NSDate *)updatedOn;
++ (void)retryBlock:(void (^)(void(^)(BOOL)))block attempts:(NSUInteger)attempts interval:(NSUInteger)interval;
 
 @end
 

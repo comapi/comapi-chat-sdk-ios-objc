@@ -16,12 +16,32 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
+#import "CMPChatSessionServices.h"
 
-NS_ASSUME_NONNULL_BEGIN
+@interface CMPChatSessionServices ()
 
-@interface CMPConcurrentMutableDictionary : NSMutableDictionary
+@property (nonatomic, strong, readonly) CMPComapiClient *foundation;
 
 @end
 
-NS_ASSUME_NONNULL_END
+@implementation CMPChatSessionServices
+
+- (instancetype)initWithFoundation:(CMPComapiClient *)foundation {
+    self = [super init];
+    
+    if (self) {
+        _foundation = foundation;
+    }
+    
+    return self;
+}
+
+- (void)startSessionWithCompletion:(void (^)(void))completion failure:(void (^)(NSError * _Nullable))failure {
+    [_foundation.services.session startSessionWithCompletion:completion failure:failure];
+}
+
+- (void)endSessionWithCompletion:(void (^)(CMPResult<NSNumber *> * _Nonnull))completion {
+    [_foundation.services.session endSessionWithCompletion:completion];
+}
+
+@end

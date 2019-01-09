@@ -16,36 +16,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatMessagePart.h"
+#import "CMPChatServices.h"
 
-@implementation CMPChatMessagePart
-
-- (instancetype)initWithName:(NSString *)name type:(NSString *)type url:(NSURL *)url data:(NSString *)data size:(NSNumber *)size {
-    self = [super init];
-    
-    if (self) {
-        self.name = name;
-        self.type = type;
-        self.url = url;
-        self.data = data;
-        self.size = size;
-    }
-    
-    return self;
-}
-
-- (instancetype)initWithMessagePart:(CMPMessagePart *)messagePart {
-    self = [super init];
-    
-    if (self) {
-        self.name = messagePart.name;
-        self.type = messagePart.type;
-        self.url = messagePart.url;
-        self.data = messagePart.data;
-        self.size = messagePart.size;
-    }
-    
-    return self;
-}
+@implementation CMPChatServices
 
 @end
