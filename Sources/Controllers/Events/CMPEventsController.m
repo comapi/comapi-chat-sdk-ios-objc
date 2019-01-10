@@ -72,7 +72,7 @@
         case CMPEventTypeConversationCreate: {
             CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithConversationCreateEvent:(CMPConversationEventCreate *)event];
             if (conversation) {
-                [_persistenceController upsertConversations:@[conversation] completion:^(BOOL success, NSError * _Nullable error) {
+                [_persistenceController upsertConversations:@[conversation] completion:^(CMPStoreResult<NSNumber *> * result) {
                     // TODO: -
                 }];
             }
@@ -81,7 +81,7 @@
         case CMPEventTypeConversationUpdate: {
             CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithConversationUpdateEvent:(CMPConversationEventUpdate *)event];
             if (conversation) {
-                [_persistenceController upsertConversations:@[conversation] completion:^(BOOL success, NSError * _Nullable error) {
+                [_persistenceController upsertConversations:@[conversation] completion:^(CMPStoreResult<NSNumber *> * result) {
                     // TODO: -
                 }];
             }
@@ -92,7 +92,7 @@
         case CMPEventTypeConversationUndelete: {
             CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithConversationUndeleteEvent:(CMPConversationEventUndelete *)event];
             if (conversation) {
-                [_persistenceController upsertConversations:@[conversation] completion:^(BOOL success, NSError * _Nullable error) {
+                [_persistenceController upsertConversations:@[conversation] completion:^(CMPStoreResult<NSNumber *> * result) {
                     // TODO: -
                 }];
             }
@@ -117,7 +117,7 @@
         case CMPEventTypeConversationMessageSent: {
             CMPConversationMessageEventSent *e = (CMPConversationMessageEventSent *)event;
             [_tracker checkEventForConversationID:e.payload.context.conversationID conversationEventID:e.conversationEventID delegate:self];
-            [_chatController handleMessage:[[CMPChatMessage alloc] init] completion:^(BOOL success, NSError * _Nullable error) {
+            [_chatController handleMessage:[[CMPChatMessage alloc] init] completion:^(BOOL success) {
                 // TODO: -
             }];
             break;

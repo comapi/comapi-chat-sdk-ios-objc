@@ -27,6 +27,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithObject:(nullable T)object error:(nullable NSError *)error;
 
++ (instancetype)resultWithObject:(nullable T)object error:(nullable NSError *)error;
+
 @end
 
 NS_ASSUME_NONNULL_END

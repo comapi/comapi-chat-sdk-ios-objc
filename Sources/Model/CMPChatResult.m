@@ -55,4 +55,15 @@
     return self;
 }
 
+- (instancetype)initWithStoreResult:(CMPStoreResult<id> *)result {
+    self = [super init];
+    
+    if (self) {
+        _isSuccessful = result.object != nil;
+        _error = result.error;
+    }
+    
+    return self;
+}
+
 @end

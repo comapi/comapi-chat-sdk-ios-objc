@@ -31,4 +31,8 @@
     return self;
 }
 
++ (instancetype)resultWithObject:(id)object error:(NSError *)error {
+    return [[CMPStoreResult alloc] initWithObject:object error:error];
+}
+
 @end
