@@ -355,7 +355,9 @@ NSInteger const kETagNotValid = 412;
     [[self withClient].services.messaging getConversationsWithProfileID:[self getProfileID] isPublic:NO completion:^(CMPResult<NSArray<CMPConversation *> *> * result) {
         [weakSelf.persistenceController getAllConversations:^(CMPStoreResult<NSArray<CMPChatConversation *> *> * storeResult) {
             CMPConversationComparison *compareResult = [weakSelf compare:storeResult.error == nil remote:result.object local:storeResult.object];
-            
+            [weakSelf updateLocalConversationList:compareResult completion:^(CMPConversationComparison * compareResult) {
+                // TODO: -
+            }];
         }];
     }];
 }
@@ -503,7 +505,10 @@ NSInteger const kETagNotValid = 412;
 //                                .map(result -> new ChatResult(result.isSuccessful, null)));
 //}
 
-- (void)synchroniseConversation {
+- (void)synchroniseConversation:(NSString *)ID {
+    [[self withClient].services.messaging getMessagesWithConversationID:ID completion:^(CMPResult<CMPGetMessagesResult *> * result) {
+        
+    }];
     // TODO: -
 }
 
@@ -519,10 +524,12 @@ NSInteger const kETagNotValid = 412;
         deleteSuccess = storeResult.object != nil ? storeResult.object.boolValue : NO;
         dispatch_group_leave(group);
     }];
+    dispatch_group_enter(group);
     [_persistenceController upsertConversations:comparison.conversationsToDelete completion:^(CMPStoreResult<NSNumber *> * storeResult) {
         addSuccess = storeResult.object != nil ? storeResult.object.boolValue : NO;
         dispatch_group_leave(group);
     }];
+    dispatch_group_enter(group);
     [_persistenceController updateConversations:comparison.conversationsToDelete completion:^(CMPStoreResult<NSNumber *> * storeResult) {
         updateSuccess = storeResult.object != nil ? storeResult.object.boolValue : NO;
         dispatch_group_leave(group);
@@ -641,8 +648,12 @@ NSInteger const kETagNotValid = 412;
 //    });
 //}
 
-- (void)lookForMissingEvents {
+- (CMPConversationComparison *)lookForMissingEvents:(CMPConversationComparison *)comparison {
+    if (!comparison.isSuccessful || comparison.conversationsToUpdate.count == 0) {
+        return comparison;
+    }
     // TODO: -
+    return comparison;
 }
 
 ///**
