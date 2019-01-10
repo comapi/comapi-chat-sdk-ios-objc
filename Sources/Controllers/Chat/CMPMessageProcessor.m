@@ -31,10 +31,7 @@ NSInteger const kMaxPartDataLength = 13333;
 @property (nonatomic, strong, readonly) NSArray<CMPChatAttachment *> *additionalAttachments;
 @property (nonatomic, strong, readonly) NSMutableArray<CMPChatMessagePart *> *preProcessedParts;
 
-
 @property (nonatomic, strong, readonly) CMPChatMessage *message;
-@property (nonatomic, strong, readonly) NSString *conversationId;
-@property (nonatomic, strong, readonly) NSString *sender;
 
 @end
 

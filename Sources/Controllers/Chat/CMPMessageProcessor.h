@@ -29,6 +29,8 @@ extern NSString *const kKeyMessageTempId;
 @interface CMPMessageProcessor : NSObject
 
 @property (nonatomic, strong, readonly) NSString *tempMessageId;
+@property (nonatomic, strong, readonly) NSString *conversationId;
+@property (nonatomic, strong, readonly) NSString *sender;
 
 - (instancetype)initWithMessage:(CMPChatMessage *) message toConversationWithID:(NSString *) conversationId from:(NSString *) sender;
 

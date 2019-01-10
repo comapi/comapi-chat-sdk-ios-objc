@@ -36,7 +36,7 @@
     return self;
 }
 
-- (BOOL)checkEventForConversationID:(NSString *)conversationID conversationEventID:(NSNumber *)conversationEventID delegate:(id<CMPMissingEventsDelegate>)delegate {
+- (BOOL)checkEvent:(NSString *)conversationID conversationEventID:(NSNumber *)conversationEventID delegate:(id<CMPMissingEventsDelegate>)delegate {
     if (_idsPerConverastion[conversationID] == nil) {
         NSMutableArray<NSNumber *> *ids = [NSMutableArray new];
         [ids addObject:conversationEventID];
@@ -56,7 +56,7 @@
             }
             
             if (last.integerValue < conversationEventID.integerValue - 1) {
-                [delegate missingEventsForID:conversationID from:last.integerValue + 1 limit:conversationEventID.integerValue - last.integerValue];
+                [delegate missingEvents:conversationID from:last.integerValue + 1 limit:conversationEventID.integerValue - last.integerValue];
             }
             
             while (ids.count > 10) {

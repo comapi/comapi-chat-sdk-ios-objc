@@ -85,31 +85,3 @@
 }
 
 @end
-
-//    public ConversationComparison(Long remoteLastEventId, ChatConversationBase conversation) {
-//
-//        conversationsToDelete = new ArrayList<>();
-//        conversationsToUpdate = new ArrayList<>();
-//        conversationsToAdd = new ArrayList<>();
-//
-//        if (conversation != null && remoteLastEventId != null) {
-//            if (conversation.getLastRemoteEventId() != null && conversation.getLastRemoteEventId() != -1L && remoteLastEventId > conversation.getLastRemoteEventId()) {
-//                conversationsToUpdate.add(ChatConversation.builder().populate(conversation).setLastRemoteEventId(remoteLastEventId).build());
-//            }
-//        }
-//
-//        if (remoteLastEventId == null || remoteLastEventId == -1L) {
-//            remoteCallSuccessful = false;
-//        }
-//    }
-//
-//    /**
-//     * Set if processing of conversations was successful.
-//     *
-//     * @param isSuccessful TRue if processing of conversations was successful.
-//     */
-//    void addSuccess(boolean isSuccessful) {
-//        this.isSuccessful = isSuccessful && remoteCallSuccessful;
-//    }
-//}
-//}
