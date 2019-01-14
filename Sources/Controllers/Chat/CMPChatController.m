@@ -22,6 +22,7 @@
 #import "CMPMessageProcessor.h"
 #import "CMPChatResult.h"
 #import "CMPRetryManager.h"
+#import "CMPChatMessage.h"
 
 #import <CMPComapiFoundation/CMPConversationMessageEvents.h>
 #import <CMPComapiFoundation/CMPMessageStatusUpdate.h>
@@ -137,16 +138,39 @@ NSInteger const kETagNotValid = 412;
 
 #pragma mark - Messages
 
-- (void) sendMessage: (nonnull CMPChatMessage *) message withAttachments: (nullable NSArray<CMPChatAttachment *> *) attachments toConversationWithID: (nonnull NSString *) conversationId from:(NSString *) from {
-    //CMPMessageProcessor *processor = [[CMPMessageProcessor alloc] initWithMessage:message toConversationWithID:conversationId from:from];
-    //CMPChatMessage *messageToSave = [processor createPreUploadMessageWithAttachments:attachments];
-    // save message
-    // send attachments
-    //CMPChatMessage *messageToUpdate = [processor createPostUploadMessageWithAttachments:attachments];
-    // save message
-    // send message
-    // update id with processor.tempMessageId and eventId
+- (void) sendMessage: (CMPSendableMessage *)message withAttachments: (NSArray<CMPChatAttachment *> *) attachments toConversationWithID: (NSString *) conversationId completion:(void(^)(BOOL, NSError * _Nullable))completion {
     
+    NSString *profileId = [_client getProfileID];
+    if (profileId != nil) {
+        
+        CMPMessageProcessor *processor = [[CMPMessageProcessor alloc] initWithModelAdapter:_adapter message:message attachments:attachments toConversationWithID:conversationId from:profileId];
+
+        __weak CMPChatController *weakSelf = self;
+        
+        [_persistenceController updateStoreWithNewMessage:[processor createPreUploadMessageWithAttachments:attachments] completion:^(BOOL success, NSError *error) {
+            if (weakSelf != nil && success) {
+                [weakSelf.attachmentController uploadAttachments:attachments withCompletion:^(NSArray<CMPChatAttachment *> * sentAttachments) {
+                    if (weakSelf != nil && success) {
+                        [weakSelf.persistenceController updateStoreWithNewMessage:[processor createPostUploadMessageWithAttachments:attachments] completion:^(BOOL success, NSError *error) {
+                            [[[weakSelf.client services] messaging] sendMessage:[processor createMessageToSend] toConversationWithID:conversationId completion:^(CMPResult<CMPSendMessagesResult *> * result) {
+                                if (success) {
+                                    [weakSelf.persistenceController updateStoreWithNewMessage:[processor createFinalMessageWithID:result.object.id eventID:result.object.eventID] completion:^(BOOL success, NSError * _Nullable error) {
+                                        completion(success, error);
+                                    }];
+                                } else {
+                                    completion(NO, error);
+                                }
+                            }];
+                        }];
+                    } else {
+                        completion(NO, error);
+                    }
+                }];
+            } else {
+                completion(NO, error);
+            }
+        }];
+    }
 }
 
 - (void)handleMessage:(CMPChatMessage *)message completion:(void(^)(BOOL, NSError * _Nullable))completion {

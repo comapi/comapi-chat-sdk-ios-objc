@@ -54,6 +54,25 @@
     return adapted;
 }
 
+- (NSArray<CMPMessagePart *> *)adaptChatMessageParts:(NSArray<CMPChatMessagePart *> *)parts {
+    NSMutableArray<CMPMessagePart *> *adapted = [NSMutableArray new];
+    
+    [parts enumerateObjectsUsingBlock:^(CMPChatMessagePart * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [adapted addObject:[[CMPMessagePart alloc] initWithName:obj.name type:obj.type url:obj.url data:obj.data size:obj.size]];
+    }];
+    
+    return adapted;
+}
+
+- (NSArray<CMPChatMessagePart *> *)adaptMessageParts:(NSArray<CMPMessagePart *> *)parts {
+    NSMutableArray<CMPChatMessagePart *> *adapted = [NSMutableArray new];
+    
+    [parts enumerateObjectsUsingBlock:^(CMPMessagePart * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [adapted addObject:[[CMPChatMessagePart alloc] initWithName:obj.name type:obj.type url:obj.url data:obj.data size:obj.size]];
+    }];
+    
+    return adapted;
+}
 
 - (NSArray<CMPChatMessageStatus *> *)adaptEvents:(NSArray<CMPChatManagedOrphanedEvent *> *)events {
     NSMutableArray<CMPChatMessageStatus *> *adapted = [NSMutableArray new];

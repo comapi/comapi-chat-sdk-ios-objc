@@ -17,6 +17,7 @@
 
 #import "CMPChatAttachment.h"
 #import "CMPChatMessage.h"
+#import "CMPModelAdapter.h"
 
 #import <CMPComapiFoundation/CMPSendMessagesResult.h>
 
@@ -30,11 +31,12 @@ extern NSString *const kKeyMessageTempId;
 
 @property (nonatomic, strong, readonly) NSString *tempMessageId;
 
-- (instancetype)initWithMessage:(CMPChatMessage *) message toConversationWithID:(NSString *) conversationId from:(NSString *) sender;
+- (instancetype)initWithModelAdapter:(CMPModelAdapter *)adapter message:(CMPSendableMessage *) message attachments:(NSArray<CMPChatAttachment *> *) attachments toConversationWithID:(NSString *) conversationId from:(NSString *) sender;
 
 - (CMPChatMessage *)createPreUploadMessageWithAttachments:(NSArray<CMPChatAttachment *> *) attachments;
 - (CMPChatMessage *)createPostUploadMessageWithAttachments:(NSArray<CMPChatAttachment *> *) attachments;
-
+-(CMPChatMessage *)createFinalMessageWithID:(NSString *) messageId eventID:(NSNumber *) eventID;
+- (CMPSendableMessage *)createMessageToSend;
 @end
 
 NS_ASSUME_NONNULL_END
