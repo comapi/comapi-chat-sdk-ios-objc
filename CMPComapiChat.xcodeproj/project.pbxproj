@@ -34,8 +34,8 @@
 		8961391821CBED0A00FA41C1 /* CMPChatConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 8961391621CBED0A00FA41C1 /* CMPChatConfig.m */; };
 		8969DBFB21DCF3860047449C /* CMPRetryManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 8969DBF921DCF3860047449C /* CMPRetryManager.h */; };
 		8969DBFC21DCF3860047449C /* CMPRetryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8969DBFA21DCF3860047449C /* CMPRetryManager.m */; };
-		8969DC0021DE71170047449C /* CMPConversationComparator.h in Headers */ = {isa = PBXBuildFile; fileRef = 8969DBFE21DE71170047449C /* CMPConversationComparator.h */; };
-		8969DC0121DE71170047449C /* CMPConversationComparator.m in Sources */ = {isa = PBXBuildFile; fileRef = 8969DBFF21DE71170047449C /* CMPConversationComparator.m */; };
+		8969DC0021DE71170047449C /* CMPConversationComparison.h in Headers */ = {isa = PBXBuildFile; fileRef = 8969DBFE21DE71170047449C /* CMPConversationComparison.h */; };
+		8969DC0121DE71170047449C /* CMPConversationComparison.m in Sources */ = {isa = PBXBuildFile; fileRef = 8969DBFF21DE71170047449C /* CMPConversationComparison.m */; };
 		8969DC0E21DFA0D10047449C /* CMPChatServices.h in Headers */ = {isa = PBXBuildFile; fileRef = 8969DC0C21DFA0D10047449C /* CMPChatServices.h */; };
 		8969DC0F21DFA0D10047449C /* CMPChatServices.m in Sources */ = {isa = PBXBuildFile; fileRef = 8969DC0D21DFA0D10047449C /* CMPChatServices.m */; };
 		8969DC1521DFBE5A0047449C /* CMPChatProfileServices.h in Headers */ = {isa = PBXBuildFile; fileRef = 8969DC1321DFBE5A0047449C /* CMPChatProfileServices.h */; };
@@ -96,6 +96,12 @@
 		89C0143321C2A3FA00799B3B /* NSArray+CMPUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C0143121C2A3FA00799B3B /* NSArray+CMPUtility.m */; };
 		89C0143621C2CA6600799B3B /* NSManagedObjectContext+CMPUtility.h in Headers */ = {isa = PBXBuildFile; fileRef = 89C0143421C2CA6600799B3B /* NSManagedObjectContext+CMPUtility.h */; };
 		89C0143721C2CA6600799B3B /* NSManagedObjectContext+CMPUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C0143521C2CA6600799B3B /* NSManagedObjectContext+CMPUtility.m */; };
+		89D0223621E619DA00E85A85 /* CMPMessageProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D0223421E619D900E85A85 /* CMPMessageProcessor.m */; };
+		89D0223721E619DA00E85A85 /* CMPMessageProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = 89D0223521E619DA00E85A85 /* CMPMessageProcessor.h */; };
+		89D0223A21E61A2D00E85A85 /* CMPChatAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D0223821E61A2D00E85A85 /* CMPChatAttachment.m */; };
+		89D0223B21E61A2D00E85A85 /* CMPChatAttachment.h in Headers */ = {isa = PBXBuildFile; fileRef = 89D0223921E61A2D00E85A85 /* CMPChatAttachment.h */; };
+		89D0223E21E61A6100E85A85 /* NSString+CMPBase64.h in Headers */ = {isa = PBXBuildFile; fileRef = 89D0223C21E61A6100E85A85 /* NSString+CMPBase64.h */; };
+		89D0223F21E61A6100E85A85 /* NSString+CMPBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D0223D21E61A6100E85A85 /* NSString+CMPBase64.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -152,8 +158,8 @@
 		8961391621CBED0A00FA41C1 /* CMPChatConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPChatConfig.m; sourceTree = "<group>"; };
 		8969DBF921DCF3860047449C /* CMPRetryManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPRetryManager.h; sourceTree = "<group>"; };
 		8969DBFA21DCF3860047449C /* CMPRetryManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPRetryManager.m; sourceTree = "<group>"; };
-		8969DBFE21DE71170047449C /* CMPConversationComparator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPConversationComparator.h; sourceTree = "<group>"; };
-		8969DBFF21DE71170047449C /* CMPConversationComparator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPConversationComparator.m; sourceTree = "<group>"; };
+		8969DBFE21DE71170047449C /* CMPConversationComparison.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPConversationComparison.h; sourceTree = "<group>"; };
+		8969DBFF21DE71170047449C /* CMPConversationComparison.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPConversationComparison.m; sourceTree = "<group>"; };
 		8969DC0C21DFA0D10047449C /* CMPChatServices.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPChatServices.h; sourceTree = "<group>"; };
 		8969DC0D21DFA0D10047449C /* CMPChatServices.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPChatServices.m; sourceTree = "<group>"; };
 		8969DC1321DFBE5A0047449C /* CMPChatProfileServices.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPChatProfileServices.h; sourceTree = "<group>"; };
@@ -222,6 +228,12 @@
 		89C0143121C2A3FA00799B3B /* NSArray+CMPUtility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSArray+CMPUtility.m"; sourceTree = "<group>"; };
 		89C0143421C2CA6600799B3B /* NSManagedObjectContext+CMPUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSManagedObjectContext+CMPUtility.h"; sourceTree = "<group>"; };
 		89C0143521C2CA6600799B3B /* NSManagedObjectContext+CMPUtility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObjectContext+CMPUtility.m"; sourceTree = "<group>"; };
+		89D0223421E619D900E85A85 /* CMPMessageProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPMessageProcessor.m; sourceTree = "<group>"; };
+		89D0223521E619DA00E85A85 /* CMPMessageProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPMessageProcessor.h; sourceTree = "<group>"; };
+		89D0223821E61A2D00E85A85 /* CMPChatAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPChatAttachment.m; sourceTree = "<group>"; };
+		89D0223921E61A2D00E85A85 /* CMPChatAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPChatAttachment.h; sourceTree = "<group>"; };
+		89D0223C21E61A6100E85A85 /* NSString+CMPBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+CMPBase64.h"; sourceTree = "<group>"; };
+		89D0223D21E61A6100E85A85 /* NSString+CMPBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+CMPBase64.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -341,6 +353,8 @@
 				896CB96C21B9591A003FB3DF /* CMPChatRoles.m */,
 				896CB96721B957E8003FB3DF /* CMPChatRoleAttributes.h */,
 				896CB96821B957E8003FB3DF /* CMPChatRoleAttributes.m */,
+				89D0223921E61A2D00E85A85 /* CMPChatAttachment.h */,
+				89D0223821E61A2D00E85A85 /* CMPChatAttachment.m */,
 				896CB97721B96CD1003FB3DF /* CMPChatMessage.h */,
 				896CB97821B96CD1003FB3DF /* CMPChatMessage.m */,
 				896CB98B21B97C02003FB3DF /* CMPChatMessageContext.h */,
@@ -423,8 +437,8 @@
 		8969DBFD21DE70F90047449C /* Comparator */ = {
 			isa = PBXGroup;
 			children = (
-				8969DBFE21DE71170047449C /* CMPConversationComparator.h */,
-				8969DBFF21DE71170047449C /* CMPConversationComparator.m */,
+				8969DBFE21DE71170047449C /* CMPConversationComparison.h */,
+				8969DBFF21DE71170047449C /* CMPConversationComparison.m */,
 			);
 			path = Comparator;
 			sourceTree = "<group>";
@@ -497,6 +511,8 @@
 		896E30DD21C3E681008CC785 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				89D0223C21E61A6100E85A85 /* NSString+CMPBase64.h */,
+				89D0223D21E61A6100E85A85 /* NSString+CMPBase64.m */,
 				89C0143021C2A3FA00799B3B /* NSArray+CMPUtility.h */,
 				89C0143121C2A3FA00799B3B /* NSArray+CMPUtility.m */,
 				8969DBF921DCF3860047449C /* CMPRetryManager.h */,
@@ -517,6 +533,8 @@
 		896E30F421C93E7A008CC785 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
+				89D0223521E619DA00E85A85 /* CMPMessageProcessor.h */,
+				89D0223421E619D900E85A85 /* CMPMessageProcessor.m */,
 				896E30F621C93ECD008CC785 /* CMPChatController.h */,
 				896E30F721C93ECD008CC785 /* CMPChatController.m */,
 			);
@@ -626,6 +644,7 @@
 				8969DBFB21DCF3860047449C /* CMPRetryManager.h in Headers */,
 				89C0143221C2A3FA00799B3B /* NSArray+CMPUtility.h in Headers */,
 				896E30E621C3F5E1008CC785 /* CMPChatConstants.h in Headers */,
+				89D0223B21E61A2D00E85A85 /* CMPChatAttachment.h in Headers */,
 				896E30E121C3F561008CC785 /* CMPEventsController.h in Headers */,
 				89BFC61C21CCF0200089B079 /* CMPCallLimiter.h in Headers */,
 				896015D121B929A200370AF2 /* CMPChatStore.h in Headers */,
@@ -637,7 +656,8 @@
 				896CB99021BA7EFC003FB3DF /* CMPStoreFactory.h in Headers */,
 				896CB97521B9624F003FB3DF /* CMPChatParticipant.h in Headers */,
 				896015BB21B82D6600370AF2 /* CMPInternalConfig.h in Headers */,
-				8969DC0021DE71170047449C /* CMPConversationComparator.h in Headers */,
+				8969DC0021DE71170047449C /* CMPConversationComparison.h in Headers */,
+				89D0223721E619DA00E85A85 /* CMPMessageProcessor.h in Headers */,
 				896015C321B83D9F00370AF2 /* CMPComapiChat.h in Headers */,
 				8969DC1D21DFBE8B0047449C /* CMPChatMessagingServices.h in Headers */,
 				896CB98921B97AFC003FB3DF /* CMPChatMessageParticipant.h in Headers */,
@@ -650,6 +670,7 @@
 				896CB96D21B9591A003FB3DF /* CMPChatRoles.h in Headers */,
 				8998F4A221B800AA00BD6C52 /* CMPComapiChat.h in Headers */,
 				896015C721B83E9700370AF2 /* CMPLifecycleDelegate.h in Headers */,
+				89D0223E21E61A6100E85A85 /* NSString+CMPBase64.h in Headers */,
 				8969DC1521DFBE5A0047449C /* CMPChatProfileServices.h in Headers */,
 				896E30FC21C93EDB008CC785 /* CMPAttachmentController.h in Headers */,
 				896CB97D21B97121003FB3DF /* CMPChatMessageStatus.h in Headers */,
@@ -870,9 +891,11 @@
 				896CB98A21B97AFC003FB3DF /* CMPChatMessageParticipant.m in Sources */,
 				8995262221C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.m in Sources */,
 				896CB9B021BAA7A3003FB3DF /* CMPStoreResult.m in Sources */,
+				89D0223A21E61A2D00E85A85 /* CMPChatAttachment.m in Sources */,
 				896E30E721C3F5E1008CC785 /* CMPChatConstants.m in Sources */,
 				8969DC1E21DFBE8B0047449C /* CMPChatMessagingServices.m in Sources */,
 				896CB97A21B96CD1003FB3DF /* CMPChatMessage.m in Sources */,
+				89D0223F21E61A6100E85A85 /* NSString+CMPBase64.m in Sources */,
 				896CB99221BA981C003FB3DF /* CMPStoreFactory.m in Sources */,
 				896E30FD21C93EDB008CC785 /* CMPAttachmentController.m in Sources */,
 				896015D721B931AA00370AF2 /* ComapiChatModel.xcdatamodeld in Sources */,
@@ -885,7 +908,7 @@
 				892F49CB21BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.m in Sources */,
 				896E30E221C3F561008CC785 /* CMPEventsController.m in Sources */,
 				892F49B821BE7C3100FA52C9 /* CMPModelAdapter.m in Sources */,
-				8969DC0121DE71170047449C /* CMPConversationComparator.m in Sources */,
+				8969DC0121DE71170047449C /* CMPConversationComparison.m in Sources */,
 				896E30F921C93ECD008CC785 /* CMPChatController.m in Sources */,
 				89C0143321C2A3FA00799B3B /* NSArray+CMPUtility.m in Sources */,
 				896CB98621B97979003FB3DF /* CMPChatMessagePart.m in Sources */,
@@ -899,6 +922,7 @@
 				896CB96621B954B3003FB3DF /* CMPChatRole.m in Sources */,
 				896015CD21B9290000370AF2 /* CMPPersistenceController.m in Sources */,
 				896015BF21B82D6600370AF2 /* CMPChatResult.m in Sources */,
+				89D0223621E619DA00E85A85 /* CMPMessageProcessor.m in Sources */,
 				896E310121C954B1008CC785 /* CMPMissingEventsTracker.m in Sources */,
 				896015C421B83D9F00370AF2 /* CMPComapiChat.m in Sources */,
 			);

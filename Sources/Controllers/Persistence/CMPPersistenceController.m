@@ -27,7 +27,7 @@
 
 @interface CMPPersistenceController ()
 
-- (BOOL)updateConversationFromEventForStore:(id<CMPChatStore>)store conversationID:(NSString *)conversationID eventID:(NSNumber *)eventID updatedOn:(NSDate *)updatedOn;
+- (BOOL)updateConversationFromEvent:(id<CMPChatStore>)store conversationID:(NSString *)conversationID eventID:(NSNumber *)eventID updatedOn:(NSDate *)updatedOn;
 
 @end
 
@@ -45,52 +45,52 @@
     return self;
 }
 
-- (void)getConversationForID:(NSString *)conversationID completion:(void(^)(CMPChatConversation *, NSError * _Nullable))completion {
+- (void)getConversation:(NSString *)conversationID completion:(void(^)(CMPStoreResult<CMPChatConversation *> *))completion {
     [_factory executeTransaction:^(id<CMPChatStore> store, NSError * error) {
         if (error) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(nil, error);
+                completion([CMPStoreResult resultWithObject:nil error:error]);
             });
         } else {
             [store beginTransaction];
-            CMPChatConversation *conversation = [store getConversationForID:conversationID];
+            CMPChatConversation *conversation = [store getConversation:conversationID];
             [store endTransaction];
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(conversation, nil);
+                completion([CMPStoreResult resultWithObject:conversation error:nil]);
             });
         }
     }];
 }
 
-- (void)getAllConversationsWithCompletion:(void(^)(NSArray<CMPChatConversation *> * _Nullable, NSError * _Nullable))completion {
+- (void)getAllConversations:(void(^)(CMPStoreResult<NSArray<CMPChatConversation *> *> *))completion {
     [_factory executeTransaction:^(id<CMPChatStore> _Nullable store, NSError * _Nullable error) {
         if (error) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(nil, error);
+                completion([CMPStoreResult resultWithObject:nil error:error]);
             });
         } else {
             [store beginTransaction];
             NSArray<CMPChatConversation *> *conversations = [store getAllConversations];
             [store endTransaction];
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(conversations, nil);
+                completion([CMPStoreResult resultWithObject:conversations error:nil]);
             });
         }
     }];
 }
 
-- (void)upsertConversations:(NSArray<CMPChatConversation *> *)conversations completion:(void(^)(BOOL, NSError * _Nullable))completion {
+- (void)upsertConversations:(NSArray<CMPChatConversation *> *)conversations completion:(void(^)(CMPStoreResult<NSNumber *> *))completion {
     [_factory executeTransaction:^(id<CMPChatStore> _Nullable store, NSError * _Nullable error) {
         if (error) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(NO, error);
+                completion([CMPStoreResult resultWithObject:@(NO) error:error]);
             });
         } else {
             [store beginTransaction];
             __block BOOL success = YES;
             [conversations enumerateObjectsUsingBlock:^(CMPChatConversation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 CMPChatConversation *newConversation = [obj copy];
-                CMPChatConversation *savedConversation = [store getConversationForID:obj.id];
+                CMPChatConversation *savedConversation = [store getConversation:obj.id];
                 if (savedConversation == nil) {
                     newConversation.firstLocalEventID = @(-1L);
                     newConversation.lastLocalEventID = @(-1L);
@@ -123,24 +123,24 @@
             }];
             [store endTransaction];
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(success, nil);
+                completion([CMPStoreResult resultWithObject:@(success) error:nil]);
             });
         }
     }];
 }
 
-- (void)updateConversations:(NSArray<CMPChatConversation *> *)conversations completion:(void(^)(BOOL, NSError * _Nullable))completion {
+- (void)updateConversations:(NSArray<CMPChatConversation *> *)conversations completion:(void(^)(CMPStoreResult<NSNumber *> *))completion {
     [_factory executeTransaction:^(id<CMPChatStore> _Nullable store, NSError * _Nullable error) {
         if (error) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(NO, error);
+                completion([CMPStoreResult resultWithObject:@(NO) error:error]);
             });
         } else {
             [store beginTransaction];
             __block BOOL success = YES;
             [conversations enumerateObjectsUsingBlock:^(CMPChatConversation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 CMPChatConversation *newConversation = [[CMPChatConversation alloc] init];
-                CMPChatConversation *savedConversation = [store getConversationForID:obj.id];
+                CMPChatConversation *savedConversation = [store getConversation:obj.id];
                 if (savedConversation) {
                     newConversation.id = savedConversation.id;
                     newConversation.firstLocalEventID = savedConversation.firstLocalEventID;
@@ -162,56 +162,56 @@
             }];
             [store endTransaction];
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(success, nil);
+                completion([CMPStoreResult resultWithObject:@(success) error:nil]);
             });
         }
     }];
 }
 
-- (void)deleteConversationForID:(NSString *)ID completion:(void(^)(BOOL, NSError * _Nullable))completion {
+- (void)deleteConversation:(NSString *)ID completion:(void(^)(CMPStoreResult<NSNumber *> *))completion {
     [_factory executeTransaction:^(id<CMPChatStore> _Nullable store, NSError * _Nullable error) {
         if (error) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(NO, error);
+                completion([CMPStoreResult resultWithObject:@(NO) error:error]);
             });
         } else {
             [store beginTransaction];
-            BOOL success = [store deleteConversationForID:ID];
+            BOOL success = [store deleteConversation:ID];
             [store endTransaction];
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(success, nil);
+                completion([CMPStoreResult resultWithObject:@(success) error:nil]);
             });
         }
     }];
 }
 
-- (void)deleteConversations:(NSArray<CMPChatConversation *> *)conversations completion:(void(^)(BOOL, NSError * _Nullable))completion {
+- (void)deleteConversations:(NSArray<CMPChatConversation *> *)conversations completion:(void(^)(CMPStoreResult<NSNumber *> *))completion {
     [_factory executeTransaction:^(id<CMPChatStore> _Nullable store, NSError * _Nullable error) {
         if (error) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(NO, error);
+                completion([CMPStoreResult resultWithObject:@(NO) error:error]);
             });
         } else {
             [store beginTransaction];
             __block BOOL success = NO;
             [conversations enumerateObjectsUsingBlock:^(CMPChatConversation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                success = success && [store deleteConversationForID:obj.id];
+                success = success && [store deleteConversation:obj.id];
             }];
             [store endTransaction];
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(NO, error);
+                completion([CMPStoreResult resultWithObject:@(NO) error:error]);
             });
         }
     }];
 }
 
-- (void)processMessagesResultForID:(NSString *)ID result:(CMPGetMessagesResult *)result completion:(void(^)(CMPGetMessagesResult *, NSError * _Nullable))completion {
+- (void)processMessagesResult:(NSString *)ID result:(CMPGetMessagesResult *)result completion:(void(^)(CMPStoreResult<CMPGetMessagesResult *> *))completion {
     __weak typeof(self) weakSelf = self;
     if (result.messages) {
         [_factory executeTransaction:^(id<CMPChatStore> _Nullable store, NSError * _Nullable error) {
             if (error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    completion(result, error);
+                    completion([CMPStoreResult resultWithObject:result error:error]);
                 });
             } else {
                 [store beginTransaction];
@@ -223,7 +223,7 @@
                         updatedOn = obj.context.sentOn;
                     }
                 }];
-                CMPChatConversation *savedConversation = [store getConversationForID:ID];
+                CMPChatConversation *savedConversation = [store getConversation:ID];
                 NSNumber *firstLocal = [NSNumber numberWithInteger:MIN([result.earliestEventID integerValue], [savedConversation.firstLocalEventID integerValue])];
                 NSNumber *lastLocal = [NSNumber numberWithInteger:MAX([result.latestEventID integerValue], [savedConversation.lastLocalEventID integerValue])];
                 NSNumber *lastRemote = [NSNumber numberWithInteger:MAX([result.latestEventID integerValue], [savedConversation.latestRemoteEventID integerValue])];
@@ -234,14 +234,14 @@
                 }
                 [store endTransaction];
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    completion(result, nil);
+                    completion([CMPStoreResult resultWithObject:result error:nil]);
                 });
             }
         }];
     } else {
         logWithLevel(CMPLogLevelWarning, @"Data Store: messages are nil, skipping...");
         dispatch_async(dispatch_get_main_queue(), ^{
-            completion(result, nil);
+            completion([CMPStoreResult resultWithObject:result error:nil]);
         });
     }
 }
@@ -298,27 +298,27 @@
     }
 }
 
-- (void)deleteOrphanedEventsWithIDs:(NSArray<NSString *> *)IDs completion:(void(^)(NSInteger, NSError * _Nullable))completion {
+- (void)deleteOrphanedEvents:(NSArray<NSString *> *)IDs completion:(void(^)(CMPStoreResult<NSNumber *> *))completion {
     [_manager.workerContext deleteOrphanedEventsForIDs:IDs completion:^(NSInteger deleted, NSError * _Nullable error) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            completion(deleted, error);
+            completion([CMPStoreResult resultWithObject:@(deleted) error:error]);
         });
     }];
 }
 
-- (void)updateStoreWithNewMessage:(CMPChatMessage *)message completion:(void(^)(BOOL, NSError * _Nullable))completion {
+- (void)updateStoreWithNewMessage:(CMPChatMessage *)message completion:(void(^)(CMPStoreResult<NSNumber *> *))completion {
     [_factory executeTransaction:^(id<CMPChatStore> _Nullable store, NSError * _Nullable error) {
         if (error) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(NO, error);
+                completion([CMPStoreResult resultWithObject:@(NO) error:error]);
             });
         } else {
             __block BOOL success = YES;
             [store beginTransaction];
-            CMPChatConversation *conversation = [store getConversationForID:message.context.conversationID];
+            CMPChatConversation *conversation = [store getConversation:message.context.conversationID];
             NSString *tempID = message.metadata ? message.metadata[kCMPMessageTemporaryId] : nil;
             if (tempID && ![tempID isEqualToString:@""]) {
-                [store deleteMessageForConversationID:message.context.conversationID messageID:tempID];
+                [store deleteMessage:message.context.conversationID messageID:tempID];
             }
             if (!message.sentEventID) {
                 message.sentEventID = @(-1L);
@@ -334,15 +334,34 @@
             } else {
                 success = success && [store upsertMessage:message];
             }
+            [store endTransaction];
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(success, nil);
+                completion([CMPStoreResult resultWithObject:@(success) error:nil]);
             });
         }
     }];
 }
 
-- (BOOL)updateConversationFromEventForStore:(id<CMPChatStore>)store conversationID:(NSString *)conversationID eventID:(NSNumber *)eventID updatedOn:(NSDate *)updatedOn {
-    CMPChatConversation *conversation = [store getConversationForID:conversationID];
+- (void)updateStoreWithSentError:(NSString *)conversationID tempID:(NSString *)tempID profileID:(NSString *)profileID completion:(void(^)(CMPStoreResult<NSNumber *> *))completion {
+    [_factory executeTransaction:^(id<CMPChatStore> _Nullable store, NSError * _Nullable error) {
+        if (error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion([CMPStoreResult resultWithObject:nil error:error]);
+            });
+        } else {
+            [store beginTransaction];
+            CMPChatMessageStatus *status = [[CMPChatMessageStatus alloc] initWithConversationID:conversationID messageID:tempID profileID:profileID conversationEventID:nil timestamp:[NSDate date] messageStatus:CMPChatMessageDeliveryStatusError];
+            BOOL success = [store updateMessageStatus:status];
+            [store endTransaction];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion([CMPStoreResult resultWithObject:@(success) error:nil]);
+            });
+        }
+    }];
+}
+
+- (BOOL)updateConversationFromEvent:(id<CMPChatStore>)store conversationID:(NSString *)conversationID eventID:(NSNumber *)eventID updatedOn:(NSDate *)updatedOn {
+    CMPChatConversation *conversation = [store getConversation:conversationID];
     if (conversation) {
         CMPChatConversation *newConversation = [conversation copy];
         if (eventID) {
@@ -365,25 +384,25 @@
     return false;
 }
 
-- (void)upsertMessageStatus:(CMPChatMessageStatus *)status completion:(void(^)(BOOL, NSError * _Nullable))completion {
+- (void)upsertMessageStatus:(CMPChatMessageStatus *)status completion:(void(^)(CMPStoreResult<NSNumber *> *))completion {
     [_factory executeTransaction:^(id<CMPChatStore> _Nullable store, NSError * _Nullable error) {
         if (error) {
-            completion(NO, error);
+            completion([CMPStoreResult resultWithObject:@(NO) error:error]);
         } else {
             [store beginTransaction];
-            BOOL success = [store updateMessageStatus:status] && [self updateConversationFromEventForStore:store conversationID:status.conversationID eventID:status.conversationEventID updatedOn:status.timestamp];
+            BOOL success = [store updateMessageStatus:status] && [self updateConversationFromEvent:store conversationID:status.conversationID eventID:status.conversationEventID updatedOn:status.timestamp];
             [store endTransaction];
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(success, nil);
+                completion([CMPStoreResult resultWithObject:@(success) error:nil]);
             });
         }
     }];
 }
 
-- (void)upsertMessageStatusesForConversationID:(NSString *)conversationID profileID:(NSString *)profileID statuses:(NSArray<CMPMessageStatusUpdate *> *)statuses completion:(void(^)(BOOL, NSError * _Nullable))completion {
+- (void)upsertMessageStatuses:(NSString *)conversationID profileID:(NSString *)profileID statuses:(NSArray<CMPMessageStatusUpdate *> *)statuses completion:(void(^)(CMPStoreResult<NSNumber *> *))completion {
     [_factory executeTransaction:^(id<CMPChatStore> _Nullable store, NSError * _Nullable error) {
         if (error) {
-            completion(NO, error);
+            completion([CMPStoreResult resultWithObject:nil error:error]);
         } else {
             [store beginTransaction];
             __block BOOL success = NO;
@@ -398,7 +417,7 @@
             }];
             [store endTransaction];
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(success, nil);
+                completion([CMPStoreResult resultWithObject:@(success) error:nil]);
             });
         }
     }];

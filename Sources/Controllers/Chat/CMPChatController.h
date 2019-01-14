@@ -23,7 +23,7 @@
 #import "CMPChatMessage.h"
 #import "CMPCallLimiter.h"
 #import "CMPChatResult.h"
-#import "CMPConversationComparator.h"
+#import "CMPConversationComparison.h"
 
 #import <CMPComapiFoundation/CMPComapiClient.h>
 
@@ -33,25 +33,36 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithClient:(CMPComapiClient *)client persistenceController:(CMPPersistenceController *)persistenceController attachmentController:(CMPAttachmentController *)attachmentController adapter:(CMPModelAdapter *)adapter config:(CMPInternalConfig *)config callLimiter:(CMPCallLimiter *)callLimiter;
 
+#pragma mark - Client
+
+- (nullable NSString *)getProfileID;
+
 #pragma mark - Sockets
 
 - (void)handleSocketConnected;
 - (void)handleSocketDisconnectedWithError:(NSError * _Nullable)error;
 
-#pragma mark - Events
-
-- (void)queryMissingEvents:(NSString *)ID from:(NSInteger)from limit:(NSInteger)limit;
-
 #pragma mark - Messages
 
-- (void)handleMessage:(CMPChatMessage *)message completion:(void(^)(BOOL, NSError * _Nullable))completion;
+- (void)sendMessage:(CMPChatMessage *)message withAttachments:(nullable NSArray<CMPChatAttachment *> *)attachments toConversationWithID: (NSString *)conversationId from:(NSString *) from;
+- (void)handleMessage:(CMPChatMessage *)message completion:(void(^ _Nullable)(BOOL))completion;
+- (void)getPreviousMessages:(NSString *)ID completion:(void(^)(CMPChatResult *))completion;
+- (void)handleMessageStatusToUpdate:(NSString *)ID statusUpdates:(NSArray<CMPMessageStatusUpdate *> *)statusUpdates result:(CMPResult *)result completion:(void(^)(CMPChatResult *))completion;
 - (void)markDelivered:(NSString *)ID messageIDs:(NSArray<NSString *> *)IDs completion:(void(^)(CMPChatResult *))completion;
 
 #pragma mark - Conversations
 
-- (void)handleConversationDeleted:(NSString *)ID result:(CMPResult<NSNumber *> *)result completion:(void(^)(CMPChatResult *))completion;
+- (void)synchronizeConversations:(void(^)(CMPChatResult *))completion;
+- (void)handleNonLocalConversation:(NSString *)ID completion:(void(^)(CMPChatResult *))completion;
+- (void)handleParticipantsAdded:(NSString *)ID completion:(void(^)(CMPChatResult *))completion;
 - (void)handleConversationCreated:(CMPResult<CMPConversation *> *)result completion:(void(^)(CMPChatResult *))completion;
+- (void)handleConversationDeleted:(NSString *)ID result:(CMPResult<NSNumber *> *)result completion:(void(^)(CMPChatResult *))completion;
 - (void)handleConversationUpdated:(CMPConversationUpdate *)update result:(CMPResult<CMPConversation *> *)result completion:(void(^)(CMPChatResult *))completion;
+
+#pragma mark - Events
+
+- (void)queryMissingEvents:(NSString *)ID from:(NSInteger)from limit:(NSInteger)limit;
+
 
 @end
 
