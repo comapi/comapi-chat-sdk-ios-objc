@@ -45,15 +45,15 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Messages
 
 - (void)sendMessage:(CMPChatMessage *)message withAttachments:(nullable NSArray<CMPChatAttachment *> *)attachments toConversationWithID: (NSString *)conversationId from:(NSString *) from;
-- (void)handleMessage:(CMPChatMessage *)message completion:(void(^)(BOOL))completion;
+- (void)handleMessage:(CMPChatMessage *)message completion:(void(^ _Nullable)(BOOL))completion;
 - (void)getPreviousMessages:(NSString *)ID completion:(void(^)(CMPChatResult *))completion;
 - (void)handleMessageStatusToUpdate:(NSString *)ID statusUpdates:(NSArray<CMPMessageStatusUpdate *> *)statusUpdates result:(CMPResult *)result completion:(void(^)(CMPChatResult *))completion;
 - (void)markDelivered:(NSString *)ID messageIDs:(NSArray<NSString *> *)IDs completion:(void(^)(CMPChatResult *))completion;
 
 #pragma mark - Conversations
+
 - (void)synchronizeConversations:(void(^)(CMPChatResult *))completion;
 - (void)handleNonLocalConversation:(NSString *)ID completion:(void(^)(CMPChatResult *))completion;
-
 - (void)handleParticipantsAdded:(NSString *)ID completion:(void(^)(CMPChatResult *))completion;
 - (void)handleConversationCreated:(CMPResult<CMPConversation *> *)result completion:(void(^)(CMPChatResult *))completion;
 - (void)handleConversationDeleted:(NSString *)ID result:(CMPResult<NSNumber *> *)result completion:(void(^)(CMPChatResult *))completion;

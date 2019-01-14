@@ -19,6 +19,7 @@
 #import "CMPEventsController.h"
 #import "CMPChatConversation.h"
 
+#import <CMPComapiFoundation/CMPLogger.h>
 #import <CMPComapiFoundation/CMPEvent.h>
 #import <CMPComapiFoundation/CMPConversationMessageEvents.h>
 
@@ -47,7 +48,7 @@
 
 #pragma mark - CMPMissingEventsDelegate
 
-- (void)missingEventsForID:(NSString *)ID from:(NSInteger)from limit:(NSInteger)limit {
+- (void)missingEvents:(NSString *)ID from:(NSInteger)from limit:(NSInteger)limit {
     [_chatController queryMissingEvents:ID from:from limit:limit];
 }
 
@@ -73,7 +74,9 @@
             CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithConversationCreateEvent:(CMPConversationEventCreate *)event];
             if (conversation) {
                 [_persistenceController upsertConversations:@[conversation] completion:^(CMPStoreResult<NSNumber *> * result) {
-                    // TODO: -
+                    if (result.error) {
+                        logWithLevel(CMPLogLevelError, @"Store update failed with error:", result.error, nil);
+                    }
                 }];
             }
             break;
@@ -82,23 +85,60 @@
             CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithConversationUpdateEvent:(CMPConversationEventUpdate *)event];
             if (conversation) {
                 [_persistenceController upsertConversations:@[conversation] completion:^(CMPStoreResult<NSNumber *> * result) {
-                    // TODO: -
+                    if (result.error) {
+                        logWithLevel(CMPLogLevelError, @"Store update failed with error:", result.error, nil);
+                    }
                 }];
             }
             break;
         }
-        case CMPEventTypeConversationDelete:
-            break;
         case CMPEventTypeConversationUndelete: {
             CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithConversationUndeleteEvent:(CMPConversationEventUndelete *)event];
             if (conversation) {
                 [_persistenceController upsertConversations:@[conversation] completion:^(CMPStoreResult<NSNumber *> * result) {
-                    // TODO: -
+                    if (result.error) {
+                        logWithLevel(CMPLogLevelError, @"Store update failed with error:", result.error, nil);
+                    }
                 }];
             }
             break;
         }
-        case CMPEventTypeConversationParticipantAdded:
+        case CMPEventTypeConversationParticipantAdded: {
+            CMPConversationEventParticipantAdded *e = (CMPConversationEventParticipantAdded *)event;
+            [_chatController handleParticipantsAdded:e.payload.conversationID completion:^(CMPChatResult * chatResult) {
+                if (chatResult.error) {
+                    logWithLevel(CMPLogLevelError, @"Chat update failed with error:", chatResult.error, nil);
+                }
+            }];
+            break;
+        }
+        case CMPEventTypeConversationMessageDelivered: {
+            CMPConversationMessageEventDelivered *e = (CMPConversationMessageEventDelivered *)event;
+            [_tracker checkEvent:e.payload.conversationID conversationEventID:e.conversationEventID delegate:self];
+            [_persistenceController upsertMessageStatus:[[CMPChatMessageStatus alloc] initWithDeliveredEvent:e] completion:^(CMPStoreResult<NSNumber *> * storeResult) {
+                if (storeResult.error) {
+                    logWithLevel(CMPLogLevelError, @"Store update failed with error:", storeResult.error, nil);
+                }
+            }];
+            break;
+        }
+        case CMPEventTypeConversationMessageRead: {
+            CMPConversationMessageEventRead *e = (CMPConversationMessageEventRead *)event;
+            [_tracker checkEvent:e.payload.conversationID conversationEventID:e.conversationEventID delegate:self];
+            [_persistenceController upsertMessageStatus:[[CMPChatMessageStatus alloc] initWithReadEvent:e] completion:^(CMPStoreResult<NSNumber *> * storeResult) {
+                if (storeResult.error) {
+                    logWithLevel(CMPLogLevelError, @"Store update failed with error:", storeResult.error, nil);
+                }
+            }];
+            break;
+        }
+        case CMPEventTypeConversationMessageSent: {
+            CMPConversationMessageEventSent *e = (CMPConversationMessageEventSent *)event;
+            [_tracker checkEvent:e.payload.context.conversationID conversationEventID:e.conversationEventID delegate:self];
+            [_chatController handleMessage:[[CMPChatMessage alloc] initWithSentEvent:e] completion:nil];
+            break;
+        }
+        case CMPEventTypeConversationDelete:
             break;
         case CMPEventTypeConversationParticipantRemoved:
             break;
@@ -112,95 +152,9 @@
             break;
         case CMPEventTypeProfileUpdate:
             break;
-        case CMPEventTypeConversationMessageDelivered:
-            break;
-        case CMPEventTypeConversationMessageSent: {
-            CMPConversationMessageEventSent *e = (CMPConversationMessageEventSent *)event;
-            [_tracker checkEventForConversationID:e.payload.context.conversationID conversationEventID:e.conversationEventID delegate:self];
-            [_chatController handleMessage:[[CMPChatMessage alloc] init] completion:^(BOOL success) {
-                // TODO: -
-            }];
-            break;
-        }
-        case CMPEventTypeConversationMessageRead: {
-            break;
-        }
         case CMPEventTypeNone:
             break;
     }
 }
-//    class MessagingListenerAdapter extends MessagingListener {
-//
-//        @Override
-//        public void onMessage(MessageSentEvent event) {
-//            tracker.checkEventId(event.getContext().getConversationId(), event.getConversationEventId(), missingEventsListener);
-//            observableExecutor.execute(controller.handleMessage(ChatMessage.builder().populate(event).build()));
-//        }
-//
-//        /**
-//         * Dispatch conversation message update event.
-//         *
-//         * @param event Event to dispatch.
-//         */
-//        @Override
-//        public void onMessageDelivered(MessageDeliveredEvent event) {
-//            tracker.checkEventId(event.getConversationId(), event.getConversationEventId(), missingEventsListener);
-//            observableExecutor.execute(persistenceController.upsertMessageStatus(ChatMessageStatus.builder().populate(event).build()));
-//        }
-//
-//        /**
-//         * Dispatch conversation message update event.
-//         *
-//         * @param event Event to dispatch.
-//         */
-//        @Override
-//        public void onMessageRead(MessageReadEvent event) {
-//            tracker.checkEventId(event.getConversationId(), event.getConversationEventId(), missingEventsListener);
-//            observableExecutor.execute(persistenceController.upsertMessageStatus(ChatMessageStatus.builder().populate(event).build()));
-//        }
-//
-//        /**
-//         * Dispatch participant added to a conversation event.
-//         *
-//         * @param event Event to dispatch.
-//         */
-//        @Override
-//        public void onParticipantAdded(ParticipantAddedEvent event) {
-//            observableExecutor.execute(controller.handleParticipantsAdded(event.getConversationId()));
-//        }
-//
-//        /**
-//         * Dispatch conversation updated event.
-//         *
-//         * @param event Event to dispatch.
-//         */
-//        @Override
-//        public void onConversationUpdated(ConversationUpdateEvent event) {
-//            observableExecutor.execute(persistenceController.upsertConversation(ChatConversation.builder().populate(event).build()));
-//        }
-//
-//        /**
-//         * Dispatch conversation deleted event.
-//         *
-//         * @param event Event to dispatch.
-//         */
-//        @Override
-//        public void onConversationDeleted(ConversationDeleteEvent event) {
-//            observableExecutor.execute(persistenceController.deleteConversation(event.getConversationId()));
-//        }
-//
-//        /**
-//         * Dispatch conversation restored event.
-//         *
-//         * @param event Event to dispatch.
-//         */
-//        @Override
-//        public void onConversationUndeleted(ConversationUndeleteEvent event) {
-//            observableExecutor.execute(persistenceController.upsertConversation(ChatConversation.builder().populate(event).build()));
-//        }
-//    }
-//}
-
-
 
 @end

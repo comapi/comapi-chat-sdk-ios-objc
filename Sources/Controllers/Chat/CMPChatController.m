@@ -33,8 +33,8 @@ NSInteger const kETagNotValid = 412;
 
 @property (nonatomic, readonly) NSInteger messagesPerQuery;
 @property (nonatomic, readonly) NSInteger eventsPerQuery;
-@property (nonatomic) NSInteger maxEventQueries;
-@property (nonatomic) NSInteger maxConversationsSynced;
+@property (nonatomic, readonly) NSInteger maxEventQueries;
+@property (nonatomic, readonly) NSInteger maxConversationsSynced;
 
 @property (nonatomic, weak, nullable, readonly) CMPComapiClient *client;
 
@@ -71,7 +71,7 @@ NSInteger const kETagNotValid = 412;
         _eventsPerQuery = config.maxEventsPerQuery;
         _maxEventQueries = config.maxEventQueries;
         _maxConversationsSynced = config.maxConversationsSynced;
-
+        
         _callLimiter = [[CMPCallLimiter alloc] initWithLargeTimeFrame:30 * 60 largeCallsLimit:50 smallTimeFrame:5 * 60 smallCallLimit:15 shutdownPeriod:60 * 60];
     }
     
@@ -100,31 +100,23 @@ NSInteger const kETagNotValid = 412;
 #pragma mark -
 #pragma mark - Store
 #pragma mark - public
-///**
-// * Check state for all conversations and update from services.
-// *
-// * @return Result of synchronisation process.
-// */
-//Observable<ChatResult> synchroniseStore() {
-//    if (isSynchronising.getAndSet(true)) {
-//        log.i("Synchronisation in progress.");
-//        return Observable.fromCallable(() -> new ChatResult(true, null));
-//    }
-//    log.i("Synchronising store.");
-//    return synchroniseConversations()
-//    .onErrorReturn(t -> new ChatResult(false, new ChatResult.Error(0, t)))
-//    .doOnNext(i -> {
-//        if (i.isSuccessful()) {
-//            log.i("Synchronisation successfully finished.");
-//        } else {
-//            log.e("Synchronisation finished with error. " + (i.getError() != null ? i.getError().getMessage() : ""));
-//        }
-//        isSynchronising.compareAndSet(true, false);
-//    });
-//}
 
-- (void)synchronizeStore {
-    // TODO: -
+- (void)synchronizeStore:(void(^)(CMPChatResult*))completion {
+    if (self.isSynchronising) {
+        logWithLevel(CMPLogLevelWarning, @"Synchronisation in progress.", nil);
+        completion([[CMPChatResult alloc] initWithError:nil success:YES]);
+    } else {
+        logWithLevel(CMPLogLevelInfo, @"Synchronising store.", nil);
+        [self synchronizeConversations:^(CMPChatResult * result) {
+            if (result.error) {
+                logWithLevel(CMPLogLevelError, @"Synchronisation finished with error: ", result.error, nil);
+            } else {
+                logWithLevel(CMPLogLevelInfo, @"Synchronisation finished successfully.", nil);
+            }
+            
+            completion(result);
+        }];
+    }
 }
 
 #pragma mark -
@@ -132,9 +124,11 @@ NSInteger const kETagNotValid = 412;
 #pragma mark - public
 
 - (void)handleSocketConnected {
-    _socketWasDisconnected = NO;
-    if ([_callLimiter checkAndIncrease]) {
-        
+    if (_socketWasDisconnected == YES) {
+        _socketWasDisconnected = NO;
+        if ([_callLimiter checkAndIncrease]) {
+            [self synchronizeStore:nil];
+        }
     }
 }
 
@@ -204,11 +198,15 @@ NSInteger const kETagNotValid = 412;
 //    }
 //}
 
-- (void)updateStoreWithSentMessage:(CMPChatMessage *)message completion:(void(^)(BOOL))completion {
-    // TODO: -
+- (void)updateStoreWithSentMessage:(CMPMessageProcessor *)messageProcessor result:(CMPResult<CMPChatMessage *> *)result completion:(void(^)(CMPChatResult *))completion {
+    if (result.object) {
+        //[_persistenceController updateStoreWithNewMessage:[messageProcessor ] completion:<#^(CMPStoreResult<NSNumber *> * _Nonnull)completion#>]
+    } else {
+        completion([[CMPChatResult alloc] initWithComapiResult:result]);
+    }
 }
 
-- (void)handleMessage:(CMPChatMessage *)message completion:(void(^)(BOOL))completion {
+- (void)handleMessage:(CMPChatMessage *)message completion:(void(^ _Nullable)(BOOL))completion {
     NSString *sender = message.context.sentBy;
     
     __block BOOL updateStoreSuccess;
@@ -309,46 +307,15 @@ NSInteger const kETagNotValid = 412;
     }];
 }
 
-
-
-///**
-// * Handle failure when sending message.
-// *
-// * @param mp Message processor holding message sending details.
-// * @param t  Thrown exception.
-// * @return Observable with Chat SDK result.
-// */
-//private Observable<ChatResult> handleMessageError(MessageProcessor mp, Throwable t) {
-//    return persistenceController.updateStoreForSentError(mp.getConversationId(), mp.getTempId(), mp.getSender())
-//    .map(success -> new ChatResult(false, new ChatResult.Error(0, t)));
-//}
-
-- (void)handleMessageError {
-    // TODO: -
+- (void)handleMessageError:(CMPMessageProcessor *)messageProcessor completion:(void(^)(CMPChatResult *))completion {
+    [_persistenceController updateStoreWithSentError:messageProcessor.conversationId tempID:messageProcessor.tempMessageId profileID:messageProcessor.sender completion:^(CMPStoreResult<NSNumber *> * result) {
+        completion([[CMPChatResult alloc] initWithError:result.error success:result.object.boolValue]);
+    }];
 }
 
 #pragma mark -
 #pragma mark - Conversations
 #pragma mark - public
-
-
-
-
-///**
-// * Updates all conversation states.
-// *
-// * @return Result of synchronisation with services.
-// */
-//private Observable<ChatResult> synchroniseConversations() {
-//
-//    return checkState().flatMap(client -> client.service().messaging()
-//                                .getConversations(false)
-//                                .flatMap(result -> persistenceController.loadAllConversations()
-//                                         .map(chatConversationBases -> compare(result.isSuccessful(), result.getResult(), chatConversationBases)))
-//                                .flatMap(this::updateLocalConversationList)
-//                                .flatMap(result -> lookForMissingEvents(client, result))
-//                                .map(result -> new ChatResult(result.isSuccessful, null)));
-//}
 
 - (void)synchronizeConversations:(void(^)(CMPChatResult *))completion {
     __weak typeof(self) weakSelf = self;
@@ -356,7 +323,9 @@ NSInteger const kETagNotValid = 412;
         [weakSelf.persistenceController getAllConversations:^(CMPStoreResult<NSArray<CMPChatConversation *> *> * storeResult) {
             CMPConversationComparison *compareResult = [weakSelf compare:storeResult.error == nil remote:result.object local:storeResult.object];
             [weakSelf updateLocalConversationList:compareResult completion:^(CMPConversationComparison * compareResult) {
-                // TODO: -
+                [weakSelf lookForMissingEvents:compareResult completion:^(CMPConversationComparison * compareResult) {
+                    completion([[CMPChatResult alloc] initWithError:nil success:compareResult.isSuccessful]);
+                }];
             }];
         }];
     }];
@@ -484,32 +453,22 @@ NSInteger const kETagNotValid = 412;
     return dict;
 }
 
-///**
-// * Updates single conversation state.
-// *
-// * @return Result of synchronisation with services.
-// */
-//Observable<ChatResult> synchroniseConversation(String conversationId) {
-//
-//    return checkState().flatMap(client -> client.service().messaging()
-//                                .queryMessages(conversationId, null, 1)
-//                                .map(result -> {
-//        if (result.isSuccessful() && result.getResult() != null) {
-//            return (long) result.getResult().getLatestEventId();
-//        }
-//        return -1L;
-//    })
-//                                .flatMap(result -> persistenceController.getConversation(conversationId).map(loaded -> compare(result, loaded)))
-//                                .flatMap(this::updateLocalConversationList)
-//                                .flatMap(result -> lookForMissingEvents(client, result))
-//                                .map(result -> new ChatResult(result.isSuccessful, null)));
-//}
-
-- (void)synchroniseConversation:(NSString *)ID {
+- (void)synchroniseConversation:(NSString *)ID completion:(void(^)(CMPChatResult *))completion {
+    __weak typeof(self) weakSelf = self;
     [[self withClient].services.messaging getMessagesWithConversationID:ID completion:^(CMPResult<CMPGetMessagesResult *> * result) {
-        
+        if (result.object) {
+            [weakSelf.persistenceController getConversation:ID completion:^(CMPStoreResult<CMPChatConversation *> * storeResult) {
+                CMPConversationComparison *comparison = [weakSelf compare:result.object.latestEventID ? result.object.latestEventID : @(-1L) conversation:storeResult.object];
+                [weakSelf updateLocalConversationList:comparison completion:^(CMPConversationComparison * comparison) {
+                    [weakSelf lookForMissingEvents:comparison completion:^(CMPConversationComparison * comparison) {
+                        completion([[CMPChatResult alloc] initWithError:nil success:comparison.isSuccessful]);
+                    }];
+                }];
+            }];
+        } else {
+            completion([[CMPChatResult alloc] initWithComapiResult:result]);
+        }
     }];
-    // TODO: -
 }
 
 - (void)updateLocalConversationList:(CMPConversationComparison *)comparison completion:(void(^)(CMPConversationComparison *))completion {
@@ -597,6 +556,7 @@ NSInteger const kETagNotValid = 412;
                         logWithLevel(CMPLogLevelInfo, [NSString stringWithFormat:@"Processed delivered event, success: %d, error: %@", storeResult.object.boolValue, storeResult.error], nil);
                         dispatch_group_leave(group);
                     }];
+                    
                     break;
                 }
                 default:
@@ -626,65 +586,19 @@ NSInteger const kETagNotValid = 412;
     }];
 }
 
-///**
-// * Checks services for missing events in stored conversations.
-// *
-// * @param client                 Foundation client.
-// * @param conversationComparison Describes differences in local and remote conversation list.
-// * @return Observable returning unchanged argument to further processing.
-// */
-//private Observable<ConversationComparison> lookForMissingEvents(final RxComapiClient client, ConversationComparison conversationComparison) {
-//
-//    if (!conversationComparison.isSuccessful || conversationComparison.conversationsToUpdate.isEmpty()) {
-//        return Observable.fromCallable(() -> conversationComparison);
-//    }
-//
-//    return synchroniseEvents(client, conversationComparison.conversationsToUpdate, new ArrayList<>())
-//    .map(result -> {
-//        if (conversationComparison.isSuccessful && !result) {
-//            conversationComparison.addSuccess(false);
-//        }
-//        return conversationComparison;
-//    });
-//}
-
-- (CMPConversationComparison *)lookForMissingEvents:(CMPConversationComparison *)comparison {
+- (void)lookForMissingEvents:(CMPConversationComparison *)comparison completion:(void(^)(CMPConversationComparison *))completion {
     if (!comparison.isSuccessful || comparison.conversationsToUpdate.count == 0) {
-        return comparison;
+        completion(comparison);
     }
-    // TODO: -
-    return comparison;
+    
+    [self synchronizeEvents:comparison.conversationsToUpdate completion:^(BOOL success) {
+        if (comparison.isSuccessful && !success) {
+            [comparison addSuccess:false];
+        }
+        completion(comparison);
+    }];
+    
 }
-
-///**
-// * Synchronise missing events for the list of locally stored conversations.
-// *
-// * @param client                Foundation client.
-// * @param conversationsToUpdate List of conversations to query last events.
-// * @param successes             List of partial successes.
-// * @return Observable with the merged result of operations.
-// */
-//private Observable<Boolean> synchroniseEvents(final RxComapiClient client, @NonNull final List<ChatConversation> conversationsToUpdate, @NonNull final List<Boolean> successes) {
-//
-//    final List<ChatConversation> limited = limitNumberOfConversations(conversationsToUpdate);
-//
-//    if (limited.isEmpty()) {
-//        return Observable.fromCallable(() -> true);
-//    }
-//
-//    return Observable.from(limited)
-//    .onBackpressureBuffer()
-//    .flatMap(conversation -> persistenceController.getConversation(conversation.getConversationId()))
-//    .flatMap(conversation -> {
-//        if (conversation.getLastRemoteEventId() > conversation.getLastLocalEventId()) {
-//            final long from = conversation.getLastLocalEventId() >= 0 ? conversation.getLastLocalEventId() : 0;
-//            return queryEventsRecursively(client, conversation.getConversationId(), from, 0, successes).map(ComapiResult::isSuccessful);
-//        } else {
-//            return Observable.fromCallable((Callable<Object>) () -> true);
-//        }
-//    })
-//    .flatMap(res -> Observable.from(successes).all(Boolean::booleanValue));
-//}
 
 - (void)synchronizeEvents:(NSArray<CMPChatConversation *> *)conversationsToUpdate completion:(void(^)(BOOL))completion {
     NSArray<CMPChatConversation *> *limited = [self limitNumberOfConversations:conversationsToUpdate];
@@ -693,7 +607,32 @@ NSInteger const kETagNotValid = 412;
         completion(YES);
     }
     
-    // TODO: -
+    dispatch_group_t group = dispatch_group_create();
+    
+    __block BOOL success;
+    __weak typeof(self) weakSelf = self;
+    for (CMPChatConversation *c in limited) {
+        dispatch_group_enter(group);
+        [_persistenceController getConversation:c.id completion:^(CMPStoreResult<CMPChatConversation *> * storeResult) {
+            if (storeResult.error) {
+                success = NO;
+                dispatch_group_leave(group);
+            } else if (c.latestRemoteEventID.integerValue > c.lastLocalEventID.integerValue) {
+                NSNumber *from = c.lastLocalEventID.integerValue >= 0 ? c.lastLocalEventID : @(0);
+                [weakSelf queryEventsRecursively:c.id lastEventID:from count:@(0) completion:^(CMPResult<NSArray<CMPEvent *> *> * result) {
+                    success = result.object != nil && !result.error;
+                    dispatch_group_leave(group);
+                }];
+            } else {
+                success = YES;
+                dispatch_group_leave(group);
+            }
+        }];
+    }
+    
+    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+        completion(success);
+    });
 }
 
 @end
