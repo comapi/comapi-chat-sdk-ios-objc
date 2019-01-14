@@ -16,19 +16,13 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPComapiChatClient.h"
-#import "CMPChatConfig.h"
-
 #import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPComapiChat : NSObject
+@protocol CMPTypingDelegate <NSObject>
 
-@property (class, nonatomic, strong, nullable, readonly) CMPComapiChatClient *shared;
-
-+ (CMPComapiChatClient *)initialise:(CMPChatConfig *)chatConfig;
-+ (CMPComapiChatClient *)initialiseShared:(CMPChatConfig *)chatConfig;
+- (void)participantTyping:(NSString *)conversationID participantID:(NSString *)participantID isTyping:(BOOL)isTyping;
 
 @end
 

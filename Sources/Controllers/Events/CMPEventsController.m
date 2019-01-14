@@ -28,7 +28,10 @@
 @property (nonatomic, weak, readonly) CMPPersistenceController *persistenceController;
 @property (nonatomic, weak, readonly) CMPChatController *chatController;
 @property (nonatomic, weak, readonly) CMPMissingEventsTracker *tracker;
-@property (nonatomic, weak, readonly) id<CMPMissingEventsDelegate> delegate;
+
+@property (nonatomic, weak, readonly) id<CMPMissingEventsDelegate> missingEventsDelegate;
+@property (nonatomic, weak, readonly) id<CMPProfileDelegate> profileDelegate;
+@property (nonatomic, weak, readonly) id<CMPTypingDelegate> typingDelegate;
 
 @end
 
@@ -72,13 +75,12 @@
     switch (event.type) {
         case CMPEventTypeConversationCreate: {
             CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithConversationCreateEvent:(CMPConversationEventCreate *)event];
-            if (conversation) {
-                [_persistenceController upsertConversations:@[conversation] completion:^(CMPStoreResult<NSNumber *> * result) {
-                    if (result.error) {
-                        logWithLevel(CMPLogLevelError, @"Store update failed with error:", result.error, nil);
-                    }
-                }];
-            }
+            [_persistenceController upsertConversations:@[conversation] completion:^(CMPStoreResult<NSNumber *> * result) {
+                if (result.error) {
+                    logWithLevel(CMPLogLevelError, @"Store update failed with error:", result.error, nil);
+                }
+            }];
+            
             break;
         }
         case CMPEventTypeConversationUpdate: {
@@ -144,14 +146,23 @@
             break;
         case CMPEventTypeConversationParticipantUpdated:
             break;
-        case CMPEventTypeConversationParticipantTyping:
+        case CMPEventTypeConversationParticipantTyping: {
+            CMPConversationEventParticipantTyping *e = (CMPConversationEventParticipantTyping *)event;
+            [self.typingDelegate participantTyping:e.payload.conversationID participantID:e.payload.profileID isTyping:YES];
             break;
-        case CMPEventTypeConversationParticipantTypingOff:
+        }
+        case CMPEventTypeConversationParticipantTypingOff: {
+            CMPConversationEventParticipantTypingOff *e = (CMPConversationEventParticipantTypingOff *)event;
+            [self.typingDelegate participantTyping:e.payload.conversationID participantID:e.payload.profileID isTyping:NO];
             break;
+        }
         case CMPEventTypeSocketInfo:
             break;
-        case CMPEventTypeProfileUpdate:
+        case CMPEventTypeProfileUpdate: {
+            CMPProfileEventUpdate *e = (CMPProfileEventUpdate *)event;
+            [self.profileDelegate didUpdateProfile:e];
             break;
+        }
         case CMPEventTypeNone:
             break;
     }

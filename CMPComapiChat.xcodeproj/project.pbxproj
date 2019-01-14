@@ -102,6 +102,9 @@
 		89D0223B21E61A2D00E85A85 /* CMPChatAttachment.h in Headers */ = {isa = PBXBuildFile; fileRef = 89D0223921E61A2D00E85A85 /* CMPChatAttachment.h */; };
 		89D0223E21E61A6100E85A85 /* NSString+CMPBase64.h in Headers */ = {isa = PBXBuildFile; fileRef = 89D0223C21E61A6100E85A85 /* NSString+CMPBase64.h */; };
 		89D0223F21E61A6100E85A85 /* NSString+CMPBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D0223D21E61A6100E85A85 /* NSString+CMPBase64.m */; };
+		89D0224121E8EBB000E85A85 /* CMPMessagingDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 89D0224021E8EBB000E85A85 /* CMPMessagingDelegate.h */; };
+		89D0224321E8EBD700E85A85 /* CMPTypingDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 89D0224221E8EBD700E85A85 /* CMPTypingDelegate.h */; };
+		89D0224521E8EC0900E85A85 /* CMPProfileDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 89D0224421E8EC0900E85A85 /* CMPProfileDelegate.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -234,6 +237,9 @@
 		89D0223921E61A2D00E85A85 /* CMPChatAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPChatAttachment.h; sourceTree = "<group>"; };
 		89D0223C21E61A6100E85A85 /* NSString+CMPBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+CMPBase64.h"; sourceTree = "<group>"; };
 		89D0223D21E61A6100E85A85 /* NSString+CMPBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+CMPBase64.m"; sourceTree = "<group>"; };
+		89D0224021E8EBB000E85A85 /* CMPMessagingDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPMessagingDelegate.h; sourceTree = "<group>"; };
+		89D0224221E8EBD700E85A85 /* CMPTypingDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPTypingDelegate.h; sourceTree = "<group>"; };
+		89D0224421E8EC0900E85A85 /* CMPProfileDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPProfileDelegate.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -374,7 +380,10 @@
 		896015C521B83E1C00370AF2 /* Delegates */ = {
 			isa = PBXGroup;
 			children = (
+				89D0224421E8EC0900E85A85 /* CMPProfileDelegate.h */,
+				89D0224221E8EBD700E85A85 /* CMPTypingDelegate.h */,
 				896015C621B83E9700370AF2 /* CMPLifecycleDelegate.h */,
+				89D0224021E8EBB000E85A85 /* CMPMessagingDelegate.h */,
 			);
 			path = Delegates;
 			sourceTree = "<group>";
@@ -643,6 +652,8 @@
 				896015C021B82D6600370AF2 /* CMPChatResult.h in Headers */,
 				8969DBFB21DCF3860047449C /* CMPRetryManager.h in Headers */,
 				89C0143221C2A3FA00799B3B /* NSArray+CMPUtility.h in Headers */,
+				89D0224121E8EBB000E85A85 /* CMPMessagingDelegate.h in Headers */,
+				89D0224321E8EBD700E85A85 /* CMPTypingDelegate.h in Headers */,
 				896E30E621C3F5E1008CC785 /* CMPChatConstants.h in Headers */,
 				89D0223B21E61A2D00E85A85 /* CMPChatAttachment.h in Headers */,
 				896E30E121C3F561008CC785 /* CMPEventsController.h in Headers */,
@@ -651,6 +662,7 @@
 				896015CC21B9290000370AF2 /* CMPPersistenceController.h in Headers */,
 				892F49B721BE7C3100FA52C9 /* CMPModelAdapter.h in Headers */,
 				8969DC1921DFBE750047449C /* CMPChatSessionServices.h in Headers */,
+				89D0224521E8EC0900E85A85 /* CMPProfileDelegate.h in Headers */,
 				896CB96921B957E8003FB3DF /* CMPChatRoleAttributes.h in Headers */,
 				896015BE21B82D6600370AF2 /* CMPComapiChatClient.h in Headers */,
 				896CB99021BA7EFC003FB3DF /* CMPStoreFactory.h in Headers */,
