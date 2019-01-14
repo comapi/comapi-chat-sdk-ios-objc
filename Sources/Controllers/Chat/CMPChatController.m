@@ -141,7 +141,7 @@ NSInteger const kETagNotValid = 412;
 #pragma mark - Messages
 #pragma mark - public
 
-- (void) sendMessage: (CMPSendableMessage *)message withAttachments: (NSArray<CMPChatAttachment *> *) attachments toConversationWithID: (NSString *) conversationId completion:(void(^)(BOOL, NSError * _Nullable))completion {
+- (void) sendMessage: (CMPSendableMessage *)message withAttachments: (NSArray<CMPChatAttachment *> *) attachments toConversationWithID: (NSString *) conversationId completion:(void(^)(CMPChatResult *))completion {
     
     NSString *profileId = [_client getProfileID];
     if (profileId != nil) {
@@ -150,27 +150,27 @@ NSInteger const kETagNotValid = 412;
 
         __weak CMPChatController *weakSelf = self;
         
-        [_persistenceController updateStoreWithNewMessage:[processor createPreUploadMessageWithAttachments:attachments] completion:^(BOOL success, NSError *error) {
-            if (weakSelf != nil && success) {
+        [_persistenceController updateStoreWithNewMessage:[processor createPreUploadMessageWithAttachments:attachments] completion:^(CMPStoreResult<NSNumber *> * result) {
+            if (weakSelf != nil && result.error != nil) {
                 [weakSelf.attachmentController uploadAttachments:attachments withCompletion:^(NSArray<CMPChatAttachment *> * sentAttachments) {
-                    if (weakSelf != nil && success) {
-                        [weakSelf.persistenceController updateStoreWithNewMessage:[processor createPostUploadMessageWithAttachments:attachments] completion:^(BOOL success, NSError *error) {
+                    if (weakSelf != nil && result.error != nil) {
+                        [weakSelf.persistenceController updateStoreWithNewMessage:[processor createPostUploadMessageWithAttachments:attachments] completion:^(CMPStoreResult<NSNumber *> * result) {
                             [[[weakSelf.client services] messaging] sendMessage:[processor createMessageToSend] toConversationWithID:conversationId completion:^(CMPResult<CMPSendMessagesResult *> * result) {
-                                if (success) {
-                                    [weakSelf.persistenceController updateStoreWithNewMessage:[processor createFinalMessageWithID:result.object.id eventID:result.object.eventID] completion:^(BOOL success, NSError * _Nullable error) {
-                                        completion(success, error);
+                                if (result.error != nil) {
+                                    [weakSelf.persistenceController updateStoreWithNewMessage:[processor createFinalMessageWithID:result.object.id eventID:result.object.eventID] completion:^(CMPStoreResult<NSNumber *> * result) {
+                                        completion([[CMPChatResult alloc] initWithError:result.error success:(BOOL)result.object]);
                                     }];
                                 } else {
-                                    completion(NO, error);
+                                    completion([[CMPChatResult alloc] initWithComapiResult:result]);
                                 }
                             }];
                         }];
                     } else {
-                        completion(NO, error);
+                        completion([[CMPChatResult alloc] initWithError:result.error success:NO]);
                     }
                 }];
             } else {
-                completion(NO, error);
+                completion([[CMPChatResult alloc] initWithError:result.error success:NO]);
             }
         }];
     }

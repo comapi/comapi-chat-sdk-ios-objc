@@ -40,8 +40,9 @@ NSInteger const kMaxPartDataLength = 13333;
 @property (nonatomic, strong, readonly) NSDictionary<NSString *, id> *metadata;
 @property (nonatomic, strong, readonly) NSArray<CMPChatMessagePart *> *initialParts;
 
-@property (nonatomic, strong, readonly) NSString *conversationId;
-@property (nonatomic, strong, readonly) NSString *sender;
+@property (nonatomic, strong, readwrite) NSString *conversationId;
+@property (nonatomic, strong, readwrite) NSString *sender;
+@property (nonatomic, strong, readwrite) NSString *tempMessageId;
 
 @end
 
