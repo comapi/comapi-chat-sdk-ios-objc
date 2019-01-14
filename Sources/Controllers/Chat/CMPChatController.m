@@ -22,6 +22,7 @@
 #import "CMPMessageProcessor.h"
 #import "CMPChatResult.h"
 #import "CMPRetryManager.h"
+#import "CMPChatMessage.h"
 
 #import <CMPComapiFoundation/CMPConversationMessageEvents.h>
 #import <CMPComapiFoundation/CMPMessageStatusUpdate.h>
@@ -140,47 +141,39 @@ NSInteger const kETagNotValid = 412;
 #pragma mark - Messages
 #pragma mark - public
 
-///**
-// * Save and send message with attachments.
-// *
-// * @param conversationId Unique conversation id.
-// * @param message        Message to send
-// * @param attachments    List of attachments to send with a message.
-// * @return Observable with Chat SDK result.
-// */
-//Observable<ChatResult> sendMessageWithAttachments(@NonNull final String conversationId, @NonNull final MessageToSend message, @Nullable final List<Attachment> attachments) {
-//
-//    final MessageProcessor messageProcessor = attCon.createMessageProcessor(message, attachments, conversationId, getProfileId());
-//
-//    return checkState()
-//    .flatMap(client ->
-//             {
-//                 messageProcessor.preparePreUpload(); // convert fom too large message parts to attachments, adds temp upload parts for all attachments
-//                 return upsertTempMessage(messageProcessor.createTempMessage()) // create temporary message
-//                 .flatMap(isOk -> attCon.uploadAttachments(messageProcessor.getAttachments(), client)) // upload attachments
-//                 .flatMap(uploaded -> {
-//                     if (uploaded != null && !uploaded.isEmpty()) {
-//                         messageProcessor.preparePostUpload(uploaded); // remove temp upload parts, add parts with upload data
-//                         return upsertTempMessage(messageProcessor.createTempMessage()); // update message with attachments details like url
-//                     } else {
-//                         return Observable.fromCallable(() -> true);
-//                     }
-//                 })
-//                 .flatMap(isOk -> client.service().messaging().sendMessage(conversationId, messageProcessor.prepareMessageToSend()) // send message with attachments details as additional message parts
-//                          .flatMap(result -> updateStoreWithSentMsg(messageProcessor, result)) // update temporary message with a new message id obtained from the response
-//                          .onErrorResumeNext(t -> handleMessageError(messageProcessor, t))); // if error occurred update message status list adding error status
-//             });
-
-- (void) sendMessage: (CMPChatMessage *) message withAttachments: (nullable NSArray<CMPChatAttachment *> *) attachments toConversationWithID: (NSString *) conversationId from:(NSString *) from {
-    //CMPMessageProcessor *processor = [[CMPMessageProcessor alloc] initWithMessage:message toConversationWithID:conversationId from:from];
-    //CMPChatMessage *messageToSave = [processor createPreUploadMessageWithAttachments:attachments];
-    // save message
-    // send attachments
-    //CMPChatMessage *messageToUpdate = [processor createPostUploadMessageWithAttachments:attachments];
-    // save message
-    // send message
-    // update id with processor.tempMessageId and eventId
+- (void) sendMessage: (CMPSendableMessage *)message withAttachments: (NSArray<CMPChatAttachment *> *) attachments toConversationWithID: (NSString *) conversationId completion:(void(^)(CMPChatResult *))completion {
     
+    NSString *profileId = [_client getProfileID];
+    if (profileId != nil) {
+        
+        CMPMessageProcessor *processor = [[CMPMessageProcessor alloc] initWithModelAdapter:_adapter message:message attachments:attachments toConversationWithID:conversationId from:profileId];
+
+        __weak CMPChatController *weakSelf = self;
+        
+        [_persistenceController updateStoreWithNewMessage:[processor createPreUploadMessageWithAttachments:attachments] completion:^(CMPStoreResult<NSNumber *> * result) {
+            if (weakSelf != nil && result.error != nil) {
+                [weakSelf.attachmentController uploadAttachments:attachments withCompletion:^(NSArray<CMPChatAttachment *> * sentAttachments) {
+                    if (weakSelf != nil && result.error != nil) {
+                        [weakSelf.persistenceController updateStoreWithNewMessage:[processor createPostUploadMessageWithAttachments:attachments] completion:^(CMPStoreResult<NSNumber *> * result) {
+                            [[[weakSelf.client services] messaging] sendMessage:[processor createMessageToSend] toConversationWithID:conversationId completion:^(CMPResult<CMPSendMessagesResult *> * result) {
+                                if (result.error != nil) {
+                                    [weakSelf.persistenceController updateStoreWithNewMessage:[processor createFinalMessageWithID:result.object.id eventID:result.object.eventID] completion:^(CMPStoreResult<NSNumber *> * result) {
+                                        completion([[CMPChatResult alloc] initWithError:result.error success:(BOOL)result.object]);
+                                    }];
+                                } else {
+                                    completion([[CMPChatResult alloc] initWithComapiResult:result]);
+                                }
+                            }];
+                        }];
+                    } else {
+                        completion([[CMPChatResult alloc] initWithError:result.error success:NO]);
+                    }
+                }];
+            } else {
+                completion([[CMPChatResult alloc] initWithError:result.error success:NO]);
+            }
+        }];
+    }
 }
 
 ///**

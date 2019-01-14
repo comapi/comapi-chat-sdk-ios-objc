@@ -17,6 +17,7 @@
 
 #import "CMPMessageProcessor.h"
 #import "NSString+CMPBase64.h"
+#import "CMPChatConstants.h"
 
 #import <CMPComapiFoundation/CMPContentData.h>
 #import <Foundation/Foundation.h>
@@ -28,69 +29,94 @@ NSInteger const kMaxPartDataLength = 13333;
 
 @interface CMPMessageProcessor()
 
-@property (nonatomic, strong, readonly) NSArray<CMPChatAttachment *> *additionalAttachments;
+@property (nonatomic, strong, readonly) CMPModelAdapter *adapter;
+
+@property (nonatomic, strong, readonly) NSMutableArray<CMPChatAttachment *> *preProcessedAttachments;
 @property (nonatomic, strong, readonly) NSMutableArray<CMPChatMessagePart *> *preProcessedParts;
 
-@property (nonatomic, strong, readonly) CMPChatMessage *message;
+@property (nonatomic, strong, readonly) NSArray<CMPChatMessagePart *> *finalParts;
+
+@property (nonatomic, strong, readonly) CMPMessageAlert *alert;
+@property (nonatomic, strong, readonly) NSDictionary<NSString *, id> *metadata;
+@property (nonatomic, strong, readonly) NSArray<CMPChatMessagePart *> *initialParts;
+
+@property (nonatomic, strong, readwrite) NSString *conversationId;
+@property (nonatomic, strong, readwrite) NSString *sender;
+@property (nonatomic, strong, readwrite) NSString *tempMessageId;
 
 @end
 
 @implementation CMPMessageProcessor
 
-- (instancetype)initWithMessage:(CMPChatMessage *) message toConversationWithID:(NSString *) conversationId from:(NSString *) sender {
-    _message = message;
+- (instancetype)initWithModelAdapter:(CMPModelAdapter *)adapter message:(CMPSendableMessage *) message attachments:(NSArray<CMPChatAttachment *> *) attachments  toConversationWithID:(NSString *) conversationId from:(NSString *) sender {
+    _adapter = adapter;
+    _alert = message.alert;
+    _metadata = message.metadata;
     _conversationId = conversationId;
     _sender = sender;
     _tempMessageId = [[NSUUID UUID] UUIDString];
+    
+    [self convertLargePartsToAttachments:message.parts combineWithAttachments:attachments];
+    
     return self;
 }
 
 - (CMPChatMessage *)createPreUploadMessageWithAttachments:(NSArray<CMPChatAttachment *> *) attachments {
     
-    if (_message.parts != nil && _message.parts.count > 0) {
-        [self convertLargePartsToAttachments: _message.parts];
-    }
     
-    NSMutableArray *parts = [[NSMutableArray alloc] initWithArray:_preProcessedParts];
+    
+    NSMutableArray<CMPChatMessagePart *> *parts = [[NSMutableArray alloc] init];
+                                                   
+    if (_preProcessedParts != nil && _preProcessedParts.count > 0) {
+        [parts addObjectsFromArray:_preProcessedParts];
+    }
 
-    if (attachments != nil) {
+    if (_preProcessedAttachments != nil && _preProcessedAttachments.count > 0) {
         for (int i = 0; i < attachments.count; i++) {
-            CMPMessagePart *p = [self createTempPart:attachments[i]];
+            CMPChatMessagePart *p = [self createTempPart:_preProcessedAttachments[i]];
             [parts addObject:p];
         }
     }
     
-    if (_additionalAttachments != nil) {
-        for (int i = 0; i < _additionalAttachments.count; i++) {
-            CMPMessagePart *p = [self createTempPart:_additionalAttachments[i]];
-            [parts addObject:p];
-        }
-    }
-    
-    return [self createTempMessageWithParts:parts metadata:_message.metadata context:_message.context];
+    return [self createTempMessageWithParts:parts metadata:_metadata context:nil];
 }
 
 - (CMPChatMessage *)createPostUploadMessageWithAttachments:(NSArray<CMPChatAttachment *> *) attachments {
     
-    NSMutableArray *parts = [[NSMutableArray alloc] initWithArray:_preProcessedParts];
+    NSMutableArray<CMPChatMessagePart *> *parts = [[NSMutableArray alloc] initWithArray:_preProcessedParts];
     
     for (int i = 0; i < attachments.count; i++) {
-        CMPMessagePart *p = [self createFinalPart:attachments[i]];
+        CMPChatMessagePart *p = [self createFinalPart:attachments[i]];
         [parts addObject:p];
     }
     
-    return [self createTempMessageWithParts:parts metadata:_message.metadata context:_message.context];
+    _finalParts = [[NSArray alloc] initWithArray:parts];
+    
+    return [self createTempMessageWithParts:[[NSArray alloc] initWithArray:parts] metadata:_metadata context:nil];
 }
 
-- (CMPMessagePart *) createTempPart: (CMPChatAttachment *) attachament {
-    return [[CMPMessagePart alloc] initWithName:nil type:kPartTypeUploading url:nil data:attachament.type size:0];
+- (CMPSendableMessage *)createMessageToSend {
+    NSMutableDictionary<NSString *, id> *newMetadata = [[NSMutableDictionary alloc] initWithDictionary:_metadata];
+    [newMetadata setObject:kCMPMessageTemporaryId forKey:kKeyMessageTempId];
+    return [[CMPSendableMessage alloc] initWithMetadata:newMetadata parts:[_adapter adaptChatMessageParts:_finalParts] alert:_alert];
 }
 
-- (CMPMessagePart *) createFinalPart: (CMPChatAttachment *) attachament {
+-(CMPChatMessage *)createFinalMessageWithID:(NSString *) messageId eventID:(NSNumber *) eventID  {
+    CMPChatMessageStatus *status = [[CMPChatMessageStatus alloc] initWithConversationID:_conversationId messageID:messageId profileID:_sender conversationEventID:eventID timestamp:[NSDate date] messageStatus:CMPChatMessageDeliveryStatusSent];
+    CMPChatMessage *msg = [[CMPChatMessage alloc] initWithID:messageId sentEventID:eventID metadata:_metadata context:nil parts:_finalParts statusUpdates:nil];
+    [msg addStatusUpdate:status];
+    return msg;
+}
+
+- (CMPChatMessagePart *) createTempPart: (CMPChatAttachment *) attachament {
+    return [[CMPChatMessagePart alloc] initWithName:nil type:kPartTypeUploading url:nil data:attachament.type size:0];
+}
+
+- (CMPChatMessagePart *) createFinalPart: (CMPChatAttachment *) attachament {
     if (attachament.error != nil) {
-        return [[CMPMessagePart alloc] initWithName:nil type:kPartTypeError url:nil data:attachament.type size:0];
+        return [[CMPChatMessagePart alloc] initWithName:nil type:kPartTypeError url:nil data:attachament.type size:0];
     } else {
-        return [[CMPMessagePart alloc] initWithName: (attachament.name != nil ? attachament.name : attachament.attachmentId) type:attachament.type url:attachament.url data:nil size:attachament.size];
+        return [[CMPChatMessagePart alloc] initWithName: (attachament.name != nil ? attachament.name : attachament.attachmentId) type:attachament.type url:attachament.url data:nil size:attachament.size];
     }
 }
 
@@ -105,27 +131,30 @@ NSInteger const kMaxPartDataLength = 13333;
     return [[CMPChatMessage alloc] initWithID:_tempMessageId sentEventID:nil metadata:[[NSDictionary alloc] initWithDictionary:mutableMetadata] context:context parts:tempParts statusUpdates:nil];
 }
 
-- (void) convertLargePartsToAttachments: (NSArray<CMPChatMessagePart *> *) initialParts {
+- (void) convertLargePartsToAttachments: (NSArray<CMPMessagePart *> *) initialParts combineWithAttachments:(NSArray<CMPChatAttachment *> *) initialAttachments {
     
-    if (initialParts.count > 0) {
-        
-        NSMutableArray <CMPChatAttachment *> *largeAttachments = [NSMutableArray array];
-        NSMutableArray <CMPChatMessagePart *> *removedParts = [NSMutableArray array];
-        
-        for (int i = 0; i < initialParts.count; i++) {
-            CMPChatMessagePart *part = initialParts[i];
-            if (part.data != nil && part.data.length > kMaxPartDataLength) {
-                NSString *str = [part.data toBase64String];
-                CMPChatAttachment  *largeAtachment = [[CMPChatAttachment alloc] initWithContentData: [[CMPContentData alloc] initWithBase64Data:str type:part.type name:part.name]];
-                [largeAttachments addObject:largeAtachment];
-                [removedParts addObject:part];
-            }
+    NSMutableArray <CMPChatAttachment *> *largeAttachments = [NSMutableArray array];
+    NSMutableArray <CMPChatMessagePart *> *removedParts = [NSMutableArray array];
+    
+    NSArray<CMPChatMessagePart *> * adaptedInitialParts = [_adapter adaptMessageParts:initialParts];
+    
+    for (int i = 0; i < initialParts.count; i++) {
+        CMPChatMessagePart *part = adaptedInitialParts[i];
+        if (part.data != nil && part.data.length > kMaxPartDataLength) {
+            NSString *str = [part.data toBase64String];
+            CMPChatAttachment  *largeAtachment = [[CMPChatAttachment alloc] initWithContentData: [[CMPContentData alloc] initWithBase64Data:str type:part.type name:part.name]];
+            [largeAttachments addObject:largeAtachment];
+            [removedParts addObject:part];
         }
-        
-        _preProcessedParts = [NSMutableArray array];
-        [_preProcessedParts addObjectsFromArray:initialParts];
-        [_preProcessedParts removeObjectsInArray:removedParts];
     }
+    
+    _preProcessedParts = [NSMutableArray array];
+    [_preProcessedParts addObjectsFromArray:adaptedInitialParts];
+    [_preProcessedParts removeObjectsInArray:removedParts];
+    
+    _preProcessedAttachments = [NSMutableArray array];
+    [_preProcessedAttachments addObjectsFromArray:initialAttachments];
+    [_preProcessedAttachments addObjectsFromArray:largeAttachments];
 }
 
 @end

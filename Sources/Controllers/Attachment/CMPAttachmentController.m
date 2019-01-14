@@ -36,13 +36,13 @@
     return _client != nil;
 }
 
-- (void)uploadAttachments:(nonnull NSArray<CMPChatAttachment *> *) attachments withCompletion: (nonnull UploadCompleted) completed {
+- (void)uploadAttachments:(nonnull NSArray<CMPChatAttachment *> *) attachments withCompletion: (nonnull CMPUploadCompleted) completed {
     if ([attachments count] > 0) {
         [self uploadAttachment:attachments atIndex:0 withCompletion:completed];
     }
 }
 
-- (void)uploadAttachment:(nonnull NSArray<CMPChatAttachment *> *) attachments atIndex:(NSUInteger) i withCompletion: (nonnull UploadCompleted) completed {
+- (void)uploadAttachment:(nonnull NSArray<CMPChatAttachment *> *) attachments atIndex:(NSUInteger) i withCompletion: (nonnull CMPUploadCompleted) completed {
     CMPChatAttachment* a = [attachments objectAtIndex:i];
     [_client.services.messaging uploadContent: a.data folder: a.folder completion:^(CMPResult<CMPContentUploadResult *> * result) {
         if (a.error != nil) {
