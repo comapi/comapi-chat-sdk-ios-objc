@@ -34,7 +34,7 @@
     return YES;
 }
 
-- (BOOL)deleteConversation:(nonnull CMPChatConversationBase *)conversation {
+- (BOOL)deleteConversation:(nonnull CMPChatConversation *)conversation {
     NSLog(@"deleteConversation");
     return YES;
 }
@@ -47,17 +47,17 @@
     NSLog(@"end");
 }
 
-- (nonnull NSArray<CMPChatConversationBase *> *)getAllConversations {
+- (nonnull NSArray<CMPChatConversation *> *)getAllConversations {
     NSLog(@"getAllConversations");
     return @[];
 }
 
-- (nonnull CMPChatConversationBase *)getConversationForConversationID:(nonnull NSString *)conversationID {
+- (nonnull CMPChatConversation *)getConversationForConversationID:(nonnull NSString *)conversationID {
     NSLog(@"getConversation");
-    return [[CMPChatConversationBase alloc] init];
+    return [[CMPChatConversation alloc] init];
 }
 
-- (BOOL)updateConversation:(nonnull CMPChatConversationBase *)conversation {
+- (BOOL)updateConversation:(nonnull CMPChatConversation *)conversation {
     NSLog(@"updateConversation");
     return YES;
 }
@@ -76,5 +76,21 @@
     NSLog(@"upsertMessage");
     return YES;
 }
+
+- (BOOL)deleteAllMessages:(nonnull NSString *)conversationID {
+    NSLog(@"deleteAllMessages");
+    return YES;
+}
+
+- (BOOL)deleteMessage:(nonnull NSString *)conversationID messageID:(nonnull NSString *)messageID {
+    NSLog(@"deleteMessage");
+    return YES;
+}
+
+- (nonnull CMPChatConversation *)getConversation:(nonnull NSString *)ID {
+    NSLog(@"getConversation");
+    return nil;
+}
+
 
 @end

@@ -21,13 +21,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef void (^UploadCompleted)(NSArray *);
+typedef void (^CMPUploadCompleted)(NSArray<CMPChatAttachment *> *);
 
 @interface CMPAttachmentController : NSObject
 
 - (instancetype)initWithClient:(CMPComapiClient *)client;
 
-- (void)uploadAttachments:(nonnull NSArray<CMPChatAttachment *> *) attachments withCompletion: (nonnull UploadCompleted) completed;
+- (void)uploadAttachments:(nonnull NSArray<CMPChatAttachment *> *) attachments withCompletion: (nonnull CMPUploadCompleted) completed;
 
 @end
 
