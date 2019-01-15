@@ -18,7 +18,7 @@
 
 #import "CMPComapiChat.h"
 
-#import <CMPComapiFoundation/CMPComapiClient.h>
+#import <CMPComapiFoundation/CMPComapi.h>
 
 @interface CMPComapiChatClient ()
 
@@ -38,7 +38,15 @@ static CMPComapiChatClient *_shared = nil;
     return client;
 }
 
-+ (CMPComapiChatClient *)initialise:(CMPChatConfig *)chatConfig {
++ (CMPComapiChatClient *)initialiseWithConfig:(CMPChatConfig *)chatConfig {
+    CMPComapiClient *foundation = [CMPComapi initialiseWithConfig:chatConfig];
+    CMPComapiChatClient *chat = [[CMPComapiChatClient alloc] initWithClient:foundation lifecycleDelegate:self];
+    logWithLevel(CMPLogLevelInfo, @"Chat Client initialised.", nil);
+    
+    return chat;
+}
+
++ (CMPComapiChatClient *)initialiseSharedWithConfig:(CMPChatConfig *)chatConfig {
     return nil;
 }
 

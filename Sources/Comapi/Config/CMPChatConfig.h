@@ -17,13 +17,35 @@
 //
 
 #import "CMPStoreFactory.h"
-//#import "CMPTypingListener.h"
-#import <Foundation/Foundation.h>
+#import "CMPInternalConfig.h"
+#import "CMPTypingDelegate.h"
+#import "CMPParticipantDelegate.h"
+#import "CMPProfileDelegate.h"
+
+#import <CMPComapiFoundation/CMPComapiConfig.h>
+#import <CMPComapiFoundation/CMPComapiClient.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatConfig : NSObject
+@interface CMPChatConfig : CMPComapiConfig
 
+@property (nonatomic, strong) CMPStoreFactory *storeFactory;
+@property (nonatomic, strong) CMPInternalConfig *internalConfig;
+
+@property (nonatomic, weak, nullable) id<CMPTypingDelegate> typingDelegate;
+@property (nonatomic, weak, nullable) id<CMPProfileDelegate> profileDelegate;
+@property (nonatomic, weak, nullable) id<CMPParticipantDelegate> participantDelegate;
+
+- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate logLevel:(CMPLogLevel)logLevel storeFactory:(CMPStoreFactory *)factory internalConfig:(CMPInternalConfig *)config typingDelegate:(id<CMPTypingDelegate>)typingDelegate profileDelegate:(id<CMPProfileDelegate>)profileDelegate participantDelegate:(id<CMPParticipantDelegate>)participantDelegate;
+- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(CMPStoreFactory *)factory internalConfig:(CMPInternalConfig *)config typingDelegate:(id<CMPTypingDelegate>)typingDelegate profileDelegate:(id<CMPProfileDelegate>)profileDelegate participantDelegate:(id<CMPParticipantDelegate>)participantDelegate;
+- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate logLevel:(CMPLogLevel)logLevel storeFactory:(CMPStoreFactory *)factory internalConfig:(CMPInternalConfig *)config;
+- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(CMPStoreFactory *)factory internalConfig:(CMPInternalConfig *)config;
+
+- (void)addTypingDelegate:(id<CMPTypingDelegate>)delegate;
+- (void)addProfileDelegate:(id<CMPProfileDelegate>)delegate;
+- (void)addParticipantDelegate:(id<CMPParticipantDelegate>)delegate;
+
+- (CMPComapiConfig *)foundationConfig;
 
 @end
 

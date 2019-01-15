@@ -32,6 +32,7 @@
 @property (nonatomic, weak, readonly) id<CMPMissingEventsDelegate> missingEventsDelegate;
 @property (nonatomic, weak, readonly) id<CMPProfileDelegate> profileDelegate;
 @property (nonatomic, weak, readonly) id<CMPTypingDelegate> typingDelegate;
+@property (nonatomic, weak, readonly) id<CMPParticipantDelegate> participantDelegate;
 
 @end
 
@@ -47,6 +48,18 @@
     }
     
     return self;
+}
+
+- (void)addTypingDelegate:(id<CMPTypingDelegate>)delegate {
+    _typingDelegate = delegate;
+}
+
+- (void)addProfileDelegate:(id<CMPProfileDelegate>)delegate {
+    _profileDelegate = delegate;
+}
+
+- (void)addParticipantDelegate:(id<CMPParticipantDelegate>)delegate {
+    _participantDelegate = delegate;
 }
 
 #pragma mark - CMPMissingEventsDelegate
@@ -72,6 +85,7 @@
 #pragma mark - CMPEventDelegate
 
 - (void)client:(nonnull CMPComapiClient *)client didReceiveEvent:(nonnull CMPEvent *)event {
+    __weak typeof(self) weakSelf = self;
     switch (event.type) {
         case CMPEventTypeConversationCreate: {
             CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithConversationCreateEvent:(CMPConversationEventCreate *)event];
@@ -80,40 +94,28 @@
                     logWithLevel(CMPLogLevelError, @"Store update failed with error:", result.error, nil);
                 }
             }];
-            
             break;
         }
         case CMPEventTypeConversationUpdate: {
             CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithConversationUpdateEvent:(CMPConversationEventUpdate *)event];
-            if (conversation) {
-                [_persistenceController upsertConversations:@[conversation] completion:^(CMPStoreResult<NSNumber *> * result) {
-                    if (result.error) {
-                        logWithLevel(CMPLogLevelError, @"Store update failed with error:", result.error, nil);
-                    }
-                }];
-            }
-            break;
-        }
-        case CMPEventTypeConversationUndelete: {
-            CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithConversationUndeleteEvent:(CMPConversationEventUndelete *)event];
-            if (conversation) {
-                [_persistenceController upsertConversations:@[conversation] completion:^(CMPStoreResult<NSNumber *> * result) {
-                    if (result.error) {
-                        logWithLevel(CMPLogLevelError, @"Store update failed with error:", result.error, nil);
-                    }
-                }];
-            }
-            break;
-        }
-        case CMPEventTypeConversationParticipantAdded: {
-            CMPConversationEventParticipantAdded *e = (CMPConversationEventParticipantAdded *)event;
-            [_chatController handleParticipantsAdded:e.payload.conversationID completion:^(CMPChatResult * chatResult) {
-                if (chatResult.error) {
-                    logWithLevel(CMPLogLevelError, @"Chat update failed with error:", chatResult.error, nil);
+            [_persistenceController upsertConversations:@[conversation] completion:^(CMPStoreResult<NSNumber *> * result) {
+                if (result.error) {
+                    logWithLevel(CMPLogLevelError, @"Store update failed with error:", result.error, nil);
                 }
             }];
             break;
         }
+        case CMPEventTypeConversationUndelete: {
+            CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithConversationUndeleteEvent:(CMPConversationEventUndelete *)event];
+            [_persistenceController upsertConversations:@[conversation] completion:^(CMPStoreResult<NSNumber *> * result) {
+                if (result.error) {
+                    logWithLevel(CMPLogLevelError, @"Store update failed with error:", result.error, nil);
+                }
+            }];
+            break;
+        }
+        case CMPEventTypeConversationDelete:
+            break;
         case CMPEventTypeConversationMessageDelivered: {
             CMPConversationMessageEventDelivered *e = (CMPConversationMessageEventDelivered *)event;
             [_tracker checkEvent:e.payload.conversationID conversationEventID:e.conversationEventID delegate:self];
@@ -140,12 +142,25 @@
             [_chatController handleMessage:[[CMPChatMessage alloc] initWithSentEvent:e] completion:nil];
             break;
         }
-        case CMPEventTypeConversationDelete:
+        
+        case CMPEventTypeConversationParticipantAdded: {
+            CMPConversationEventParticipantAdded *e = (CMPConversationEventParticipantAdded *)event;
+            [_chatController handleParticipantsAdded:e.payload.conversationID completion:^(CMPChatResult * chatResult) {
+                if (chatResult.error) {
+                    logWithLevel(CMPLogLevelError, @"Chat update failed with error:", chatResult.error, nil);
+                }
+                [weakSelf.participantDelegate didAddParticipant:(CMPConversationEventParticipantAdded *)event];
+            }];
             break;
-        case CMPEventTypeConversationParticipantRemoved:
+        }
+        case CMPEventTypeConversationParticipantRemoved: {
+            [weakSelf.participantDelegate didRemoveParicipant:(CMPConversationEventParticipantRemoved *)event];
             break;
-        case CMPEventTypeConversationParticipantUpdated:
+        }
+        case CMPEventTypeConversationParticipantUpdated: {
+            [weakSelf.participantDelegate didUpdateParticipant:(CMPConversationEventParticipantUpdated *)event];
             break;
+        }
         case CMPEventTypeConversationParticipantTyping: {
             CMPConversationEventParticipantTyping *e = (CMPConversationEventParticipantTyping *)event;
             [self.typingDelegate participantTyping:e.payload.conversationID participantID:e.payload.profileID isTyping:YES];

@@ -27,8 +27,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (class, nonatomic, strong, nullable, readonly) CMPComapiChatClient *shared;
 
-+ (CMPComapiChatClient *)initialise:(CMPChatConfig *)chatConfig;
-+ (CMPComapiChatClient *)initialiseShared:(CMPChatConfig *)chatConfig;
++ (CMPComapiChatClient *)initialiseWithConfig:(CMPChatConfig *)chatConfig;
++ (CMPComapiChatClient *)initialiseSharedWithConfig:(CMPChatConfig *)chatConfig;
 
 @end
 
