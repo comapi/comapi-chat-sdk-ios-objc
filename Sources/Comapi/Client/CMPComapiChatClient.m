@@ -17,27 +17,99 @@
 //
 
 #import "CMPComapiChatClient.h"
+#import "CMPChatConfig.h"
+#import "CMPChatController.h"
+#import "CMPEventsController.h"
+#import "CMPPersistenceController.h"
+#import "CMPCoreDataManager.h"
+#import "CMPModelAdapter.h"
+#import "CMPAttachmentController.h"
 
 #import <CMPComapiFoundation/CMPComapiClient.h>
+#import <CMPComapiFoundation/CMPBroadcastDelegate.h>
 
 @interface CMPComapiChatClient ()
 
 @property (nonatomic, strong, readonly) CMPComapiClient *client;
-@property (nonatomic, weak, readonly) id<CMPLifecycleDelegate> lifecycleDelegate;
+
+@property (nonatomic, strong, readonly) CMPEventsController *eventsController;
+@property (nonatomic, strong, readonly) CMPChatController *chatController;
+
+@property (nonatomic, strong) CMPBroadcastDelegate<id<CMPTypingDelegate>> *typingDelegates;
+@property (nonatomic, strong) CMPBroadcastDelegate<id<CMPProfileDelegate>> *profileDelegates;
+@property (nonatomic, strong) CMPBroadcastDelegate<id<CMPParticipantDelegate>> *participantDelegates;
 
 @end
 
 @implementation CMPComapiChatClient
 
-- (instancetype)initWithClient:(CMPComapiClient *)client lifecycleDelegate:(id<CMPLifecycleDelegate>)delegate {
+- (instancetype)initWithClient:(CMPComapiClient *)client chatConfig:(CMPChatConfig *)chatConfig {
     self = [super init];
     
     if (self) {
         _client = client;
-        _lifecycleDelegate = delegate;
+        
+        CMPModelAdapter *adapter = [[CMPModelAdapter alloc] init];
+        CMPMissingEventsTracker *tracker = [[CMPMissingEventsTracker alloc] init];
+        CMPCoreDataManager *coreDataManager = [[CMPCoreDataManager alloc] initWithCompletion:^(NSError * _Nullable error) {
+            if (error) {
+                logWithLevel(CMPLogLevelError, @"Error configuring CoreData stack.");
+            }
+        }];
+        CMPPersistenceController *persistenceController = [[CMPPersistenceController alloc] initWithFactory:chatConfig.storeFactory adapter:adapter coreDataManager:coreDataManager];
+        CMPAttachmentController *attachmentController = [[CMPAttachmentController alloc] initWithClient:_client];
+        
+        _chatController = [[CMPChatController alloc] initWithClient:_client persistenceController:persistenceController attachmentController:attachmentController adapter:adapter config:chatConfig.internalConfig];
+        _eventsController = [[CMPEventsController alloc] initWithPersistenceController:persistenceController chatController:_chatController missingEventsTracker:tracker chatConfig:chatConfig];
+        
+        _typingDelegates = [[CMPBroadcastDelegate alloc] init];
+        _profileDelegates = [[CMPBroadcastDelegate alloc] init];
+        _participantDelegates = [[CMPBroadcastDelegate alloc] init];
     }
     
     return self;
+}
+
+- (BOOL)isSessionSuccesfullyCreated {
+    return [_client isSessionSuccessfullyCreated];
+}
+
+- (NSString *)profileID {
+    return [_client getProfileID];
+}
+
+- (void)addTypingDelegate:(id<CMPTypingDelegate>)delegate {
+    [_typingDelegates addDelegate:delegate];
+}
+
+- (void)removeTypingDelegate:(id<CMPTypingDelegate>)delegate {
+    [_typingDelegates removeDelegate:delegate];
+}
+
+- (void)addProfileDelegate:(id<CMPProfileDelegate>)delegate {
+    [_profileDelegates addDelegate:delegate];
+}
+
+- (void)removeProfileDelegate:(id<CMPProfileDelegate>)delegate {
+    [_profileDelegates removeDelegate:delegate];
+}
+
+- (void)addParticipantDelegate:(id<CMPParticipantDelegate>)delegate {
+    [_participantDelegates addDelegate:delegate];
+}
+
+- (void)removeParticipantDelegate:(id<CMPParticipantDelegate>)delegate {
+    [_participantDelegates removeDelegate:delegate];
+}
+
+#pragma mark - CMPLifecycleDelegate
+
+- (void)applicationDidEnterBackground:(nonnull UIApplication *)application {
+
+}
+
+- (void)applicationWillEnterForeground:(nonnull UIApplication *)application {
+    
 }
 
 @end

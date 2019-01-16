@@ -16,26 +16,13 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPPersistenceController.h"
-#import "CMPChatController.h"
-#import "CMPMissingEventsTracker.h"
-#import "CMPChatConfig.h"
-#import "CMPProfileDelegate.h"
-#import "CMPTypingDelegate.h"
-#import "CMPParticipantDelegate.h"
-
-#import <CMPComapiFoundation/CMPEventDelegate.h>
-#import <CMPComapiFoundation/CMPStateDelegate.h>
+#import <CMPComapiFoundation/CMPProfileEvents.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPEventsController : NSObject <CMPStateDelegate, CMPEventDelegate, CMPMissingEventsDelegate>
+@protocol CMPProfileDelegate <NSObject>
 
-- (instancetype)initWithPersistenceController:(CMPPersistenceController *)persistenceController chatController:(CMPChatController *)chatController missingEventsTracker:(CMPMissingEventsTracker *)tracker chatConfig:(CMPChatConfig *)config;
-
-- (void)addTypingDelegate:(id<CMPTypingDelegate>)delegate;
-- (void)addProfileDelegate:(id<CMPProfileDelegate>)delegate;
-- (void)addParticipantDelegate:(id<CMPParticipantDelegate>)delegate;
+- (void)didUpdateProfile:(CMPProfileEventUpdate *)event;
 
 @end
 

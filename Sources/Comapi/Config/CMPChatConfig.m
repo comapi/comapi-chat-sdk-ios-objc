@@ -20,4 +20,70 @@
 
 @implementation CMPChatConfig
 
+- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate logLevel:(CMPLogLevel)logLevel storeFactory:(CMPStoreFactory *)factory internalConfig:(CMPInternalConfig *)config typingDelegate:(id<CMPTypingDelegate>)typingDelegate profileDelegate:(id<CMPProfileDelegate>)profileDelegate participantDelegate:(id<CMPParticipantDelegate>)participantDelegate {
+    self = [super initWithApiSpaceID:apiSpaceID authenticationDelegate:authenticationDelegate logLevel:logLevel];
+    
+    if (self) {
+        _storeFactory = factory;
+        _internalConfig = config;
+        _typingDelegate = typingDelegate;
+        _profileDelegate = profileDelegate;
+        _participantDelegate = participantDelegate;
+    }
+    
+    return self;
+}
+
+- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(CMPStoreFactory *)factory internalConfig:(CMPInternalConfig *)config typingDelegate:(id<CMPTypingDelegate>)typingDelegate profileDelegate:(id<CMPProfileDelegate>)profileDelegate participantDelegate:(id<CMPParticipantDelegate>)participantDelegate {
+    self = [super initWithApiSpaceID:apiSpaceID authenticationDelegate:authenticationDelegate];
+    
+    if (self) {
+        _storeFactory = factory;
+        _internalConfig = config;
+        _typingDelegate = typingDelegate;
+        _profileDelegate = profileDelegate;
+        _participantDelegate = participantDelegate;
+    }
+    
+    return self;
+}
+
+- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate logLevel:(CMPLogLevel)logLevel storeFactory:(CMPStoreFactory *)factory internalConfig:(CMPInternalConfig *)config {
+    self = [super initWithApiSpaceID:apiSpaceID authenticationDelegate:authenticationDelegate logLevel:logLevel];
+    
+    if (self) {
+        _storeFactory = factory;
+        _internalConfig = config;
+    }
+    
+    return self;
+}
+
+- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(CMPStoreFactory *)factory internalConfig:(CMPInternalConfig *)config {
+    self = [super initWithApiSpaceID:apiSpaceID authenticationDelegate:authenticationDelegate];
+    
+    if (self) {
+        _storeFactory = factory;
+        _internalConfig = config;
+    }
+    
+    return self;
+}
+
+- (void)addTypingDelegate:(id<CMPTypingDelegate>)delegate {
+    self.typingDelegate = delegate;
+}
+
+- (void)addProfileDelegate:(id<CMPProfileDelegate>)delegate {
+    self.profileDelegate = delegate;
+}
+
+- (void)addParticipantDelegate:(id<CMPParticipantDelegate>)delegate {
+    self.participantDelegate = delegate;
+}
+
+- (CMPComapiConfig *)foundationConfig {
+    return [[CMPComapiConfig alloc] initWithApiSpaceID:self.id authenticationDelegate:self.authDelegate logLevel:self.logLevel];
+}
+
 @end

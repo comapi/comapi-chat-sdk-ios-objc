@@ -17,11 +17,8 @@
 //
 
 #import "CMPComapiChat.h"
-#import "CMPComapiChatClient.h"
 
-#import <CMPComapiFoundation/CMPComapiClient.h>
-
-NS_ASSUME_NONNULL_BEGIN
+#import <CMPComapiFoundation/CMPComapi.h>
 
 @interface CMPComapiChatClient ()
 
@@ -31,6 +28,121 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation CMPComapiChat
 
+static CMPComapiChatClient *_shared = nil;
+
++ (CMPComapiChatClient *)shared {
+    CMPComapiChatClient *client = _shared;
+    if (!client) {
+        return nil;
+    }
+    return client;
+}
+
++ (CMPComapiChatClient *)initialiseWithConfig:(CMPChatConfig *)chatConfig {
+    CMPComapiClient *foundation = [CMPComapi initialiseWithConfig:chatConfig];
+    CMPComapiChatClient *chat = [[CMPComapiChatClient alloc] initWithClient:foundation lifecycleDelegate:self];
+    logWithLevel(CMPLogLevelInfo, @"Chat Client initialised.", nil);
+    
+    return chat;
+}
+
++ (CMPComapiChatClient *)initialiseSharedWithConfig:(CMPChatConfig *)chatConfig {
+    return nil;
+}
+
 @end
 
-NS_ASSUME_NONNULL_END
+
+//public class ComapiChat {
+//
+//    private static volatile ComapiChatClient instance;
+//
+//    private ComapiChat() {}
+//
+//    /**
+//     * Initialise and build SDK client.
+//     */
+//    public static Observable<ComapiChatClient> initialise(@NonNull final Application app, @NonNull final ChatConfig chatConfig) {
+//
+//        final FoundationFactory factory = chatConfig.getFoundationFactory();
+//        final EventsHandler eventsHandler = factory.getAdaptingEventsHandler();
+//        final CallbackAdapter adapter = chatConfig.getComapiCallbackAdapter();
+//
+//        return factory.getClientInstance(app, chatConfig)
+//        .map(client -> {
+//            ComapiChatClient chatClient = new ComapiChatClient(app, client, chatConfig, eventsHandler, adapter);
+//            ClientHelper.addLifecycleListener(client, chatClient.createLifecycleListener(new WeakReference<>(chatClient)));
+//            return chatClient;
+//        });
+//    }
+//
+//    /**
+//     * Initialise and build SDK client singleton.
+//     */
+//    public static Observable<ComapiChatClient> initialiseShared(@NonNull final Application app, @NonNull final ChatConfig chatConfig) {
+//
+//        final FoundationFactory factory = chatConfig.getFoundationFactory();
+//        final EventsHandler eventsHandler = new EventsHandler();
+//        final CallbackAdapter adapter = chatConfig.getComapiCallbackAdapter();
+//
+//        return factory.getClientInstance(app, chatConfig)
+//        .map(client -> {
+//            ComapiChatClient chatClient = createShared(app, client, chatConfig, eventsHandler, adapter);
+//            ClientHelper.addLifecycleListener(client, (chatClient.createLifecycleListener(new WeakReference<>(chatClient))));
+//            return chatClient;
+//        });
+//    }
+//
+//    /**
+//     * Initialise and build SDK client.
+//     */
+//    public static void initialise(@NonNull final Application app, @NonNull final ChatConfig chatConfig, final Callback<ComapiChatClient> callback) {
+//
+//        final CallbackAdapter adapter = chatConfig.getComapiCallbackAdapter();
+//        adapter.adapt(initialise(app, chatConfig), callback);
+//    }
+//
+//    /**
+//     * Initialise and build SDK client singleton.
+//     */
+//    public static void initialiseShared(@NonNull final Application app, @NonNull final ChatConfig chatConfig, final Callback<ComapiChatClient> callback) {
+//
+//        final CallbackAdapter adapter = chatConfig.getComapiCallbackAdapter();
+//        adapter.adapt(initialiseShared(app, chatConfig), callback);
+//    }
+//
+//    /**
+//     * Get global singleton of {@link ComapiChatClient}.
+//     *
+//     * @return Singleton of {@link ComapiChatClient}
+//     */
+//    private static ComapiChatClient createShared(Application app, @NonNull RxComapiClient comapiClient, @NonNull final ChatConfig chatConfig, @NonNull final EventsHandler eventsHandler, @NonNull final CallbackAdapter adapter) {
+//
+//        if (instance == null) {
+//            synchronized (ComapiChatClient.class) {
+//                if (instance == null) {
+//                    instance = new ComapiChatClient(app, comapiClient, chatConfig, eventsHandler, adapter);
+//                }
+//            }
+//        }
+//
+//        return instance;
+//    }
+//
+//    /**
+//     * Get global singleton of {@link ComapiChatClient}.
+//     *
+//     * @return Singleton of {@link ComapiChatClient}
+//     */
+//    public static ComapiChatClient getShared() {
+//
+//        if (instance == null) {
+//            synchronized (ComapiChatClient.class) {
+//                if (instance == null) {
+//                    throw new RuntimeException("Comapi Chat Client singleton has not been initialised.");
+//                }
+//            }
+//        }
+//
+//        return instance;
+//        }

@@ -55,7 +55,7 @@ NSInteger const kETagNotValid = 412;
 
 @implementation CMPChatController
 
-- (instancetype)initWithClient:(CMPComapiClient *)client persistenceController:(CMPPersistenceController *)persistenceController attachmentController:(CMPAttachmentController *)attachmentController adapter:(CMPModelAdapter *)adapter config:(CMPInternalConfig *)config callLimiter:(CMPCallLimiter *)callLimiter {
+- (instancetype)initWithClient:(CMPComapiClient *)client persistenceController:(CMPPersistenceController *)persistenceController attachmentController:(CMPAttachmentController *)attachmentController adapter:(CMPModelAdapter *)adapter config:(CMPInternalConfig *)config {
     self = [super init];
     
     if (self) {
@@ -102,7 +102,7 @@ NSInteger const kETagNotValid = 412;
 #pragma mark - Store
 #pragma mark - public
 
-- (void)synchronizeStore:(void(^)(CMPChatResult*))completion {
+- (void)synchronizeStore:(void(^ _Nullable)(CMPChatResult *))completion {
     if (self.isSynchronising) {
         logWithLevel(CMPLogLevelWarning, @"Synchronisation in progress.", nil);
         completion([[CMPChatResult alloc] initWithError:nil success:YES]);
@@ -310,17 +310,21 @@ NSInteger const kETagNotValid = 412;
 #pragma mark - Conversations
 #pragma mark - public
 
-- (void)synchronizeConversations:(void(^)(CMPChatResult *))completion {
+- (void)synchroniseConversation:(NSString *)ID completion:(void(^)(CMPChatResult *))completion {
     __weak typeof(self) weakSelf = self;
-    [[self withClient].services.messaging getConversationsWithProfileID:[self getProfileID] isPublic:NO completion:^(CMPResult<NSArray<CMPConversation *> *> * result) {
-        [weakSelf.persistenceController getAllConversations:^(CMPStoreResult<NSArray<CMPChatConversation *> *> * storeResult) {
-            CMPConversationComparison *compareResult = [weakSelf compare:storeResult.error == nil remote:result.object local:storeResult.object];
-            [weakSelf updateLocalConversationList:compareResult completion:^(CMPConversationComparison * compareResult) {
-                [weakSelf lookForMissingEvents:compareResult completion:^(CMPConversationComparison * compareResult) {
-                    completion([[CMPChatResult alloc] initWithError:nil success:compareResult.isSuccessful]);
+    [[self withClient].services.messaging getMessagesWithConversationID:ID completion:^(CMPResult<CMPGetMessagesResult *> * result) {
+        if (result.object) {
+            [weakSelf.persistenceController getConversation:ID completion:^(CMPStoreResult<CMPChatConversation *> * storeResult) {
+                CMPConversationComparison *comparison = [weakSelf compare:result.object.latestEventID ? result.object.latestEventID : @(-1L) conversation:storeResult.object];
+                [weakSelf updateLocalConversationList:comparison completion:^(CMPConversationComparison * comparison) {
+                    [weakSelf lookForMissingEvents:comparison completion:^(CMPConversationComparison * comparison) {
+                        completion([[CMPChatResult alloc] initWithError:nil success:comparison.isSuccessful]);
+                    }];
                 }];
             }];
-        }];
+        } else {
+            completion([[CMPChatResult alloc] initWithComapiResult:result]);
+        }
     }];
 }
 
@@ -401,6 +405,20 @@ NSInteger const kETagNotValid = 412;
 
 #pragma mark - private
 
+- (void)synchronizeConversations:(void(^)(CMPChatResult *))completion {
+    __weak typeof(self) weakSelf = self;
+    [[self withClient].services.messaging getConversationsWithProfileID:[self getProfileID] isPublic:NO completion:^(CMPResult<NSArray<CMPConversation *> *> * result) {
+        [weakSelf.persistenceController getAllConversations:^(CMPStoreResult<NSArray<CMPChatConversation *> *> * storeResult) {
+            CMPConversationComparison *compareResult = [weakSelf compare:storeResult.error == nil remote:result.object local:storeResult.object];
+            [weakSelf updateLocalConversationList:compareResult completion:^(CMPConversationComparison * compareResult) {
+                [weakSelf lookForMissingEvents:compareResult completion:^(CMPConversationComparison * compareResult) {
+                    completion([[CMPChatResult alloc] initWithError:nil success:compareResult.isSuccessful]);
+                }];
+            }];
+        }];
+    }];
+}
+
 - (NSArray<CMPChatConversation *> *)limitNumberOfConversations:(NSArray<CMPChatConversation *> *)conversations {
     NSMutableArray<CMPChatConversation *> *nonEmptyConversations = [NSMutableArray new];
     
@@ -444,24 +462,6 @@ NSInteger const kETagNotValid = 412;
     }
     
     return dict;
-}
-
-- (void)synchroniseConversation:(NSString *)ID completion:(void(^)(CMPChatResult *))completion {
-    __weak typeof(self) weakSelf = self;
-    [[self withClient].services.messaging getMessagesWithConversationID:ID completion:^(CMPResult<CMPGetMessagesResult *> * result) {
-        if (result.object) {
-            [weakSelf.persistenceController getConversation:ID completion:^(CMPStoreResult<CMPChatConversation *> * storeResult) {
-                CMPConversationComparison *comparison = [weakSelf compare:result.object.latestEventID ? result.object.latestEventID : @(-1L) conversation:storeResult.object];
-                [weakSelf updateLocalConversationList:comparison completion:^(CMPConversationComparison * comparison) {
-                    [weakSelf lookForMissingEvents:comparison completion:^(CMPConversationComparison * comparison) {
-                        completion([[CMPChatResult alloc] initWithError:nil success:comparison.isSuccessful]);
-                    }];
-                }];
-            }];
-        } else {
-            completion([[CMPChatResult alloc] initWithComapiResult:result]);
-        }
-    }];
 }
 
 - (void)updateLocalConversationList:(CMPConversationComparison *)comparison completion:(void(^)(CMPConversationComparison *))completion {
