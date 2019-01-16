@@ -16,32 +16,32 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPLifecycleDelegate.h"
-#import "CMPTypingDelegate.h"
-#import "CMPProfileDelegate.h"
-#import "CMPParticipantDelegate.h"
-#import "CMPChatServices.h"
+#import <XCTest/XCTest.h>
 
-#import <CMPComapiFoundation/CMPSession.h>
-
-NS_ASSUME_NONNULL_BEGIN
-
-@interface CMPComapiChatClient : NSObject <CMPLifecycleDelegate>
-
-@property (nonatomic, strong, readonly) CMPChatServices *services;
-
-@property (nonatomic, strong, readonly, nullable) NSString *profileID;
-@property (nonatomic, readonly) BOOL sessionSuccesfullyCreated;
-
-- (void)addTypingDelegate:(id<CMPTypingDelegate>)delegate;
-- (void)removeTypingDelegate:(id<CMPTypingDelegate>)delegate;
-
-- (void)addProfileDelegate:(id<CMPProfileDelegate>)delegate;
-- (void)removeProfileDelegate:(id<CMPProfileDelegate>)delegate;
-
-- (void)addParticipantDelegate:(id<CMPParticipantDelegate>)delegate;
-- (void)removeParticipantDelegate:(id<CMPParticipantDelegate>)delegate;
+@interface CMPTest : XCTestCase
 
 @end
 
-NS_ASSUME_NONNULL_END
+@implementation CMPTest
+
+- (void)setUp {
+    // Put setup code here. This method is called before the invocation of each test method in the class.
+}
+
+- (void)tearDown {
+    // Put teardown code here. This method is called after the invocation of each test method in the class.
+}
+
+- (void)testExample {
+    // This is an example of a functional test case.
+    // Use XCTAssert and related functions to verify your tests produce the correct results.
+}
+
+- (void)testPerformanceExample {
+    // This is an example of a performance test case.
+    [self measureBlock:^{
+        // Put the code you want to measure the time of here.
+    }];
+}
+
+@end

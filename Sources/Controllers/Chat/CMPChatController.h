@@ -37,6 +37,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (nullable NSString *)getProfileID;
 
+#pragma mark - Store
+
+- (void)synchronizeStore:(void(^ _Nullable)(CMPChatResult*))completion;
+
 #pragma mark - Sockets
 
 - (void)handleSocketConnected;
@@ -44,7 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Messages
 
-- (void)sendMessage:(CMPChatMessage *)message withAttachments:(nullable NSArray<CMPChatAttachment *> *)attachments toConversationWithID: (NSString *)conversationId completion:(void(^)(CMPChatResult *))completion;
+- (void)sendMessage:(CMPSendableMessage *)message withAttachments:(nullable NSArray<CMPChatAttachment *> *)attachments toConversationWithID: (NSString *)conversationId completion:(void(^)(CMPChatResult *))completion;
 - (void)handleMessage:(CMPChatMessage *)message completion:(void(^ _Nullable)(BOOL))completion;
 - (void)getPreviousMessages:(NSString *)ID completion:(void(^)(CMPChatResult *))completion;
 - (void)handleMessageStatusToUpdate:(NSString *)ID statusUpdates:(NSArray<CMPMessageStatusUpdate *> *)statusUpdates result:(CMPResult *)result completion:(void(^)(CMPChatResult *))completion;
@@ -52,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Conversations
 
-- (void)synchronizeConversations:(void(^)(CMPChatResult *))completion;
+- (void)synchroniseConversation:(NSString *)ID completion:(void(^)(CMPChatResult *))completion;
 - (void)handleNonLocalConversation:(NSString *)ID completion:(void(^)(CMPChatResult *))completion;
 - (void)handleParticipantsAdded:(NSString *)ID completion:(void(^)(CMPChatResult *))completion;
 - (void)handleConversationCreated:(CMPResult<CMPConversation *> *)result completion:(void(^)(CMPChatResult *))completion;

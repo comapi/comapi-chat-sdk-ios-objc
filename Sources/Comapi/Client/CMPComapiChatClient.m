@@ -102,4 +102,14 @@
     [_participantDelegates removeDelegate:delegate];
 }
 
+#pragma mark - CMPLifecycleDelegate
+
+- (void)applicationDidEnterBackground:(nonnull UIApplication *)application {
+
+}
+
+- (void)applicationWillEnterForeground:(nonnull UIApplication *)application {
+    
+}
+
 @end

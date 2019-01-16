@@ -40,7 +40,9 @@
     return self;
 }
 
-- (void)addConversation:(CMPNewConversation *)conversation completion:(void (^)(CMPChatResult * _Nonnull))completion {
+#pragma mark - Conversations
+
+- (void)addConversation:(CMPNewConversation *)conversation completion:(void (^)(CMPChatResult *))completion {
     __weak typeof(self) weakSelf = self;
     [_foundation.services.messaging addConversationWithConversation:conversation completion:^(CMPResult<CMPConversation *> * result) {
         [weakSelf.chatController handleConversationCreated:result completion:completion];
@@ -61,6 +63,12 @@
     }];
 }
 
+- (void)synchroniseConversation:(NSString *)conversationID completion:(void (^)(CMPChatResult * _Nonnull))completion {
+    [_chatController synchroniseConversation:conversationID completion:completion];
+}
+
+#pragma mark - Participants
+
 - (void)getParticipants:(NSString *)conversationID participantIDs:(NSArray<NSString *> *)participantsIDs completion:(void(^)(NSArray<CMPChatParticipant *> *))completion {
     __weak typeof(self) weakSelf = self;
     [_foundation.services.messaging getParticipantsWithConversationID:conversationID completion:^(CMPResult<NSArray<CMPConversationParticipant *> *> * result) {
@@ -74,51 +82,51 @@
     }];
 }
 
+- (void)addParticipants:(NSString *)conversationID participants:(NSArray<CMPConversationParticipant *> *)participants completion:(void (^)(CMPChatResult * _Nonnull))completion {
+    __weak typeof(self) weakSelf = self;
+    [_foundation.services.messaging addParticipantsWithConversationID:conversationID participants:participants completion:^(CMPResult<NSNumber *> * result) {
+        [weakSelf.chatController handleParticipantsAdded:conversationID completion:completion];
+    }];
+}
+
+- (void)participantIsTyping:(NSString *)conversationID isTyping:(BOOL)isTyping completion:(void (^)(CMPChatResult * _Nonnull))completion {
+    if (isTyping) {
+        //[_foundation.services.messaging partic]
+    } else {
+        
+    }
+}
+
+#pragma mark - Messages
+
+- (void)sendMessage:(NSString *)conversationID message:(CMPSendableMessage *)message completion:(void (^)(CMPChatResult *))completion {
+    [_chatController sendMessage:message withAttachments:@[] toConversationWithID:conversationID completion:completion];
+}
+
+- (void)sendMessage:(NSString *)conversationID message:(CMPSendableMessage *)message attachments:(NSArray<CMPChatAttachment *> *)attachments completion:(void (^)(CMPChatResult * ))completion {
+    [_chatController sendMessage:message withAttachments:attachments toConversationWithID:conversationID completion:completion];
+}
+
+- (void)getPreviousMessages:(NSString *)conversationID completion:(void (^)(CMPChatResult *))completion {
+    [_chatController getPreviousMessages:conversationID completion:completion];
+}
+
+- (void)markMessagesAsRead:(NSString *)conversationID messageIDs:(NSArray<NSString *> *)messageIDs completion:(void (^)(CMPChatResult * _Nonnull))completion {
+    __weak typeof(self) weakSelf = self;
+    CMPMessageStatusUpdate *update = [[CMPMessageStatusUpdate alloc] initWithStatus:CMPMessageDeliveryStatusRead timestamp:[NSDate date] messageIDs:messageIDs];
+    [_foundation.services.messaging updateStatusForMessagesWithIDs:messageIDs status:CMPMessageDeliveryStatusRead conversationID:conversationID timestamp:[NSDate date] completion:^(CMPResult<NSNumber *> * result) {
+        [weakSelf.chatController handleMessageStatusToUpdate:conversationID statusUpdates:@[update] result:result completion:completion];
+    }];
+}
+
+#pragma mark - Store
+
+- (void)synchroniseStore:(void (^)(CMPChatResult *))completion {
+    [_chatController synchronizeStore:completion];
+}
+
 @end
 
-
-//
-//    /**
-//     * Gets conversation participants.
-//     *
-//     * @param conversationId ID of a conversation to query participant list.
-//     * @return Observable to get a list of conversation participants.
-//     */
-//    public Observable<List<ChatParticipant>> getParticipants(@NonNull final String conversationId) {
-//        return foundation.service().messaging().getParticipants(conversationId).map(result -> modelAdapter.adapt(result.getResult()));
-//    }
-//
-//    /**
-//     * Returns observable to remove list of participants from a conversation.
-//     *
-//     * @param conversationId ID of a conversation to delete.
-//     * @param ids            List of participant ids to be removed.
-//     * @return Observable to subscribe to.
-//     */
-//    public Observable<ChatResult> removeParticipants(@NonNull final String conversationId, @NonNull final List<String> ids) {
-//        return foundation.service().messaging().removeParticipants(conversationId, ids).map(modelAdapter::adaptResult);
-//    }
-//
-//    /**
-//     * Returns observable to add a list of participants to a conversation.
-//     *
-//     * @param conversationId ID of a conversation to update.
-//     * @param participants   New conversation participants details.
-//     * @return Observable to subscribe to.
-//     */
-//    public Observable<ChatResult> addParticipants(@NonNull final String conversationId, @NonNull final List<Participant> participants) {
-//        return foundation.service().messaging().addParticipants(conversationId, participants)
-//        .flatMap(result -> controller.handleParticipantsAdded(conversationId).map(conversation -> result))
-//        .map(modelAdapter::adaptResult);
-//    }
-//
-//    /**
-//     * Send message to the conversation.
-//     *
-//     * @param conversationId ID of a conversation to send a message to.
-//     * @param message        Message to be send.
-//     * @return Observable to subscribe to.
-//     */
 //    public Observable<ChatResult> sendMessage(@NonNull final String conversationId, @NonNull final MessageToSend message) {
 //        return doSendMessage(conversationId, message, null);
 //    }
@@ -179,18 +187,7 @@
 //     * @param messageIds     List of message ids for which the status should be updated.
 //     * @return Observable to subscribe to.
 //     */
-//    public Observable<ChatResult> markMessagesAsRead(@NonNull final String conversationId, @NonNull final List<String> messageIds) {
-//
-//        List<MessageStatusUpdate> statuses = new ArrayList<>();
-//        MessageStatusUpdate.Builder updateBuilder = MessageStatusUpdate.builder();
-//        for (String id : messageIds) {
-//            updateBuilder.addMessageId(id);
-//        }
-//        updateBuilder.setStatus(MessageStatus.read).setTimestamp(DateHelper.getCurrentUTC());
-//        statuses.add(updateBuilder.build());
-//
-//        return foundation.service().messaging().updateMessageStatus(conversationId, statuses).flatMap(result -> controller.handleMessageStatusToUpdate(conversationId, statuses, result));
-//    }
+
 //
 //    /**
 //     * Queries the next message page in conversation and delivers messages to store implementation.

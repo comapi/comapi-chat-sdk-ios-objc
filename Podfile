@@ -11,6 +11,13 @@ shared
 
 end
 
+target 'CMPComapiChatTests' do
+
+shared
+pod 'CMPComapiChat', :path => '/Users/dominik.kowalski/Documents/comapi-chat-sdk-ios-objc'
+
+end
+
 target 'SampleApp' do
 
 shared

@@ -19,6 +19,7 @@
 #import "CMPChatResult.h"
 #import "CMPChatController.h"
 #import "CMPChatParticipant.h"
+#import "CMPChatAttachment.h"
 
 #import <CMPComapiFoundation/CMPResult.h>
 #import <CMPComapiFoundation/CMPComapiClient.h>
@@ -31,82 +32,27 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithFoundation:(CMPComapiClient *)foundation chatController:(CMPChatController *)chatController;
 
 - (void)addConversation:(CMPNewConversation *)conversation completion:(void(^)(CMPChatResult *))completion;
+- (void)deleteConversation:(NSString *)conversationID eTag:(nullable NSString *)eTag completion:(void(^)(CMPChatResult *))completion;
+- (void)updateConversation:(NSString *)conversationID eTag:(nullable NSString *)eTag update:(CMPConversationUpdate *)update completion:(void(^)(CMPChatResult *))completion;
+
+- (void)getParticipants:(NSString *)conversationID participantIDs:(NSArray<NSString *> *)participantsIDs completion:(void(^)(NSArray<CMPChatParticipant *> *))completion;
+- (void)removeParticipants:(NSString *)conversationID participants:(NSArray<CMPConversationParticipant *> *)participants completion:(void(^)(CMPChatResult *))completion;
+- (void)addParticipants:(NSString *)conversationID participants:(NSArray<CMPConversationParticipant *> *)participants completion:(void(^)(CMPChatResult *))completion;
+- (void)participantIsTyping:(NSString *)conversationID isTyping:(BOOL)isTyping completion:(void(^)(CMPChatResult *))completion;
+
+- (void)sendMessage:(NSString *)conversationID message:(CMPSendableMessage *)message completion:(void(^)(CMPChatResult *))completion;
+- (void)sendMessage:(NSString *)conversationID message:(CMPSendableMessage *)message attachments:(NSArray<CMPChatAttachment *> *)attachments completion:(void(^)(CMPChatResult *))completion;
+- (void)getPreviousMessages:(NSString *)conversationID completion:(void(^)(CMPChatResult *))completion;
+- (void)markMessagesAsRead:(NSString *)conversationID messageIDs:(NSArray<NSString *> *)messageIDs completion:(void(^)(CMPChatResult *))completion;
+
+- (void)synchroniseStore:(void(^)(CMPChatResult *))completion;
+- (void)synchroniseConversation:(NSString *)conversationID completion:(void(^)(CMPChatResult *))completion;
 
 @end
 
 NS_ASSUME_NONNULL_END
 
-//public class MessagingService {
-//
-//    private MessagingService() {
-//
-//    }
-//
-//    /**
-//     * Returns observable to create a conversation.
-//     *
-//     * @param request Request with conversation details to create.
-//     * @return Observable to subscribe to.
-//     */
-//    public Observable<ChatResult> createConversation(@NonNull final ConversationCreate request) {
-//        return foundation.service().messaging().createConversation(request).flatMap(controller::handleConversationCreated);
-//    }
-//
-//    /**
-//     * Returns observable to create a conversation.
-//     *
-//     * @param conversationId ID of a conversation to delete.
-//     * @return Observable to subscribe to.
-//     */
-//    public Observable<ChatResult> deleteConversation(@NonNull final String conversationId, @Nullable String eTag) {
-//        return foundation.service().messaging().deleteConversation(conversationId, eTag).flatMap(result -> controller.handleConversationDeleted(conversationId, result));
-//    }
-//
-//    /**
-//     * Returns observable to update a conversation.
-//     *
-//     * @param conversationId ID of a conversation to update.
-//     * @param request        Request with conversation details to update.
-//     * @return Observable to subscribe to.
-//     */
-//    public Observable<ChatResult> updateConversation(@NonNull final String conversationId, @Nullable String eTag, @NonNull final ConversationUpdate request) {
-//        return foundation.service().messaging().updateConversation(conversationId, request, eTag).flatMap(result -> controller.handleConversationUpdated(request, result));
-//    }
-//
-//    /**
-//     * Gets conversation participants.
-//     *
-//     * @param conversationId ID of a conversation to query participant list.
-//     * @return Observable to get a list of conversation participants.
-//     */
-//    public Observable<List<ChatParticipant>> getParticipants(@NonNull final String conversationId) {
-//        return foundation.service().messaging().getParticipants(conversationId).map(result -> modelAdapter.adapt(result.getResult()));
-//    }
-//
-//    /**
-//     * Returns observable to remove list of participants from a conversation.
-//     *
-//     * @param conversationId ID of a conversation to delete.
-//     * @param ids            List of participant ids to be removed.
-//     * @return Observable to subscribe to.
-//     */
-//    public Observable<ChatResult> removeParticipants(@NonNull final String conversationId, @NonNull final List<String> ids) {
-//        return foundation.service().messaging().removeParticipants(conversationId, ids).map(modelAdapter::adaptResult);
-//    }
-//
-//    /**
-//     * Returns observable to add a list of participants to a conversation.
-//     *
-//     * @param conversationId ID of a conversation to update.
-//     * @param participants   New conversation participants details.
-//     * @return Observable to subscribe to.
-//     */
-//    public Observable<ChatResult> addParticipants(@NonNull final String conversationId, @NonNull final List<Participant> participants) {
-//        return foundation.service().messaging().addParticipants(conversationId, participants)
-//        .flatMap(result -> controller.handleParticipantsAdded(conversationId).map(conversation -> result))
-//        .map(modelAdapter::adaptResult);
-//    }
-//
+
 //    /**
 //     * Send message to the conversation.
 //     *

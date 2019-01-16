@@ -22,11 +22,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol CMPLifecycleDelegate <NSObject>
 
-- (void)applicationWillResignActive:(UIApplication *)application;
 - (void)applicationDidEnterBackground:(UIApplication *)application;
 - (void)applicationWillEnterForeground:(UIApplication *)application;
-- (void)applicationDidBecomeActive:(UIApplication *)application;
-- (void)applicationWillTerminate:(UIApplication *)application;
 
 @end
 
