@@ -16,21 +16,42 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "ChatStoreImplem.h"
+#import "CMPStore.h"
 
-@implementation ChatStoreImplem
+@implementation CMPStore
+
+- (instancetype)initWithCompletion:(void (^)(NSError * _Nonnull))completion {
+    self = [super init];
+    
+    if (self) {
+        _manager = [[CMPStoreManagerStack alloc] initWithCompletion:^(NSError * _Nullable error) {
+            completion(error);
+        }];
+    }
+    
+    return self;
+}
 
 - (void)beginTransaction {
-    NSLog(@"begin");
+    NSLog(@"Store: beginning transaction.");
 }
 
 - (BOOL)clearDatabase {
-    NSLog(@"clear");
-    return YES;
+    NSLog(@"Store: clearing database.");
+    NSPersistentStoreCoordinator *persistentStoreCoordinator = self.manager.persistentContainer.persistentStoreCoordinator;
+    
+    BOOL result = NO;
+    for (NSPersistentStore *store in persistentStoreCoordinator.persistentStores) {
+        NSError *error;
+        result = result && [persistentStoreCoordinator removePersistentStore:store error:&error];
+    }
+
+    return result;
 }
 
 - (BOOL)deleteAllMessagesForConversationID:(nonnull NSString *)conversationID {
-    NSLog(@"deleteAllMessages");
+    NSLog(@"Store: deleting messages for ID.");
+    
     return YES;
 }
 
@@ -44,7 +65,12 @@
 }
 
 - (void)endTransaction {
-    NSLog(@"end");
+    NSLog(@"Store: ending transaction.");
+    NSError *error;
+    [_manager.mainContext save:&error];
+    if (error) {
+        NSLog(@"Store: error saving context - %@", error.localizedDescription);
+    }
 }
 
 - (nonnull NSArray<CMPChatConversation *> *)getAllConversations {

@@ -16,6 +16,17 @@
 		892F49BC21BE981A00FA52C9 /* CMPChatMessageDeliveryStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 892F49BA21BE981900FA52C9 /* CMPChatMessageDeliveryStatus.m */; };
 		892F49CA21BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 892F49C821BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.h */; };
 		892F49CB21BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 892F49C921BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.m */; };
+		89512A9521F0962000AA9C5D /* CMPStoreManagerStack.m in Sources */ = {isa = PBXBuildFile; fileRef = 89512A9421F0962000AA9C5D /* CMPStoreManagerStack.m */; };
+		89512A9821F0A6FF00AA9C5D /* SampleAppModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 89512A9621F0A6FF00AA9C5D /* SampleAppModel.xcdatamodeld */; };
+		89512A9C21F0B9F300AA9C5D /* Conversation.m in Sources */ = {isa = PBXBuildFile; fileRef = 89512A9B21F0B9F300AA9C5D /* Conversation.m */; };
+		89512A9F21F0BF5900AA9C5D /* Roles.m in Sources */ = {isa = PBXBuildFile; fileRef = 89512A9E21F0BF5900AA9C5D /* Roles.m */; };
+		89512AA221F0BF6E00AA9C5D /* RoleAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = 89512AA121F0BF6E00AA9C5D /* RoleAttributes.m */; };
+		89512AA521F0C39500AA9C5D /* Participant.m in Sources */ = {isa = PBXBuildFile; fileRef = 89512AA421F0C39500AA9C5D /* Participant.m */; };
+		89512AA821F0C65200AA9C5D /* MessageParticipant.m in Sources */ = {isa = PBXBuildFile; fileRef = 89512AA721F0C65200AA9C5D /* MessageParticipant.m */; };
+		89512AAB21F0C89600AA9C5D /* MessageStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 89512AAA21F0C89600AA9C5D /* MessageStatus.m */; };
+		89512AAE21F0CC1900AA9C5D /* MessagePart.m in Sources */ = {isa = PBXBuildFile; fileRef = 89512AAD21F0CC1900AA9C5D /* MessagePart.m */; };
+		89512AB121F0CDD300AA9C5D /* MessageContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 89512AB021F0CDD300AA9C5D /* MessageContext.m */; };
+		89512AB421F0DC4E00AA9C5D /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = 89512AB321F0DC4E00AA9C5D /* Message.m */; };
 		896015BB21B82D6600370AF2 /* CMPInternalConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 896015B321B82D6600370AF2 /* CMPInternalConfig.h */; };
 		896015BC21B82D6600370AF2 /* CMPInternalConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 896015B421B82D6600370AF2 /* CMPInternalConfig.m */; };
 		896015BD21B82D6600370AF2 /* CMPComapiChatClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 896015B621B82D6600370AF2 /* CMPComapiChatClient.m */; };
@@ -75,7 +86,7 @@
 		896CB9A921BA9968003FB3DF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 896CB9A821BA9968003FB3DF /* main.m */; };
 		896CB9AF21BAA7A3003FB3DF /* CMPStoreResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 896CB9AD21BAA7A3003FB3DF /* CMPStoreResult.h */; };
 		896CB9B021BAA7A3003FB3DF /* CMPStoreResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 896CB9AE21BAA7A3003FB3DF /* CMPStoreResult.m */; };
-		896CB9B421BAAC25003FB3DF /* ChatStoreImplem.m in Sources */ = {isa = PBXBuildFile; fileRef = 896CB9B321BAAC25003FB3DF /* ChatStoreImplem.m */; };
+		896CB9B421BAAC25003FB3DF /* ChatStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 896CB9B321BAAC25003FB3DF /* ChatStore.m */; };
 		896E30E121C3F561008CC785 /* CMPEventsController.h in Headers */ = {isa = PBXBuildFile; fileRef = 896E30DF21C3F561008CC785 /* CMPEventsController.h */; };
 		896E30E221C3F561008CC785 /* CMPEventsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 896E30E021C3F561008CC785 /* CMPEventsController.m */; };
 		896E30E621C3F5E1008CC785 /* CMPChatConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 896E30E421C3F5E1008CC785 /* CMPChatConstants.h */; };
@@ -144,6 +155,27 @@
 		892F49BA21BE981900FA52C9 /* CMPChatMessageDeliveryStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPChatMessageDeliveryStatus.m; sourceTree = "<group>"; };
 		892F49C821BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPChatManagedOrphanedEvent.h; sourceTree = "<group>"; };
 		892F49C921BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPChatManagedOrphanedEvent.m; sourceTree = "<group>"; };
+		89512A9321F0962000AA9C5D /* CMPStoreManagerStack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPStoreManagerStack.h; sourceTree = "<group>"; };
+		89512A9421F0962000AA9C5D /* CMPStoreManagerStack.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPStoreManagerStack.m; sourceTree = "<group>"; };
+		89512A9721F0A6FF00AA9C5D /* SampleAppModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SampleAppModel.xcdatamodel; sourceTree = "<group>"; };
+		89512A9A21F0B9F300AA9C5D /* Conversation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Conversation.h; sourceTree = "<group>"; };
+		89512A9B21F0B9F300AA9C5D /* Conversation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Conversation.m; sourceTree = "<group>"; };
+		89512A9D21F0BF5900AA9C5D /* Roles.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Roles.h; sourceTree = "<group>"; };
+		89512A9E21F0BF5900AA9C5D /* Roles.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Roles.m; sourceTree = "<group>"; };
+		89512AA021F0BF6E00AA9C5D /* RoleAttributes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RoleAttributes.h; sourceTree = "<group>"; };
+		89512AA121F0BF6E00AA9C5D /* RoleAttributes.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RoleAttributes.m; sourceTree = "<group>"; };
+		89512AA321F0C39500AA9C5D /* Participant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Participant.h; sourceTree = "<group>"; };
+		89512AA421F0C39500AA9C5D /* Participant.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Participant.m; sourceTree = "<group>"; };
+		89512AA621F0C65200AA9C5D /* MessageParticipant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MessageParticipant.h; sourceTree = "<group>"; };
+		89512AA721F0C65200AA9C5D /* MessageParticipant.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MessageParticipant.m; sourceTree = "<group>"; };
+		89512AA921F0C89600AA9C5D /* MessageStatus.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MessageStatus.h; sourceTree = "<group>"; };
+		89512AAA21F0C89600AA9C5D /* MessageStatus.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MessageStatus.m; sourceTree = "<group>"; };
+		89512AAC21F0CC1900AA9C5D /* MessagePart.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MessagePart.h; sourceTree = "<group>"; };
+		89512AAD21F0CC1900AA9C5D /* MessagePart.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MessagePart.m; sourceTree = "<group>"; };
+		89512AAF21F0CDD300AA9C5D /* MessageContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MessageContext.h; sourceTree = "<group>"; };
+		89512AB021F0CDD300AA9C5D /* MessageContext.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MessageContext.m; sourceTree = "<group>"; };
+		89512AB221F0DC4E00AA9C5D /* Message.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Message.h; sourceTree = "<group>"; };
+		89512AB321F0DC4E00AA9C5D /* Message.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Message.m; sourceTree = "<group>"; };
 		896015B321B82D6600370AF2 /* CMPInternalConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPInternalConfig.h; sourceTree = "<group>"; };
 		896015B421B82D6600370AF2 /* CMPInternalConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPInternalConfig.m; sourceTree = "<group>"; };
 		896015B621B82D6600370AF2 /* CMPComapiChatClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPComapiChatClient.m; sourceTree = "<group>"; };
@@ -207,8 +239,8 @@
 		896CB9A821BA9968003FB3DF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		896CB9AD21BAA7A3003FB3DF /* CMPStoreResult.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPStoreResult.h; sourceTree = "<group>"; };
 		896CB9AE21BAA7A3003FB3DF /* CMPStoreResult.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPStoreResult.m; sourceTree = "<group>"; };
-		896CB9B221BAAC25003FB3DF /* ChatStoreImplem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChatStoreImplem.h; sourceTree = "<group>"; };
-		896CB9B321BAAC25003FB3DF /* ChatStoreImplem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChatStoreImplem.m; sourceTree = "<group>"; };
+		896CB9B221BAAC25003FB3DF /* CMPStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPStore.h; sourceTree = "<group>"; };
+		896CB9B321BAAC25003FB3DF /* ChatStore.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChatStore.m; sourceTree = "<group>"; };
 		896E30DF21C3F561008CC785 /* CMPEventsController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPEventsController.h; sourceTree = "<group>"; };
 		896E30E021C3F561008CC785 /* CMPEventsController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPEventsController.m; sourceTree = "<group>"; };
 		896E30E421C3F5E1008CC785 /* CMPChatConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPChatConstants.h; sourceTree = "<group>"; };
@@ -293,6 +325,39 @@
 				892F49C921BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.m */,
 			);
 			path = CoreData;
+			sourceTree = "<group>";
+		};
+		89512A9221F0941300AA9C5D /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				89512A9621F0A6FF00AA9C5D /* SampleAppModel.xcdatamodeld */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		89512A9921F0B3EF00AA9C5D /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				89512A9A21F0B9F300AA9C5D /* Conversation.h */,
+				89512A9B21F0B9F300AA9C5D /* Conversation.m */,
+				89512A9D21F0BF5900AA9C5D /* Roles.h */,
+				89512A9E21F0BF5900AA9C5D /* Roles.m */,
+				89512AA021F0BF6E00AA9C5D /* RoleAttributes.h */,
+				89512AA121F0BF6E00AA9C5D /* RoleAttributes.m */,
+				89512AA321F0C39500AA9C5D /* Participant.h */,
+				89512AA421F0C39500AA9C5D /* Participant.m */,
+				89512AA621F0C65200AA9C5D /* MessageParticipant.h */,
+				89512AA721F0C65200AA9C5D /* MessageParticipant.m */,
+				89512AA921F0C89600AA9C5D /* MessageStatus.h */,
+				89512AAA21F0C89600AA9C5D /* MessageStatus.m */,
+				89512AAC21F0CC1900AA9C5D /* MessagePart.h */,
+				89512AAD21F0CC1900AA9C5D /* MessagePart.m */,
+				89512AAF21F0CDD300AA9C5D /* MessageContext.h */,
+				89512AB021F0CDD300AA9C5D /* MessageContext.m */,
+				89512AB221F0DC4E00AA9C5D /* Message.h */,
+				89512AB321F0DC4E00AA9C5D /* Message.m */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		896015AF21B82D6600370AF2 /* Tests */ = {
@@ -502,6 +567,7 @@
 		896CB99821BA9966003FB3DF /* SampleApp */ = {
 			isa = PBXGroup;
 			children = (
+				89512A9221F0941300AA9C5D /* Resources */,
 				896CB9B121BAAC0E003FB3DF /* Store */,
 				896CB99921BA9966003FB3DF /* AppDelegate.h */,
 				896CB99A21BA9966003FB3DF /* AppDelegate.m */,
@@ -519,8 +585,11 @@
 		896CB9B121BAAC0E003FB3DF /* Store */ = {
 			isa = PBXGroup;
 			children = (
-				896CB9B221BAAC25003FB3DF /* ChatStoreImplem.h */,
-				896CB9B321BAAC25003FB3DF /* ChatStoreImplem.m */,
+				89512A9921F0B3EF00AA9C5D /* Models */,
+				896CB9B221BAAC25003FB3DF /* CMPStore.h */,
+				896CB9B321BAAC25003FB3DF /* ChatStore.m */,
+				89512A9321F0962000AA9C5D /* CMPStoreManagerStack.h */,
+				89512A9421F0962000AA9C5D /* CMPStoreManagerStack.m */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -939,9 +1008,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				896CB99E21BA9966003FB3DF /* ViewController.m in Sources */,
-				896CB9B421BAAC25003FB3DF /* ChatStoreImplem.m in Sources */,
+				896CB9B421BAAC25003FB3DF /* ChatStore.m in Sources */,
+				89512AA221F0BF6E00AA9C5D /* RoleAttributes.m in Sources */,
+				89512AAB21F0C89600AA9C5D /* MessageStatus.m in Sources */,
+				89512A9521F0962000AA9C5D /* CMPStoreManagerStack.m in Sources */,
 				896CB9A921BA9968003FB3DF /* main.m in Sources */,
 				896CB99B21BA9966003FB3DF /* AppDelegate.m in Sources */,
+				89512AB421F0DC4E00AA9C5D /* Message.m in Sources */,
+				89512AA821F0C65200AA9C5D /* MessageParticipant.m in Sources */,
+				89512AAE21F0CC1900AA9C5D /* MessagePart.m in Sources */,
+				89512A9821F0A6FF00AA9C5D /* SampleAppModel.xcdatamodeld in Sources */,
+				89512AA521F0C39500AA9C5D /* Participant.m in Sources */,
+				89512AB121F0CDD300AA9C5D /* MessageContext.m in Sources */,
+				89512A9C21F0B9F300AA9C5D /* Conversation.m in Sources */,
+				89512A9F21F0BF5900AA9C5D /* Roles.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1039,7 +1119,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = JE27K8BAX2;
 				INFOPLIST_FILE = SampleApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1059,7 +1139,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = JE27K8BAX2;
 				INFOPLIST_FILE = SampleApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1329,6 +1409,16 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
+		89512A9621F0A6FF00AA9C5D /* SampleAppModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				89512A9721F0A6FF00AA9C5D /* SampleAppModel.xcdatamodel */,
+			);
+			currentVersion = 89512A9721F0A6FF00AA9C5D /* SampleAppModel.xcdatamodel */;
+			path = SampleAppModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
 		896015D521B931AA00370AF2 /* ComapiChatModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (

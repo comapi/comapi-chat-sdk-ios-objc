@@ -16,27 +16,32 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatMessageDeliveryStatus.h"
+#import "Participant.h"
 
-#import <CMPComapiFoundation/CMPMessageStatus.h>
-#import <CMPComapiFoundation/CMPConversationMessageEvents.h>
+@implementation Participant
 
-NS_ASSUME_NONNULL_BEGIN
+@dynamic id;
+@dynamic role;
 
-@interface CMPChatMessageStatus : NSObject <NSCoding>
+- (instancetype)initWithChatParticipant:(CMPChatParticipant *)chatParticipant context:(NSManagedObjectContext *)context {
+    NSEntityDescription *description = [NSEntityDescription entityForName:@"Participant" inManagedObjectContext:context];
+    self = [super initWithEntity:description insertIntoManagedObjectContext:context];
+    
+    if (self) {
+        self.id = chatParticipant.id;
+        self.role = @(chatParticipant.role);
+    }
+    
+    return self;
+}
 
-@property (nonatomic, strong, nullable) NSString *conversationID;
-@property (nonatomic, strong, nullable) NSString *messageID;
-@property (nonatomic, strong, nullable) NSString *profileID;
-@property (nonatomic, strong, nullable) NSNumber *conversationEventID;
-@property (nonatomic, strong, nullable) NSDate *timestamp;
-@property (nonatomic) CMPChatMessageDeliveryStatus messageStatus;
-
-- (instancetype)initWithConversationID:(nullable NSString *)conversationID messageID:(nullable NSString *)messageID profileID:(nullable NSString *)profileID conversationEventID:(nullable NSNumber *)conversationEventID timestamp:(nullable NSDate *)timestamp messageStatus:(CMPChatMessageDeliveryStatus)messageStatus;
-
-- (instancetype)initWithReadEvent:(CMPConversationMessageEventRead *)event;
-- (instancetype)initWithDeliveredEvent:(CMPConversationMessageEventDelivered *)event;
+- (CMPChatParticipant *)chatParticipant {
+    CMPChatParticipant *chatParticipant = [[CMPChatParticipant alloc] init];
+    
+    chatParticipant.id = self.id;
+    chatParticipant.role = self.role.integerValue;
+    
+    return chatParticipant;
+}
 
 @end
-
-NS_ASSUME_NONNULL_END

@@ -34,6 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)addConversation:(CMPNewConversation *)conversation completion:(void(^)(CMPChatResult *))completion;
 - (void)deleteConversation:(NSString *)conversationID eTag:(nullable NSString *)eTag completion:(void(^)(CMPChatResult *))completion;
 - (void)updateConversation:(NSString *)conversationID eTag:(nullable NSString *)eTag update:(CMPConversationUpdate *)update completion:(void(^)(CMPChatResult *))completion;
+- (void)synchroniseConversation:(NSString *)conversationID completion:(void(^)(CMPChatResult *))completion;
 
 - (void)getParticipants:(NSString *)conversationID participantIDs:(NSArray<NSString *> *)participantsIDs completion:(void(^)(NSArray<CMPChatParticipant *> *))completion;
 - (void)removeParticipants:(NSString *)conversationID participants:(NSArray<CMPConversationParticipant *> *)participants completion:(void(^)(CMPChatResult *))completion;
@@ -45,8 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)getPreviousMessages:(NSString *)conversationID completion:(void(^)(CMPChatResult *))completion;
 - (void)markMessagesAsRead:(NSString *)conversationID messageIDs:(NSArray<NSString *> *)messageIDs completion:(void(^)(CMPChatResult *))completion;
 
-- (void)synchroniseStore:(void(^)(CMPChatResult *))completion;
-- (void)synchroniseConversation:(NSString *)conversationID completion:(void(^)(CMPChatResult *))completion;
+- (void)synchroniseStore:(void(^ _Nullable)(CMPChatResult *))completion;
 
 @end
 

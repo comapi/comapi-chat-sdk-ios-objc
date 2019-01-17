@@ -16,27 +16,41 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatMessageDeliveryStatus.h"
+#import "MessagePart.h"
 
-#import <CMPComapiFoundation/CMPMessageStatus.h>
-#import <CMPComapiFoundation/CMPConversationMessageEvents.h>
+@implementation MessagePart
 
-NS_ASSUME_NONNULL_BEGIN
+@dynamic data;
+@dynamic name;
+@dynamic size;
+@dynamic type;
+@dynamic url;
 
-@interface CMPChatMessageStatus : NSObject <NSCoding>
+- (instancetype)initWithChatMessagePart:(CMPChatMessagePart *)chatMessagePart context:(NSManagedObjectContext *)context {
+    NSEntityDescription *description = [NSEntityDescription entityForName:@"MessagePart" inManagedObjectContext:context];
+    self = [super initWithEntity:description insertIntoManagedObjectContext:context];
+    
+    if (self) {
+        self.data = chatMessagePart.data;
+        self.name = chatMessagePart.name;
+        self.size = chatMessagePart.size;
+        self.type = chatMessagePart.type;
+        self.url = chatMessagePart.url;
+    }
+    
+    return self;
+}
 
-@property (nonatomic, strong, nullable) NSString *conversationID;
-@property (nonatomic, strong, nullable) NSString *messageID;
-@property (nonatomic, strong, nullable) NSString *profileID;
-@property (nonatomic, strong, nullable) NSNumber *conversationEventID;
-@property (nonatomic, strong, nullable) NSDate *timestamp;
-@property (nonatomic) CMPChatMessageDeliveryStatus messageStatus;
-
-- (instancetype)initWithConversationID:(nullable NSString *)conversationID messageID:(nullable NSString *)messageID profileID:(nullable NSString *)profileID conversationEventID:(nullable NSNumber *)conversationEventID timestamp:(nullable NSDate *)timestamp messageStatus:(CMPChatMessageDeliveryStatus)messageStatus;
-
-- (instancetype)initWithReadEvent:(CMPConversationMessageEventRead *)event;
-- (instancetype)initWithDeliveredEvent:(CMPConversationMessageEventDelivered *)event;
+- (CMPChatMessagePart *)chatMessagePart {
+    CMPChatMessagePart *chatMessagePart = [[CMPChatMessagePart alloc] init];
+    
+    chatMessagePart.data = self.data;
+    chatMessagePart.name = self.name;
+    chatMessagePart.size = self.size;
+    chatMessagePart.type = self.type;
+    chatMessagePart.url = self.url;
+    
+    return chatMessagePart;
+}
 
 @end
-
-NS_ASSUME_NONNULL_END

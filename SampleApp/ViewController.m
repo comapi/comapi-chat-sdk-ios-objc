@@ -17,7 +17,6 @@
 //
 
 #import "ViewController.h"
-#import "ChatStoreImplem.h"
 #import "CMPStoreFactory.h"
 
 @interface ViewController () <CMPStoreFactoryBuildable>
@@ -31,20 +30,22 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     _factory = [[CMPStoreFactory alloc] init];
-    [_factory executeTransaction:^(id<CMPChatStore> store, NSError * error) {
-        if (error) {
-            NSLog(@"%@", error);
-        } else {
-            [store clearDatabase];
-        }
+    _factory.builder = self;
+    [_factory executeTransaction:^(id<CMPChatStore> _Nullable store, NSError * _Nullable) {
+        
     }];
+//    [_factory executeTransaction:^(id<CMPChatStore> store, NSError * error) {
+//        if (error) {
+//            NSLog(@"%@", error);
+//        } else {
+//            [store clearDatabase];
+//        }
+//    }];
     // Do any additional setup after loading the view, typically from a nib.
 }
 
 - (void)buildWithCompletion:(void (^)(id<CMPChatStore> _Nullable, NSError * _Nullable))completion {
-    NSLog(@"building store");
-    ChatStoreImplem *store = [[ChatStoreImplem alloc] init];
-    completion(store, nil);
+    
 }
 
 @end

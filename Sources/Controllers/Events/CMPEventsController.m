@@ -25,9 +25,9 @@
 
 @interface CMPEventsController ()
 
-@property (nonatomic, weak, readonly) CMPPersistenceController *persistenceController;
-@property (nonatomic, weak, readonly) CMPChatController *chatController;
-@property (nonatomic, weak, readonly) CMPMissingEventsTracker *tracker;
+@property (nonatomic, strong, readonly) CMPPersistenceController *persistenceController;
+@property (nonatomic, strong, readonly) CMPChatController *chatController;
+@property (nonatomic, strong, readonly) CMPMissingEventsTracker *tracker;
 
 @property (nonatomic, weak, readonly) id<CMPMissingEventsDelegate> missingEventsDelegate;
 @property (nonatomic, weak, readonly) id<CMPProfileDelegate> profileDelegate;

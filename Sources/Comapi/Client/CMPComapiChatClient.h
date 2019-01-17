@@ -28,8 +28,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPComapiChatClient : NSObject <CMPLifecycleDelegate>
 
-@property (nonatomic, strong, readonly) CMPChatServices *services;
+@property (nonatomic, weak) id<CMPLifecycleDelegate> lifecycleDelegate;
 
+@property (nonatomic, strong, readonly) CMPChatServices *services;
 @property (nonatomic, strong, readonly, nullable) NSString *profileID;
 @property (nonatomic, readonly) BOOL sessionSuccesfullyCreated;
 

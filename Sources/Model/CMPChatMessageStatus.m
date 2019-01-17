@@ -65,4 +65,28 @@
     return self;
 }
 
+#pragma mark - NSCoding
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeObject:self.messageID forKey:@"messageID"];
+    [coder encodeObject:self.profileID forKey:@"profileID"];
+    [coder encodeObject:self.timestamp forKey:@"timestamp"];
+    [coder encodeObject:self.conversationID forKey:@"conversationID"];
+    [coder encodeObject:self.conversationEventID forKey:@"conversationEventID"];
+    [coder encodeInteger:self.messageStatus forKey:@"messageStatus"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    NSString *messageID = [aDecoder decodeObjectForKey:@"messageID"];
+    NSString *profileID = [aDecoder decodeObjectForKey:@"profileID"];
+    NSDate *timestamp = [aDecoder decodeObjectForKey:@"timestamp"];
+    NSString *conversationID = [aDecoder decodeObjectForKey:@"conversationID"];
+    NSNumber *conversationEventID = [aDecoder decodeObjectForKey:@"conversationEventID"];
+    CMPChatMessageDeliveryStatus messageStatus = [aDecoder decodeIntegerForKey:@"messageStatus"];
+    
+    self = [self initWithConversationID:conversationID messageID:messageID profileID:profileID conversationEventID:conversationEventID timestamp:timestamp messageStatus:messageStatus];
+    
+    return self;
+}
+
 @end

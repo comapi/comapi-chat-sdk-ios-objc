@@ -22,7 +22,7 @@
 
 @interface CMPComapiChatClient ()
 
-- (instancetype)initWithClient:(CMPComapiClient *)client lifecycleDelegate:(id<CMPLifecycleDelegate>)delegate;
+- (instancetype)initWithClient:(CMPComapiClient *)client chatConfig:(CMPChatConfig *)chatConfig;
 
 @end
 
@@ -39,15 +39,27 @@ static CMPComapiChatClient *_shared = nil;
 }
 
 + (CMPComapiChatClient *)initialiseWithConfig:(CMPChatConfig *)chatConfig {
-    CMPComapiClient *foundation = [CMPComapi initialiseWithConfig:chatConfig];
-    CMPComapiChatClient *chat = [[CMPComapiChatClient alloc] initWithClient:foundation lifecycleDelegate:self];
+    CMPComapiClient *foundation = [CMPComapi initialiseWithConfig:[chatConfig foundationConfig]];
+    CMPComapiChatClient *chat = [[CMPComapiChatClient alloc] initWithClient:foundation chatConfig:chatConfig];
     logWithLevel(CMPLogLevelInfo, @"Chat Client initialised.", nil);
     
     return chat;
 }
 
 + (CMPComapiChatClient *)initialiseSharedWithConfig:(CMPChatConfig *)chatConfig {
-    return nil;
+    if (_shared) {
+        logWithLevel(CMPLogLevelError, @"Client already initialised, returnig current client...", nil);
+        return _shared;
+    }
+    
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _shared = [self initialiseSharedWithConfig:chatConfig];
+    });
+    
+    logWithLevel(CMPLogLevelInfo, @"Shared client initialised.", nil);
+    
+    return _shared;
 }
 
 @end

@@ -16,12 +16,28 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
-#import "CMPChatStore.h"
+#import "MessageContext.h"
+#import "MessagePart.h"
+
+#import "CMPChatMessage.h"
+#import "CMPChatMessageStatus.h"
+
+#import <CoreData/CoreData.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ChatStoreImplem : NSObject <CMPChatStore>
+@interface Message : NSManagedObject
+
+@property (nonatomic, strong, nullable) NSString *id;
+@property (nonatomic, strong, nullable) NSNumber *sentEventID;
+@property (nonatomic, strong, nullable) MessageContext *context;
+@property (nonatomic, strong, nullable) NSSet<MessagePart *> *parts;
+@property (nonatomic, strong, nullable) NSDictionary<NSString *, id> *metadata;
+@property (nonatomic, strong, nullable) NSDictionary<NSString *, CMPChatMessageStatus *> *statusUpdates;
+
+- (instancetype)initWithChatMessage:(CMPChatMessage *)chatMessage context:(NSManagedObjectContext *)context;
+
+- (CMPChatMessage *)chatMessage;
 
 @end
 

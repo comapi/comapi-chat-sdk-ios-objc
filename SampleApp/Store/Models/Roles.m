@@ -16,27 +16,32 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatMessageDeliveryStatus.h"
+#import "Roles.h"
 
-#import <CMPComapiFoundation/CMPMessageStatus.h>
-#import <CMPComapiFoundation/CMPConversationMessageEvents.h>
+@implementation Roles
 
-NS_ASSUME_NONNULL_BEGIN
+@dynamic ownerAttributes;
+@dynamic participantAttributes;
 
-@interface CMPChatMessageStatus : NSObject <NSCoding>
+- (instancetype)initWithChatRoles:(CMPChatRoles *)chatRoles context:(NSManagedObjectContext *)context {
+    NSEntityDescription *description = [NSEntityDescription entityForName:@"Roles" inManagedObjectContext:context];
+    self = [super initWithEntity:description insertIntoManagedObjectContext:context];
+    
+    if (self) {
+        self.ownerAttributes = [[RoleAttributes alloc] initWithChatRoleAttributes:chatRoles.ownerAttributes context:context];
+        self.participantAttributes = [[RoleAttributes alloc] initWithChatRoleAttributes:chatRoles.participantAttributes context:context];
+    }
+    
+    return self;
+}
 
-@property (nonatomic, strong, nullable) NSString *conversationID;
-@property (nonatomic, strong, nullable) NSString *messageID;
-@property (nonatomic, strong, nullable) NSString *profileID;
-@property (nonatomic, strong, nullable) NSNumber *conversationEventID;
-@property (nonatomic, strong, nullable) NSDate *timestamp;
-@property (nonatomic) CMPChatMessageDeliveryStatus messageStatus;
-
-- (instancetype)initWithConversationID:(nullable NSString *)conversationID messageID:(nullable NSString *)messageID profileID:(nullable NSString *)profileID conversationEventID:(nullable NSNumber *)conversationEventID timestamp:(nullable NSDate *)timestamp messageStatus:(CMPChatMessageDeliveryStatus)messageStatus;
-
-- (instancetype)initWithReadEvent:(CMPConversationMessageEventRead *)event;
-- (instancetype)initWithDeliveredEvent:(CMPConversationMessageEventDelivered *)event;
+- (CMPChatRoles *)chatRoles {
+    CMPChatRoles *chatRoles = [[CMPChatRoles alloc] init];
+    
+    chatRoles.ownerAttributes = [self.ownerAttributes chatRoleAttributes];
+    chatRoles.participantAttributes = [self.participantAttributes chatRoleAttributes];
+    
+    return chatRoles;
+}
 
 @end
-
-NS_ASSUME_NONNULL_END

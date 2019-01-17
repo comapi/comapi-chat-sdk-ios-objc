@@ -16,26 +16,23 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatMessageDeliveryStatus.h"
+#import "CMPChatMessagePart.h"
 
-#import <CMPComapiFoundation/CMPMessageStatus.h>
-#import <CMPComapiFoundation/CMPConversationMessageEvents.h>
+#import <CoreData/CoreData.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatMessageStatus : NSObject <NSCoding>
+@interface MessagePart : NSManagedObject
 
-@property (nonatomic, strong, nullable) NSString *conversationID;
-@property (nonatomic, strong, nullable) NSString *messageID;
-@property (nonatomic, strong, nullable) NSString *profileID;
-@property (nonatomic, strong, nullable) NSNumber *conversationEventID;
-@property (nonatomic, strong, nullable) NSDate *timestamp;
-@property (nonatomic) CMPChatMessageDeliveryStatus messageStatus;
+@property (nonatomic, strong, nullable) NSString *data;
+@property (nonatomic, strong, nullable) NSString *name;
+@property (nonatomic, strong, nullable) NSNumber *size;
+@property (nonatomic, strong, nullable) NSString *type;
+@property (nonatomic, strong, nullable) NSURL *url;
 
-- (instancetype)initWithConversationID:(nullable NSString *)conversationID messageID:(nullable NSString *)messageID profileID:(nullable NSString *)profileID conversationEventID:(nullable NSNumber *)conversationEventID timestamp:(nullable NSDate *)timestamp messageStatus:(CMPChatMessageDeliveryStatus)messageStatus;
+- (instancetype)initWithChatMessagePart:(CMPChatMessagePart *)chatMessagePart context:(NSManagedObjectContext *)context;
 
-- (instancetype)initWithReadEvent:(CMPConversationMessageEventRead *)event;
-- (instancetype)initWithDeliveredEvent:(CMPConversationMessageEventDelivered *)event;
+- (CMPChatMessagePart *)chatMessagePart;
 
 @end
 

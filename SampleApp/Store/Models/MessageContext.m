@@ -16,34 +16,38 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatMessageContext.h"
+#import "MessageContext.h"
 
-@implementation CMPChatMessageContext
+@implementation MessageContext
 
-- (instancetype)initWithConversationID:(NSString *)conversationID from:(CMPChatMessageParticipant *)from sentBy:(NSString *)sentBy sentOn:(NSDate *)sentOn {
-    self = [super init];
+@dynamic conversationID;
+@dynamic sentBy;
+@dynamic sentOn;
+@dynamic from;
+
+- (instancetype)initWithChatMessageContext:(CMPChatMessageContext *)chatMessageContext context:(NSManagedObjectContext *)context {
+    NSEntityDescription *description = [NSEntityDescription entityForName:@"MessageContext" inManagedObjectContext:context];
+    self = [super initWithEntity:description insertIntoManagedObjectContext:context];
     
     if (self) {
-        self.conversationID = conversationID;
-        self.from = from;
-        self.sentBy = sentBy;
-        self.sentOn = sentOn;
+        self.conversationID = chatMessageContext.conversationID;
+        self.sentBy = chatMessageContext.sentBy;
+        self.sentOn = chatMessageContext.sentOn;
+        self.from = [[MessageParticipant alloc] initWithChatMessageParticipant:chatMessageContext.from context:context];
     }
     
     return self;
 }
 
-- (instancetype)initWithMessageContext:(CMPMessageContext *)messageContext {
-    self = [super init];
+- (CMPChatMessageContext *)chatMessageContext {
+    CMPChatMessageContext *chatMessageContext = [[CMPChatMessageContext alloc] init];
     
-    if (self) {
-        self.conversationID = messageContext.conversationID;
-        self.from = [[CMPChatMessageParticipant alloc] initWithMessageParticipant:messageContext.from];
-        self.sentBy = messageContext.sentBy;
-        self.sentOn = messageContext.sentOn;
-    }
+    chatMessageContext.conversationID = self.conversationID;
+    chatMessageContext.sentBy = self.sentBy;
+    chatMessageContext.sentOn = self.sentOn;
+    chatMessageContext.from = [self.from chatMessageParticipant];
     
-    return self;
+    return chatMessageContext;
 }
 
 @end

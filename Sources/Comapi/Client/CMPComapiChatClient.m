@@ -62,6 +62,8 @@
         _chatController = [[CMPChatController alloc] initWithClient:_client persistenceController:persistenceController attachmentController:attachmentController adapter:adapter config:chatConfig.internalConfig];
         _eventsController = [[CMPEventsController alloc] initWithPersistenceController:persistenceController chatController:_chatController missingEventsTracker:tracker chatConfig:chatConfig];
         
+        [_client addEventDelegate:_eventsController];
+        
         _typingDelegates = [[CMPBroadcastDelegate alloc] init];
         _profileDelegates = [[CMPBroadcastDelegate alloc] init];
         _participantDelegates = [[CMPBroadcastDelegate alloc] init];
@@ -109,7 +111,9 @@
 }
 
 - (void)applicationWillEnterForeground:(nonnull UIApplication *)application {
-    
+    if (_client != nil) {
+        [_services.messaging synchroniseStore:nil];
+    }
 }
 
 @end

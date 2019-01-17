@@ -16,27 +16,32 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatMessageDeliveryStatus.h"
+#import "MessageParticipant.h"
 
-#import <CMPComapiFoundation/CMPMessageStatus.h>
-#import <CMPComapiFoundation/CMPConversationMessageEvents.h>
+@implementation MessageParticipant
 
-NS_ASSUME_NONNULL_BEGIN
+@dynamic id;
+@dynamic name;
 
-@interface CMPChatMessageStatus : NSObject <NSCoding>
+- (instancetype)initWithChatMessageParticipant:(CMPChatMessageParticipant *)chatMessageParticipant context:(NSManagedObjectContext *)context {
+    NSEntityDescription *description = [NSEntityDescription entityForName:@"MessageParticipant" inManagedObjectContext:context];
+    self = [super initWithEntity:description insertIntoManagedObjectContext:context];
+    
+    if (self) {
+        self.id = chatMessageParticipant.id;
+        self.name = chatMessageParticipant.name;
+    }
+    
+    return self;
+}
 
-@property (nonatomic, strong, nullable) NSString *conversationID;
-@property (nonatomic, strong, nullable) NSString *messageID;
-@property (nonatomic, strong, nullable) NSString *profileID;
-@property (nonatomic, strong, nullable) NSNumber *conversationEventID;
-@property (nonatomic, strong, nullable) NSDate *timestamp;
-@property (nonatomic) CMPChatMessageDeliveryStatus messageStatus;
-
-- (instancetype)initWithConversationID:(nullable NSString *)conversationID messageID:(nullable NSString *)messageID profileID:(nullable NSString *)profileID conversationEventID:(nullable NSNumber *)conversationEventID timestamp:(nullable NSDate *)timestamp messageStatus:(CMPChatMessageDeliveryStatus)messageStatus;
-
-- (instancetype)initWithReadEvent:(CMPConversationMessageEventRead *)event;
-- (instancetype)initWithDeliveredEvent:(CMPConversationMessageEventDelivered *)event;
+- (CMPChatMessageParticipant *)chatMessageParticipant {
+    CMPChatMessageParticipant *chatMessageParticipant = [[CMPChatMessageParticipant alloc] init];
+    
+    chatMessageParticipant.id = self.id;
+    chatMessageParticipant.name = self.name;
+    
+    return chatMessageParticipant;
+}
 
 @end
-
-NS_ASSUME_NONNULL_END

@@ -16,34 +16,35 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatMessageContext.h"
+#import "RoleAttributes.h"
 
-@implementation CMPChatMessageContext
+@implementation RoleAttributes
 
-- (instancetype)initWithConversationID:(NSString *)conversationID from:(CMPChatMessageParticipant *)from sentBy:(NSString *)sentBy sentOn:(NSDate *)sentOn {
-    self = [super init];
+@dynamic canSend;
+@dynamic canAddParticipants;
+@dynamic canRemoveParticipants;
+
+- (instancetype)initWithChatRoleAttributes:(CMPChatRoleAttributes *)roleAttributes context:(NSManagedObjectContext *)context {
+    NSEntityDescription *description = [NSEntityDescription entityForName:@"RoleAttributes" inManagedObjectContext:context];
+    self = [super initWithEntity:description insertIntoManagedObjectContext:context];
     
     if (self) {
-        self.conversationID = conversationID;
-        self.from = from;
-        self.sentBy = sentBy;
-        self.sentOn = sentOn;
+        self.canSend = @(roleAttributes.canSend);
+        self.canAddParticipants = @(roleAttributes.canAddParticipants);
+        self.canRemoveParticipants = @(roleAttributes.canRemoveParticipants);
     }
     
     return self;
 }
 
-- (instancetype)initWithMessageContext:(CMPMessageContext *)messageContext {
-    self = [super init];
+- (CMPChatRoleAttributes *)chatRoleAttributes {
+    CMPChatRoleAttributes * chatRoleAttributes = [[CMPChatRoleAttributes alloc] init];
     
-    if (self) {
-        self.conversationID = messageContext.conversationID;
-        self.from = [[CMPChatMessageParticipant alloc] initWithMessageParticipant:messageContext.from];
-        self.sentBy = messageContext.sentBy;
-        self.sentOn = messageContext.sentOn;
-    }
+    chatRoleAttributes.canSend = self.canSend ? self.canSend.boolValue : NO;
+    chatRoleAttributes.canAddParticipants = self.canAddParticipants ? self.canAddParticipants.boolValue : NO;
+    chatRoleAttributes.canRemoveParticipants = self.canRemoveParticipants ? self.canRemoveParticipants.boolValue : NO;
     
-    return self;
+    return chatRoleAttributes;
 }
 
 @end

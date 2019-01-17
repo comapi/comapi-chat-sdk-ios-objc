@@ -16,27 +16,40 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatMessageDeliveryStatus.h"
+#import "CMPStoreManagerStack.h"
 
-#import <CMPComapiFoundation/CMPMessageStatus.h>
-#import <CMPComapiFoundation/CMPConversationMessageEvents.h>
+NSString *const kModelName = @"SampleAppModel";
 
-NS_ASSUME_NONNULL_BEGIN
+@implementation CMPStoreManagerStack
 
-@interface CMPChatMessageStatus : NSObject <NSCoding>
+- (instancetype)initWithCompletion:(void (^)(NSError * _Nullable))completion {
+    self = [super init];
+    
+    if (self) {
+        _persistentContainer = [[NSPersistentContainer alloc] initWithName:kModelName];
+        [_persistentContainer loadPersistentStoresWithCompletionHandler:^(NSPersistentStoreDescription * description, NSError * error) {
+            if (error != nil) {
+                NSLog(@"Failed to load Core Data stack: %@", error);
+                abort();
+            }
+            completion(error);
+        }];
+    }
+    
+    return self;
+}
 
-@property (nonatomic, strong, nullable) NSString *conversationID;
-@property (nonatomic, strong, nullable) NSString *messageID;
-@property (nonatomic, strong, nullable) NSString *profileID;
-@property (nonatomic, strong, nullable) NSNumber *conversationEventID;
-@property (nonatomic, strong, nullable) NSDate *timestamp;
-@property (nonatomic) CMPChatMessageDeliveryStatus messageStatus;
+- (NSManagedObjectContext *)mainContext {
+    return _persistentContainer.viewContext;
+}
 
-- (instancetype)initWithConversationID:(nullable NSString *)conversationID messageID:(nullable NSString *)messageID profileID:(nullable NSString *)profileID conversationEventID:(nullable NSNumber *)conversationEventID timestamp:(nullable NSDate *)timestamp messageStatus:(CMPChatMessageDeliveryStatus)messageStatus;
-
-- (instancetype)initWithReadEvent:(CMPConversationMessageEventRead *)event;
-- (instancetype)initWithDeliveredEvent:(CMPConversationMessageEventDelivered *)event;
+- (void)saveToDisk:(void (^)(NSError * _Nullable))completion {
+    __weak typeof(self) weakSelf = self;
+    [[self mainContext] performBlock:^{
+        NSError * error;
+        [[weakSelf mainContext] save:&error];
+        completion(error);
+    }];
+}
 
 @end
-
-NS_ASSUME_NONNULL_END

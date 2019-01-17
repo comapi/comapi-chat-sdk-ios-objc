@@ -16,26 +16,30 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatMessageDeliveryStatus.h"
+#import "Roles.h"
+#import "CMPChatConversation.h"
 
-#import <CMPComapiFoundation/CMPMessageStatus.h>
-#import <CMPComapiFoundation/CMPConversationMessageEvents.h>
+#import <CoreData/CoreData.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatMessageStatus : NSObject <NSCoding>
+@interface Conversation : NSManagedObject
 
-@property (nonatomic, strong, nullable) NSString *conversationID;
-@property (nonatomic, strong, nullable) NSString *messageID;
-@property (nonatomic, strong, nullable) NSString *profileID;
-@property (nonatomic, strong, nullable) NSNumber *conversationEventID;
-@property (nonatomic, strong, nullable) NSDate *timestamp;
-@property (nonatomic) CMPChatMessageDeliveryStatus messageStatus;
+@property (nonatomic, strong, nullable) NSString *id;
+@property (nonatomic, strong, nullable) NSString *eTag;
+@property (nonatomic, strong, nullable) NSString *conversationDescription;
+@property (nonatomic, strong, nullable) NSString *name;
+@property (nonatomic, strong, nullable) NSNumber *isPublic;
+@property (nonatomic, strong, nullable) NSDate *updatedOn;
+@property (nonatomic, strong, nullable) Roles *roles;
 
-- (instancetype)initWithConversationID:(nullable NSString *)conversationID messageID:(nullable NSString *)messageID profileID:(nullable NSString *)profileID conversationEventID:(nullable NSNumber *)conversationEventID timestamp:(nullable NSDate *)timestamp messageStatus:(CMPChatMessageDeliveryStatus)messageStatus;
+@property (nonatomic, strong, nullable) NSNumber *firstLocalEventID;
+@property (nonatomic, strong, nullable) NSNumber *lastLocalEventID;
+@property (nonatomic, strong, nullable) NSNumber *latestLocalEventID;
 
-- (instancetype)initWithReadEvent:(CMPConversationMessageEventRead *)event;
-- (instancetype)initWithDeliveredEvent:(CMPConversationMessageEventDelivered *)event;
+- (instancetype)initWithChatConversation:(CMPChatConversation *)conversation context:(NSManagedObjectContext *)context;
+
+- (CMPChatConversation *)chatConversation;
 
 @end
 
