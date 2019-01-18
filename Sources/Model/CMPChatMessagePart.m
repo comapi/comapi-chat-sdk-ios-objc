@@ -48,4 +48,18 @@
     return self;
 }
 
+#pragma mark - CMPJSONRepresentable
+
+- (id)json {
+    NSMutableDictionary<NSString *, id> *dict = [NSMutableDictionary new];
+    
+    [dict setValue:self.name forKey:@"name"];
+    [dict setValue:self.type forKey:@"type"];
+    [dict setValue:self.url forKey:@"url"];
+    [dict setValue:self.data forKey:@"data"];
+    [dict setValue:self.size forKey:@"size"];
+    
+    return dict;
+}
+
 @end

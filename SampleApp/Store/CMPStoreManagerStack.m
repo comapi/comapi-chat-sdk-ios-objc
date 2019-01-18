@@ -22,7 +22,7 @@ NSString *const kModelName = @"SampleAppModel";
 
 @implementation CMPStoreManagerStack
 
-- (instancetype)initWithCompletion:(void (^)(NSError * _Nullable))completion {
+- (instancetype)initWithCompletion:(void (^ _Nullable)(NSError * _Nullable))completion {
     self = [super init];
     
     if (self) {
@@ -39,6 +39,16 @@ NSString *const kModelName = @"SampleAppModel";
     return self;
 }
 
++ (CMPStoreManagerStack *)shared {
+    static CMPStoreManagerStack *shared;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        shared = [[CMPStoreManagerStack alloc] initWithCompletion:nil];
+    });
+    
+    return shared;
+}
+
 - (NSManagedObjectContext *)mainContext {
     return _persistentContainer.viewContext;
 }
@@ -51,5 +61,7 @@ NSString *const kModelName = @"SampleAppModel";
         completion(error);
     }];
 }
+
+
 
 @end

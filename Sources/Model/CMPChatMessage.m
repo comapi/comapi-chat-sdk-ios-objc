@@ -82,4 +82,27 @@
     _statusUpdates = [NSDictionary dictionaryWithDictionary:newDict];
 }
 
+#pragma mark - CMPJSONRepresentable
+
+- (id)json {
+    NSMutableDictionary<NSString *, id> *dict = [NSMutableDictionary new];
+    
+    [dict setValue:self.id forKey:@"id"];
+    [dict setValue:self.sentEventID forKey:@"sentEventID"];
+    [dict setValue:self.metadata forKey:@"metadata"];
+    [dict setValue:[self.context json] forKey:@"context"];
+    NSMutableArray<NSDictionary<NSString *, id> *> *parts = [NSMutableArray new];
+    for (CMPChatMessagePart * p in self.parts) {
+        [parts addObject:[p json]];
+    }
+    [dict setValue:parts forKey:@"parts"];
+    NSMutableDictionary<NSString *, NSMutableDictionary<NSString *, id> *> *statusUpdates = [NSMutableDictionary new];
+    [self.statusUpdates enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, CMPChatMessageStatus * _Nonnull obj, BOOL * _Nonnull stop) {
+        statusUpdates[key] = [obj json];
+    }];
+    [dict setValue:statusUpdates forKey:@"statusUpdates"];
+    
+    return dict;
+}
+
 @end

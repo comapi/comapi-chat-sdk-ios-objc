@@ -44,4 +44,16 @@
     return self;
 }
 
+#pragma mark - CMPJSONRepresentable
+
+- (id)json {
+    NSMutableDictionary<NSString *, id> *dict = [NSMutableDictionary new];
+    
+    [dict setValue:@(self.canSend) forKey:@"canSend"];
+    [dict setValue:@(self.canAddParticipants) forKey:@"canAddParticipants"];
+    [dict setValue:@(self.canRemoveParticipants) forKey:@"canRemoveParticipants"];
+    
+    return dict;
+}
+
 @end

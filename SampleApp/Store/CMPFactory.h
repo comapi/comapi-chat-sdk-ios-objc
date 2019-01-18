@@ -15,22 +15,12 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-
-#import <CMPComapiFoundation/CMPJSONRepresentable.h>
-#import <CMPComapiFoundation/CMPMessagePart.h>
+#import "CMPStoreManagerStack.h"
+#import "CMPStoreFactory.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatMessagePart : NSObject <CMPJSONRepresentable>
-
-@property (nonatomic, strong, nullable) NSString *name;
-@property (nonatomic, strong, nullable) NSString *type;
-@property (nonatomic, strong, nullable) NSString *data;
-@property (nonatomic, strong, nullable) NSNumber *size;
-@property (nonatomic, strong, nullable) NSURL *url;
-
-- (instancetype)initWithName:(nullable NSString *)name type:(nullable NSString *)type url:(nullable NSURL *)url data:(nullable NSString *)data size:(nullable NSNumber *)size;
-- (instancetype)initWithMessagePart:(CMPMessagePart *)messagePart;
+@interface CMPFactory : CMPStoreFactory <CMPStoreFactoryBuildable>
 
 @end
 

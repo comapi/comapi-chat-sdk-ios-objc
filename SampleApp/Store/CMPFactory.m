@@ -16,22 +16,17 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <CMPComapiFoundation/CMPJSONRepresentable.h>
-#import <CMPComapiFoundation/CMPMessagePart.h>
+#import "CMPStore.h"
+#import "CMPFactory.h"
 
-NS_ASSUME_NONNULL_BEGIN
+@implementation CMPFactory
 
-@interface CMPChatMessagePart : NSObject <CMPJSONRepresentable>
+#pragma CMPStoreFactoryBuildable
 
-@property (nonatomic, strong, nullable) NSString *name;
-@property (nonatomic, strong, nullable) NSString *type;
-@property (nonatomic, strong, nullable) NSString *data;
-@property (nonatomic, strong, nullable) NSNumber *size;
-@property (nonatomic, strong, nullable) NSURL *url;
-
-- (instancetype)initWithName:(nullable NSString *)name type:(nullable NSString *)type url:(nullable NSURL *)url data:(nullable NSString *)data size:(nullable NSNumber *)size;
-- (instancetype)initWithMessagePart:(CMPMessagePart *)messagePart;
+- (void)buildWithCompletion:(void (^)(id<CMPChatStore> _Nullable, NSError * _Nullable))completion {
+    CMPStoreManagerStack *shared = [CMPStoreManagerStack shared];
+    CMPStore *store = [[CMPStore alloc] initWithManager:shared];
+    completion(store, nil);
+}
 
 @end
-
-NS_ASSUME_NONNULL_END

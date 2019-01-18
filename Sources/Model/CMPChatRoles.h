@@ -18,11 +18,12 @@
 
 #import "CMPChatRoleAttributes.h"
 
+#import <CMPComapiFoundation/CMPJSONRepresentable.h>
 #import <CMPComapiFoundation/CMPRoles.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatRoles : NSObject
+@interface CMPChatRoles : NSObject <CMPJSONRepresentable>
 
 @property (nonatomic, strong, nullable) CMPChatRoleAttributes *ownerAttributes;
 @property (nonatomic, strong, nullable) CMPChatRoleAttributes *participantAttributes;

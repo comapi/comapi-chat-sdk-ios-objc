@@ -16,17 +16,30 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+#import "Conversation.h"
+#import "Roles.h"
+#import "Participant.h"
+#import "MessagePart.h"
+#import "Message.h"
+#import "MessageParticipant.h"
+#import "MessageContext.h"
+#import "MessageStatus.h"
+
 #import "CMPStore.h"
+
+@interface CMPStore ()
+
+@property (nonatomic, strong, readonly) CMPStoreManagerStack *manager;
+
+@end
 
 @implementation CMPStore
 
-- (instancetype)initWithCompletion:(void (^)(NSError * _Nonnull))completion {
+- (instancetype)initWithManager:(CMPStoreManagerStack *)manager {
     self = [super init];
     
     if (self) {
-        _manager = [[CMPStoreManagerStack alloc] initWithCompletion:^(NSError * _Nullable error) {
-            completion(error);
-        }];
+        _manager = manager;
     }
     
     return self;
@@ -34,6 +47,15 @@
 
 - (void)beginTransaction {
     NSLog(@"Store: beginning transaction.");
+}
+
+- (void)endTransaction {
+    NSLog(@"Store: ending transaction.");
+    NSError *error;
+    [_manager.mainContext save:&error];
+    if (error) {
+        NSLog(@"Store: error saving context - %@", error.localizedDescription);
+    }
 }
 
 - (BOOL)clearDatabase {
@@ -51,55 +73,159 @@
 
 - (BOOL)deleteAllMessagesForConversationID:(nonnull NSString *)conversationID {
     NSLog(@"Store: deleting messages for ID.");
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
+    request.predicate = [NSPredicate predicateWithFormat:@"%K = %@", @"conversationID", conversationID];
+    NSBatchDeleteRequest *delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
+    
+    NSError *error;
+    NSBatchDeleteResult *result = (NSBatchDeleteResult *)[_manager.mainContext executeRequest:delete error:&error];
+    if (error) {
+        NSLog(@"Store: error deleting messages - %@", error.localizedDescription);
+        return NO;
+    }
+    
+    NSArray<NSManagedObjectID *> *ids = (NSArray<NSManagedObjectID *> *)result.result;
+    [NSManagedObjectContext mergeChangesFromRemoteContextSave:@{NSDeletedObjectsKey : ids} intoContexts:@[_manager.mainContext]];
     
     return YES;
 }
 
 - (BOOL)deleteConversation:(nonnull CMPChatConversation *)conversation {
-    NSLog(@"deleteConversation");
+    NSLog(@"Store: deleting converastion for ID - %@", conversation.id);
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Converastion"];
+    request.predicate = [NSPredicate predicateWithFormat:@"%K = %@", @"conversationID", conversation.id];
+    NSBatchDeleteRequest *delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
+    
+    NSError *error;
+    NSBatchDeleteResult *result = (NSBatchDeleteResult *)[_manager.mainContext executeRequest:delete error:&error];
+    if (error) {
+        NSLog(@"Store: error deleting converastion - %@", error.localizedDescription);
+        return NO;
+    }
+    
+    NSArray<NSManagedObjectID *> *ids = (NSArray<NSManagedObjectID *> *)result.result;
+    [NSManagedObjectContext mergeChangesFromRemoteContextSave:@{NSDeletedObjectsKey : ids} intoContexts:@[_manager.mainContext]];
+
     return YES;
 }
 
 - (BOOL)deleteMessageForConversationID:(nonnull NSString *)conversationID messageID:(nonnull NSString *)messageID {
+    NSLog(@"Store: deleting message for conversationID - %@, messageID - %@", conversationID, messageID);
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
+    request.predicate = [NSPredicate predicateWithFormat:@"%K = %@ AND %K = %@", @"conversationID", conversationID, @"messageID", messageID];
+    NSBatchDeleteRequest *delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
+    
+    NSError *error;
+    NSBatchDeleteResult *result = (NSBatchDeleteResult *)[_manager.mainContext executeRequest:delete error:&error];
+    if (error) {
+        NSLog(@"Store: error deleting message - %@", error.localizedDescription);
+        return NO;
+    }
+    
+    NSArray<NSManagedObjectID *> *ids = (NSArray<NSManagedObjectID *> *)result.result;
+    [NSManagedObjectContext mergeChangesFromRemoteContextSave:@{NSDeletedObjectsKey : ids} intoContexts:@[_manager.mainContext]];
+    
     return YES;
 }
 
-- (void)endTransaction {
-    NSLog(@"Store: ending transaction.");
-    NSError *error;
-    [_manager.mainContext save:&error];
-    if (error) {
-        NSLog(@"Store: error saving context - %@", error.localizedDescription);
-    }
-}
-
 - (nonnull NSArray<CMPChatConversation *> *)getAllConversations {
-    NSLog(@"getAllConversations");
-    return @[];
+    NSLog(@"Store: retreiving all conversations.");
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Conversation"];
+    
+    NSError *error;
+    NSArray<Conversation *> *conversations = (NSArray<Conversation *> *)[_manager.mainContext executeFetchRequest:request error:&error];
+    if (error) {
+        NSLog(@"Store: error retreiving conversations - %@", error.localizedDescription);
+        return @[];
+    }
+    
+    NSMutableArray<CMPChatConversation *> *chatConversations = [NSMutableArray new];
+    for (Conversation * c in conversations) {
+        CMPChatConversation *chatConversation = [c chatConversation];
+        [chatConversations addObject:chatConversation];
+    }
+    
+    return [NSArray arrayWithArray:chatConversations];
 }
 
 - (nonnull CMPChatConversation *)getConversationForConversationID:(nonnull NSString *)conversationID {
-    NSLog(@"getConversation");
-    return [[CMPChatConversation alloc] init];
+    NSLog(@"Store: retreiving conversation for ID - %@", conversationID);
+    NSFetchRequest<Conversation *> *request = [[NSFetchRequest alloc] initWithEntityName:@"Conversation"];
+    request.predicate = [NSPredicate predicateWithFormat:@"%K = %@", @"conversationID", conversationID];
+    
+    NSError *error;
+    NSArray<Conversation *> *conversation = (NSArray<Conversation *> *)[_manager.mainContext executeFetchRequest:request error:&error];
+    if (error) {
+        NSLog(@"Store: error retreiving conversations - %@", error.localizedDescription);
+        return nil;
+    }
+    
+    return [conversation.firstObject chatConversation];
 }
 
 - (BOOL)updateConversation:(nonnull CMPChatConversation *)conversation {
-    NSLog(@"updateConversation");
+    NSLog(@"Store: updating conversation for ID - %@", conversation.id);
+    
+    NSBatchUpdateRequest *update = [[NSBatchUpdateRequest alloc] initWithEntityName:@"Conversation"];
+    update.propertiesToUpdate = [conversation json];
+    
+    NSError *error;
+    NSBatchUpdateResult *result = (NSBatchUpdateResult *)[_manager.mainContext executeRequest:update error:&error];
+    if (error) {
+        NSLog(@"Store: error retreiving conversations - %@", error.localizedDescription);
+        return nil;
+    }
+    
+    NSArray<NSManagedObjectID *> *ids = (NSArray<NSManagedObjectID *> *)result.result;
+    [NSManagedObjectContext mergeChangesFromRemoteContextSave:@{NSUpdatedObjectsKey : ids} intoContexts:@[_manager.mainContext]];
+    
     return YES;
 }
 
 - (BOOL)updateMessageStatus:(nonnull CMPChatMessageStatus *)messageStatus {
-    NSLog(@"updateMessageStatus");
+    NSLog(@"Store: updating messageStatus for messageID - %@", messageStatus.messageID);
+    
+    NSBatchUpdateRequest *update = [[NSBatchUpdateRequest alloc] initWithEntityName:@"MessageStatus"];
+    update.propertiesToUpdate = [messageStatus json];
+    
+    NSError *error;
+    NSBatchUpdateResult *result = (NSBatchUpdateResult *)[_manager.mainContext executeRequest:update error:&error];
+    if (error) {
+        NSLog(@"Store: error retreiving conversations - %@", error.localizedDescription);
+        return nil;
+    }
+    
+    NSArray<NSManagedObjectID *> *ids = (NSArray<NSManagedObjectID *> *)result.result;
+    [NSManagedObjectContext mergeChangesFromRemoteContextSave:@{NSUpdatedObjectsKey : ids} intoContexts:@[_manager.mainContext]];
+    
     return YES;
 }
 
 - (BOOL)upsertConversation:(nonnull CMPChatConversation *)conversation {
-    NSLog(@"upsertConversation");
-    return YES;
+    NSLog(@"Store: upserting conversation for messageID - %@", conversation.id);
+    
+    CMPChatConversation *existing = [self getConversation:conversation.id];
+    if (existing) {
+        BOOL success = [self updateConversation:existing];
+        return success;
+    } else {
+        Conversation *newConversation __unused = [[Conversation alloc] initWithChatConversation:conversation context:_manager.mainContext];
+        return YES;
+    }
 }
 
 - (BOOL)upsertMessage:(nonnull CMPChatMessage *)message {
-    NSLog(@"upsertMessage");
+    NSLog(@"Store: upserting message to conversationID - %@", message.context.conversationID);
+    
+    NSFetchRequest *request
+    CMPChatMessage *existing = [self ]
+    if (existing) {
+        BOOL success = [self updateConversation:existing];
+        return success;
+    } else {
+        Conversation *newConversation __unused = [[Conversation alloc] initWithChatConversation:conversation context:_manager.mainContext];
+        return YES;
+    }
     return YES;
 }
 

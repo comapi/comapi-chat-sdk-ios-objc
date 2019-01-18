@@ -42,4 +42,15 @@
     return self;
 }
 
+#pragma mark - CMPJSONRepresentable
+
+- (id)json {
+    NSMutableDictionary<NSString *, id> *dict = [NSMutableDictionary new];
+    
+    [dict setValue:[self.ownerAttributes json] forKey:@"ownerAttributes"];
+    [dict setValue:[self.participantAttributes json] forKey:@"participantAttributes"];
+    
+    return dict;
+}
+
 @end

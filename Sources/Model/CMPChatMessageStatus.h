@@ -18,12 +18,13 @@
 
 #import "CMPChatMessageDeliveryStatus.h"
 
+#import <CMPComapiFoundation/CMPJSONRepresentable.h>
 #import <CMPComapiFoundation/CMPMessageStatus.h>
 #import <CMPComapiFoundation/CMPConversationMessageEvents.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatMessageStatus : NSObject <NSCoding>
+@interface CMPChatMessageStatus : NSObject <NSCoding, CMPJSONRepresentable>
 
 @property (nonatomic, strong, nullable) NSString *conversationID;
 @property (nonatomic, strong, nullable) NSString *messageID;

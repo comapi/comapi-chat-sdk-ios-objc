@@ -65,6 +65,21 @@
     return self;
 }
 
+#pragma mark - CMPJSONRepresentable
+
+- (id)json {
+    NSMutableDictionary<NSString *, id> *dict = [NSMutableDictionary new];
+    
+    [dict setValue:self.messageID forKey:@"messageID"];
+    [dict setValue:self.profileID forKey:@"profileID"];
+    [dict setValue:@(self.messageStatus) forKey:@"messageStatus"];
+    [dict setValue:self.timestamp forKey:@"timestamp"];
+    [dict setValue:self.conversationID forKey:@"conversationID"];
+    [dict setValue:self.conversationEventID forKey:@"conversationEventID"];
+    
+    return dict;
+}
+
 #pragma mark - NSCoding
 
 - (void)encodeWithCoder:(NSCoder *)coder {

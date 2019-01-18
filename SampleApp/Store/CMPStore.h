@@ -16,8 +16,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatStore.h"
 #import "CMPStoreManagerStack.h"
+#import "CMPChatStore.h"
 
 #import <Foundation/Foundation.h>
 
@@ -25,9 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPStore : NSObject <CMPChatStore>
 
-@property (nonatomic, strong, readonly) CMPStoreManagerStack *manager;
-
-- (instancetype)initWithCompletion:(void(^)(NSError *))completion;
+- (instancetype)initWithManager:(CMPStoreManagerStack *)manager;
 
 @end
 

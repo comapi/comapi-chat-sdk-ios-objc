@@ -31,9 +31,9 @@
     [super viewDidLoad];
     _factory = [[CMPStoreFactory alloc] init];
     _factory.builder = self;
-    [_factory executeTransaction:^(id<CMPChatStore> _Nullable store, NSError * _Nullable) {
-        
-    }];
+//    [_factory executeTransaction:^(id<CMPChatStore> _Nullable store, NSError * _Nullable) {
+//
+//    }];
 //    [_factory executeTransaction:^(id<CMPChatStore> store, NSError * error) {
 //        if (error) {
 //            NSLog(@"%@", error);

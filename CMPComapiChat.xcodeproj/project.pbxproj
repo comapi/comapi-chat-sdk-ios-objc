@@ -27,6 +27,7 @@
 		89512AAE21F0CC1900AA9C5D /* MessagePart.m in Sources */ = {isa = PBXBuildFile; fileRef = 89512AAD21F0CC1900AA9C5D /* MessagePart.m */; };
 		89512AB121F0CDD300AA9C5D /* MessageContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 89512AB021F0CDD300AA9C5D /* MessageContext.m */; };
 		89512AB421F0DC4E00AA9C5D /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = 89512AB321F0DC4E00AA9C5D /* Message.m */; };
+		89512AB721F1E4FE00AA9C5D /* CMPFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 89512AB621F1E4FE00AA9C5D /* CMPFactory.m */; };
 		896015BB21B82D6600370AF2 /* CMPInternalConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 896015B321B82D6600370AF2 /* CMPInternalConfig.h */; };
 		896015BC21B82D6600370AF2 /* CMPInternalConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 896015B421B82D6600370AF2 /* CMPInternalConfig.m */; };
 		896015BD21B82D6600370AF2 /* CMPComapiChatClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 896015B621B82D6600370AF2 /* CMPComapiChatClient.m */; };
@@ -176,6 +177,9 @@
 		89512AB021F0CDD300AA9C5D /* MessageContext.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MessageContext.m; sourceTree = "<group>"; };
 		89512AB221F0DC4E00AA9C5D /* Message.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Message.h; sourceTree = "<group>"; };
 		89512AB321F0DC4E00AA9C5D /* Message.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Message.m; sourceTree = "<group>"; };
+		89512AB521F1E4FE00AA9C5D /* CMPFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPFactory.h; sourceTree = "<group>"; };
+		89512AB621F1E4FE00AA9C5D /* CMPFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPFactory.m; sourceTree = "<group>"; };
+		89512ABA21F2066000AA9C5D /* CMPMappable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPMappable.h; sourceTree = "<group>"; };
 		896015B321B82D6600370AF2 /* CMPInternalConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPInternalConfig.h; sourceTree = "<group>"; };
 		896015B421B82D6600370AF2 /* CMPInternalConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPInternalConfig.m; sourceTree = "<group>"; };
 		896015B621B82D6600370AF2 /* CMPComapiChatClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPComapiChatClient.m; sourceTree = "<group>"; };
@@ -358,6 +362,14 @@
 				89512AB321F0DC4E00AA9C5D /* Message.m */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		89512AB921F2062700AA9C5D /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				89512ABA21F2066000AA9C5D /* CMPMappable.h */,
+			);
+			path = Utility;
 			sourceTree = "<group>";
 		};
 		896015AF21B82D6600370AF2 /* Tests */ = {
@@ -585,11 +597,14 @@
 		896CB9B121BAAC0E003FB3DF /* Store */ = {
 			isa = PBXGroup;
 			children = (
+				89512AB921F2062700AA9C5D /* Utility */,
 				89512A9921F0B3EF00AA9C5D /* Models */,
 				896CB9B221BAAC25003FB3DF /* CMPStore.h */,
 				896CB9B321BAAC25003FB3DF /* ChatStore.m */,
 				89512A9321F0962000AA9C5D /* CMPStoreManagerStack.h */,
 				89512A9421F0962000AA9C5D /* CMPStoreManagerStack.m */,
+				89512AB521F1E4FE00AA9C5D /* CMPFactory.h */,
+				89512AB621F1E4FE00AA9C5D /* CMPFactory.m */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -1022,6 +1037,7 @@
 				89512AB121F0CDD300AA9C5D /* MessageContext.m in Sources */,
 				89512A9C21F0B9F300AA9C5D /* Conversation.m in Sources */,
 				89512A9F21F0BF5900AA9C5D /* Roles.m in Sources */,
+				89512AB721F1E4FE00AA9C5D /* CMPFactory.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
