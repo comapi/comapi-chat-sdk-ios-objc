@@ -146,13 +146,14 @@ NSInteger const kETagNotValid = 412;
     NSString *profileId = [_client getProfileID];
     if (profileId != nil) {
         
-        CMPMessageProcessor *processor = [[CMPMessageProcessor alloc] initWithModelAdapter:_adapter message:message attachments:attachments toConversationWithID:conversationId from:profileId];
-
+        CMPMessageProcessor *processor = [[CMPMessageProcessor alloc] initWithModelAdapter:_adapter message:message attachments:attachments toConversationWithID:conversationId from:profileId maxPartSize:kMaxPartDataLength];
+        
         __weak CMPChatController *weakSelf = self;
         
-        [_persistenceController updateStoreWithNewMessage:[processor createPreUploadMessageWithAttachments:attachments] completion:^(CMPStoreResult<NSNumber *> * result) {
+        [_persistenceController updateStoreWithNewMessage:[processor createPreUploadMessage] completion:^(CMPStoreResult<NSNumber *> * result) {
             if (weakSelf != nil && result.error != nil) {
-                [weakSelf.attachmentController uploadAttachments:attachments withCompletion:^(NSArray<CMPChatAttachment *> * sentAttachments) {
+                NSArray<CMPChatAttachment *> *attToSend = [processor getAttachmentsToSend];
+                [weakSelf.attachmentController uploadAttachments:attToSend withCompletion:^(NSArray<CMPChatAttachment *> * sentAttachments) {
                     if (weakSelf != nil && result.error != nil) {
                         [weakSelf.persistenceController updateStoreWithNewMessage:[processor createPostUploadMessageWithAttachments:attachments] completion:^(CMPStoreResult<NSNumber *> * result) {
                             [[[weakSelf.client services] messaging] sendMessage:[processor createMessageToSend] toConversationWithID:conversationId completion:^(CMPResult<CMPSendMessagesResult *> * result) {

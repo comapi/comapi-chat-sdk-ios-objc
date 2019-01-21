@@ -25,11 +25,15 @@
 
 @implementation CMPChatAttachment
 
-- (instancetype)initWithContentData:(CMPContentData *)data {
+- (instancetype)initWithContentData:(CMPContentData *)data folder:(NSString *) folder {
     self = [super init];
     
     if (self) {
         _data = data;
+        _name = data.name;
+        _type = data.type;
+        _folder = folder;
+        _size = [NSNumber numberWithUnsignedLong:data.data.length];
     }
     
     return self;
