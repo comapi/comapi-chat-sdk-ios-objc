@@ -26,6 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 extern NSString *const kPartTypeUploading;
 extern NSString *const kPartTypeError;
 extern NSString *const kKeyMessageTempId;
+extern NSUInteger const kMaxPartDataLength;
 
 @interface CMPMessageProcessor : NSObject
 
@@ -33,12 +34,14 @@ extern NSString *const kKeyMessageTempId;
 @property (nonatomic, strong, readonly) NSString *tempMessageId;
 @property (nonatomic, strong, readonly) NSString *sender;
 
-- (instancetype)initWithModelAdapter:(CMPModelAdapter *)adapter message:(CMPSendableMessage *) message attachments:(NSArray<CMPChatAttachment *> *) attachments toConversationWithID:(NSString *) conversationId from:(NSString *) sender;
+- (instancetype)initWithModelAdapter:(CMPModelAdapter *)adapter message:(CMPSendableMessage *) message attachments:(NSArray<CMPChatAttachment *> *) attachments toConversationWithID:(NSString *) conversationId from:(NSString *) sender maxPartSize:(NSUInteger) maxSize ;
 
-- (CMPChatMessage *)createPreUploadMessageWithAttachments:(NSArray<CMPChatAttachment *> *) attachments;
+- (CMPChatMessage *)createPreUploadMessage;
 - (CMPChatMessage *)createPostUploadMessageWithAttachments:(NSArray<CMPChatAttachment *> *) attachments;
 -(CMPChatMessage *)createFinalMessageWithID:(NSString *) messageId eventID:(NSNumber *) eventID;
 - (CMPSendableMessage *)createMessageToSend;
+- (NSArray<CMPChatAttachment *> *) getAttachmentsToSend;
+
 @end
 
 NS_ASSUME_NONNULL_END
