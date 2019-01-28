@@ -23,7 +23,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatRoles : NSObject <CMPJSONRepresentable>
+@interface CMPChatRoles : NSObject <CMPJSONRepresentable, NSCopying>
 
 @property (nonatomic, strong, nullable) CMPChatRoleAttributes *ownerAttributes;
 @property (nonatomic, strong, nullable) CMPChatRoleAttributes *participantAttributes;

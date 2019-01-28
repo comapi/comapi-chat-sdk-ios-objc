@@ -53,4 +53,15 @@
     return dict;
 }
 
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+    CMPChatRoles *copy = [[CMPChatRoles alloc] init];
+    
+    copy.ownerAttributes = [self.ownerAttributes copy];
+    copy.participantAttributes = [self.participantAttributes copy];
+    
+    return copy;
+}
+
 @end

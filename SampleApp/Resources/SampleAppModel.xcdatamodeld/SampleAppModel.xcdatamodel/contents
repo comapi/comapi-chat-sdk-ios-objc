@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14460.32" systemVersion="18B75" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="Conversation" representedClassName="Conversation" syncable="YES" codeGenerationType="class">
+    <entity name="Conversation" representedClassName="Conversation" syncable="YES">
         <attribute name="conversationDescription" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="eTag" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="firstLocalEventID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
@@ -12,7 +12,7 @@
         <attribute name="updatedOn" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <relationship name="roles" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Roles" syncable="YES"/>
     </entity>
-    <entity name="Message" representedClassName="Message" syncable="YES" codeGenerationType="class">
+    <entity name="Message" representedClassName="Message" syncable="YES">
         <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="metadata" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="sentEventID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
@@ -20,24 +20,24 @@
         <relationship name="context" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MessageContext" syncable="YES"/>
         <relationship name="parts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MessagePart" syncable="YES"/>
     </entity>
-    <entity name="MessageContext" representedClassName="MessageContext" syncable="YES" codeGenerationType="class">
+    <entity name="MessageContext" representedClassName="MessageContext" syncable="YES">
         <attribute name="conversationID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="sentBy" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="sentOn" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <relationship name="from" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MessageParticipant" syncable="YES"/>
     </entity>
-    <entity name="MessagePart" representedClassName="MessagePart" syncable="YES" codeGenerationType="class">
+    <entity name="MessagePart" representedClassName="MessagePart" syncable="YES">
         <attribute name="data" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="size" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="url" optional="YES" attributeType="URI" syncable="YES"/>
     </entity>
-    <entity name="MessageParticipant" representedClassName="MessageParticipant" syncable="YES" codeGenerationType="class">
+    <entity name="MessageParticipant" representedClassName="MessageParticipant" syncable="YES">
         <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
-    <entity name="MessageStatus" representedClassName="MessageStatus" syncable="YES" codeGenerationType="class">
+    <entity name="MessageStatus" representedClassName="MessageStatus" syncable="YES">
         <attribute name="conversationEventID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="conversationID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="mesageStatus" optional="YES" attributeType="Integer 16" minValueString="0" maxValueString="5" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
@@ -45,28 +45,28 @@
         <attribute name="profileID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
     </entity>
-    <entity name="Participant" representedClassName="Participant" syncable="YES" codeGenerationType="class">
+    <entity name="Participant" representedClassName="Participant" syncable="YES">
         <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="role" optional="YES" attributeType="Integer 16" minValueString="0" maxValueString="1" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
     </entity>
-    <entity name="RoleAttributes" representedClassName="RoleAttributes" syncable="YES" codeGenerationType="class">
+    <entity name="RoleAttributes" representedClassName="RoleAttributes" syncable="YES">
         <attribute name="canAddParticipants" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="canRemoveParticipants" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="canSend" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
     </entity>
-    <entity name="Roles" representedClassName="Roles" syncable="YES" codeGenerationType="class">
+    <entity name="Roles" representedClassName="Roles" syncable="YES">
         <relationship name="ownerAttributes" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RoleAttributes" syncable="YES"/>
         <relationship name="participantAttributes" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RoleAttributes" syncable="YES"/>
     </entity>
     <elements>
         <element name="Conversation" positionX="-69.81640625" positionY="-335.84375" width="128" height="195"/>
-        <element name="Roles" positionX="-69.8515625" positionY="-25.1484375" width="128" height="75"/>
-        <element name="RoleAttributes" positionX="-326.12109375" positionY="-33.140625" width="128" height="90"/>
+        <element name="Message" positionX="199.87109375" positionY="97.3828125" width="128" height="135"/>
+        <element name="MessageContext" positionX="199.03125" positionY="-43.42578125" width="128" height="105"/>
+        <element name="MessagePart" positionX="-43.79296875" positionY="102.89453125" width="128" height="120"/>
+        <element name="MessageParticipant" positionX="199.31640625" positionY="-166.0703125" width="128" height="75"/>
+        <element name="MessageStatus" positionX="180.3828125" positionY="188.1171875" width="128" height="135"/>
         <element name="Participant" positionX="-40.18359375" positionY="175.09375" width="128" height="75"/>
-        <element name="Message" positionX="199.87109375" positionY="97.3828125" width="128" height="28"/>
-        <element name="MessageStatus" positionX="180.3828125" positionY="188.1171875" width="128" height="28"/>
-        <element name="MessageContext" positionX="199.03125" positionY="-43.42578125" width="128" height="30"/>
-        <element name="MessageParticipant" positionX="199.31640625" positionY="-166.0703125" width="128" height="30"/>
-        <element name="MessagePart" positionX="-43.79296875" positionY="102.89453125" width="128" height="30"/>
+        <element name="RoleAttributes" positionX="-326.12109375" positionY="-33.140625" width="128" height="90"/>
+        <element name="Roles" positionX="-69.8515625" positionY="-25.1484375" width="128" height="75"/>
     </elements>
 </model>

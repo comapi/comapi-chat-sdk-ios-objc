@@ -29,27 +29,27 @@
         _conversationsToDelete = [NSMutableArray new];
         _conversationsToUpdate = [NSMutableArray new];
         
-        NSMutableDictionary<NSString *, CMPChatConversation *> * savedListPorecessed = [NSMutableDictionary dictionaryWithDictionary:savedList];
+        NSMutableDictionary<NSString *, CMPChatConversation *> * savedListProcessed = [NSMutableDictionary dictionaryWithDictionary:savedList];
         
         for (NSString *key in downloadedList.allKeys) {
-            if ([savedListPorecessed objectForKey:key]) {
-                CMPChatConversation *saved = [savedListPorecessed objectForKey:key];
+            if ([savedListProcessed objectForKey:key]) {
+                CMPChatConversation *saved = [savedListProcessed objectForKey:key];
                 if (saved.lastLocalEventID.integerValue != -1L) {
-                    CMPChatConversation *converastionToUpdate = [[downloadedList objectForKey:key] copy];
+                    CMPChatConversation *converastionToUpdate = [[CMPChatConversation alloc] initWithConversation:[downloadedList objectForKey:key]];
                     converastionToUpdate.firstLocalEventID = saved.firstLocalEventID;
                     converastionToUpdate.lastLocalEventID = saved.lastLocalEventID;
                     [_conversationsToUpdate addObject:converastionToUpdate];
                 }
             } else {
-                CMPChatConversation *converastionToAdd = [[downloadedList objectForKey:key] copy];
+                CMPChatConversation *converastionToAdd = [[CMPChatConversation alloc] initWithConversation:[downloadedList objectForKey:key]];
                 [_conversationsToAdd addObject:converastionToAdd];
             }
             
-            [savedListPorecessed removeObjectForKey:key];
+            [savedListProcessed removeObjectForKey:key];
         }
         
-        if (savedListPorecessed.count != 0) {
-            [_conversationsToDelete addObjectsFromArray:savedListPorecessed.allValues];
+        if (savedListProcessed.count != 0) {
+            [_conversationsToDelete addObjectsFromArray:savedListProcessed.allValues];
         }
     }
     

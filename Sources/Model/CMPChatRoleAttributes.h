@@ -21,7 +21,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatRoleAttributes : NSObject <CMPJSONRepresentable>
+@interface CMPChatRoleAttributes : NSObject <CMPJSONRepresentable, NSCopying>
 
 @property (nonatomic) BOOL canSend;
 @property (nonatomic) BOOL canRemoveParticipants;

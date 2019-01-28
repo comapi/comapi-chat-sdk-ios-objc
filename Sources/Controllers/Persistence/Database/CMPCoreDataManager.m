@@ -21,7 +21,7 @@
 
 #import <CMPComapiFoundation/CMPLogger.h>
 
-NSString *const kModelName = @"ComapiChatModel";
+NSString *const kModelName = @"CMPComapiChat";
 
 @interface CMPCoreDataManager ()
 
@@ -37,7 +37,7 @@ NSString *const kModelName = @"ComapiChatModel";
     self = [super init];
     
     if (self) {
-        NSURL *modelURL = [[NSBundle mainBundle] URLForResource:[NSString stringWithFormat:@"Sources/Resources/%@", kModelName] withExtension:@"momd"];
+        NSURL *modelURL = [[NSBundle bundleForClass:self.class] URLForResource:kModelName withExtension:@"momd"];
         NSAssert(modelURL, @"Failed to locate momd bundle in application");
 
         NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
@@ -54,9 +54,8 @@ NSString *const kModelName = @"ComapiChatModel";
         __weak typeof(self) weakSelf = self;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
             NSPersistentStoreCoordinator *psc = [weakSelf.mainContext persistentStoreCoordinator];
-            NSFileManager *fileManager = [NSFileManager defaultManager];
-            NSURL *documentsURL = [[fileManager URLsForDirectory:NSDocumentationDirectory inDomains:NSUserDomainMask] lastObject];
-            NSURL *storeURL = [documentsURL URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.sqlite", kModelName]];
+            NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+            NSURL* storeURL = [NSURL fileURLWithPath:[documentsDirectory stringByAppendingString:[NSString stringWithFormat:@"/%@.sqlite", kModelName]] isDirectory:NO];
             
             NSError *err = nil;
             NSPersistentStore *store = [psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&err];

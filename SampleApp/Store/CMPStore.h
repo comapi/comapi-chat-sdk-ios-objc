@@ -23,9 +23,34 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@protocol CMPMessageStoreDelegate <NSObject>
+
+- (void)didInsertMessages:(NSArray<CMPChatMessage *> *)messages;
+- (void)didUpdateMessages:(NSArray<CMPChatMessage *> *)messages;
+- (void)didDeleteMessages:(NSArray<NSString *> *)messageIDs;
+
+- (void)didInsertMessageStatuses:(NSArray<CMPChatMessageStatus *> *)messageStatuses;
+- (void)didUpdateMessageStatuses:(NSArray<CMPChatMessageStatus *> *)messageStatuses;
+- (void)didDeleteMessageStatuses:(NSArray<NSString *> *)messageIDs;
+
+@end
+
+@protocol CMPConversationStoreDelegate <NSObject>
+
+- (void)didInsertConversations:(NSArray<CMPChatConversation *> *)conversations;
+- (void)didUpdateConversations:(NSArray<CMPChatConversation *> *)conversations;
+- (void)didDeleteConversations:(NSArray<NSString *> *)conversationIDs;
+
+@end
+
 @interface CMPStore : NSObject <CMPChatStore>
 
+@property (nonatomic, weak, nullable) id<CMPMessageStoreDelegate> messageDelegate;
+@property (nonatomic, weak, nullable) id<CMPConversationStoreDelegate> conversationDelegate;
+
 - (instancetype)initWithManager:(CMPStoreManagerStack *)manager;
+
+- (NSArray<CMPChatMessage *> *)getMessages:(NSString *)conversationID;
 
 @end
 

@@ -62,6 +62,7 @@ NSInteger const kETagNotValid = 412;
         _isSynchronising = NO;
         _socketWasDisconnected = NO;
         
+        _client = client;
         _adapter = adapter;
         _config = config;
         
@@ -280,7 +281,7 @@ NSInteger const kETagNotValid = 412;
     __weak typeof(self) weakSelf = self;
     [CMPRetryManager retryBlock:^(void (^successBlock)(BOOL)) {
         [[weakSelf withClient].services.messaging updateStatusForMessagesWithIDs:IDs status:CMPMessageDeliveryStatusDelivered conversationID:ID timestamp:[NSDate date] completion:^(CMPResult<NSNumber *> * result) {
-            BOOL success = !result.error && result.object;
+            BOOL success = !result.error && result.object.boolValue ;
             successBlock(success);
             if (success) {
                 completion([[CMPChatResult alloc] initWithComapiResult:result]);
@@ -477,12 +478,12 @@ NSInteger const kETagNotValid = 412;
         dispatch_group_leave(group);
     }];
     dispatch_group_enter(group);
-    [_persistenceController upsertConversations:comparison.conversationsToDelete completion:^(CMPStoreResult<NSNumber *> * storeResult) {
+    [_persistenceController upsertConversations:comparison.conversationsToAdd completion:^(CMPStoreResult<NSNumber *> * storeResult) {
         addSuccess = storeResult.object != nil ? storeResult.object.boolValue : NO;
         dispatch_group_leave(group);
     }];
     dispatch_group_enter(group);
-    [_persistenceController updateConversations:comparison.conversationsToDelete completion:^(CMPStoreResult<NSNumber *> * storeResult) {
+    [_persistenceController updateConversations:comparison.conversationsToUpdate completion:^(CMPStoreResult<NSNumber *> * storeResult) {
         updateSuccess = storeResult.object != nil ? storeResult.object.boolValue : NO;
         dispatch_group_leave(group);
     }];
@@ -582,6 +583,7 @@ NSInteger const kETagNotValid = 412;
 - (void)lookForMissingEvents:(CMPConversationComparison *)comparison completion:(void(^)(CMPConversationComparison *))completion {
     if (!comparison.isSuccessful || comparison.conversationsToUpdate.count == 0) {
         completion(comparison);
+        return;
     }
     
     [self synchronizeEvents:comparison.conversationsToUpdate completion:^(BOOL success) {
@@ -590,7 +592,6 @@ NSInteger const kETagNotValid = 412;
         }
         completion(comparison);
     }];
-    
 }
 
 - (void)synchronizeEvents:(NSArray<CMPChatConversation *> *)conversationsToUpdate completion:(void(^)(BOOL))completion {
@@ -613,7 +614,7 @@ NSInteger const kETagNotValid = 412;
             } else if (c.latestRemoteEventID.integerValue > c.lastLocalEventID.integerValue) {
                 NSNumber *from = c.lastLocalEventID.integerValue >= 0 ? c.lastLocalEventID : @(0);
                 [weakSelf queryEventsRecursively:c.id lastEventID:from count:@(0) completion:^(CMPResult<NSArray<CMPEvent *> *> * result) {
-                    success = result.object != nil && !result.error;
+                    success = result.object != nil && result.error == nil;
                     dispatch_group_leave(group);
                 }];
             } else {

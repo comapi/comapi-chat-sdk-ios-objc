@@ -28,13 +28,13 @@
 
 @implementation CMPChatMessagingServices
 
-- (instancetype)initWithFoundation:(CMPComapiClient *)foundation chatController:(CMPChatController *)chatController {
+- (instancetype)initWithFoundation:(CMPComapiClient *)foundation chatController:(CMPChatController *)chatController modelAdapter:(CMPModelAdapter *)modelAdapter {
     self = [super init];
     
     if (self) {
         _foundation = foundation;
         _chatController = chatController;
-        _adapter = [[CMPModelAdapter alloc] init];
+        _adapter = modelAdapter;
     }
     
     return self;

@@ -17,7 +17,7 @@ For more information about the integration please visit [the website](http://doc
   s.requires_arc = true
 
   s.source_files = 'Sources/**/*.{h,m}'
-  s.resources = ['Sources/Resources/*']
+  s.resources = 'Sources/Resources/*'
 
   s.dependency 'CMPComapiFoundation'
   

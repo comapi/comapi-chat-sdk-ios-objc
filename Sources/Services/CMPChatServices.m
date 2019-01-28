@@ -20,4 +20,16 @@
 
 @implementation CMPChatServices
 
+- (instancetype)initWithFoundation:(CMPComapiClient *)foundation chatController:(CMPChatController *)chatController modelAdapter:(CMPModelAdapter *)modelAdapter {
+    self = [super init];
+    
+    if (self) {
+        _session = [[CMPChatSessionServices alloc] initWithFoundation:foundation];
+        _profile = [[CMPChatProfileServices alloc] initWithFoundation:foundation];
+        _messaging = [[CMPChatMessagingServices alloc] initWithFoundation:foundation chatController:chatController modelAdapter:modelAdapter];
+    }
+    
+    return self;
+}
+
 @end

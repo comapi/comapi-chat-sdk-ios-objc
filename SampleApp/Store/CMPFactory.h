@@ -17,10 +17,13 @@
 //
 #import "CMPStoreManagerStack.h"
 #import "CMPStoreFactory.h"
+#import "CMPStore.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPFactory : CMPStoreFactory <CMPStoreFactoryBuildable>
+
+@property (nonatomic, strong, readonly) CMPStore *store;
 
 @end
 

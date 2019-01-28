@@ -21,6 +21,7 @@
 #import "CMPProfileDelegate.h"
 #import "CMPParticipantDelegate.h"
 #import "CMPChatServices.h"
+#import "CMPChatConfig.h"
 
 #import <CMPComapiFoundation/CMPSession.h>
 
@@ -33,6 +34,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, readonly) CMPChatServices *services;
 @property (nonatomic, strong, readonly, nullable) NSString *profileID;
 @property (nonatomic, readonly) BOOL sessionSuccesfullyCreated;
+
+- (instancetype)initWithClient:(CMPComapiClient *)client chatConfig:(CMPChatConfig *)chatConfig;
 
 - (void)addTypingDelegate:(id<CMPTypingDelegate>)delegate;
 - (void)removeTypingDelegate:(id<CMPTypingDelegate>)delegate;

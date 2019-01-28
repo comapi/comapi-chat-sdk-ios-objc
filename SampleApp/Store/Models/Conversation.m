@@ -26,6 +26,7 @@
 @dynamic name;
 @dynamic updatedOn;
 @dynamic isPublic;
+@dynamic roles;
 
 @dynamic firstLocalEventID;
 @dynamic lastLocalEventID;

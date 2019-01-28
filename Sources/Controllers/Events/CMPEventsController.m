@@ -114,7 +114,14 @@
             }];
             break;
         }
-        case CMPEventTypeConversationDelete:
+        case CMPEventTypeConversationDelete: {
+            CMPConversationEventDelete *e = (CMPConversationEventDelete *)event;
+            [_persistenceController deleteConversation:e.conversationID completion:^(CMPStoreResult<NSNumber *> * result) {
+                if (result.error) {
+                    logWithLevel(CMPLogLevelError, @"Store update failed with error:", result.error, nil);
+                }
+            }];
+        }
             break;
         case CMPEventTypeConversationMessageDelivered: {
             CMPConversationMessageEventDelivered *e = (CMPConversationMessageEventDelivered *)event;

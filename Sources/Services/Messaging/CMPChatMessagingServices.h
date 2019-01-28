@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPChatMessagingServices : NSObject
 
-- (instancetype)initWithFoundation:(CMPComapiClient *)foundation chatController:(CMPChatController *)chatController;
+- (instancetype)initWithFoundation:(CMPComapiClient *)foundation chatController:(CMPChatController *)chatController modelAdapter:(CMPModelAdapter *)modelAdapter;
 
 - (void)addConversation:(CMPNewConversation *)conversation completion:(void(^)(CMPChatResult *))completion;
 - (void)deleteConversation:(NSString *)conversationID eTag:(nullable NSString *)eTag completion:(void(^)(CMPChatResult *))completion;

@@ -193,13 +193,13 @@
             });
         } else {
             [store beginTransaction];
-            __block BOOL success = NO;
+            __block BOOL success = YES;
             [conversations enumerateObjectsUsingBlock:^(CMPChatConversation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 success = success && [store deleteConversation:obj.id];
             }];
             [store endTransaction];
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion([CMPStoreResult resultWithObject:@(NO) error:error]);
+                completion([CMPStoreResult resultWithObject:@(success) error:error]);
             });
         }
     }];

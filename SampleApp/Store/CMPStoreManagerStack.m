@@ -32,7 +32,9 @@ NSString *const kModelName = @"SampleAppModel";
                 NSLog(@"Failed to load Core Data stack: %@", error);
                 abort();
             }
-            completion(error);
+            if (completion) {
+                completion(error);
+            }
         }];
     }
     
@@ -55,11 +57,13 @@ NSString *const kModelName = @"SampleAppModel";
 
 - (void)saveToDisk:(void (^)(NSError * _Nullable))completion {
     __weak typeof(self) weakSelf = self;
-    [[self mainContext] performBlock:^{
-        NSError * error;
-        [[weakSelf mainContext] save:&error];
-        completion(error);
-    }];
+    if ([[self mainContext] hasChanges]) {
+        [[self mainContext] performBlock:^{
+            NSError * error;
+            [[weakSelf mainContext] save:&error];
+            completion(error);
+        }];
+    }
 }
 
 

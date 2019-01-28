@@ -21,12 +21,23 @@
 
 @implementation CMPFactory
 
-#pragma CMPStoreFactoryBuildable
+- (instancetype)init {
+    self = [super init];
+    
+    if (self) {
+        self.builder = self;
+    }
+    
+    return self;
+}
+
+#pragma - CMPStoreFactoryBuildable
 
 - (void)buildWithCompletion:(void (^)(id<CMPChatStore> _Nullable, NSError * _Nullable))completion {
-    CMPStoreManagerStack *shared = [CMPStoreManagerStack shared];
-    CMPStore *store = [[CMPStore alloc] initWithManager:shared];
-    completion(store, nil);
+    if (!_store) {
+        _store = [[CMPStore alloc] initWithManager:[CMPStoreManagerStack shared]];
+    }
+    completion(_store, nil);
 }
 
 @end
