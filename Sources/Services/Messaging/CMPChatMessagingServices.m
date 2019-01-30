@@ -28,13 +28,13 @@
 
 @implementation CMPChatMessagingServices
 
-- (instancetype)initWithFoundation:(CMPComapiClient *)foundation chatController:(CMPChatController *)chatController {
+- (instancetype)initWithFoundation:(CMPComapiClient *)foundation chatController:(CMPChatController *)chatController modelAdapter:(CMPModelAdapter *)modelAdapter {
     self = [super init];
     
     if (self) {
         _foundation = foundation;
         _chatController = chatController;
-        _adapter = [[CMPModelAdapter alloc] init];
+        _adapter = modelAdapter;
     }
     
     return self;
@@ -121,111 +121,8 @@
 
 #pragma mark - Store
 
-- (void)synchroniseStore:(void (^)(CMPChatResult *))completion {
+- (void)synchroniseStore:(void (^ _Nullable)(CMPChatResult *))completion {
     [_chatController synchronizeStore:completion];
 }
 
 @end
-
-//    public Observable<ChatResult> sendMessage(@NonNull final String conversationId, @NonNull final MessageToSend message) {
-//        return doSendMessage(conversationId, message, null);
-//    }
-//
-//    /**
-//     * Send message to the chanel.
-//     *
-//     * @param conversationId ID of a conversation to send a message to.
-//     * @param body           Message body to be send.
-//     * @return Observable to subscribe to.
-//     */
-//    public Observable<ChatResult> sendMessage(@NonNull final String conversationId, @NonNull final String body) {
-//        final MessageToSend message = APIHelper.createMessage(conversationId, body, controller.getProfileId());
-//        return doSendMessage(conversationId, message, null);
-//    }
-//
-//    /**
-//     * Send message to the conversation.
-//     *
-//     * @param conversationId ID of a conversation to send a message to.
-//     * @param message        Message to be send.
-//     * @param data           Attachments to the message.
-//     * @return Observable to subscribe to.
-//     */
-//    public Observable<ChatResult> sendMessage(@NonNull final String conversationId, @NonNull final MessageToSend message, @Nullable List<Attachment> data) {
-//        return doSendMessage(conversationId, message, data);
-//    }
-//
-//    /**
-//     * Send message to the chanel.
-//     *
-//     * @param conversationId ID of a conversation to send a message to.
-//     * @param body           Message body to be send.
-//     * @param data           Attachments to the message.
-//     * @return Observable to subscribe to.
-//     */
-//    public Observable<ChatResult> sendMessage(@NonNull final String conversationId, @NonNull final String body, @Nullable List<Attachment> data) {
-//        final MessageToSend message = APIHelper.createMessage(conversationId, body, controller.getProfileId());
-//        return doSendMessage(conversationId, message, data);
-//    }
-//
-//    /**
-//     * Send message to the chanel.
-//     *
-//     * @param conversationId ID of a conversation to send a message to.
-//     * @param message        Message to be send.
-//     * @param attachments    Attachments to the message.
-//     * @return Observable to subscribe to.
-//     */
-//    private Observable<ChatResult> doSendMessage(@NonNull final String conversationId, @NonNull final MessageToSend message, @Nullable List<Attachment> attachments) {
-//        return controller.sendMessageWithAttachments(conversationId, message, attachments);
-//    }
-//
-//    /**
-//     * Sets statuses for sets of messages to 'read'.
-//     *
-//     * @param conversationId ID of a conversation to modify.
-//     * @param messageIds     List of message ids for which the status should be updated.
-//     * @return Observable to subscribe to.
-//     */
-
-//
-//    /**
-//     * Queries the next message page in conversation and delivers messages to store implementation.
-//     *
-//     * @param conversationId ID of a conversation to query messages in.
-//     * @return Observable to subscribe to.
-//     */
-//    public Observable<ChatResult> getPreviousMessages(final String conversationId) {
-//        return controller.getPreviousMessages(conversationId);
-//    }
-//
-//    /**
-//     * Check for missing messages and other events and update local store.
-//     *
-//     * @return Observable to subscribe to.
-//     */
-//    public Observable<ChatResult> synchroniseStore() {
-//        return controller.synchroniseStore();
-//    }
-//
-//    /**
-//     * Check for missing messages and other events and update local store.
-//     *
-//     * @param conversationId Unique conversationId.
-//     * @return Observable to subscribe to.
-//     */
-//    public Observable<ChatResult> synchroniseConversation(@NonNull final String conversationId) {
-//        return controller.synchroniseConversation(conversationId);
-//    }
-//
-//    /**
-//     * Sends participant is typing in conversation event.
-//     *
-//     * @param conversationId ID of a conversation in which participant is typing a message.
-//     * @param isTyping       True if user started typing, false if he finished typing.
-//     * @return Observable to subscribe to.
-//     */
-//    public Observable<ChatResult> isTyping(@NonNull final String conversationId, final boolean isTyping) {
-//        return foundation.service().messaging().isTyping(conversationId, isTyping).map(modelAdapter::adaptResult);
-//    }
-//    }

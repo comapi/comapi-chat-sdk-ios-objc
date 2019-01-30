@@ -20,7 +20,7 @@
 
 @implementation CMPChatMessageContext
 
-- (instancetype)initWithConversationID:(NSString *)conversationID from:(CMPMessageParticipant *)from sentBy:(NSString *)sentBy sentOn:(NSDate *)sentOn {
+- (instancetype)initWithConversationID:(NSString *)conversationID from:(CMPChatMessageParticipant *)from sentBy:(NSString *)sentBy sentOn:(NSDate *)sentOn {
     self = [super init];
     
     if (self) {
@@ -38,12 +38,25 @@
     
     if (self) {
         self.conversationID = messageContext.conversationID;
-        self.from = messageContext.from;
+        self.from = [[CMPChatMessageParticipant alloc] initWithMessageParticipant:messageContext.from];
         self.sentBy = messageContext.sentBy;
         self.sentOn = messageContext.sentOn;
     }
     
     return self;
+}
+
+#pragma mark - CMPJSONRepresentable
+
+- (id)json {
+    NSMutableDictionary<NSString *, id> *dict = [NSMutableDictionary new];
+    
+    [dict setValue:self.conversationID forKey:@"conversationID"];
+    [dict setValue:self.sentBy forKey:@"sentBy"];
+    [dict setValue:self.sentOn forKey:@"sentOn"];
+    [dict setValue:[self.from json] forKey:@"from"];
+    
+    return dict;
 }
 
 @end

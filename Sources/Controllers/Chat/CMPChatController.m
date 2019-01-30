@@ -62,6 +62,7 @@ NSInteger const kETagNotValid = 412;
         _isSynchronising = NO;
         _socketWasDisconnected = NO;
         
+        _client = client;
         _adapter = adapter;
         _config = config;
         
@@ -147,17 +148,16 @@ NSInteger const kETagNotValid = 412;
     if (profileId != nil) {
         
         CMPMessageProcessor *processor = [[CMPMessageProcessor alloc] initWithModelAdapter:_adapter message:message attachments:attachments toConversationWithID:conversationId from:profileId maxPartSize:kMaxPartDataLength];
-        
-        __weak CMPChatController *weakSelf = self;
-        
+
+        __weak typeof(self) weakSelf = self;
         [_persistenceController updateStoreWithNewMessage:[processor createPreUploadMessage] completion:^(CMPStoreResult<NSNumber *> * result) {
-            if (weakSelf != nil && result.error != nil) {
+            if (weakSelf && !result.error) {
                 NSArray<CMPChatAttachment *> *attToSend = [processor getAttachmentsToSend];
                 [weakSelf.attachmentController uploadAttachments:attToSend withCompletion:^(NSArray<CMPChatAttachment *> * sentAttachments) {
-                    if (weakSelf != nil && result.error != nil) {
+                    if (weakSelf && !result.error) {
                         [weakSelf.persistenceController updateStoreWithNewMessage:[processor createPostUploadMessageWithAttachments:attachments] completion:^(CMPStoreResult<NSNumber *> * result) {
                             [[[weakSelf.client services] messaging] sendMessage:[processor createMessageToSend] toConversationWithID:conversationId completion:^(CMPResult<CMPSendMessagesResult *> * result) {
-                                if (result.error != nil) {
+                                if (weakSelf && !result.error) {
                                     [weakSelf.persistenceController updateStoreWithNewMessage:[processor createFinalMessageWithID:result.object.id eventID:result.object.eventID] completion:^(CMPStoreResult<NSNumber *> * result) {
                                         completion([[CMPChatResult alloc] initWithError:result.error success:(BOOL)result.object]);
                                     }];
@@ -203,7 +203,7 @@ NSInteger const kETagNotValid = 412;
 - (void)handleMessage:(CMPChatMessage *)message completion:(void(^ _Nullable)(BOOL))completion {
     NSString *sender = message.context.sentBy;
     
-    __block BOOL updateStoreSuccess;
+    __block BOOL updateStoreSuccess = YES;
     __block CMPChatResult *markDeliveredResult;
     
     dispatch_group_t group = dispatch_group_create();
@@ -281,7 +281,7 @@ NSInteger const kETagNotValid = 412;
     __weak typeof(self) weakSelf = self;
     [CMPRetryManager retryBlock:^(void (^successBlock)(BOOL)) {
         [[weakSelf withClient].services.messaging updateStatusForMessagesWithIDs:IDs status:CMPMessageDeliveryStatusDelivered conversationID:ID timestamp:[NSDate date] completion:^(CMPResult<NSNumber *> * result) {
-            BOOL success = !result.error && result.object;
+            BOOL success = !result.error && result.object.boolValue ;
             successBlock(success);
             if (success) {
                 completion([[CMPChatResult alloc] initWithComapiResult:result]);
@@ -316,7 +316,7 @@ NSInteger const kETagNotValid = 412;
     [[self withClient].services.messaging getMessagesWithConversationID:ID completion:^(CMPResult<CMPGetMessagesResult *> * result) {
         if (result.object) {
             [weakSelf.persistenceController getConversation:ID completion:^(CMPStoreResult<CMPChatConversation *> * storeResult) {
-                CMPConversationComparison *comparison = [weakSelf compare:result.object.latestEventID ? result.object.latestEventID : @(-1L) conversation:storeResult.object];
+                CMPConversationComparison *comparison = [weakSelf compare:result.object.latestEventID ? result.object.latestEventID : @(-1) conversation:storeResult.object];
                 [weakSelf updateLocalConversationList:comparison completion:^(CMPConversationComparison * comparison) {
                     [weakSelf lookForMissingEvents:comparison completion:^(CMPConversationComparison * comparison) {
                         completion([[CMPChatResult alloc] initWithError:nil success:comparison.isSuccessful]);
@@ -466,9 +466,9 @@ NSInteger const kETagNotValid = 412;
 }
 
 - (void)updateLocalConversationList:(CMPConversationComparison *)comparison completion:(void(^)(CMPConversationComparison *))completion {
-    __block BOOL deleteSuccess;
-    __block BOOL addSuccess;
-    __block BOOL updateSuccess;
+    __block BOOL deleteSuccess = YES;
+    __block BOOL addSuccess = YES;
+    __block BOOL updateSuccess = YES;
     
     dispatch_group_t group = dispatch_group_create();
     
@@ -478,12 +478,12 @@ NSInteger const kETagNotValid = 412;
         dispatch_group_leave(group);
     }];
     dispatch_group_enter(group);
-    [_persistenceController upsertConversations:comparison.conversationsToDelete completion:^(CMPStoreResult<NSNumber *> * storeResult) {
+    [_persistenceController upsertConversations:comparison.conversationsToAdd completion:^(CMPStoreResult<NSNumber *> * storeResult) {
         addSuccess = storeResult.object != nil ? storeResult.object.boolValue : NO;
         dispatch_group_leave(group);
     }];
     dispatch_group_enter(group);
-    [_persistenceController updateConversations:comparison.conversationsToDelete completion:^(CMPStoreResult<NSNumber *> * storeResult) {
+    [_persistenceController updateConversations:comparison.conversationsToUpdate completion:^(CMPStoreResult<NSNumber *> * storeResult) {
         updateSuccess = storeResult.object != nil ? storeResult.object.boolValue : NO;
         dispatch_group_leave(group);
     }];
@@ -583,6 +583,7 @@ NSInteger const kETagNotValid = 412;
 - (void)lookForMissingEvents:(CMPConversationComparison *)comparison completion:(void(^)(CMPConversationComparison *))completion {
     if (!comparison.isSuccessful || comparison.conversationsToUpdate.count == 0) {
         completion(comparison);
+        return;
     }
     
     [self synchronizeEvents:comparison.conversationsToUpdate completion:^(BOOL success) {
@@ -591,7 +592,6 @@ NSInteger const kETagNotValid = 412;
         }
         completion(comparison);
     }];
-    
 }
 
 - (void)synchronizeEvents:(NSArray<CMPChatConversation *> *)conversationsToUpdate completion:(void(^)(BOOL))completion {
@@ -614,7 +614,7 @@ NSInteger const kETagNotValid = 412;
             } else if (c.latestRemoteEventID.integerValue > c.lastLocalEventID.integerValue) {
                 NSNumber *from = c.lastLocalEventID.integerValue >= 0 ? c.lastLocalEventID : @(0);
                 [weakSelf queryEventsRecursively:c.id lastEventID:from count:@(0) completion:^(CMPResult<NSArray<CMPEvent *> *> * result) {
-                    success = result.object != nil && !result.error;
+                    success = result.object != nil && result.error == nil;
                     dispatch_group_leave(group);
                 }];
             } else {

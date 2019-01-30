@@ -17,6 +17,9 @@
 //
 
 #import "AppDelegate.h"
+#import "CMPLoginViewController.h"
+
+NSString * const kCMPPushRegistrationStatusChangedNotification = @"CMPPushRegistrationStatusChangedNotification";
 
 @interface AppDelegate ()
 
@@ -24,10 +27,56 @@
 
 @implementation AppDelegate
 
+#pragma mark - UNUserNotificationCenterDelegate
+
+#pragma mark -
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+    
+    CMPLoginViewModel *vm = [[CMPLoginViewModel alloc] init];
+    CMPLoginViewController *vc = [[CMPLoginViewController alloc] initWithViewModel:vm];
+    
+    _window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
+    _window.rootViewController = [[UINavigationController alloc] initWithRootViewController:vc];
+    [_window makeKeyAndVisible];
+
     return YES;
+}
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    NSMutableString *token = [NSMutableString string];
+    
+    const char *data = [deviceToken bytes];
+    for (NSUInteger i = 0; i < [deviceToken length]; i++) {
+        [token appendFormat:@"%.2hhx", data[i]];
+    }
+    
+    if (token) {
+        if (self.client) {
+            [self.client setPushToken:token completion:^(BOOL success, NSError * error) {
+                if (error || !success) {
+                    NSLog(@"%@", error.localizedDescription);
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kCMPPushRegistrationStatusChangedNotification object:@(NO) userInfo:nil];
+                } else {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kCMPPushRegistrationStatusChangedNotification object:@(YES) userInfo:nil];
+                }
+            }];
+        }
+    }
+}
+
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+    NSLog(@"%@", error.localizedDescription);
+    [[NSNotificationCenter defaultCenter] postNotificationName:kCMPPushRegistrationStatusChangedNotification object:@(NO) userInfo:nil];
+}
+
+-(void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler {
+    completionHandler((UNNotificationPresentationOptionAlert | UNNotificationPresentationOptionSound));
+}
+
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler {
+    
+    completionHandler();
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

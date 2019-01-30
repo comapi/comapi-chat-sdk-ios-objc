@@ -28,28 +28,28 @@
         _conversationsToAdd = [NSMutableArray new];
         _conversationsToDelete = [NSMutableArray new];
         _conversationsToUpdate = [NSMutableArray new];
-        
-        NSMutableDictionary<NSString *, CMPChatConversation *> * savedListPorecessed = [NSMutableDictionary dictionaryWithDictionary:savedList];
+
+        NSMutableDictionary<NSString *, CMPChatConversation *> * savedListProcessed = [NSMutableDictionary dictionaryWithDictionary:savedList];
         
         for (NSString *key in downloadedList.allKeys) {
-            if ([savedListPorecessed objectForKey:key]) {
-                CMPChatConversation *saved = [savedListPorecessed objectForKey:key];
-                if (saved.lastLocalEventID.integerValue != -1L) {
-                    CMPChatConversation *converastionToUpdate = [[downloadedList objectForKey:key] copy];
+            if ([savedListProcessed objectForKey:key]) {
+                CMPChatConversation *saved = [savedListProcessed objectForKey:key];
+                if (saved.lastLocalEventID.integerValue != -1) {
+                    CMPChatConversation *converastionToUpdate = [[CMPChatConversation alloc] initWithConversation:[downloadedList objectForKey:key]];
                     converastionToUpdate.firstLocalEventID = saved.firstLocalEventID;
                     converastionToUpdate.lastLocalEventID = saved.lastLocalEventID;
                     [_conversationsToUpdate addObject:converastionToUpdate];
                 }
             } else {
-                CMPChatConversation *converastionToAdd = [[downloadedList objectForKey:key] copy];
+                CMPChatConversation *converastionToAdd = [[CMPChatConversation alloc] initWithConversation:[downloadedList objectForKey:key]];
                 [_conversationsToAdd addObject:converastionToAdd];
             }
             
-            [savedListPorecessed removeObjectForKey:key];
+            [savedListProcessed removeObjectForKey:key];
         }
         
-        if (savedListPorecessed.count != 0) {
-            [_conversationsToDelete addObjectsFromArray:savedListPorecessed.allValues];
+        if (savedListProcessed.count != 0) {
+            [_conversationsToDelete addObjectsFromArray:savedListProcessed.allValues];
         }
     }
     
@@ -60,19 +60,34 @@
     self = [super init];
     
     if (self) {
+        _remoteCallSuccessful = true;
         _conversationsToAdd = [NSMutableArray new];
         _conversationsToDelete = [NSMutableArray new];
         _conversationsToUpdate = [NSMutableArray new];
         
+//        conversationsToDelete = new ArrayList<>();
+//        conversationsToUpdate = new ArrayList<>();
+//        conversationsToAdd = new ArrayList<>();
+//
+//        if (conversation != null && remoteLastEventId != null) {
+//            if (conversation.getLastRemoteEventId() != null && conversation.getLastRemoteEventId() != -1L && remoteLastEventId > conversation.getLastRemoteEventId()) {
+//                conversationsToUpdate.add(ChatConversation.builder().populate(conversation).setLastRemoteEventId(remoteLastEventId).build());
+//            }
+//        }
+//
+//        if (remoteLastEventId == null || remoteLastEventId == -1L) {
+//            remoteCallSuccessful = false;
+//        }
+        
         if (conversation != nil && latestRemoteEventID != nil) {
-            if (conversation.latestRemoteEventID != nil && conversation.latestRemoteEventID.integerValue != -1L && latestRemoteEventID.integerValue > conversation.latestRemoteEventID.integerValue) {
+            if (conversation.latestRemoteEventID != nil && conversation.latestRemoteEventID.integerValue != -1 && latestRemoteEventID.integerValue > conversation.latestRemoteEventID.integerValue) {
                 CMPChatConversation *conversationToUpdate = [conversation copy];
                 conversationToUpdate.latestRemoteEventID = latestRemoteEventID;
                 [_conversationsToUpdate addObject:conversationToUpdate];
             }
         }
         
-        if (latestRemoteEventID == nil || latestRemoteEventID.integerValue == -1L) {
+        if (latestRemoteEventID == nil || latestRemoteEventID.integerValue == -1) {
             _remoteCallSuccessful = false;
         }
     }

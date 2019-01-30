@@ -25,9 +25,9 @@
 
 @interface CMPEventsController ()
 
-@property (nonatomic, weak, readonly) CMPPersistenceController *persistenceController;
-@property (nonatomic, weak, readonly) CMPChatController *chatController;
-@property (nonatomic, weak, readonly) CMPMissingEventsTracker *tracker;
+@property (nonatomic, strong, readonly) CMPPersistenceController *persistenceController;
+@property (nonatomic, strong, readonly) CMPChatController *chatController;
+@property (nonatomic, strong, readonly) CMPMissingEventsTracker *tracker;
 
 @property (nonatomic, weak, readonly) id<CMPMissingEventsDelegate> missingEventsDelegate;
 @property (nonatomic, weak, readonly) id<CMPProfileDelegate> profileDelegate;
@@ -114,7 +114,14 @@
             }];
             break;
         }
-        case CMPEventTypeConversationDelete:
+        case CMPEventTypeConversationDelete: {
+            CMPConversationEventDelete *e = (CMPConversationEventDelete *)event;
+            [_persistenceController deleteConversation:e.conversationID completion:^(CMPStoreResult<NSNumber *> * result) {
+                if (result.error) {
+                    logWithLevel(CMPLogLevelError, @"Store update failed with error:", result.error, nil);
+                }
+            }];
+        }
             break;
         case CMPEventTypeConversationMessageDelivered: {
             CMPConversationMessageEventDelivered *e = (CMPConversationMessageEventDelivered *)event;

@@ -18,12 +18,13 @@
 
 #import "CMPChatRoles.h"
 
+#import <CMPComapiFoundation/CMPJSONRepresentable.h>
 #import <CMPComapiFoundation/CMPConversation.h>
 #import <CMPComapiFoundation/CMPConversationEvents.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatConversation : NSObject <NSCopying>
+@interface CMPChatConversation : NSObject <NSCopying, CMPJSONRepresentable>
 
 @property (nonatomic, strong, nullable) NSString *id;
 @property (nonatomic, strong, nullable) NSString *eTag;

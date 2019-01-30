@@ -1,28 +1,37 @@
 PODS:
+  - Base64 (1.1.2)
   - CMPComapiChat (1.0.0):
     - CMPComapiFoundation
-  - CMPComapiFoundation (1.0.0):
+  - CMPComapiFoundation (1.1):
     - SocketRocket
+  - JWT (2.2.0):
+    - Base64 (~> 1.1.2)
   - SocketRocket (0.5.1)
 
 DEPENDENCIES:
   - CMPComapiChat (from `/Users/dominik.kowalski/Documents/comapi-chat-sdk-ios-objc`)
-  - CMPComapiFoundation
+  - CMPComapiFoundation (from `/Users/dominik.kowalski/Documents/comapi-sdk-ios-objc`)
+  - JWT
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
-    - CMPComapiFoundation
+    - Base64
+    - JWT
     - SocketRocket
 
 EXTERNAL SOURCES:
   CMPComapiChat:
     :path: "/Users/dominik.kowalski/Documents/comapi-chat-sdk-ios-objc"
+  CMPComapiFoundation:
+    :path: "/Users/dominik.kowalski/Documents/comapi-sdk-ios-objc"
 
 SPEC CHECKSUMS:
-  CMPComapiChat: 221646a7235e894447dc33eeeb3c0340e2e3b0d1
-  CMPComapiFoundation: 188f69fd19a8dcf3d0d4888e4a15b8b96a293d86
+  Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
+  CMPComapiChat: d43bc83948afc3513316703305d1d73fa6ed8bbc
+  CMPComapiFoundation: 69216fc7b88e766c740e2a6db8683a54384038fa
+  JWT: cf73c0ab0dac762df3de8a3f1164352089d97780
   SocketRocket: d57c7159b83c3c6655745cd15302aa24b6bae531
 
-PODFILE CHECKSUM: cc1765a2ab26fe9c0752e5df482122589984b95a
+PODFILE CHECKSUM: 7254c01592ea58c02672d600abaf4935fd1a0ef4
 
 COCOAPODS: 1.5.3

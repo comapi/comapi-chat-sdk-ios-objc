@@ -19,8 +19,10 @@
 #import "CMPChatProfileServices.h"
 #import "CMPChatSessionServices.h"
 #import "CMPChatMessagingServices.h"
+#import "CMPChatController.h"
+#import "CMPModelAdapter.h"
 
-#import <Foundation/Foundation.h>
+#import <CMPComapiFoundation/CMPComapiClient.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -29,6 +31,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, readonly) CMPChatProfileServices *profile;
 @property (nonatomic, strong, readonly) CMPChatSessionServices *session;
 @property (nonatomic, strong, readonly) CMPChatMessagingServices *messaging;
+
+- (instancetype)initWithFoundation:(CMPComapiClient *)foundation chatController:(CMPChatController *)chatController modelAdapter:(CMPModelAdapter *)modelAdapter;
 
 @end
 

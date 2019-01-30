@@ -105,6 +105,26 @@
     return self;
 }
 
+#pragma mark - CMPJSONRepresentable
+
+- (id)json {
+    NSMutableDictionary<NSString *, id> *dict = [NSMutableDictionary new];
+    
+    [dict setValue:self.id forKey:@"id"];
+    [dict setValue:self.name forKey:@"name"];
+    [dict setValue:self.conversationDescription forKey:@"conversationDescription"];
+    [dict setValue:self.isPublic forKey:@"isPublic"];
+    [dict setValue:self.updatedOn forKey:@"updatedOn"];
+    [dict setValue:self.eTag forKey:@"eTag"];
+    [dict setValue:self.firstLocalEventID forKey:@"firstLocalEventID"];
+    [dict setValue:self.lastLocalEventID forKey:@"lastLocalEventID"];
+    [dict setValue:self.latestRemoteEventID forKey:@"latestRemoteEventID"];
+    
+    return dict;
+}
+
+#pragma mark - NSCoding
+
 - (id)copyWithZone:(NSZone *)zone {
     CMPChatConversation *copy = [[CMPChatConversation alloc] init];
     

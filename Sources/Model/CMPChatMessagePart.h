@@ -16,11 +16,12 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+#import <CMPComapiFoundation/CMPJSONRepresentable.h>
 #import <CMPComapiFoundation/CMPMessagePart.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatMessagePart : NSObject
+@interface CMPChatMessagePart : NSObject <CMPJSONRepresentable>
 
 @property (nonatomic, strong, nullable) NSString *name;
 @property (nonatomic, strong, nullable) NSString *type;

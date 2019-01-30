@@ -53,7 +53,7 @@
         CMPMissingEventsTracker *tracker = [[CMPMissingEventsTracker alloc] init];
         CMPCoreDataManager *coreDataManager = [[CMPCoreDataManager alloc] initWithCompletion:^(NSError * _Nullable error) {
             if (error) {
-                logWithLevel(CMPLogLevelError, @"Error configuring CoreData stack.");
+                logWithLevel(CMPLogLevelError, @"Error configuring CoreData stack.", nil);
             }
         }];
         CMPPersistenceController *persistenceController = [[CMPPersistenceController alloc] initWithFactory:chatConfig.storeFactory adapter:adapter coreDataManager:coreDataManager];
@@ -61,6 +61,10 @@
         
         _chatController = [[CMPChatController alloc] initWithClient:_client persistenceController:persistenceController attachmentController:attachmentController adapter:adapter config:chatConfig.internalConfig];
         _eventsController = [[CMPEventsController alloc] initWithPersistenceController:persistenceController chatController:_chatController missingEventsTracker:tracker chatConfig:chatConfig];
+        
+        _services = [[CMPChatServices alloc] initWithFoundation:_client chatController:_chatController modelAdapter:adapter];
+        
+        [_client addEventDelegate:_eventsController];
         
         _typingDelegates = [[CMPBroadcastDelegate alloc] init];
         _profileDelegates = [[CMPBroadcastDelegate alloc] init];
@@ -76,6 +80,10 @@
 
 - (NSString *)profileID {
     return [_client getProfileID];
+}
+
+- (void)setPushToken:(NSString *)deviceToken completion:(void (^)(BOOL, NSError * _Nullable))completion {
+    [_client setPushToken:deviceToken completion:completion];
 }
 
 - (void)addTypingDelegate:(id<CMPTypingDelegate>)delegate {
@@ -109,7 +117,9 @@
 }
 
 - (void)applicationWillEnterForeground:(nonnull UIApplication *)application {
-    
+    if (_client != nil) {
+        [_services.messaging synchroniseStore:nil];
+    }
 }
 
 @end

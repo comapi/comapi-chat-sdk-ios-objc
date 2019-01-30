@@ -21,6 +21,7 @@
 #import "CMPProfileDelegate.h"
 #import "CMPParticipantDelegate.h"
 #import "CMPChatServices.h"
+#import "CMPChatConfig.h"
 
 #import <CMPComapiFoundation/CMPSession.h>
 
@@ -28,10 +29,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPComapiChatClient : NSObject <CMPLifecycleDelegate>
 
-@property (nonatomic, strong, readonly) CMPChatServices *services;
+@property (nonatomic, weak) id<CMPLifecycleDelegate> lifecycleDelegate;
 
+@property (nonatomic, strong, readonly) CMPChatServices *services;
 @property (nonatomic, strong, readonly, nullable) NSString *profileID;
 @property (nonatomic, readonly) BOOL sessionSuccesfullyCreated;
+
+- (instancetype)initWithClient:(CMPComapiClient *)client chatConfig:(CMPChatConfig *)chatConfig;
+
+- (void)setPushToken:(NSString *)deviceToken completion:(void(^)(BOOL, NSError * _Nullable))completion NS_SWIFT_NAME(set(pushToken:completion:));
 
 - (void)addTypingDelegate:(id<CMPTypingDelegate>)delegate;
 - (void)removeTypingDelegate:(id<CMPTypingDelegate>)delegate;

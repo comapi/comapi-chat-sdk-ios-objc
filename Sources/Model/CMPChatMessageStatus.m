@@ -65,4 +65,43 @@
     return self;
 }
 
+#pragma mark - CMPJSONRepresentable
+
+- (id)json {
+    NSMutableDictionary<NSString *, id> *dict = [NSMutableDictionary new];
+    
+    [dict setValue:self.messageID forKey:@"messageID"];
+    [dict setValue:self.profileID forKey:@"profileID"];
+    [dict setValue:@(self.messageStatus) forKey:@"messageStatus"];
+    [dict setValue:self.timestamp forKey:@"timestamp"];
+    [dict setValue:self.conversationID forKey:@"conversationID"];
+    [dict setValue:self.conversationEventID forKey:@"conversationEventID"];
+    
+    return dict;
+}
+
+#pragma mark - NSCoding
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeObject:self.messageID forKey:@"messageID"];
+    [coder encodeObject:self.profileID forKey:@"profileID"];
+    [coder encodeObject:self.timestamp forKey:@"timestamp"];
+    [coder encodeObject:self.conversationID forKey:@"conversationID"];
+    [coder encodeObject:self.conversationEventID forKey:@"conversationEventID"];
+    [coder encodeInteger:self.messageStatus forKey:@"messageStatus"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    NSString *messageID = [aDecoder decodeObjectForKey:@"messageID"];
+    NSString *profileID = [aDecoder decodeObjectForKey:@"profileID"];
+    NSDate *timestamp = [aDecoder decodeObjectForKey:@"timestamp"];
+    NSString *conversationID = [aDecoder decodeObjectForKey:@"conversationID"];
+    NSNumber *conversationEventID = [aDecoder decodeObjectForKey:@"conversationEventID"];
+    CMPChatMessageDeliveryStatus messageStatus = [aDecoder decodeIntegerForKey:@"messageStatus"];
+    
+    self = [self initWithConversationID:conversationID messageID:messageID profileID:profileID conversationEventID:conversationEventID timestamp:timestamp messageStatus:messageStatus];
+    
+    return self;
+}
+
 @end
