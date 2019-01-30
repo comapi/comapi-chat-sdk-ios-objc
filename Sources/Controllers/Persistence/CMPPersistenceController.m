@@ -92,10 +92,10 @@
                 CMPChatConversation *newConversation = [obj copy];
                 CMPChatConversation *savedConversation = [store getConversation:obj.id];
                 if (savedConversation == nil) {
-                    newConversation.firstLocalEventID = @(-1L);
-                    newConversation.lastLocalEventID = @(-1L);
+                    newConversation.firstLocalEventID = @(-1);
+                    newConversation.lastLocalEventID = @(-1);
                     if (obj.latestRemoteEventID == nil) {
-                        newConversation.latestRemoteEventID = @(-1L);
+                        newConversation.latestRemoteEventID = @(-1);
                     } else {
                         newConversation.latestRemoteEventID = obj.latestRemoteEventID;
                     }
@@ -321,10 +321,10 @@
                 [store deleteMessage:message.context.conversationID messageID:tempID];
             }
             if (!message.sentEventID) {
-                message.sentEventID = @(-1L);
+                message.sentEventID = @(-1);
             }
-            if ([message.sentEventID isEqualToNumber:@(-1L)]) {
-                if (conversation != nil && ![conversation.lastLocalEventID isEqualToNumber:@(-1L)]) {
+            if ([message.sentEventID isEqualToNumber:@(-1)]) {
+                if (conversation != nil && ![conversation.lastLocalEventID isEqualToNumber:@(-1)]) {
                     message.sentEventID = @([conversation.lastLocalEventID integerValue] + 1);
                 }
                 CMPChatMessageStatus *status = [[CMPChatMessageStatus alloc] initWithConversationID:message.context.conversationID messageID:message.id profileID:message.context.from.id conversationEventID:nil timestamp:[NSDate date] messageStatus:CMPChatMessageDeliveryStatusSending];
@@ -371,7 +371,7 @@
             if ([conversation.lastLocalEventID compare:eventID] == NSOrderedAscending) {
                 newConversation.lastLocalEventID = eventID;
             }
-            if ([conversation.firstLocalEventID compare:@(-1L)] == NSOrderedSame) {
+            if ([conversation.firstLocalEventID compare:@(-1)] == NSOrderedSame) {
                 newConversation.firstLocalEventID = eventID;
             }
             if ([conversation.updatedOn compare:updatedOn] == NSOrderedAscending) {

@@ -38,8 +38,10 @@
     return self;
 }
 
-- (void)synchroniseConversation:(void (^)())completion {
-    
+- (void)synchroniseConversation:(void (^)(NSError * _Nullable))completion {
+    [self.client.services.messaging synchroniseConversation:self.conversation.id completion:^(CMPChatResult * result) {
+        completion(result.error);
+    }];
 }
 
 - (void)getMessagesWithCompletion:(void (^)(NSArray<CMPChatMessage *> * _Nullable, NSError * _Nullable))completion {

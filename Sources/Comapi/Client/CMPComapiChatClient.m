@@ -82,6 +82,10 @@
     return [_client getProfileID];
 }
 
+- (void)setPushToken:(NSString *)deviceToken completion:(void (^)(BOOL, NSError * _Nullable))completion {
+    [_client setPushToken:deviceToken completion:completion];
+}
+
 - (void)addTypingDelegate:(id<CMPTypingDelegate>)delegate {
     [_typingDelegates addDelegate:delegate];
 }

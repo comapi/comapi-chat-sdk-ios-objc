@@ -37,6 +37,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithClient:(CMPComapiClient *)client chatConfig:(CMPChatConfig *)chatConfig;
 
+- (void)setPushToken:(NSString *)deviceToken completion:(void(^)(BOOL, NSError * _Nullable))completion NS_SWIFT_NAME(set(pushToken:completion:));
+
 - (void)addTypingDelegate:(id<CMPTypingDelegate>)delegate;
 - (void)removeTypingDelegate:(id<CMPTypingDelegate>)delegate;
 

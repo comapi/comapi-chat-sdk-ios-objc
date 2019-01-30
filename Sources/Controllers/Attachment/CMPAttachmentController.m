@@ -39,6 +39,8 @@
 - (void)uploadAttachments:(nonnull NSArray<CMPChatAttachment *> *) attachments withCompletion: (nonnull CMPUploadCompleted) completed {
     if ([attachments count] > 0) {
         [self uploadAttachment:attachments atIndex:0 withCompletion:completed];
+    } else {
+        completed(@[]);
     }
 }
 

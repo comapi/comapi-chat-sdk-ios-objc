@@ -240,20 +240,33 @@
 - (BOOL)updateConversation:(nonnull CMPChatConversation *)conversation {
     NSLog(@"Store: updating conversation for ID - %@", conversation.id);
     
-    NSBatchUpdateRequest *update = [[NSBatchUpdateRequest alloc] initWithEntityName:@"Conversation"];
-    update.propertiesToUpdate = [conversation json];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Conversation"];
+    request.predicate = [NSPredicate predicateWithFormat:@"%K = %@", @"id", conversation.id];
     
     NSError *error;
-    NSBatchUpdateResult *result = (NSBatchUpdateResult *)[_manager.mainContext executeRequest:update error:&error];
+    NSArray<Conversation *> *existing = (NSArray<Conversation *> *)[_manager.mainContext executeFetchRequest:request error:&error];
     if (error) {
-        NSLog(@"Store: error retreiving conversations - %@", error.localizedDescription);
-        return nil;
+        NSLog(@"Store: error upserting message - %@", error.localizedDescription);
+        return NO;
     }
     
-    NSArray<NSManagedObjectID *> *ids = (NSArray<NSManagedObjectID *> *)result.result;
-    [NSManagedObjectContext mergeChangesFromRemoteContextSave:@{NSUpdatedObjectsKey : ids} intoContexts:@[_manager.mainContext]];
+    if (existing.count > 0) {
+        Conversation *c = existing[0];
+        c.id = conversation.id;
+        c.eTag = conversation.eTag;
+        c.conversationDescription = conversation.conversationDescription;
+        c.name = conversation.name;
+        c.isPublic = conversation.isPublic;
+        c.updatedOn = conversation.updatedOn;
+        c.roles = [[Roles alloc] initWithChatRoles:conversation.roles context:_manager.mainContext];
+        c.firstLocalEventID = conversation.firstLocalEventID;
+        c.lastLocalEventID = conversation.lastLocalEventID;
+        c.latestLocalEventID = conversation.latestRemoteEventID;
+        
+        return YES;
+    }
     
-    return YES;
+    return NO;
 }
 
 #pragma mark - Message
@@ -272,17 +285,22 @@
     }
     
     if (existing.count > 0) {
-        NSBatchUpdateRequest *update = [[NSBatchUpdateRequest alloc] initWithEntityName:@"Message"];
-        update.propertiesToUpdate = [message json];
-        
-        NSBatchUpdateResult *result = [_manager.mainContext executeRequest:update error:&error];
-        if (error) {
-            NSLog(@"Store: error upserting message - %@", error.localizedDescription);
-            return NO;
+        Message *m = existing[0];
+        m.id = message.id;
+        m.sentEventID = message.sentEventID;
+        m.context = [[MessageContext alloc] initWithChatMessageContext:message.context context:_manager.mainContext];
+        m.metadata = message.metadata;
+        NSMutableArray<MessagePart *> *newParts = [NSMutableArray new];
+        for (CMPChatMessagePart *mp in message.parts) {
+            [newParts addObject:[[MessagePart alloc] initWithChatMessagePart:mp context:_manager.mainContext]];
         }
+        m.parts = [NSSet setWithArray:newParts];
         
-        NSArray<NSManagedObjectID *> *ids = (NSArray<NSManagedObjectID *> *)result.result;
-        [NSManagedObjectContext mergeChangesFromRemoteContextSave:@{NSUpdatedObjectsKey : ids} intoContexts:@[_manager.mainContext]];
+        NSMutableDictionary<NSString *, MessageStatus *> *newStatusUpdates = [NSMutableDictionary new];
+        [m.statusUpdates enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, CMPChatMessageStatus * _Nonnull obj, BOOL * _Nonnull stop) {
+            newStatusUpdates[key] = [[MessageStatus alloc] initWithChatMessageStatus:obj context:self.manager.mainContext];
+        }];
+        m.statusUpdates = [NSDictionary dictionaryWithDictionary:newStatusUpdates];
         
         return YES;
     } else {
@@ -334,20 +352,29 @@
 - (BOOL)updateMessageStatus:(nonnull CMPChatMessageStatus *)messageStatus {
     NSLog(@"Store: updating messageStatus for messageID - %@", messageStatus.messageID);
     
-    NSBatchUpdateRequest *update = [[NSBatchUpdateRequest alloc] initWithEntityName:@"MessageStatus"];
-    update.propertiesToUpdate = [messageStatus json];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"MessageStatus"];
+    request.predicate = [NSPredicate predicateWithFormat:@"%K = %@", @"id", messageStatus.messageID];
     
     NSError *error;
-    NSBatchUpdateResult *result = (NSBatchUpdateResult *)[_manager.mainContext executeRequest:update error:&error];
+    NSArray<MessageStatus *> *existing = (NSArray<MessageStatus *> *)[_manager.mainContext executeFetchRequest:request error:&error];
     if (error) {
-        NSLog(@"Store: error retreiving conversations - %@", error.localizedDescription);
-        return nil;
+        NSLog(@"Store: error upserting message - %@", error.localizedDescription);
+        return NO;
     }
     
-    NSArray<NSManagedObjectID *> *ids = (NSArray<NSManagedObjectID *> *)result.result;
-    [NSManagedObjectContext mergeChangesFromRemoteContextSave:@{NSUpdatedObjectsKey : ids} intoContexts:@[_manager.mainContext]];
+    if (existing.count > 0) {
+        MessageStatus *ms = existing[0];
+        ms.conversationID = messageStatus.conversationID;
+        ms.messageID = messageStatus.messageID;
+        ms.profileID = messageStatus.profileID;
+        ms.conversationEventID = messageStatus.conversationEventID;
+        ms.messageStatus = @(messageStatus.messageStatus);
+        ms.timestamp = messageStatus.timestamp;
+
+        return YES;
+    }
     
-    return YES;
+    return NO;
 }
 
 #pragma mark - Other

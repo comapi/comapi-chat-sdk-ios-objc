@@ -66,7 +66,8 @@
     if (self.loginBundle && [self.loginBundle isValid]) {
         CMPChatConfig *config = [[CMPChatConfig alloc] initWithApiSpaceID:self.loginBundle.apiSpaceID authenticationDelegate:self logLevel:CMPLogLevelVerbose storeFactory:[[CMPFactory alloc] init] internalConfig:[[CMPInternalConfig alloc] init]];
         CMPComapiChatClient *client = [CMPChat initialiseWithConfig:config];
-        
+        AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+        delegate.client = client;
         if (!client) {
             NSLog(@"failed client init");
             completion(nil, nil, nil);

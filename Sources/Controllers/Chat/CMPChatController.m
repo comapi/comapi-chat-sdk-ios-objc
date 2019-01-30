@@ -149,15 +149,14 @@ NSInteger const kETagNotValid = 412;
         
         CMPMessageProcessor *processor = [[CMPMessageProcessor alloc] initWithModelAdapter:_adapter message:message attachments:attachments toConversationWithID:conversationId from:profileId];
 
-        __weak CMPChatController *weakSelf = self;
-        
+        __weak typeof(self) weakSelf = self;
         [_persistenceController updateStoreWithNewMessage:[processor createPreUploadMessageWithAttachments:attachments] completion:^(CMPStoreResult<NSNumber *> * result) {
-            if (weakSelf != nil && result.error != nil) {
+            if (weakSelf && !result.error) {
                 [weakSelf.attachmentController uploadAttachments:attachments withCompletion:^(NSArray<CMPChatAttachment *> * sentAttachments) {
-                    if (weakSelf != nil && result.error != nil) {
+                    if (weakSelf && !result.error) {
                         [weakSelf.persistenceController updateStoreWithNewMessage:[processor createPostUploadMessageWithAttachments:attachments] completion:^(CMPStoreResult<NSNumber *> * result) {
                             [[[weakSelf.client services] messaging] sendMessage:[processor createMessageToSend] toConversationWithID:conversationId completion:^(CMPResult<CMPSendMessagesResult *> * result) {
-                                if (result.error != nil) {
+                                if (weakSelf && !result.error) {
                                     [weakSelf.persistenceController updateStoreWithNewMessage:[processor createFinalMessageWithID:result.object.id eventID:result.object.eventID] completion:^(CMPStoreResult<NSNumber *> * result) {
                                         completion([[CMPChatResult alloc] initWithError:result.error success:(BOOL)result.object]);
                                     }];
@@ -203,7 +202,7 @@ NSInteger const kETagNotValid = 412;
 - (void)handleMessage:(CMPChatMessage *)message completion:(void(^ _Nullable)(BOOL))completion {
     NSString *sender = message.context.sentBy;
     
-    __block BOOL updateStoreSuccess;
+    __block BOOL updateStoreSuccess = YES;
     __block CMPChatResult *markDeliveredResult;
     
     dispatch_group_t group = dispatch_group_create();
@@ -316,7 +315,7 @@ NSInteger const kETagNotValid = 412;
     [[self withClient].services.messaging getMessagesWithConversationID:ID completion:^(CMPResult<CMPGetMessagesResult *> * result) {
         if (result.object) {
             [weakSelf.persistenceController getConversation:ID completion:^(CMPStoreResult<CMPChatConversation *> * storeResult) {
-                CMPConversationComparison *comparison = [weakSelf compare:result.object.latestEventID ? result.object.latestEventID : @(-1L) conversation:storeResult.object];
+                CMPConversationComparison *comparison = [weakSelf compare:result.object.latestEventID ? result.object.latestEventID : @(-1) conversation:storeResult.object];
                 [weakSelf updateLocalConversationList:comparison completion:^(CMPConversationComparison * comparison) {
                     [weakSelf lookForMissingEvents:comparison completion:^(CMPConversationComparison * comparison) {
                         completion([[CMPChatResult alloc] initWithError:nil success:comparison.isSuccessful]);
@@ -466,9 +465,9 @@ NSInteger const kETagNotValid = 412;
 }
 
 - (void)updateLocalConversationList:(CMPConversationComparison *)comparison completion:(void(^)(CMPConversationComparison *))completion {
-    __block BOOL deleteSuccess;
-    __block BOOL addSuccess;
-    __block BOOL updateSuccess;
+    __block BOOL deleteSuccess = YES;
+    __block BOOL addSuccess = YES;
+    __block BOOL updateSuccess = YES;
     
     dispatch_group_t group = dispatch_group_create();
     

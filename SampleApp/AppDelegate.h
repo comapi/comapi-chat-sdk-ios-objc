@@ -16,6 +16,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+#import "CMPComapiChatClient.h"
+
 #import <UIKit/UIKit.h>
 #import <UserNotifications/UserNotifications.h>
 
@@ -24,6 +26,7 @@ extern NSString * const kCMPPushRegistrationStatusChangedNotification;
 @interface AppDelegate : UIResponder <UIApplicationDelegate, UNUserNotificationCenterDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
+@property (strong, nonatomic, nullable) CMPComapiChatClient *client;
 
 @end
 

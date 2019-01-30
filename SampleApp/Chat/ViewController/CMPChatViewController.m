@@ -50,15 +50,23 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    __weak typeof(self) weakSelf = self;
-    [_viewModel getMessagesWithCompletion:^(NSArray<CMPMessage *> * _Nullable messages, NSError * _Nullable error) {
-        [weakSelf reload];
-    }];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self registerForKeyboardNotifications];
+    
+    __weak typeof(self) weakSelf = self;
+    [_viewModel synchroniseConversation:^(NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"%@", error.localizedDescription);
+        } else {
+            [weakSelf.viewModel getMessagesWithCompletion:^(NSArray<CMPMessage *> * _Nullable messages, NSError * _Nullable error) {
+                [weakSelf reload];
+            }];
+        }
+    }];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
