@@ -25,7 +25,8 @@
 NSString * const kPartTypeUploading = @"comapi/upl";
 NSString * const kPartTypeError = @"comapi/err";
 NSString * const kKeyMessageTempId = @"tempIdIOS";
-NSInteger const kMaxPartDataLength = 13333;
+NSString * const kAttFolderName = @"attachments";
+NSUInteger const kMaxPartDataLength = 1333;
 
 @interface CMPMessageProcessor()
 
@@ -43,27 +44,30 @@ NSInteger const kMaxPartDataLength = 13333;
 @property (nonatomic, strong, readwrite) NSString *conversationId;
 @property (nonatomic, strong, readwrite) NSString *sender;
 @property (nonatomic, strong, readwrite) NSString *tempMessageId;
+@property (nonatomic, readwrite) NSUInteger maxPartSize;
 
 @end
 
 @implementation CMPMessageProcessor
 
-- (instancetype)initWithModelAdapter:(CMPModelAdapter *)adapter message:(CMPSendableMessage *) message attachments:(NSArray<CMPChatAttachment *> *) attachments  toConversationWithID:(NSString *) conversationId from:(NSString *) sender {
+- (instancetype)initWithModelAdapter:(CMPModelAdapter *)adapter message:(CMPSendableMessage *) message attachments:(NSArray<CMPChatAttachment *> *) attachments  toConversationWithID:(NSString *) conversationId from:(NSString *) sender maxPartSize:(NSUInteger) maxSize {
     _adapter = adapter;
     _alert = message.alert;
     _metadata = message.metadata;
     _conversationId = conversationId;
     _sender = sender;
     _tempMessageId = [[NSUUID UUID] UUIDString];
-    
+    _maxPartSize = maxSize;
     [self convertLargePartsToAttachments:message.parts combineWithAttachments:attachments];
     
     return self;
 }
 
-- (CMPChatMessage *)createPreUploadMessageWithAttachments:(NSArray<CMPChatAttachment *> *) attachments {
-    
-    
+- (NSArray<CMPChatAttachment *> *) getAttachmentsToSend {
+    return [[NSArray alloc] initWithArray:_preProcessedAttachments];
+}
+
+- (CMPChatMessage *)createPreUploadMessage {
     
     NSMutableArray<CMPChatMessagePart *> *parts = [[NSMutableArray alloc] init];
                                                    
@@ -72,7 +76,7 @@ NSInteger const kMaxPartDataLength = 13333;
     }
 
     if (_preProcessedAttachments != nil && _preProcessedAttachments.count > 0) {
-        for (int i = 0; i < attachments.count; i++) {
+        for (int i = 0; i < _preProcessedAttachments.count; i++) {
             CMPChatMessagePart *p = [self createTempPart:_preProcessedAttachments[i]];
             [parts addObject:p];
         }
@@ -92,7 +96,7 @@ NSInteger const kMaxPartDataLength = 13333;
     
     _finalParts = [[NSArray alloc] initWithArray:parts];
     
-    return [self createTempMessageWithParts:[[NSArray alloc] initWithArray:parts] metadata:_metadata context:nil];
+    return [self createTempMessageWithParts:[[NSArray alloc] initWithArray:_finalParts] metadata:_metadata context:nil];
 }
 
 - (CMPSendableMessage *)createMessageToSend {
@@ -109,7 +113,7 @@ NSInteger const kMaxPartDataLength = 13333;
 }
 
 - (CMPChatMessagePart *) createTempPart: (CMPChatAttachment *) attachament {
-    return [[CMPChatMessagePart alloc] initWithName:nil type:kPartTypeUploading url:nil data:attachament.type size:0];
+    return [[CMPChatMessagePart alloc] initWithName:attachament.name type:kPartTypeUploading url:nil data:nil size:attachament.size];
 }
 
 - (CMPChatMessagePart *) createFinalPart: (CMPChatAttachment *) attachament {
@@ -120,15 +124,14 @@ NSInteger const kMaxPartDataLength = 13333;
     }
 }
 
-- (CMPChatMessage *) createTempMessageWithParts:(NSArray<CMPChatMessagePart *> *) tempParts metadata:(nullable NSDictionary<NSString *,id> *) metadata context:(nullable CMPChatMessageContext *) context {
+- (CMPChatMessage *) createTempMessageWithParts:(NSArray<CMPChatMessagePart *> *) parts metadata:(nullable NSDictionary<NSString *,id> *) metadata context:(nullable CMPChatMessageContext *) context {
     NSMutableArray <CMPChatMessagePart *> *combinedParts = [NSMutableArray array];
-    [combinedParts addObjectsFromArray:_preProcessedParts];
-    [combinedParts addObjectsFromArray:tempParts];
+    [combinedParts addObjectsFromArray:parts];
     
     NSMutableDictionary *mutableMetadata = [[NSMutableDictionary alloc] initWithDictionary:metadata];
     [mutableMetadata setObject:_tempMessageId forKey:kKeyMessageTempId];
     
-    return [[CMPChatMessage alloc] initWithID:_tempMessageId sentEventID:nil metadata:[[NSDictionary alloc] initWithDictionary:mutableMetadata] context:context parts:tempParts statusUpdates:nil];
+    return [[CMPChatMessage alloc] initWithID:_tempMessageId sentEventID:nil metadata:[[NSDictionary alloc] initWithDictionary:mutableMetadata] context:context parts:combinedParts statusUpdates:nil];
 }
 
 - (void) convertLargePartsToAttachments: (NSArray<CMPMessagePart *> *) initialParts combineWithAttachments:(NSArray<CMPChatAttachment *> *) initialAttachments {
@@ -140,9 +143,9 @@ NSInteger const kMaxPartDataLength = 13333;
     
     for (int i = 0; i < initialParts.count; i++) {
         CMPChatMessagePart *part = adaptedInitialParts[i];
-        if (part.data != nil && part.data.length > kMaxPartDataLength) {
+        if (part.data != nil && part.data.length > _maxPartSize) {
             NSString *str = [part.data toBase64String];
-            CMPChatAttachment  *largeAtachment = [[CMPChatAttachment alloc] initWithContentData: [[CMPContentData alloc] initWithBase64Data:str type:part.type name:part.name]];
+            CMPChatAttachment  *largeAtachment = [[CMPChatAttachment alloc] initWithContentData: [[CMPContentData alloc] initWithBase64Data:str type:part.type name:part.name] folder:kAttFolderName];
             [largeAttachments addObject:largeAtachment];
             [removedParts addObject:part];
         }

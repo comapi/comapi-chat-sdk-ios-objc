@@ -23,16 +23,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPChatAttachment: NSObject
 
-@property (nonatomic, nullable) NSString *folder;
-@property (nonatomic, nullable) NSString *name;
-@property (nonatomic, nullable) NSString *type;
+@property (nonatomic, nullable, readonly) NSString *folder;
+@property (nonatomic, nullable, readonly) NSString *name;
+@property (nonatomic, nullable, readonly) NSString *type;
 @property (nonatomic, nullable) NSString *attachmentId;
 @property (nonatomic, nullable) NSURL *url;
 @property (nonatomic, nullable) NSNumber *size;
 @property (nonatomic, nullable) NSError *error;
 @property (nonatomic, strong, nonnull, readonly) CMPContentData *data;
 
-- (instancetype)initWithContentData:(CMPContentData *)data;
+- (instancetype)initWithContentData:(CMPContentData *)data folder:(NSString *) folder;
 
 @end
 
