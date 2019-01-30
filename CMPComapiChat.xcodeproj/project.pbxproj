@@ -15,6 +15,7 @@
 		892F49BC21BE981A00FA52C9 /* CMPChatMessageDeliveryStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 892F49BA21BE981900FA52C9 /* CMPChatMessageDeliveryStatus.m */; };
 		892F49CA21BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 892F49C821BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.h */; };
 		892F49CB21BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 892F49C921BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.m */; };
+		8933AC3B2201C6FB000855C1 /* CMPTestMessageProcessing.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933AC3A2201C6FB000855C1 /* CMPTestMessageProcessing.m */; };
 		89512A9521F0962000AA9C5D /* CMPStoreManagerStack.m in Sources */ = {isa = PBXBuildFile; fileRef = 89512A9421F0962000AA9C5D /* CMPStoreManagerStack.m */; };
 		89512A9821F0A6FF00AA9C5D /* SampleAppModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 89512A9621F0A6FF00AA9C5D /* SampleAppModel.xcdatamodeld */; };
 		89512A9C21F0B9F300AA9C5D /* Conversation.m in Sources */ = {isa = PBXBuildFile; fileRef = 89512A9B21F0B9F300AA9C5D /* Conversation.m */; };
@@ -161,12 +162,18 @@
 		89D0224121E8EBB000E85A85 /* CMPParticipantDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 89D0224021E8EBB000E85A85 /* CMPParticipantDelegate.h */; };
 		89D0224321E8EBD700E85A85 /* CMPTypingDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 89D0224221E8EBD700E85A85 /* CMPTypingDelegate.h */; };
 		89D0224521E8EC0900E85A85 /* CMPProfileDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 89D0224421E8EC0900E85A85 /* CMPProfileDelegate.h */; };
-		89E5A3AC21EF6FFB00E5D45A /* CMPTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 89E5A3AB21EF6FFB00E5D45A /* CMPTest.m */; };
 		89EE87AA21FF64860089F606 /* NSManagedObject+CMPUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = 89EE87A921FF64860089F606 /* NSManagedObject+CMPUpdate.m */; };
 		F715F613A116008E9C36A09F /* Pods_CMPComapiChat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 249D70F0FEE01D4029E6E20A /* Pods_CMPComapiChat.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		8933AC382201C660000855C1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8998F49421B800AA00BD6C52 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 896CB99621BA9966003FB3DF;
+			remoteInfo = SampleApp;
+		};
 		8998F4B421B8012F00BD6C52 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8998F49421B800AA00BD6C52 /* Project object */;
@@ -198,6 +205,7 @@
 		892F49BA21BE981900FA52C9 /* CMPChatMessageDeliveryStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPChatMessageDeliveryStatus.m; sourceTree = "<group>"; };
 		892F49C821BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPChatManagedOrphanedEvent.h; sourceTree = "<group>"; };
 		892F49C921BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPChatManagedOrphanedEvent.m; sourceTree = "<group>"; };
+		8933AC3A2201C6FB000855C1 /* CMPTestMessageProcessing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPTestMessageProcessing.m; sourceTree = "<group>"; };
 		89512A9321F0962000AA9C5D /* CMPStoreManagerStack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPStoreManagerStack.h; sourceTree = "<group>"; };
 		89512A9421F0962000AA9C5D /* CMPStoreManagerStack.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPStoreManagerStack.m; sourceTree = "<group>"; };
 		89512A9721F0A6FF00AA9C5D /* SampleAppModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SampleAppModel.xcdatamodel; sourceTree = "<group>"; };
@@ -410,7 +418,6 @@
 		89D0224021E8EBB000E85A85 /* CMPParticipantDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPParticipantDelegate.h; sourceTree = "<group>"; };
 		89D0224221E8EBD700E85A85 /* CMPTypingDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPTypingDelegate.h; sourceTree = "<group>"; };
 		89D0224421E8EC0900E85A85 /* CMPProfileDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPProfileDelegate.h; sourceTree = "<group>"; };
-		89E5A3AB21EF6FFB00E5D45A /* CMPTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPTest.m; sourceTree = "<group>"; };
 		89EE87A821FF64860089F606 /* NSManagedObject+CMPUpdate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+CMPUpdate.h"; sourceTree = "<group>"; };
 		89EE87A921FF64860089F606 /* NSManagedObject+CMPUpdate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+CMPUpdate.m"; sourceTree = "<group>"; };
 		89EE87AB22007E3F0089F606 /* SampleApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SampleApp.entitlements; sourceTree = "<group>"; };
@@ -966,7 +973,7 @@
 		896015AF21B82D6600370AF2 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				89E5A3AB21EF6FFB00E5D45A /* CMPTest.m */,
+				8933AC3A2201C6FB000855C1 /* CMPTestMessageProcessing.m */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -1441,6 +1448,7 @@
 			);
 			dependencies = (
 				8998F4B521B8012F00BD6C52 /* PBXTargetDependency */,
+				8933AC392201C660000855C1 /* PBXTargetDependency */,
 			);
 			name = CMPComapiChatTests;
 			productName = CMPComapiChatTests;
@@ -1746,13 +1754,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				89E5A3AC21EF6FFB00E5D45A /* CMPTest.m in Sources */,
+				8933AC3B2201C6FB000855C1 /* CMPTestMessageProcessing.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		8933AC392201C660000855C1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 896CB99621BA9966003FB3DF /* SampleApp */;
+			targetProxy = 8933AC382201C660000855C1 /* PBXContainerItemProxy */;
+		};
 		8998F4B521B8012F00BD6C52 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8998F49C21B800AA00BD6C52 /* CMPComapiChat */;
