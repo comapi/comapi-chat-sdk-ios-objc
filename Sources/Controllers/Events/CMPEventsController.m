@@ -145,6 +145,7 @@
         }
         case CMPEventTypeConversationMessageSent: {
             CMPConversationMessageEventSent *e = (CMPConversationMessageEventSent *)event;
+            
             [_tracker checkEvent:e.payload.context.conversationID conversationEventID:e.conversationEventID delegate:self];
             [_chatController handleMessage:[[CMPChatMessage alloc] initWithSentEvent:e] completion:nil];
             break;

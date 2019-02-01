@@ -34,7 +34,7 @@ static CMPComapiChatClient *_shared = nil;
 }
 
 + (CMPComapiChatClient *)initialiseWithConfig:(CMPChatConfig *)chatConfig {
-    CMPComapiClient *foundation = [CMPComapi initialiseWithConfig:[chatConfig foundationConfig]];
+    CMPComapiClient *foundation = [CMPComapi initialiseWithConfig:chatConfig];
     CMPComapiChatClient *chat = [[CMPComapiChatClient alloc] initWithClient:foundation chatConfig:chatConfig];
     logWithLevel(CMPLogLevelInfo, @"Chat Client initialised.", nil);
     

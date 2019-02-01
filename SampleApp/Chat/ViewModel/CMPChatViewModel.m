@@ -30,12 +30,19 @@
     if (self) {
         self.client = client;
         self.store = store;
+        self.store.messageDelegate = self;
         self.conversation = conversation;
         self.messages = [NSMutableArray new];
         self.downloader = [[CMPImageDownloader alloc] init];
     }
     
     return self;
+}
+
+- (void)getPreviousMessages:(void (^)(NSError * _Nullable))completion {
+    [self.client.services.messaging getPreviousMessages:self.conversation.id completion:^(CMPChatResult * result) {
+        completion(result.error);
+    }];
 }
 
 - (void)synchroniseConversation:(void (^)(NSError * _Nullable))completion {
@@ -180,6 +187,7 @@
 - (void)didInsertMessages:(nonnull NSArray<CMPChatMessage *> *)messages {
     NSInteger currentIndex = self.messages.count - 1;
     NSInteger newIndex = currentIndex + messages.count - 1;
+    
     for (CMPChatMessage *m in messages) {
         [self.messages addObject:m];
     }
@@ -202,7 +210,9 @@
     }
 }
 
-- (void)didUpdateMessages:(nonnull NSArray<CMPChatMessage *> *)messages {}
+- (void)didUpdateMessages:(nonnull NSArray<CMPChatMessage *> *)messages {
+    
+}
 
 - (void)didInsertMessageStatuses:(nonnull NSArray<CMPChatMessageStatus *> *)messageStatuses {}
 

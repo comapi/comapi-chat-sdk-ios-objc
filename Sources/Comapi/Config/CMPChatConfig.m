@@ -43,7 +43,7 @@
 }
 
 - (CMPComapiConfig *)foundationConfig {
-    return [[CMPComapiConfig alloc] initWithApiSpaceID:self.id authenticationDelegate:self.authDelegate logLevel:self.logLevel];
+    return [[CMPComapiConfig alloc] initWithApiSpaceID:self.id authenticationDelegate:self.authDelegate logLevel:self.logLevel ];
 }
 
 @end

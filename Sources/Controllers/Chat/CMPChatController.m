@@ -177,31 +177,8 @@ NSInteger const kETagNotValid = 412;
     }
 }
 
-///**
-// * Handles message send service response. Will delete temporary message object. Same message but with correct message id will be inserted instead.
-// *
-// * @param mp       Message processor holding message sending details.
-// * @param response Service call response.
-// * @return Observable emitting result of operations.
-// */
-//Observable<ChatResult> updateStoreWithSentMsg(MessageProcessor mp, ComapiResult<MessageSentResponse> response) {
-//    if (response.isSuccessful()) {
-//        return persistenceController.updateStoreWithNewMessage(mp.createFinalMessage(response.getResult()), noConversationListener).map(success -> adapter.adaptResult(response, success));
-//    } else {
-//        return Observable.fromCallable(() -> adapter.adaptResult(response));
-//    }
-//}
-
-- (void)updateStoreWithSentMessage:(CMPMessageProcessor *)messageProcessor result:(CMPResult<CMPChatMessage *> *)result completion:(void(^)(CMPChatResult *))completion {
-    if (result.object) {
-        //[_persistenceController updateStoreWithNewMessage:[messageProcessor ] completion:<#^(CMPStoreResult<NSNumber *> * _Nonnull)completion#>]
-    } else {
-        completion([[CMPChatResult alloc] initWithComapiResult:result]);
-    }
-}
-
 - (void)handleMessage:(CMPChatMessage *)message completion:(void(^ _Nullable)(BOOL))completion {
-    NSString *sender = message.context.sentBy;
+    NSString *sender = message.context.from.id;
     
     __block BOOL updateStoreSuccess = YES;
     __block CMPChatResult *markDeliveredResult;
@@ -229,7 +206,9 @@ NSInteger const kETagNotValid = 412;
         if (markDeliveredResult.error) {
             logWithLevel(CMPLogLevelError, [NSString stringWithFormat:@"Chat controller: error handling message - %@", markDeliveredResult.error], nil);
         }
-        completion(updateStoreSuccess && markDeliveredResult.isSuccessful);
+        if (completion) {
+            completion(updateStoreSuccess && markDeliveredResult != nil ? markDeliveredResult.isSuccessful : YES);
+        }
     });
 }
 
@@ -244,6 +223,7 @@ NSInteger const kETagNotValid = 412;
             if (from) {
                 if ([from isEqualToNumber:@(0)]) {
                     completion([[CMPChatResult alloc] initWithError:nil success:YES]);
+                    return;
                 } else if (from.integerValue > 0) {
                     queryFrom = @(from.integerValue - 1);
                 }
