@@ -58,15 +58,20 @@
     [self registerForKeyboardNotifications];
     
     __weak typeof(self) weakSelf = self;
-    [_viewModel synchroniseConversation:^(NSError * _Nullable error) {
+    [weakSelf.viewModel getPreviousMessages:^(NSError * _Nullable error) {
         if (error) {
             NSLog(@"%@", error.localizedDescription);
         } else {
             [weakSelf.viewModel getMessagesWithCompletion:^(NSArray<CMPMessage *> * _Nullable messages, NSError * _Nullable error) {
-                [weakSelf reload];
+                if (error) {
+                    NSLog(@"%@", error.localizedDescription);
+                } else {
+                    [weakSelf reload];
+                }
             }];
         }
     }];
+
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -87,6 +92,7 @@
     };
     self.chatView.didTapSendButton = ^(NSString * _Nonnull text) {
         [weakSelf.viewModel sendMessage:text attachments:@[] completion:^(NSError * _Nullable error) {
+            
             [weakSelf reload];
         }];
     };

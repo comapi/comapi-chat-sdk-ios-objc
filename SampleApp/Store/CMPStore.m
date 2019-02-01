@@ -60,17 +60,27 @@
     NSSet<NSManagedObject *> *deleted = changes[NSDeletedObjectsKey];
     NSSet<NSManagedObject *> *inserted = changes[NSInsertedObjectsKey];
     
+    for (NSManagedObject *obj in updated) {
+        NSLog(@"updating object of class - %@", obj.class);
+    }
+    for (NSManagedObject *obj in inserted) {
+        NSLog(@"inserting object of class - %@", obj.class);
+    }
+    for (NSManagedObject *obj in deleted) {
+        NSLog(@"deleting object of class - %@", obj.class);
+    }
+    
     if (updated != nil && updated.count > 0) {
         NSMutableArray<CMPChatMessage *> *updatedMessages = [NSMutableArray new];
         NSMutableArray<CMPChatConversation *> *updatedConversations = [NSMutableArray new];
         NSMutableArray<CMPChatMessageStatus *> *updatedMessageStatuses = [NSMutableArray new];
         
         for (NSManagedObject *obj in updated) {
-            if ([obj.class isKindOfClass:Message.class]) {
+            if ([obj isKindOfClass:Message.class]) {
                 [updatedMessages addObject:[(Message *)obj chatMessage]];
-            } else if ([obj.class isKindOfClass:Conversation.class]) {
+            } else if ([obj isKindOfClass:Conversation.class]) {
                 [updatedConversations addObject:[(Conversation *)obj chatConversation]];
-            } else if ([obj.class isKindOfClass:MessageStatus.class]) {
+            } else if ([obj isKindOfClass:MessageStatus.class]) {
                 [updatedMessageStatuses addObject:[(MessageStatus *)obj chatMessageStatus]];
             }
         }
@@ -92,11 +102,11 @@
         NSMutableArray<CMPChatMessageStatus *> *insertedMessageStatuses = [NSMutableArray new];
         
         for (NSManagedObject *obj in inserted) {
-            if ([obj.class isKindOfClass:Message.class]) {
+            if ([obj isKindOfClass:Message.class]) {
                 [insertedMessages addObject:[(Message *)obj chatMessage]];
-            } else if ([obj.class isKindOfClass:Conversation.class]) {
+            } else if ([obj isKindOfClass:Conversation.class]) {
                 [insertedConversations addObject:[(Conversation *)obj chatConversation]];
-            } else if ([obj.class isKindOfClass:MessageStatus.class]) {
+            } else if ([obj isKindOfClass:MessageStatus.class]) {
                 [insertedMessageStatuses addObject:[(MessageStatus *)obj chatMessageStatus]];
             }
         }
@@ -118,11 +128,11 @@
         NSMutableArray<NSString *> *deletedMessageStatuses = [NSMutableArray new];
         
         for (NSManagedObject *obj in inserted) {
-            if ([obj.class isKindOfClass:Message.class]) {
+            if ([obj isKindOfClass:Message.class]) {
                 [deletedMessages addObject:((Message *)obj).id];
-            } else if ([obj.class isKindOfClass:Conversation.class]) {
+            } else if ([obj isKindOfClass:Conversation.class]) {
                 [deletedConversations addObject:((Conversation *)obj).id];
-            } else if ([obj.class isKindOfClass:MessageStatus.class]) {
+            } else if ([obj isKindOfClass:MessageStatus.class]) {
                 [deletedMessageStatuses addObject:((MessageStatus *)obj).messageID];
             }
         }
@@ -148,10 +158,12 @@
 }
 
 - (void)endTransaction {
-    NSError *error;
-    [_manager.mainContext save:&error];
-    if (error) {
-        NSLog(@"Store: error saving context - %@", error.localizedDescription);
+    if ([_manager.mainContext hasChanges]) {
+        NSError *error;
+        [_manager.mainContext save:&error];
+        if (error) {
+            NSLog(@"Store: error saving context - %@", error.localizedDescription);
+        }
     }
 }
 
@@ -223,6 +235,7 @@
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Converastion"];
     request.predicate = [NSPredicate predicateWithFormat:@"%K = %@", @"id", conversation.id];
     NSBatchDeleteRequest *delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
+    delete.resultType = NSBatchDeleteResultTypeObjectIDs;
     
     NSError *error;
     NSBatchDeleteResult *result = (NSBatchDeleteResult *)[_manager.mainContext executeRequest:delete error:&error];
@@ -288,6 +301,13 @@
         Message *m = existing[0];
         m.id = message.id;
         m.sentEventID = message.sentEventID;
+//        if (m.context) {
+//            m.context.conversationID = message.context.conversationID;
+//            m.context.sentOn = message.context.sentOn;
+//            m.context.sentBy = message.context.sentBy;
+//        } else {
+//
+//        }
         m.context = [[MessageContext alloc] initWithChatMessageContext:message.context context:_manager.mainContext];
         m.metadata = message.metadata;
         NSMutableArray<MessagePart *> *newParts = [NSMutableArray new];
@@ -316,6 +336,7 @@
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
     request.predicate = [NSPredicate predicateWithFormat:@"%K = %@", @"context.conversationID", conversationID];
     NSBatchDeleteRequest *delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
+    delete.resultType = NSBatchDeleteResultTypeObjectIDs;
     
     NSError *error;
     NSBatchDeleteResult *result = (NSBatchDeleteResult *)[_manager.mainContext executeRequest:delete error:&error];
@@ -333,8 +354,9 @@
 - (BOOL)deleteMessage:(nonnull NSString *)conversationID messageID:(nonnull NSString *)messageID {
     NSLog(@"Store: deleting message for conversationID - %@, messageID - %@", conversationID, messageID);
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
-    request.predicate = [NSPredicate predicateWithFormat:@"%K = %@ AND %K = %@", @"context.conversationID", conversationID, @"messageID", messageID];
+    request.predicate = [NSPredicate predicateWithFormat:@"%K = %@ AND %K = %@", @"context.conversationID", conversationID, @"id", messageID];
     NSBatchDeleteRequest *delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
+    delete.resultType = NSBatchDeleteResultTypeObjectIDs;
     
     NSError *error;
     NSBatchDeleteResult *result = (NSBatchDeleteResult *)[_manager.mainContext executeRequest:delete error:&error];
@@ -353,7 +375,7 @@
     NSLog(@"Store: updating messageStatus for messageID - %@", messageStatus.messageID);
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"MessageStatus"];
-    request.predicate = [NSPredicate predicateWithFormat:@"%K = %@", @"id", messageStatus.messageID];
+    request.predicate = [NSPredicate predicateWithFormat:@"%K = %@", @"messageID", messageStatus.messageID];
     
     NSError *error;
     NSArray<MessageStatus *> *existing = (NSArray<MessageStatus *> *)[_manager.mainContext executeFetchRequest:request error:&error];

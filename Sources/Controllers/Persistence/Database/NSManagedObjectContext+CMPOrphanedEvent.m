@@ -29,7 +29,7 @@ NSString *const kCMPOrphanedEventEntityName = @"CMPChatManagedOrphanedEvent";
     __weak typeof(self) weakSelf = self;
     [weakSelf performBlock:^{
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:kCMPOrphanedEventEntityName];
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K IN %@", @"id", orphanedEvents];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K IN %@", @"id", [orphanedEvents map:^(CMPOrphanedEvent * event) { return event.id; }]];
         request.predicate = predicate;
         
         NSError *err;
@@ -69,7 +69,7 @@ NSString *const kCMPOrphanedEventEntityName = @"CMPChatManagedOrphanedEvent";
                         completion(0, err);
                     });
                 } else {
-                    logWithLevel(CMPLogLevelInfo, [NSString stringWithFormat:@"Core Data: from %ld events, inserted %ld new events, %ld were updated", (long)orphanedEvents.count, (long)inserted, (long)existing], nil);
+                    logWithLevel(CMPLogLevelInfo, [NSString stringWithFormat:@"Core Data: from %lu events, inserted %lu new events, %lu were updated", (unsigned long)orphanedEvents.count, (unsigned long)inserted, (unsigned long)existing], nil);
                     dispatch_async(dispatch_get_main_queue(), ^{
                         completion(inserted, nil);
                     });
@@ -83,7 +83,7 @@ NSString *const kCMPOrphanedEventEntityName = @"CMPChatManagedOrphanedEvent";
     }];
 }
 
-- (void)queryOrphanedEventsForIDs:(NSArray<NSString *> *)IDs completion:(void (^)(NSArray<CMPChatManagedOrphanedEvent *> * _Nullable, NSError * _Nullable))completion {
+- (void)queryOrphanedEventsForIDs:(NSArray<NSNumber *> *)IDs completion:(void (^)(NSArray<CMPChatManagedOrphanedEvent *> * _Nullable, NSError * _Nullable))completion {
     __weak typeof(self) weakSelf = self;
     [weakSelf performBlock:^{
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:kCMPOrphanedEventEntityName];
@@ -99,7 +99,7 @@ NSString *const kCMPOrphanedEventEntityName = @"CMPChatManagedOrphanedEvent";
                 completion(result, err);
             });
         } else {
-            logWithLevel(CMPLogLevelInfo, @"Core Data: fetched %ld events.", (long)result.count, nil);
+            logWithLevel(CMPLogLevelInfo, [NSString stringWithFormat:@"Core Data: fetched %lu events.", (unsigned long)result.count], nil);
             dispatch_async(dispatch_get_main_queue(), ^{
                 completion(result, nil);
             });
@@ -107,7 +107,7 @@ NSString *const kCMPOrphanedEventEntityName = @"CMPChatManagedOrphanedEvent";
     }];
 }
 
-- (void)deleteOrphanedEventsForIDs:(NSArray<NSString *> *)IDs completion:(void (^)(NSInteger, NSError * _Nullable))completion {
+- (void)deleteOrphanedEventsForIDs:(NSArray<NSNumber *> *)IDs completion:(void (^)(NSInteger, NSError * _Nullable))completion {
     __weak typeof(self) weakSelf = self;
     [weakSelf performBlock:^{
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:kCMPOrphanedEventEntityName];
@@ -135,7 +135,7 @@ NSString *const kCMPOrphanedEventEntityName = @"CMPChatManagedOrphanedEvent";
                         completion(0, err);
                     });
                 } else {
-                    logWithLevel(CMPLogLevelInfo, @"Core Data: deleted %ld events.", (long)result.count, nil);
+                    logWithLevel(CMPLogLevelInfo, [NSString stringWithFormat:@"Core Data: deleted %lu events.", (unsigned long)result.count], nil);
                     dispatch_async(dispatch_get_main_queue(), ^{
                         completion(deleted, nil);
                     });

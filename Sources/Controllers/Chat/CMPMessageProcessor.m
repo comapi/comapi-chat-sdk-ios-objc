@@ -24,7 +24,6 @@
 
 NSString * const kPartTypeUploading = @"comapi/upl";
 NSString * const kPartTypeError = @"comapi/err";
-NSString * const kKeyMessageTempId = @"tempIdIOS";
 NSString * const kAttFolderName = @"attachments";
 NSUInteger const kMaxPartDataLength = 1333;
 
@@ -44,6 +43,8 @@ NSUInteger const kMaxPartDataLength = 1333;
 @property (nonatomic, strong, readwrite) NSString *conversationId;
 @property (nonatomic, strong, readwrite) NSString *sender;
 @property (nonatomic, strong, readwrite) NSString *tempMessageId;
+@property (nonatomic, strong, readonly) CMPChatMessageContext *context;
+
 @property (nonatomic, readwrite) NSUInteger maxPartSize;
 
 @end
@@ -58,6 +59,8 @@ NSUInteger const kMaxPartDataLength = 1333;
     _sender = sender;
     _tempMessageId = [[NSUUID UUID] UUIDString];
     _maxPartSize = maxSize;
+    _context = [self createContext];
+    
     [self convertLargePartsToAttachments:message.parts combineWithAttachments:attachments];
     
     return self;
@@ -65,6 +68,13 @@ NSUInteger const kMaxPartDataLength = 1333;
 
 - (NSArray<CMPChatAttachment *> *) getAttachmentsToSend {
     return [[NSArray alloc] initWithArray:_preProcessedAttachments];
+}
+
+- (CMPChatMessageContext *)createContext {
+    CMPChatMessageParticipant *from = [[CMPChatMessageParticipant alloc] initWithID:_sender name:nil];
+    CMPChatMessageContext *ctx = [[CMPChatMessageContext alloc] initWithConversationID:_conversationId from:from sentBy:_sender sentOn:[NSDate date]];
+
+    return ctx;
 }
 
 - (CMPChatMessage *)createPreUploadMessage {
@@ -82,7 +92,7 @@ NSUInteger const kMaxPartDataLength = 1333;
         }
     }
     
-    return [self createTempMessageWithParts:parts metadata:_metadata context:nil];
+    return [self createTempMessageWithParts:parts metadata:_metadata context:_context];
 }
 
 - (CMPChatMessage *)createPostUploadMessageWithAttachments:(NSArray<CMPChatAttachment *> *) attachments {
@@ -96,18 +106,18 @@ NSUInteger const kMaxPartDataLength = 1333;
     
     _finalParts = [[NSArray alloc] initWithArray:parts];
     
-    return [self createTempMessageWithParts:[[NSArray alloc] initWithArray:_finalParts] metadata:_metadata context:nil];
+    return [self createTempMessageWithParts:[[NSArray alloc] initWithArray:_finalParts] metadata:_metadata context:_context];
 }
 
 - (CMPSendableMessage *)createMessageToSend {
     NSMutableDictionary<NSString *, id> *newMetadata = [[NSMutableDictionary alloc] initWithDictionary:_metadata];
-    [newMetadata setObject:kCMPMessageTemporaryId forKey:kKeyMessageTempId];
+    [newMetadata setObject:_tempMessageId forKey:kCMPMessageTemporaryId];
     return [[CMPSendableMessage alloc] initWithMetadata:newMetadata parts:[_adapter adaptChatMessageParts:_finalParts] alert:_alert];
 }
 
 -(CMPChatMessage *)createFinalMessageWithID:(NSString *) messageId eventID:(NSNumber *) eventID  {
     CMPChatMessageStatus *status = [[CMPChatMessageStatus alloc] initWithConversationID:_conversationId messageID:messageId profileID:_sender conversationEventID:eventID timestamp:[NSDate date] messageStatus:CMPChatMessageDeliveryStatusSent];
-    CMPChatMessage *msg = [[CMPChatMessage alloc] initWithID:messageId sentEventID:eventID metadata:_metadata context:nil parts:_finalParts statusUpdates:nil];
+    CMPChatMessage *msg = [[CMPChatMessage alloc] initWithID:messageId sentEventID:eventID metadata:_metadata context:_context parts:_finalParts statusUpdates:nil];
     [msg addStatusUpdate:status];
     return msg;
 }
@@ -129,7 +139,7 @@ NSUInteger const kMaxPartDataLength = 1333;
     [combinedParts addObjectsFromArray:parts];
     
     NSMutableDictionary *mutableMetadata = [[NSMutableDictionary alloc] initWithDictionary:metadata];
-    [mutableMetadata setObject:_tempMessageId forKey:kKeyMessageTempId];
+    [mutableMetadata setObject:_tempMessageId forKey:kCMPMessageTemporaryId];
     
     return [[CMPChatMessage alloc] initWithID:_tempMessageId sentEventID:nil metadata:[[NSDictionary alloc] initWithDictionary:mutableMetadata] context:context parts:combinedParts statusUpdates:nil];
 }

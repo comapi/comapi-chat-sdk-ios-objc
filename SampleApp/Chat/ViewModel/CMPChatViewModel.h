@@ -40,6 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithClient:(CMPComapiChatClient *)client store:(CMPStore *)store conversation:(CMPChatConversation *)conversation;
 
+- (void)getPreviousMessages:(void (^)(NSError * _Nullable))completion;
 - (void)synchroniseConversation:(void (^)(NSError * _Nullable))completion;
 - (void)getMessagesWithCompletion:(void(^)(NSArray<CMPChatMessage *> * _Nullable, NSError * _Nullable))completion;
 - (void)sendMessage:(NSString *)message attachments:(NSArray<CMPChatAttachment *> *)attachments completion:(void(^)(NSError * _Nullable))completion;

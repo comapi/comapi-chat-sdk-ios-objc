@@ -26,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSString *id;
 @property (nonatomic, strong, nullable) NSString *name;
 
-- (instancetype)initWithID:(NSString *)id name:(NSString *)name;
+- (instancetype)initWithID:(NSString *)id name:(nullable NSString *)name;
 - (instancetype)initWithMessageParticipant:(CMPMessageParticipant *)participant;
 
 @end

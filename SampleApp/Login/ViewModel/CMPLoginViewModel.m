@@ -64,8 +64,10 @@
 
 - (void)login:(void(^)(CMPComapiChatClient * _Nullable, CMPStore * _Nullable, NSError * _Nullable))completion {
     if (self.loginBundle && [self.loginBundle isValid]) {
-        CMPChatConfig *config = [[CMPChatConfig alloc] initWithApiSpaceID:self.loginBundle.apiSpaceID authenticationDelegate:self logLevel:CMPLogLevelVerbose storeFactory:[[CMPFactory alloc] init] internalConfig:[[CMPInternalConfig alloc] init]];
+        CMPChatConfig *config = [[CMPChatConfig alloc] initWithApiSpaceID:self.loginBundle.apiSpaceID authenticationDelegate:self logLevel:CMPLogLevelVerbose storeFactory:self.factory internalConfig:[[CMPInternalConfig alloc] init]];
+        config.apiConfig = [[CMPAPIConfiguration alloc] initWithScheme:@"https" host:@"stage-api.comapi.com" port:443];
         CMPComapiChatClient *client = [CMPChat initialiseWithConfig:config];
+        
         AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
         delegate.client = client;
         if (!client) {
