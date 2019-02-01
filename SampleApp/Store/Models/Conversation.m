@@ -32,27 +32,6 @@
 @dynamic lastLocalEventID;
 @dynamic latestLocalEventID;
 
-- (instancetype)initWithChatConversation:(CMPChatConversation *)conversation context:(NSManagedObjectContext *)context {
-    NSEntityDescription *description = [NSEntityDescription entityForName:@"Conversation" inManagedObjectContext:context];
-    self = [super initWithEntity:description insertIntoManagedObjectContext:context];
-    
-    if (self) {
-        self.id = conversation.id;
-        self.eTag = conversation.eTag;
-        self.conversationDescription = conversation.conversationDescription;
-        self.name = conversation.name;
-        self.updatedOn = conversation.updatedOn;
-        self.isPublic = conversation.isPublic;
-        self.roles = [[Roles alloc] initWithChatRoles:conversation.roles context:context];
-        
-        self.firstLocalEventID = conversation.firstLocalEventID;
-        self.lastLocalEventID = conversation.lastLocalEventID;
-        self.latestLocalEventID = conversation.latestRemoteEventID;
-    }
-
-    return self;
-}
-
 - (CMPChatConversation *)chatConversation {
     CMPChatConversation *chatConversation = [[CMPChatConversation alloc] init];
     
@@ -69,6 +48,23 @@
     chatConversation.latestRemoteEventID = self.latestLocalEventID;
     
     return chatConversation;
+}
+
+- (void)update:(CMPChatConversation *)chatConversation {
+    self.id = chatConversation.id;
+    self.eTag = chatConversation.eTag;
+    self.conversationDescription = chatConversation.conversationDescription;
+    self.name = chatConversation.name;
+    self.updatedOn = chatConversation.updatedOn;
+    self.isPublic = chatConversation.isPublic;
+    if (self.roles == nil) {
+        self.roles = [[Roles alloc] initWithContext:self.managedObjectContext];
+    }
+    [self.roles update:chatConversation.roles];
+    
+    self.firstLocalEventID = chatConversation.firstLocalEventID;
+    self.lastLocalEventID = chatConversation.lastLocalEventID;
+    self.latestLocalEventID = chatConversation.latestRemoteEventID;
 }
 
 @end

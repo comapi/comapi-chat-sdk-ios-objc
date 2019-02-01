@@ -185,26 +185,31 @@
 #pragma mark - CMPMessageStoreDelegate
 
 - (void)didInsertMessages:(nonnull NSArray<CMPChatMessage *> *)messages {
-    NSInteger currentIndex = self.messages.count - 1;
-    NSInteger newIndex = currentIndex + messages.count - 1;
-    
-    for (CMPChatMessage *m in messages) {
-        [self.messages addObject:m];
+   // NSInteger currentIndex = self.messages.count == 0 ? 0 : self.messages.count - 1;
+   // NSInteger newIndex = currentIndex + messages.count == 0 ? 0 : messages.count - 1;
+    @synchronized (self.messages) {
+        for (CMPChatMessage *m in messages) {
+            [self.messages addObject:m];
+        }
     }
-    if (self.shouldUpdateRows) {
-        self.shouldUpdateRows(currentIndex, newIndex);
+    
+    if (self.shouldReloadData) {
+        self.shouldReloadData();
     }
 }
 
 - (void)didDeleteMessages:(nonnull NSArray<NSString *> *)messageIDs {
-    for (CMPChatMessage *existingMessage in self.messages) {
-        for (NSString *id in messageIDs) {
-            if ([existingMessage.id isEqualToString:id]) {
-                [self.messages removeObject:existingMessage];
-                break;
+    @synchronized (self.messages) {
+        for (CMPChatMessage *existingMessage in self.messages) {
+            for (NSString *id in messageIDs) {
+                if ([existingMessage.id isEqualToString:id]) {
+                    [self.messages removeObject:existingMessage];
+                    break;
+                }
             }
         }
     }
+    
     if (self.shouldReloadData) {
         self.shouldReloadData();
     }

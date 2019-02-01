@@ -27,22 +27,6 @@
 @dynamic messageStatus;
 @dynamic timestamp;
 
-- (instancetype)initWithChatMessageStatus:(CMPChatMessageStatus *)chatMessageStatus context:(NSManagedObjectContext *)context {
-    NSEntityDescription *description = [NSEntityDescription entityForName:@"MessageStatus" inManagedObjectContext:context];
-    self = [super initWithEntity:description insertIntoManagedObjectContext:context];
-    
-    if (self) {
-        self.conversationEventID = chatMessageStatus.conversationEventID;
-        self.conversationID = chatMessageStatus.conversationID;
-        self.messageID = chatMessageStatus.messageID;
-        self.profileID = chatMessageStatus.profileID;
-        self.messageStatus = @(chatMessageStatus.messageStatus);
-        self.timestamp = chatMessageStatus.timestamp;
-    }
-    
-    return self;
-}
-
 - (CMPChatMessageStatus *)chatMessageStatus {
     CMPChatMessageStatus *chatMessagestatus = [[CMPChatMessageStatus alloc] init];
     
@@ -54,6 +38,15 @@
     chatMessagestatus.timestamp = self.timestamp;
     
     return chatMessagestatus;
+}
+
+- (void)update:(CMPChatMessageStatus *)chatMessageStatus {
+    self.conversationEventID = chatMessageStatus.conversationEventID;
+    self.conversationID = chatMessageStatus.conversationID;
+    self.messageID = chatMessageStatus.messageID;
+    self.profileID = chatMessageStatus.profileID;
+    self.messageStatus = @(chatMessageStatus.messageStatus);
+    self.timestamp = chatMessageStatus.timestamp;
 }
 
 @end

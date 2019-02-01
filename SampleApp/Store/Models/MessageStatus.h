@@ -31,9 +31,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSNumber *messageStatus;
 @property (nonatomic, strong, nullable) NSDate *timestamp;
 
-- (instancetype)initWithChatMessageStatus:(CMPChatMessageStatus *)chatMessageStatus context:(NSManagedObjectContext *)context;
-
 - (CMPChatMessageStatus *)chatMessageStatus;
+
+- (void)update:(CMPChatMessageStatus *)chatMessageStatus;
 
 @end
 

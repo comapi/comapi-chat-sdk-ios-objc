@@ -25,21 +25,7 @@
 @dynamic size;
 @dynamic type;
 @dynamic url;
-
-- (instancetype)initWithChatMessagePart:(CMPChatMessagePart *)chatMessagePart context:(NSManagedObjectContext *)context {
-    NSEntityDescription *description = [NSEntityDescription entityForName:@"MessagePart" inManagedObjectContext:context];
-    self = [super initWithEntity:description insertIntoManagedObjectContext:context];
-    
-    if (self) {
-        self.data = chatMessagePart.data;
-        self.name = chatMessagePart.name;
-        self.size = chatMessagePart.size;
-        self.type = chatMessagePart.type;
-        self.url = chatMessagePart.url;
-    }
-    
-    return self;
-}
+@dynamic message;
 
 - (CMPChatMessagePart *)chatMessagePart {
     CMPChatMessagePart *chatMessagePart = [[CMPChatMessagePart alloc] init];
@@ -51,6 +37,14 @@
     chatMessagePart.url = self.url;
     
     return chatMessagePart;
+}
+
+- (void)update:(CMPChatMessagePart *)chatMessagePart {
+    self.data = chatMessagePart.data;
+    self.name = chatMessagePart.name;
+    self.size = chatMessagePart.size;
+    self.type = chatMessagePart.type;
+    self.url = chatMessagePart.url;
 }
 
 @end

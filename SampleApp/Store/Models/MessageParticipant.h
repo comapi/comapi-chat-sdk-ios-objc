@@ -20,6 +20,8 @@
 
 #import <CoreData/CoreData.h>
 
+@class MessageContext;
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface MessageParticipant : NSManagedObject
@@ -27,9 +29,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSString *id;
 @property (nonatomic, strong, nullable) NSString *name;
 
-- (instancetype)initWithChatMessageParticipant:(CMPChatMessageParticipant *)chatMessageParticipant context:(NSManagedObjectContext *)context;
+// Inverse
+@property (nonatomic, strong, nullable) MessageContext *context;
 
 - (CMPChatMessageParticipant *)chatMessageParticipant;
+
+- (void)update:(CMPChatMessageParticipant *)chatMessageParticipant;
 
 @end
 

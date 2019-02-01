@@ -27,25 +27,6 @@
 @dynamic context;
 @dynamic parts;
 
-- (instancetype)initWithChatMessage:(CMPChatMessage *)chatMessage context:(NSManagedObjectContext *)context {
-    NSEntityDescription *description = [NSEntityDescription entityForName:@"Message" inManagedObjectContext:context];
-    self = [super initWithEntity:description insertIntoManagedObjectContext:context];
-    
-    if (self) {
-        self.id = chatMessage.id;
-        self.metadata = chatMessage.metadata;
-        self.sentEventID = chatMessage.sentEventID;
-        self.metadata = chatMessage.metadata;
-        NSMutableArray<MessagePart *> *partsArray = [NSMutableArray new];
-        for (CMPChatMessagePart *part in chatMessage.parts) {
-            [partsArray addObject:[[MessagePart alloc] initWithChatMessagePart:part context:context]];
-        }
-        self.parts = [NSSet setWithArray:partsArray];
-    }
-    
-    return self;
-}
-
 - (CMPChatMessage *)chatMessage {
     CMPChatMessage *chatMessage = [[CMPChatMessage alloc] init];
     
@@ -61,6 +42,24 @@
     chatMessage.parts = [NSArray arrayWithArray:partsArray];
     
     return chatMessage;
+}
+
+- (void)update:(CMPChatMessage *)chatMessage {
+    self.id = chatMessage.id;
+    self.metadata = chatMessage.metadata;
+    self.sentEventID = chatMessage.sentEventID;
+    self.metadata = chatMessage.metadata;
+    if (self.context == nil) {
+        self.context = [[MessageContext alloc] initWithContext:self.managedObjectContext];
+    }
+    [self.context update:chatMessage.context];
+    NSMutableArray<MessagePart *> *partsArray = [NSMutableArray new];
+    for (CMPChatMessagePart *part in chatMessage.parts) {
+        MessagePart *p = [[MessagePart alloc] initWithContext:self.managedObjectContext];
+        [p update:part];
+        [partsArray addObject:p];
+    }
+    self.parts = [NSSet setWithArray:partsArray];
 }
 
 @end

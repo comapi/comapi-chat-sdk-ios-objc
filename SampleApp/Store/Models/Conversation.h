@@ -37,9 +37,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSNumber *lastLocalEventID;
 @property (nonatomic, strong, nullable) NSNumber *latestLocalEventID;
 
-- (instancetype)initWithChatConversation:(CMPChatConversation *)conversation context:(NSManagedObjectContext *)context;
-
 - (CMPChatConversation *)chatConversation;
+
+- (void)update:(CMPChatConversation *)chatConversation;
 
 @end
 
