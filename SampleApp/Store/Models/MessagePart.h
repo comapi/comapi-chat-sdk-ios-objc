@@ -20,6 +20,8 @@
 
 #import <CoreData/CoreData.h>
 
+@class Message;
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface MessagePart : NSManagedObject
@@ -30,9 +32,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSString *type;
 @property (nonatomic, strong, nullable) NSURL *url;
 
-- (instancetype)initWithChatMessagePart:(CMPChatMessagePart *)chatMessagePart context:(NSManagedObjectContext *)context;
+// Inverse
+@property (nonatomic, strong, nullable) Message *message;
 
 - (CMPChatMessagePart *)chatMessagePart;
+
+- (void)update:(CMPChatMessagePart *)chatMessagePart;
 
 @end
 

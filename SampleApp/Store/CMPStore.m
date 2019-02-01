@@ -18,7 +18,6 @@
 
 #import "Conversation.h"
 #import "Roles.h"
-#import "Participant.h"
 #import "MessagePart.h"
 #import "Message.h"
 #import "MessageParticipant.h"
@@ -56,19 +55,9 @@
 - (void)valuesChanged:(NSNotification *)notification {
     NSDictionary *changes = notification.userInfo;
     
-    NSSet<NSManagedObject *> *updated = changes[NSUpdatedObjectsKey];
-    NSSet<NSManagedObject *> *deleted = changes[NSDeletedObjectsKey];
-    NSSet<NSManagedObject *> *inserted = changes[NSInsertedObjectsKey];
-    
-    for (NSManagedObject *obj in updated) {
-        NSLog(@"updating object of class - %@", obj.class);
-    }
-    for (NSManagedObject *obj in inserted) {
-        NSLog(@"inserting object of class - %@", obj.class);
-    }
-    for (NSManagedObject *obj in deleted) {
-        NSLog(@"deleting object of class - %@", obj.class);
-    }
+    NSSet<NSManagedObject *> *updated = [changes[NSUpdatedObjectsKey] copy];
+    NSSet<NSManagedObject *> *deleted = [changes[NSDeletedObjectsKey] copy];
+    NSSet<NSManagedObject *> *inserted = [changes[NSInsertedObjectsKey] copy];
     
     if (updated != nil && updated.count > 0) {
         NSMutableArray<CMPChatMessage *> *updatedMessages = [NSMutableArray new];
@@ -127,7 +116,7 @@
         NSMutableArray<NSString *> *deletedConversations = [NSMutableArray new];
         NSMutableArray<NSString *> *deletedMessageStatuses = [NSMutableArray new];
         
-        for (NSManagedObject *obj in inserted) {
+        for (NSManagedObject *obj in deleted) {
             if ([obj isKindOfClass:Message.class]) {
                 [deletedMessages addObject:((Message *)obj).id];
             } else if ([obj isKindOfClass:Conversation.class]) {
@@ -225,7 +214,8 @@
         BOOL success = [self updateConversation:existing];
         return success;
     } else {
-        Conversation *newConversation __unused = [[Conversation alloc] initWithChatConversation:conversation context:_manager.mainContext];
+        Conversation *c = [[Conversation alloc] initWithContext:_manager.mainContext];
+        [c update:conversation];
         return YES;
     }
 }
@@ -265,17 +255,7 @@
     
     if (existing.count > 0) {
         Conversation *c = existing[0];
-        c.id = conversation.id;
-        c.eTag = conversation.eTag;
-        c.conversationDescription = conversation.conversationDescription;
-        c.name = conversation.name;
-        c.isPublic = conversation.isPublic;
-        c.updatedOn = conversation.updatedOn;
-        c.roles = [[Roles alloc] initWithChatRoles:conversation.roles context:_manager.mainContext];
-        c.firstLocalEventID = conversation.firstLocalEventID;
-        c.lastLocalEventID = conversation.lastLocalEventID;
-        c.latestLocalEventID = conversation.latestRemoteEventID;
-        
+        [c update:conversation];
         return YES;
     }
     
@@ -299,32 +279,11 @@
     
     if (existing.count > 0) {
         Message *m = existing[0];
-        m.id = message.id;
-        m.sentEventID = message.sentEventID;
-//        if (m.context) {
-//            m.context.conversationID = message.context.conversationID;
-//            m.context.sentOn = message.context.sentOn;
-//            m.context.sentBy = message.context.sentBy;
-//        } else {
-//
-//        }
-        m.context = [[MessageContext alloc] initWithChatMessageContext:message.context context:_manager.mainContext];
-        m.metadata = message.metadata;
-        NSMutableArray<MessagePart *> *newParts = [NSMutableArray new];
-        for (CMPChatMessagePart *mp in message.parts) {
-            [newParts addObject:[[MessagePart alloc] initWithChatMessagePart:mp context:_manager.mainContext]];
-        }
-        m.parts = [NSSet setWithArray:newParts];
-        
-        NSMutableDictionary<NSString *, MessageStatus *> *newStatusUpdates = [NSMutableDictionary new];
-        [m.statusUpdates enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, CMPChatMessageStatus * _Nonnull obj, BOOL * _Nonnull stop) {
-            newStatusUpdates[key] = [[MessageStatus alloc] initWithChatMessageStatus:obj context:self.manager.mainContext];
-        }];
-        m.statusUpdates = [NSDictionary dictionaryWithDictionary:newStatusUpdates];
-        
+        [m update:message];
         return YES;
     } else {
-        Message *newMessage __unused = [[Message alloc] initWithChatMessage:message context:_manager.mainContext];
+        Message *m = [[Message alloc] initWithContext:_manager.mainContext];
+        [m update:message];
         return YES;
     }
     
@@ -386,12 +345,7 @@
     
     if (existing.count > 0) {
         MessageStatus *ms = existing[0];
-        ms.conversationID = messageStatus.conversationID;
-        ms.messageID = messageStatus.messageID;
-        ms.profileID = messageStatus.profileID;
-        ms.conversationEventID = messageStatus.conversationEventID;
-        ms.messageStatus = @(messageStatus.messageStatus);
-        ms.timestamp = messageStatus.timestamp;
+        [ms update:messageStatus];
 
         return YES;
     }

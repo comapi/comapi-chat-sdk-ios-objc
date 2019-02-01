@@ -24,20 +24,7 @@
 @dynamic sentBy;
 @dynamic sentOn;
 @dynamic from;
-
-- (instancetype)initWithChatMessageContext:(CMPChatMessageContext *)chatMessageContext context:(NSManagedObjectContext *)context {
-    NSEntityDescription *description = [NSEntityDescription entityForName:@"MessageContext" inManagedObjectContext:context];
-    self = [super initWithEntity:description insertIntoManagedObjectContext:context];
-    
-    if (self) {
-        self.conversationID = chatMessageContext.conversationID;
-        self.sentBy = chatMessageContext.sentBy;
-        self.sentOn = chatMessageContext.sentOn;
-        self.from = [[MessageParticipant alloc] initWithChatMessageParticipant:chatMessageContext.from context:context];
-    }
-    
-    return self;
-}
+@dynamic message;
 
 - (CMPChatMessageContext *)chatMessageContext {
     CMPChatMessageContext *chatMessageContext = [[CMPChatMessageContext alloc] init];
@@ -48,6 +35,16 @@
     chatMessageContext.from = [self.from chatMessageParticipant];
     
     return chatMessageContext;
+}
+
+- (void)update:(CMPChatMessageContext *)chatMessageContext {
+    self.conversationID = chatMessageContext.conversationID;
+    self.sentBy = chatMessageContext.sentBy;
+    self.sentOn = chatMessageContext.sentOn;
+    if (self.from == nil) {
+        self.from = [[MessageParticipant alloc] initWithContext:self.managedObjectContext];
+    }
+    [self.from update:chatMessageContext.from];
 }
 
 @end

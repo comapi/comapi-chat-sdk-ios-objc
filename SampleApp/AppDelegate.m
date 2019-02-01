@@ -33,6 +33,8 @@ NSString * const kCMPPushRegistrationStatusChangedNotification = @"CMPPushRegist
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
+    NSLog(@"The Path is %@", [[[NSFileManager defaultManager] URLsForDirectory: NSDocumentDirectory inDomains:NSUserDomainMask] lastObject]);
+    
     CMPLoginViewModel *vm = [[CMPLoginViewModel alloc] init];
     CMPLoginViewController *vc = [[CMPLoginViewController alloc] initWithViewModel:vm];
     

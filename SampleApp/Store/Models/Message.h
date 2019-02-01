@@ -35,9 +35,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSDictionary<NSString *, id> *metadata;
 @property (nonatomic, strong, nullable) NSDictionary<NSString *, CMPChatMessageStatus *> *statusUpdates;
 
-- (instancetype)initWithChatMessage:(CMPChatMessage *)chatMessage context:(NSManagedObjectContext *)context;
-
 - (CMPChatMessage *)chatMessage;
+
+- (void)update:(CMPChatMessage *)chatMessage;
 
 @end
 

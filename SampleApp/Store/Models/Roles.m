@@ -20,28 +20,29 @@
 
 @implementation Roles
 
-@dynamic ownerAttributes;
-@dynamic participantAttributes;
-
-- (instancetype)initWithChatRoles:(CMPChatRoles *)chatRoles context:(NSManagedObjectContext *)context {
-    NSEntityDescription *description = [NSEntityDescription entityForName:@"Roles" inManagedObjectContext:context];
-    self = [super initWithEntity:description insertIntoManagedObjectContext:context];
-    
-    if (self) {
-        self.ownerAttributes = [[RoleAttributes alloc] initWithChatRoleAttributes:chatRoles.ownerAttributes context:context];
-        self.participantAttributes = [[RoleAttributes alloc] initWithChatRoleAttributes:chatRoles.participantAttributes context:context];
-    }
-    
-    return self;
-}
+@dynamic ownerCanSend;
+@dynamic ownerCanAddParticipants;
+@dynamic ownerCanRemoveParticipants;
+@dynamic participantCanSend;
+@dynamic participantCanAddParticipants;
+@dynamic participantCanRemoveParticipants;
 
 - (CMPChatRoles *)chatRoles {
     CMPChatRoles *chatRoles = [[CMPChatRoles alloc] init];
     
-    chatRoles.ownerAttributes = [self.ownerAttributes chatRoleAttributes];
-    chatRoles.participantAttributes = [self.participantAttributes chatRoleAttributes];
+    chatRoles.ownerAttributes = [[CMPChatRoleAttributes alloc] initWithCanSend:self.ownerCanSend.boolValue canAddParticipants:self.ownerCanAddParticipants.boolValue canRemoveParticipants:self.ownerCanRemoveParticipants.boolValue];
+    chatRoles.participantAttributes = [[CMPChatRoleAttributes alloc] initWithCanSend:self.participantCanSend.boolValue canAddParticipants:self.participantCanAddParticipants canRemoveParticipants:self.participantCanRemoveParticipants];
     
     return chatRoles;
+}
+
+- (void)update:(CMPChatRoles *)chatRoles {
+    self.ownerCanSend = @(chatRoles.ownerAttributes.canSend);
+    self.ownerCanAddParticipants = @(chatRoles.ownerAttributes.canAddParticipants);
+    self.ownerCanRemoveParticipants = @(chatRoles.ownerAttributes.canRemoveParticipants);
+    self.participantCanSend = @(chatRoles.participantAttributes.canSend);
+    self.participantCanAddParticipants = @(chatRoles.participantAttributes.canAddParticipants);
+    self.participantCanRemoveParticipants = @(chatRoles.participantAttributes.canRemoveParticipants);
 }
 
 @end

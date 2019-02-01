@@ -16,7 +16,6 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "RoleAttributes.h"
 #import "CMPChatRoles.h"
 
 #import <CoreData/CoreData.h>
@@ -25,12 +24,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface Roles : NSManagedObject
 
-@property (nonatomic, strong, nullable) RoleAttributes *ownerAttributes;
-@property (nonatomic, strong, nullable) RoleAttributes *participantAttributes;
-
-- (instancetype)initWithChatRoles:(CMPChatRoles *)chatRoles context:(NSManagedObjectContext *)context;
+@property (nonatomic, strong, nullable) NSNumber *ownerCanSend;
+@property (nonatomic, strong, nullable) NSNumber *ownerCanAddParticipants;
+@property (nonatomic, strong, nullable) NSNumber *ownerCanRemoveParticipants;
+@property (nonatomic, strong, nullable) NSNumber *participantCanSend;
+@property (nonatomic, strong, nullable) NSNumber *participantCanAddParticipants;
+@property (nonatomic, strong, nullable) NSNumber *participantCanRemoveParticipants;
 
 - (CMPChatRoles *)chatRoles;
+
+- (void)update:(CMPChatRoles *)chatRoles;
 
 @end
 

@@ -16,10 +16,13 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+
 #import "MessageParticipant.h"
 #import "CMPChatMessageContext.h"
 
 #import <CoreData/CoreData.h>
+
+@class Message;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -30,9 +33,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSDate *sentOn;
 @property (nonatomic, strong, nullable) MessageParticipant *from;
 
-- (instancetype)initWithChatMessageContext:(CMPChatMessageContext *)chatMessageContext context:(NSManagedObjectContext *)context;
+// Inverse
+@property (nonatomic, strong, nullable) Message *message;
 
 - (CMPChatMessageContext *)chatMessageContext;
+
+- (void)update:(CMPChatMessageContext *)chatMessageContext;
 
 @end
 

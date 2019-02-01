@@ -22,18 +22,7 @@
 
 @dynamic id;
 @dynamic name;
-
-- (instancetype)initWithChatMessageParticipant:(CMPChatMessageParticipant *)chatMessageParticipant context:(NSManagedObjectContext *)context {
-    NSEntityDescription *description = [NSEntityDescription entityForName:@"MessageParticipant" inManagedObjectContext:context];
-    self = [super initWithEntity:description insertIntoManagedObjectContext:context];
-    
-    if (self) {
-        self.id = chatMessageParticipant.id;
-        self.name = chatMessageParticipant.name;
-    }
-    
-    return self;
-}
+@dynamic context;
 
 - (CMPChatMessageParticipant *)chatMessageParticipant {
     CMPChatMessageParticipant *chatMessageParticipant = [[CMPChatMessageParticipant alloc] init];
@@ -42,6 +31,11 @@
     chatMessageParticipant.name = self.name;
     
     return chatMessageParticipant;
+}
+
+- (void)update:(CMPChatMessageParticipant *)chatMessageParticipant {
+    self.id = chatMessageParticipant.id;
+    self.name = chatMessageParticipant.name;
 }
 
 @end
