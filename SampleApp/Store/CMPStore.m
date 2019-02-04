@@ -42,7 +42,7 @@
         _manager = manager;
         _notificationCenter = [NSNotificationCenter defaultCenter];
         
-        [self registerToChangeNotifications];
+       // [self registerToChangeNotifications];
     }
     
     return self;
@@ -53,11 +53,11 @@
 }
 
 - (void)valuesChanged:(NSNotification *)notification {
-    NSDictionary *changes = notification.userInfo;
+    NSDictionary *changes = [notification.userInfo copy];
     
-    NSSet<NSManagedObject *> *updated = [changes[NSUpdatedObjectsKey] copy];
-    NSSet<NSManagedObject *> *deleted = [changes[NSDeletedObjectsKey] copy];
-    NSSet<NSManagedObject *> *inserted = [changes[NSInsertedObjectsKey] copy];
+    NSSet<NSManagedObject *> *updated = changes[NSUpdatedObjectsKey];
+    NSSet<NSManagedObject *> *deleted = changes[NSDeletedObjectsKey];
+    NSSet<NSManagedObject *> *inserted = changes[NSInsertedObjectsKey];
     
     if (updated != nil && updated.count > 0) {
         NSMutableArray<CMPChatMessage *> *updatedMessages = [NSMutableArray new];
@@ -224,18 +224,16 @@
     NSLog(@"Store: deleting converastion for ID - %@", conversation.id);
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Converastion"];
     request.predicate = [NSPredicate predicateWithFormat:@"%K = %@", @"id", conversation.id];
-    NSBatchDeleteRequest *delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
-    delete.resultType = NSBatchDeleteResultTypeObjectIDs;
     
     NSError *error;
-    NSBatchDeleteResult *result = (NSBatchDeleteResult *)[_manager.mainContext executeRequest:delete error:&error];
+    NSArray<Conversation *> *conversations = [_manager.mainContext executeFetchRequest:request error:&error];
     if (error) {
         NSLog(@"Store: error deleting converastion - %@", error.localizedDescription);
         return NO;
     }
-    
-    NSArray<NSManagedObjectID *> *ids = (NSArray<NSManagedObjectID *> *)result.result;
-    [NSManagedObjectContext mergeChangesFromRemoteContextSave:@{NSDeletedObjectsKey : ids} intoContexts:@[_manager.mainContext]];
+    for (Conversation *c in conversations) {
+        [_manager.mainContext deleteObject:c];
+    }
     
     return YES;
 }
@@ -313,20 +311,19 @@
 - (BOOL)deleteMessage:(nonnull NSString *)conversationID messageID:(nonnull NSString *)messageID {
     NSLog(@"Store: deleting message for conversationID - %@, messageID - %@", conversationID, messageID);
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
-    request.predicate = [NSPredicate predicateWithFormat:@"%K = %@ AND %K = %@", @"context.conversationID", conversationID, @"id", messageID];
-    NSBatchDeleteRequest *delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
-    delete.resultType = NSBatchDeleteResultTypeObjectIDs;
+    request.predicate = [NSPredicate predicateWithFormat:@"%K = %@", @"id", messageID];
     
     NSError *error;
-    NSBatchDeleteResult *result = (NSBatchDeleteResult *)[_manager.mainContext executeRequest:delete error:&error];
+    NSArray<Message *> *messages = [_manager.mainContext executeFetchRequest:request error:&error];
+    
+    for (Message *m in messages) {
+        [_manager.mainContext deleteObject:m];
+    }
     if (error) {
         NSLog(@"Store: error deleting message - %@", error.localizedDescription);
         return NO;
     }
-    
-    NSArray<NSManagedObjectID *> *ids = (NSArray<NSManagedObjectID *> *)result.result;
-    [NSManagedObjectContext mergeChangesFromRemoteContextSave:@{NSDeletedObjectsKey : ids} intoContexts:@[_manager.mainContext]];
-    
+
     return YES;
 }
 

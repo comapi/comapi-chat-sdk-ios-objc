@@ -28,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSArray<CMPProfile *> *profiles;
 @property (nonatomic, strong) CMPNewConversation *conversation;
 
-- (instancetype)initWithClient:(CMPComapiClient *)client store:(CMPStore *)store;
+- (instancetype)initWithClient:(CMPComapiChatClient *)client store:(CMPStore *)store;
 
 - (BOOL)validate;
 - (CMPRoles *)createRoles;

@@ -61,15 +61,8 @@
     [weakSelf.viewModel getPreviousMessages:^(NSError * _Nullable error) {
         if (error) {
             NSLog(@"%@", error.localizedDescription);
-        } else {
-            [weakSelf.viewModel getMessagesWithCompletion:^(NSArray<CMPMessage *> * _Nullable messages, NSError * _Nullable error) {
-                if (error) {
-                    NSLog(@"%@", error.localizedDescription);
-                } else {
-                    [weakSelf reload];
-                }
-            }];
         }
+        [weakSelf reload];
     }];
 
 }
@@ -146,6 +139,11 @@
 }
 
 - (void)reload {
+    NSError *err;
+    [self.viewModel.fetchController performFetch:&err];
+    if (err) {
+        NSLog(@"%@", err.localizedDescription);
+    }
     [self.chatView.tableView reloadData];
 }
 
@@ -158,12 +156,20 @@
 
 #pragma mark - UITableViewDelegate & UITableViewDataSource
 
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return [[_viewModel.fetchController sections] count];
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return _viewModel.messages.count;
+    if ([[_viewModel.fetchController sections] count] > 0) {
+        id <NSFetchedResultsSectionInfo> sectionInfo = [[_viewModel.fetchController sections] objectAtIndex:section];
+        return [sectionInfo numberOfObjects];
+    } else
+        return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    CMPChatMessage *msg = _viewModel.messages[indexPath.row];
+    CMPChatMessage *msg = [_viewModel.fetchController objectAtIndexPath:indexPath];
     if (msg.parts.firstObject.url) {
         CMPChatImageMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:@"imageCell" forIndexPath:indexPath];
         
