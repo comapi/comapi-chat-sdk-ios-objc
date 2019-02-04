@@ -31,7 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSString *id;
 @property (nonatomic, strong, nullable) NSNumber *sentEventID;
 @property (nonatomic, strong, nullable) MessageContext *context;
-@property (nonatomic, strong, nullable) NSSet<MessagePart *> *parts;
+@property (nonatomic, strong, nullable) NSOrderedSet<MessagePart *> *parts;
 @property (nonatomic, strong, nullable) NSDictionary<NSString *, id> *metadata;
 @property (nonatomic, strong, nullable) NSDictionary<NSString *, CMPChatMessageStatus *> *statusUpdates;
 

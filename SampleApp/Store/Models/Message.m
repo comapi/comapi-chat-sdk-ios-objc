@@ -59,7 +59,7 @@
         [p update:part];
         [partsArray addObject:p];
     }
-    self.parts = [NSSet setWithArray:partsArray];
+    self.parts = [NSOrderedSet orderedSetWithArray:partsArray];
 }
 
 @end

@@ -32,11 +32,25 @@
         self.store = store;
         self.store.messageDelegate = self;
         self.conversation = conversation;
-        self.messages = [NSMutableArray new];
+        self.fetchController = [self setupFetchController];
         self.downloader = [[CMPImageDownloader alloc] init];
     }
     
     return self;
+}
+
+- (NSFetchedResultsController *)setupFetchController {
+    NSManagedObjectContext *context = CMPStoreManagerStack.shared.mainContext;
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"Message"];
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"%K = %@", @"context.conversationID", _conversation.id];
+    fetchRequest.sortDescriptors = @[[[NSSortDescriptor alloc] initWithKey:@"context.sentOn" ascending:YES]];
+    
+    NSFetchedResultsController *controller = [[NSFetchedResultsController alloc]
+                                              initWithFetchRequest:fetchRequest
+                                              managedObjectContext:context
+                                              sectionNameKeyPath:nil
+                                              cacheName:nil];
+    return controller;
 }
 
 - (void)getPreviousMessages:(void (^)(NSError * _Nullable))completion {
@@ -49,14 +63,6 @@
     [self.client.services.messaging synchroniseConversation:self.conversation.id completion:^(CMPChatResult * result) {
         completion(result.error);
     }];
-}
-
-- (void)getMessagesWithCompletion:(void (^)(NSArray<CMPChatMessage *> * _Nullable, NSError * _Nullable))completion {
-    __weak typeof(self) weakSelf = self;
-
-    NSMutableArray<CMPChatMessage *> *messages = [NSMutableArray arrayWithArray:[self.store getMessages:weakSelf.conversation.id]];
-    weakSelf.messages = messages != nil ? messages : [NSMutableArray new];
-    completion(weakSelf.messages, nil);
 }
 
 - (void)sendMessage:(NSString *)message attachments:(NSArray<CMPChatAttachment *> *)attachments completion:(void (^)(NSError * _Nullable))completion {
@@ -187,32 +193,30 @@
 - (void)didInsertMessages:(nonnull NSArray<CMPChatMessage *> *)messages {
    // NSInteger currentIndex = self.messages.count == 0 ? 0 : self.messages.count - 1;
    // NSInteger newIndex = currentIndex + messages.count == 0 ? 0 : messages.count - 1;
-    @synchronized (self.messages) {
-        for (CMPChatMessage *m in messages) {
-            [self.messages addObject:m];
-        }
-    }
-    
-    if (self.shouldReloadData) {
-        self.shouldReloadData();
-    }
+//    @synchronized (self.messages) {
+//        for (CMPChatMessage *m in messages) {
+//            [self.messages addObject:m];
+//        }
+//    }
+//
+//    if (self.shouldReloadData) {
+//        self.shouldReloadData();
+//    }
 }
 
 - (void)didDeleteMessages:(nonnull NSArray<NSString *> *)messageIDs {
-    @synchronized (self.messages) {
-        for (CMPChatMessage *existingMessage in self.messages) {
-            for (NSString *id in messageIDs) {
-                if ([existingMessage.id isEqualToString:id]) {
-                    [self.messages removeObject:existingMessage];
-                    break;
-                }
-            }
-        }
-    }
-    
-    if (self.shouldReloadData) {
-        self.shouldReloadData();
-    }
+//    for (CMPChatMessage *existingMessage in self.messages) {
+//        for (NSString *id in messageIDs) {
+//            if ([existingMessage.id isEqualToString:id]) {
+//                [self.messages removeObject:existingMessage];
+//                break;
+//            }
+//        }
+//    }
+//
+//    if (self.shouldReloadData) {
+//        self.shouldReloadData();
+//    }
 }
 
 - (void)didUpdateMessages:(nonnull NSArray<CMPChatMessage *> *)messages {
