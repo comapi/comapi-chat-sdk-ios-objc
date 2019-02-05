@@ -26,12 +26,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatViewModel : NSObject <CMPMessageStoreDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface CMPChatViewModel : NSObject <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @property (nonatomic, strong) CMPStore *store;
 @property (nonatomic, strong) CMPComapiChatClient *client;
 @property (nonatomic, strong) CMPChatConversation *conversation;
-//@property (nonatomic, strong) NSMutableArray<CMPChatMessage *> *messages;
 @property (nonatomic, strong) CMPImageDownloader *downloader;
 @property (nonatomic, strong) NSFetchedResultsController *fetchController;
 

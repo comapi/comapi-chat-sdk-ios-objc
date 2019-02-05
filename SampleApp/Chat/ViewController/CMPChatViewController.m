@@ -25,13 +25,14 @@
 
 @end
 
-@implementation CMPChatViewController
+@implementation CMPChatViewController 
 
 - (instancetype)initWithViewModel:(CMPChatViewModel *)viewModel {
     self = [super init];
     
     if (self) {
         _viewModel = viewModel;
+        _viewModel.fetchController.delegate = self;
         
         [self navigation];
         [self delegates];
@@ -85,7 +86,6 @@
     };
     self.chatView.didTapSendButton = ^(NSString * _Nonnull text) {
         [weakSelf.viewModel sendMessage:text attachments:@[] completion:^(NSError * _Nullable error) {
-            
             [weakSelf reload];
         }];
     };
@@ -97,19 +97,6 @@
         } pickerPresenter:^(UIViewController * _Nonnull vc) {
             [weakSelf.navigationController presentViewController:vc animated:YES completion:nil];
         }];
-    };
-    self.viewModel.shouldReloadData = ^{
-        [weakSelf reload];
-    };
-    self.viewModel.shouldUpdateRows = ^(NSInteger startRow, NSInteger endRow) {
-        NSMutableArray<NSIndexPath *> *indices = [NSMutableArray new];
-        for (NSInteger i = startRow; i <= endRow; i++) {
-            [indices addObject:[NSIndexPath indexPathForRow:i inSection:0]];
-        }
-        [weakSelf.chatView.tableView insertRowsAtIndexPaths:indices withRowAnimation:UITableViewRowAnimationFade];
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-            [weakSelf.chatView scrollToBottomAnimated:YES];
-        });
     };
     self.viewModel.didTakeNewPhoto = ^(UIImage * _Nonnull image) {
         [weakSelf.viewModel showPhotoCropControllerWithImage:image presenter:^(UIViewController * _Nonnull vc) {
@@ -189,6 +176,31 @@
         [cell configureWithMessage:msg ownership:isMine ? CMPMessageOwnershipSelf : CMPMessageOwnershipOther];
         
         return cell;
+    }
+}
+
+#pragma mark - NSFetchedResultsControllerDelegate
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+    switch (type) {
+        case NSFetchedResultsChangeInsert: {
+            [self.chatView.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
+                                                    withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        }
+        case NSFetchedResultsChangeDelete: {
+            [self.chatView.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                                                    withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        }
+        case NSFetchedResultsChangeMove: {
+            break;
+        }
+        case NSFetchedResultsChangeUpdate: {
+            [self.chatView.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        }
     }
 }
 

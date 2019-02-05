@@ -30,7 +30,6 @@
     if (self) {
         self.client = client;
         self.store = store;
-        self.store.messageDelegate = self;
         self.conversation = conversation;
         self.fetchController = [self setupFetchController];
         self.downloader = [[CMPImageDownloader alloc] init];
@@ -66,54 +65,12 @@
 }
 
 - (void)sendMessage:(NSString *)message attachments:(NSArray<CMPChatAttachment *> *)attachments completion:(void (^)(NSError * _Nullable))completion {
-    NSDictionary<NSString *, id> *metadata = @{@"my_message_id" : [[NSUUID UUID] UUIDString]};
-    CMPMessagePart *textPart = [[CMPMessagePart alloc] initWithName:@"" type:@"text/plain" url:nil data:message size:@(message.length)];
-    CMPSendableMessage *newMessage = [[CMPSendableMessage alloc] initWithMetadata:metadata parts:@[textPart] alert:nil];
+    CMPMessagePart *textPart = [[CMPMessagePart alloc] initWithName:@"" type:@"text/plain" url:nil data:message ? message : @"New image." size:@(message.length)];
+    CMPSendableMessage *newMessage = [[CMPSendableMessage alloc] initWithMetadata:nil parts:@[textPart] alert:nil];
     [self.client.services.messaging sendMessage:_conversation.id message:newMessage attachments:attachments completion:^(CMPChatResult * result) {
         completion(result.error);
     }];
 }
-
-
-//- (void)sendTextMessage:(NSString *)message completion:(void (^)(NSError * _Nullable))completion {
-//    NSDictionary<NSString *, id> *metadata = @{@"myMessageID" : @"123"};
-//    CMPMessagePart *part = [[CMPMessagePart alloc] initWithName:@"" type:@"text/plain" url:nil data:message size:[NSNumber numberWithUnsignedLong:sizeof(message.UTF8String)]];
-//    CMPSendableMessage *sendableMessage = [[CMPSendableMessage alloc] initWithMetadata:metadata parts:@[part] alert:nil];
-//
-//    [self.client.services.messaging sendMessage:sendableMessage toConversationWithID:self.conversation.id completion:^(CMPResult<CMPSendMessagesResult *> *result) {
-//        if (result.error) {
-//            completion(result.error);
-//        } else {
-//            completion(nil);
-//        }
-//    }];
-//}
-
-//- (void)uploadContent:(CMPContentData *)content completion:(void (^)(CMPContentUploadResult * _Nullable, NSError * _Nullable))completion {
-//    [self.client.services.messaging uploadContent:content folder:nil completion:^(CMPResult<CMPContentUploadResult *> *result) {
-//        if (result.error) {
-//            completion(nil, result.error);
-//        } else {
-//            completion(result.object, nil);
-//        }
-//    }];
-//}
-//
-
-
-//- (void)sendImageWithUploadResult:(CMPContentUploadResult *)result completion:(void (^)(NSError * _Nullable))completion {
-//    NSDictionary<NSString *, id> *metadata = @{@"myMessageID" : @"123"};
-//    CMPMessagePart *part = [[CMPMessagePart alloc] initWithName:@"image" type:result.type url:result.url data:nil size:nil];
-//    CMPSendableMessage *message = [[CMPSendableMessage alloc] initWithMetadata:metadata parts:@[part] alert:nil];
-//
-//    [self.client.services.messaging sendMessage:message toConversationWithID:self.conversation.id completion:^(CMPResult<CMPSendMessagesResult *> *result) {
-//        if (result.error) {
-//            completion(result.error);
-//        } else {
-//            completion(nil);
-//        }
-//    }];
-//}
 
 - (void)showPhotoSourceControllerWithPresenter:(void (^)(UIViewController * _Nonnull))presenter alertPresenter:(void (^)(UIViewController * _Nonnull))alertPresenter pickerPresenter:(void (^)(UIViewController * _Nonnull))pickerPresenter {
     
@@ -187,46 +144,5 @@
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
-
-#pragma mark - CMPMessageStoreDelegate
-
-- (void)didInsertMessages:(nonnull NSArray<CMPChatMessage *> *)messages {
-   // NSInteger currentIndex = self.messages.count == 0 ? 0 : self.messages.count - 1;
-   // NSInteger newIndex = currentIndex + messages.count == 0 ? 0 : messages.count - 1;
-//    @synchronized (self.messages) {
-//        for (CMPChatMessage *m in messages) {
-//            [self.messages addObject:m];
-//        }
-//    }
-//
-//    if (self.shouldReloadData) {
-//        self.shouldReloadData();
-//    }
-}
-
-- (void)didDeleteMessages:(nonnull NSArray<NSString *> *)messageIDs {
-//    for (CMPChatMessage *existingMessage in self.messages) {
-//        for (NSString *id in messageIDs) {
-//            if ([existingMessage.id isEqualToString:id]) {
-//                [self.messages removeObject:existingMessage];
-//                break;
-//            }
-//        }
-//    }
-//
-//    if (self.shouldReloadData) {
-//        self.shouldReloadData();
-//    }
-}
-
-- (void)didUpdateMessages:(nonnull NSArray<CMPChatMessage *> *)messages {
-    
-}
-
-- (void)didInsertMessageStatuses:(nonnull NSArray<CMPChatMessageStatus *> *)messageStatuses {}
-
-- (void)didUpdateMessageStatuses:(nonnull NSArray<CMPChatMessageStatus *> *)messageStatuses {}
-
-- (void)didDeleteMessageStatuses:(nonnull NSArray<NSString *> *)messageIDs {}
 
 @end

@@ -29,16 +29,28 @@
         self.store = store;
         self.client = client;
         self.profile = profile;
+        self.fetchController = [self setupFetchController];
     }
     
     return self;
 }
 
+- (NSFetchedResultsController *)setupFetchController {
+    NSManagedObjectContext *context = CMPStoreManagerStack.shared.mainContext;
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"Conversation"];
+    fetchRequest.sortDescriptors = @[[[NSSortDescriptor alloc] initWithKey:@"updatedOn" ascending:YES]];
+    
+    NSFetchedResultsController *controller = [[NSFetchedResultsController alloc]
+                                              initWithFetchRequest:fetchRequest
+                                              managedObjectContext:context
+                                              sectionNameKeyPath:nil
+                                              cacheName:nil];
+    return controller;
+}
+
 - (void)getConversationsWithCompletion:(void (^)(NSError * _Nullable))completion {
-    __weak typeof(self) weakSelf = self;
     [_client.services.messaging synchroniseStore:^(CMPChatResult * result) {
         if (result.isSuccessful) {
-            weakSelf.conversations = [NSMutableArray arrayWithArray:[weakSelf.store getAllConversations]];
             completion(nil);
         } else {
             completion(result.error);

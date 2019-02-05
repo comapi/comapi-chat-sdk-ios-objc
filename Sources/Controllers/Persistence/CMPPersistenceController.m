@@ -249,7 +249,7 @@
             }
         }];
     } else {
-        logWithLevel(CMPLogLevelWarning, @"Data Store: messages are nil, skipping...");
+        logWithLevel(CMPLogLevelWarning, @"Data Store: messages are nil, skipping...", nil);
         dispatch_async(dispatch_get_main_queue(), ^{
             completion([CMPStoreResult resultWithObject:result error:nil]);
         });
@@ -301,7 +301,7 @@
             }
         }];
     } else {
-        logWithLevel(CMPLogLevelWarning, [NSString stringWithFormat:@"Data store: cannot proceed with messages equal to - %@ and orphaned events equal to - %@, skipping...", messages, orphanedEvents]);
+        logWithLevel(CMPLogLevelWarning, [NSString stringWithFormat:@"Data store: cannot proceed with messages equal to - %@ and orphaned events equal to - %@, skipping...", messages, orphanedEvents], nil);
         dispatch_async(dispatch_get_main_queue(), ^{
             completion(nil);
         });
