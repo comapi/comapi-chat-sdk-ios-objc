@@ -53,15 +53,18 @@ NSUInteger const kMaxPartDataLength = 1333;
 
 - (instancetype)initWithModelAdapter:(CMPModelAdapter *)adapter message:(CMPSendableMessage *) message attachments:(NSArray<CMPChatAttachment *> *) attachments  toConversationWithID:(NSString *) conversationId from:(NSString *) sender maxPartSize:(NSUInteger) maxSize {
     _adapter = adapter;
-    _alert = message.alert;
-    _metadata = message.metadata;
     _conversationId = conversationId;
     _sender = sender;
     _tempMessageId = [[NSUUID UUID] UUIDString];
     _maxPartSize = maxSize;
     _context = [self createContext];
-    
-    [self convertLargePartsToAttachments:message.parts combineWithAttachments:attachments];
+    if (message != nil) {
+        _alert = message.alert;
+        _metadata = message.metadata;
+        [self convertLargePartsToAttachments:message.parts combineWithAttachments:attachments];
+    } else {
+        [self convertLargePartsToAttachments:nil combineWithAttachments:attachments];
+    }
     
     return self;
 }
@@ -146,28 +149,38 @@ NSUInteger const kMaxPartDataLength = 1333;
 
 - (void) convertLargePartsToAttachments: (NSArray<CMPMessagePart *> *) initialParts combineWithAttachments:(NSArray<CMPChatAttachment *> *) initialAttachments {
     
-    NSMutableArray <CMPChatAttachment *> *largeAttachments = [NSMutableArray array];
-    NSMutableArray <CMPChatMessagePart *> *removedParts = [NSMutableArray array];
-    
-    NSArray<CMPChatMessagePart *> * adaptedInitialParts = [_adapter adaptMessageParts:initialParts];
-    
-    for (int i = 0; i < initialParts.count; i++) {
-        CMPChatMessagePart *part = adaptedInitialParts[i];
-        if (part.data != nil && part.data.length > _maxPartSize) {
-            NSString *str = [part.data toBase64String];
-            CMPChatAttachment  *largeAtachment = [[CMPChatAttachment alloc] initWithContentData: [[CMPContentData alloc] initWithBase64Data:str type:part.type name:part.name] folder:kAttFolderName];
-            [largeAttachments addObject:largeAtachment];
-            [removedParts addObject:part];
+    if (initialParts == nil) {
+        _preProcessedParts = [NSMutableArray array];
+        _preProcessedAttachments = [NSMutableArray array];
+        if (initialAttachments != nil) {
+            [_preProcessedAttachments addObjectsFromArray:initialAttachments];
         }
+    } else {
+        NSMutableArray <CMPChatAttachment *> *largeAttachments = [NSMutableArray array];
+        NSMutableArray <CMPChatMessagePart *> *removedParts = [NSMutableArray array];
+        
+        NSArray<CMPChatMessagePart *> * adaptedInitialParts = [_adapter adaptMessageParts:initialParts];
+        
+        for (int i = 0; i < initialParts.count; i++) {
+            CMPChatMessagePart *part = adaptedInitialParts[i];
+            if (part.data != nil && part.data.length > _maxPartSize) {
+                NSString *str = [part.data toBase64String];
+                CMPChatAttachment  *largeAtachment = [[CMPChatAttachment alloc] initWithContentData: [[CMPContentData alloc] initWithBase64Data:str type:part.type name:part.name] folder:kAttFolderName];
+                [largeAttachments addObject:largeAtachment];
+                [removedParts addObject:part];
+            }
+        }
+        
+        _preProcessedParts = [NSMutableArray array];
+        [_preProcessedParts addObjectsFromArray:adaptedInitialParts];
+        [_preProcessedParts removeObjectsInArray:removedParts];
+        
+        _preProcessedAttachments = [NSMutableArray array];
+        if (initialAttachments != nil) {
+            [_preProcessedAttachments addObjectsFromArray:initialAttachments];
+        }
+        [_preProcessedAttachments addObjectsFromArray:largeAttachments];
     }
-    
-    _preProcessedParts = [NSMutableArray array];
-    [_preProcessedParts addObjectsFromArray:adaptedInitialParts];
-    [_preProcessedParts removeObjectsInArray:removedParts];
-    
-    _preProcessedAttachments = [NSMutableArray array];
-    [_preProcessedAttachments addObjectsFromArray:initialAttachments];
-    [_preProcessedAttachments addObjectsFromArray:largeAttachments];
 }
 
 @end
