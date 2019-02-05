@@ -85,7 +85,11 @@
 - (void)addParticipants:(NSString *)conversationID participants:(NSArray<CMPConversationParticipant *> *)participants completion:(void (^)(CMPChatResult * _Nonnull))completion {
     __weak typeof(self) weakSelf = self;
     [_foundation.services.messaging addParticipantsWithConversationID:conversationID participants:participants completion:^(CMPResult<NSNumber *> * result) {
-        [weakSelf.chatController handleParticipantsAdded:conversationID completion:completion];
+        if (!result.error) {
+            [weakSelf.chatController handleParticipantsAdded:conversationID completion:completion];
+        } else {
+            completion([[CMPChatResult alloc] initWithComapiResult:result]);
+        }
     }];
 }
 

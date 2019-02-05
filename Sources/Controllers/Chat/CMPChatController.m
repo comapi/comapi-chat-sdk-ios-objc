@@ -191,8 +191,7 @@ NSInteger const kETagNotValid = 412;
         dispatch_group_leave(group);
     }];
     
-    
-    if (sender != nil && ![sender isEqualToString:@""] && [sender isEqualToString:[self getProfileID]]) {
+    if (sender != nil && ![sender isEqualToString:@""] && ![sender isEqualToString:[self getProfileID]]) {
         NSArray<NSString *> *ids = [NSArray arrayWithObjects:message.id, nil];
         
         dispatch_group_enter(group);
@@ -335,21 +334,17 @@ NSInteger const kETagNotValid = 412;
 }
 
 - (void)handleConversationCreated:(CMPResult<CMPConversation *> *)result completion:(void(^)(CMPChatResult *))completion {
-    if (result.error) {
-        completion([[CMPChatResult alloc] initWithComapiResult:result]);
-    } else {
+    if (!result.error) {
         [_persistenceController upsertConversations:@[[[CMPChatConversation alloc] initWithConversation:result.object eTag:result.eTag]] completion:^(CMPStoreResult<NSNumber *> * storeResult) {
             completion([[CMPChatResult alloc] initWithError:storeResult.error success:storeResult.object.boolValue eTag:result.eTag]);
         }];
+    } else {
+        completion([[CMPChatResult alloc] initWithComapiResult:result]);
     }
 }
 
 - (void)handleConversationDeleted:(NSString *)ID result:(CMPResult<NSNumber *> *)result completion:(void(^)(CMPChatResult *))completion {
-    if (result.code != kETagNotValid) {
-        [_persistenceController deleteConversation:ID completion:^(CMPStoreResult<NSNumber *> * storeResult) {
-            completion([[CMPChatResult alloc] initWithError:storeResult.error success:storeResult.object.boolValue]);
-        }];
-    } else {
+    if (result.code == kETagNotValid) {
         __weak typeof(self) weakSelf = self;
         [[weakSelf withClient].services.messaging getConversationWithConversationID:ID completion:^(CMPResult<CMPConversation *> * _result) {
             if (_result.error) {
@@ -360,15 +355,17 @@ NSInteger const kETagNotValid = 412;
                 }];
             }
         }];
+    } else if (!result.error) {
+        [_persistenceController deleteConversation:ID completion:^(CMPStoreResult<NSNumber *> * storeResult) {
+            completion([[CMPChatResult alloc] initWithError:storeResult.error success:storeResult.object.boolValue]);
+        }];
+    } else {
+        completion([[CMPChatResult alloc] initWithComapiResult:result]);
     }
 }
 
 - (void)handleConversationUpdated:(CMPConversationUpdate *)update result:(CMPResult<CMPConversation *> *)result completion:(void(^)(CMPChatResult *))completion {
-    if (result.object && !result.error) {
-        [_persistenceController upsertConversations:@[[[CMPChatConversation alloc] initWithConversation:result.object eTag:result.eTag]] completion:^(CMPStoreResult<NSNumber *> * storeResult) {
-            completion([[CMPChatResult alloc] initWithError:storeResult.error success:storeResult.object.boolValue]);
-        }];
-    } else if (result.code == kETagNotValid) {
+    if (result.code == kETagNotValid) {
         __weak typeof(self) weakSelf = self;
         [[weakSelf withClient].services.messaging getConversationWithConversationID:update.id completion:^(CMPResult<CMPConversation *> * _result) {
             if (!_result.error && _result.object) {
@@ -378,6 +375,10 @@ NSInteger const kETagNotValid = 412;
             } else {
                 completion([[CMPChatResult alloc] initWithError:result.error success:result.object != nil]);
             }
+        }];
+    } else if (!result.error && result.object) {
+        [_persistenceController upsertConversations:@[[[CMPChatConversation alloc] initWithConversation:result.object eTag:result.eTag]] completion:^(CMPStoreResult<NSNumber *> * storeResult) {
+            completion([[CMPChatResult alloc] initWithError:storeResult.error success:storeResult.object.boolValue]);
         }];
     } else {
         completion([[CMPChatResult alloc] initWithError:result.error success:result.object != nil]);
