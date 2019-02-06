@@ -27,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) CMPStore *store;
 @property (nonatomic, strong) CMPComapiChatClient *client;
 @property (nonatomic, strong) CMPProfile *profile;
-@property (nonatomic, strong) NSMutableArray<CMPChatConversation *> *conversations;
+@property (nonatomic, strong) NSFetchedResultsController *fetchController;
 
 - (instancetype)initWithClient:(CMPComapiChatClient *)client store:(CMPStore *)store profile:(CMPProfile *)profile;
 - (void)getConversationsWithCompletion:(void(^)(NSError * _Nullable))completion;

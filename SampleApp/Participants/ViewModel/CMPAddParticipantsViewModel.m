@@ -20,10 +20,11 @@
 
 @implementation CMPAddParticipantsViewModel
 
-- (instancetype)initWithClient:(CMPComapiChatClient *)client conversationID:(NSString *)conversationID {
+- (instancetype)initWithClient:(CMPComapiChatClient *)client store:(CMPStore *)store conversationID:(NSString *)conversationID {
     self = [super init];
     
     if (self) {
+        self.store = store;
         self.client = client;
         self.conversationID = conversationID;
         self.participant = [[CMPConversationParticipant alloc] init];

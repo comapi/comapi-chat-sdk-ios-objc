@@ -26,6 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPAddParticipantsViewModel : NSObject
 
+@property (nonatomic, strong) CMPStore *store;
 @property (nonatomic, strong) CMPComapiChatClient *client;
 @property (nonatomic, strong) CMPConversationParticipant *participant;
 @property (nonatomic, strong) NSString *conversationID;

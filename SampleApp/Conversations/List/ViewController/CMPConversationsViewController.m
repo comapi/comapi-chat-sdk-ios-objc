@@ -33,6 +33,7 @@
     
     if (self) {
         _viewModel = viewModel;
+        _viewModel.fetchController.delegate = self;
         
         [self delegates];
         [self navigation];
@@ -58,14 +59,19 @@
         if (error) {
             NSLog(@"%@", error.localizedDescription);
         }
-        [weakSelf reload];
-        [weakSelf.viewModel registerForRemoteNotificationsWithCompletion:^(BOOL success, NSError * _Nonnull error) {
-            if (!error && success) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [UIApplication.sharedApplication registerForRemoteNotifications];
-                });
-            }
-        }];
+        [weakSelf.viewModel.fetchController performFetch:&error];
+        if (error) {
+            NSLog(@"%@", error.localizedDescription);
+        } else {
+            [weakSelf reload];
+            [weakSelf.viewModel registerForRemoteNotificationsWithCompletion:^(BOOL success, NSError * _Nonnull error) {
+                if (!error && success) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [UIApplication.sharedApplication registerForRemoteNotifications];
+                    });
+                }
+            }];
+        }
     }];
 }
 
@@ -119,26 +125,55 @@
 #pragma mark - UITableViewDelegate & UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return [[_viewModel.fetchController sections] count];
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if ([[_viewModel.fetchController sections] count] > 0) {
+        id <NSFetchedResultsSectionInfo> sectionInfo = [[_viewModel.fetchController sections] objectAtIndex:section];
+        return [sectionInfo numberOfObjects];
+    } else
+        return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     CMPTitledCell *cell = (CMPTitledCell *)[tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
-    CMPChatConversation *conversation = self.viewModel.conversations[indexPath.row];
+    CMPChatConversation *conversation = [_viewModel.fetchController objectAtIndexPath:indexPath];
     [cell configureWithTitle:conversation.id state:CMPPRofileStateOther];
     return cell;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.viewModel.conversations.count;
-}
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    CMPChatConversation *conversation = _viewModel.conversations[indexPath.row];
+    CMPChatConversation *conversation = [_viewModel.fetchController objectAtIndexPath:indexPath];
     CMPChatViewModel *vm = [[CMPChatViewModel alloc] initWithClient:_viewModel.client store:_viewModel.store conversation:conversation];
     CMPChatViewController *vc = [[CMPChatViewController alloc] initWithViewModel:vm];
     
     [self.navigationController pushViewController:vc animated:YES];
+}
+
+#pragma mark - NSFetchedResultsControllerDelegate
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+    switch (type) {
+        case NSFetchedResultsChangeInsert: {
+            [self.conversationsView.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        }
+        case NSFetchedResultsChangeDelete: {
+            [self.conversationsView.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        }
+        case NSFetchedResultsChangeMove: {
+            break;
+        }
+        case NSFetchedResultsChangeUpdate: {
+            [self.conversationsView.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        }
+    }
 }
 
 @end

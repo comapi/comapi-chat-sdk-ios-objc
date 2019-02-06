@@ -68,19 +68,13 @@
                 CMPChatViewController *vc = (CMPChatViewController *)weakSelf.navigationController.viewControllers[weakSelf.navigationController.viewControllers.count - 2];
                 if (vc) {
                     CMPContentData *contentData = [[CMPContentData alloc] initWithData:data type:@"image/jpg" name:nil];
-                    CMPChatAttachment *attachment = [[CMPChatAttachment alloc] initWithContentData:contentData folder:nil];
-                    
-//                    [vc.viewModel uploadContent:contentData completion:^(CMPContentUploadResult * _Nullable result, NSError * _Nullable error) {
-//                        if (error) {
-//                            NSLog(@"%@", error.localizedDescription);
-//                        }
-//                        [vc.viewModel sendImageWithUploadResult:result completion:^(NSError * _Nullable error) {
-//                            if (error) {
-//                                NSLog(@"%@", error.localizedDescription);
-//                            }
-//                            [weakSelf.navigationController popViewControllerAnimated:YES];
-//                        }];
-//                    }];
+                    CMPChatAttachment *attachment = [[CMPChatAttachment alloc] initWithContentData:contentData folder:@"images"];
+                    [vc.viewModel sendMessage:vc.chatView.inputMessageView.inputTextView.text attachments:@[attachment] completion:^(NSError * _Nullable error) {
+                        if (error) {
+                            NSLog(@"%@", error.localizedDescription);
+                        }
+                        [weakSelf.navigationController popViewControllerAnimated:YES];
+                    }];
                 }
             }
         }

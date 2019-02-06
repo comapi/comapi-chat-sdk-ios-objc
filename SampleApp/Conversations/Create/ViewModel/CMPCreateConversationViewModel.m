@@ -32,7 +32,7 @@
 }
 
 - (BOOL)validate {
-    return self.conversation.conversationDescription != nil && self.conversation.name != nil;
+    return self.conversation.name != nil;
 }
 
 - (CMPRoles *)createRoles {
@@ -73,7 +73,7 @@
 - (void)createConversation:(BOOL)isPublic completion:(void (^)(CMPChatConversation * _Nullable conversation, NSError * _Nullable error))completion {
     NSString *profileID = self.client.profileID;
     if ([self validate] && profileID != nil) {
-        CMPChatParticipant *me = [[CMPChatParticipant alloc] initWithID:profileID role:CMPChatRoleOwner];
+        CMPConversationParticipant *me = [[CMPConversationParticipant alloc] initWithID:profileID role:CMPRoleOwner];
         CMPRoles *roles = [self createRoles];
         NSString *id = [[NSUUID UUID] UUIDString];
         
