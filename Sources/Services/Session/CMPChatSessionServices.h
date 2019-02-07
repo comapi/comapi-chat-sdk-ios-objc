@@ -19,14 +19,17 @@
 #import <CMPComapiFoundation/CMPResult.h>
 #import <CMPComapiFoundation/CMPComapiClient.h>
 
+#import "CMPPersistenceController.h"
+#import "CMPChatResult.h"
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPChatSessionServices : NSObject
 
-- (instancetype)initWithFoundation:(CMPComapiClient *)foundation;
+- (instancetype)initWithFoundation:(CMPComapiClient *)foundation persistenceController:(CMPPersistenceController *)persistenceController;
 
 - (void)startSessionWithCompletion:(void(^)(void))completion failure:(void(^)(NSError * _Nullable))failure NS_SWIFT_NAME(startSession(completion:failure:));
-- (void)endSessionWithCompletion:(void (^)(CMPResult<NSNumber *> *))completion NS_SWIFT_NAME(endSession(completion:));
+- (void)endSessionWithCompletion:(void (^)(CMPChatResult *))completion NS_SWIFT_NAME(endSession(completion:));
 
 @end
 
