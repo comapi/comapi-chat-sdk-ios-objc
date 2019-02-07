@@ -78,6 +78,10 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kCMPPushRegistrationStatusChangedNotification object:nil];
+    
+    if (self.isMovingFromParentViewController) {
+        [_viewModel.client.services.session endSessionWithCompletion:nil];
+    }
 }
 
 - (void)delegates {

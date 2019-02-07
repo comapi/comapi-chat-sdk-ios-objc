@@ -433,6 +433,21 @@
     }];
 }
 
-
+-(void)clear:(void(^)(CMPStoreResult<NSNumber *> *))completion {
+    [_factory executeTransaction:^(id<CMPChatStore> _Nullable store, NSError * _Nullable error) {
+        if (error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion([CMPStoreResult resultWithObject:@(NO) error:error]);
+            });
+        } else {
+            [store beginTransaction];
+            BOOL success = [store clearDatabase];
+            [store endTransaction];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion([CMPStoreResult resultWithObject:@(success) error:nil]);
+            });
+        }
+    }];
+}
 
 @end
