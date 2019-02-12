@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, readonly) CMPChatSessionServices *session;
 @property (nonatomic, strong, readonly) CMPChatMessagingServices *messaging;
 
-- (instancetype)initWithFoundation:(CMPComapiClient *)foundation chatController:(CMPChatController *)chatController modelAdapter:(CMPModelAdapter *)modelAdapter;
+- (instancetype)initWithFoundation:(CMPComapiClient *)foundation chatController:(CMPChatController *)chatController persistenceController:(CMPPersistenceController *)persistenceController modelAdapter:(CMPModelAdapter *)modelAdapter;
 
 @end
 

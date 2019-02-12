@@ -21,16 +21,18 @@
 @interface CMPChatSessionServices ()
 
 @property (nonatomic, strong, readonly) CMPComapiClient *foundation;
+@property (nonatomic, weak, readonly) CMPPersistenceController *persistenceController;
 
 @end
 
 @implementation CMPChatSessionServices
 
-- (instancetype)initWithFoundation:(CMPComapiClient *)foundation {
+- (instancetype)initWithFoundation:(CMPComapiClient *)foundation persistenceController:(CMPPersistenceController *)persistenceController {
     self = [super init];
     
     if (self) {
         _foundation = foundation;
+        _persistenceController = persistenceController;
     }
     
     return self;
@@ -40,8 +42,21 @@
     [_foundation.services.session startSessionWithCompletion:completion failure:failure];
 }
 
-- (void)endSessionWithCompletion:(void (^)(CMPResult<NSNumber *> * _Nonnull))completion {
-    [_foundation.services.session endSessionWithCompletion:completion];
+- (void)endSessionWithCompletion:(void (^)(CMPChatResult*))completion {
+    __weak typeof(self) weakSelf = self;
+    [_foundation.services.session endSessionWithCompletion:^(CMPResult<NSNumber *> * result) {
+        if (!result.error) {
+            [weakSelf.persistenceController clear:^(CMPStoreResult<NSNumber *> * storeResult) {
+                if (completion) {
+                    completion([[CMPChatResult alloc] initWithError:storeResult.error success:(storeResult.error == nil)]);
+                }
+            }];
+        } else {
+            if (completion) {
+                completion([[CMPChatResult alloc] initWithComapiResult:result]);
+            }
+        }
+    }];
 }
 
 @end

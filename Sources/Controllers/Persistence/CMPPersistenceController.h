@@ -53,6 +53,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)upsertMessageStatuses:(NSString *)conversationID profileID:(NSString *)profileID statuses:(NSArray<CMPMessageStatusUpdate *> *)statuses completion:(void(^)(CMPStoreResult<NSNumber *> *))completion;
 - (void)upsertMessageStatus:(CMPChatMessageStatus *)status completion:(void(^)(CMPStoreResult<NSNumber *> *))completion;
 
+-(void)clear:(void(^)(CMPStoreResult<NSNumber *> *))completion;
+
 @end
 
 NS_ASSUME_NONNULL_END

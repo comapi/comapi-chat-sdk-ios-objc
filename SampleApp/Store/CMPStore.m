@@ -16,6 +16,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+#import <Foundation/Foundation.h>
+
 #import "Conversation.h"
 #import "Roles.h"
 #import "MessagePart.h"
@@ -71,9 +73,25 @@
     BOOL result = NO;
     for (NSPersistentStore *store in persistentStoreCoordinator.persistentStores) {
         NSError *error;
-        result = result && [persistentStoreCoordinator removePersistentStore:store error:&error];
+        result = [persistentStoreCoordinator removePersistentStore:store error:&error];
+        [[NSFileManager defaultManager]removeItemAtURL:store.URL error:&error];
     }
     
+    dispatch_queue_t queue = dispatch_queue_create([@"queue" UTF8String], DISPATCH_QUEUE_SERIAL);
+    dispatch_group_t group = dispatch_group_create();
+    dispatch_group_enter(group);
+    dispatch_sync(queue, ^{
+        (void) [self.manager initWithCompletion:^(NSError * _Nullable err) {
+            if (err) {
+                NSLog(@"%@", err.localizedDescription);
+            }
+            dispatch_group_leave(group);
+        }];
+        
+    });
+    
+    dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+
     return result;
 }
 

@@ -62,7 +62,7 @@
         _chatController = [[CMPChatController alloc] initWithClient:_client persistenceController:persistenceController attachmentController:attachmentController adapter:adapter config:chatConfig.internalConfig];
         _eventsController = [[CMPEventsController alloc] initWithPersistenceController:persistenceController chatController:_chatController missingEventsTracker:tracker chatConfig:chatConfig];
         
-        _services = [[CMPChatServices alloc] initWithFoundation:_client chatController:_chatController modelAdapter:adapter];
+        _services = [[CMPChatServices alloc] initWithFoundation:_client chatController:_chatController persistenceController:persistenceController modelAdapter:adapter];
         
         [_client addEventDelegate:_eventsController];
         
