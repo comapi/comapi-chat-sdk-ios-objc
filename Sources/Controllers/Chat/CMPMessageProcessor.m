@@ -147,7 +147,7 @@ NSUInteger const kMaxPartDataLength = 1333;
     return [[CMPChatMessage alloc] initWithID:_tempMessageId sentEventID:nil metadata:[[NSDictionary alloc] initWithDictionary:mutableMetadata] context:context parts:combinedParts statusUpdates:nil];
 }
 
-- (void) convertLargePartsToAttachments: (NSArray<CMPMessagePart *> *) initialParts combineWithAttachments:(NSArray<CMPChatAttachment *> *) initialAttachments {
+- (void) convertLargePartsToAttachments: (nullable NSArray<CMPMessagePart *> *) initialParts combineWithAttachments:(NSArray<CMPChatAttachment *> *) initialAttachments {
     
     if (initialParts == nil) {
         _preProcessedParts = [NSMutableArray array];

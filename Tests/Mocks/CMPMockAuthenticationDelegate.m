@@ -16,23 +16,12 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPBaseView.h"
-#import "CMPPlaceholderTextView.h"
-#import "CMPAttachmentsView.h"
+#import "CMPMockAuthenticationDelegate.h"
 
-NS_ASSUME_NONNULL_BEGIN
+@implementation CMPMockAuthenticationDelegate
 
-@interface CMPChatInputView : CMPBaseView <CMPViewConfiguring>
-
-@property (nonatomic, strong) CMPPlaceholderTextView *inputTextView;
-@property (nonatomic, strong) UIButton *sendButton;
-@property (nonatomic, strong) UIButton *uploadButton;
-
-@property (nonatomic, strong) void(^didTapSendButton)(void);
-@property (nonatomic, strong) void(^didTapUploadButton)(void);
-
-- (instancetype)init;
+- (void)client:(nonnull CMPComapiClient *)client didReceiveAuthenticationChallenge:(nonnull CMPAuthenticationChallenge *)challenge completion:(nonnull void (^)(NSString * _Nullable))continueWithToken {
+    continueWithToken([CMPTestMocks mockAuthenticationToken]);
+}
 
 @end
-
-NS_ASSUME_NONNULL_END

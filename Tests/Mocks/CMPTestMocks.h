@@ -16,22 +16,19 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPBaseView.h"
-#import "CMPPlaceholderTextView.h"
-#import "CMPAttachmentsView.h"
+#import <XCTest/XCTest.h>
+#import "CMPAuthenticationDelegate.h"
+#import "CMPRequestPerforming.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatInputView : CMPBaseView <CMPViewConfiguring>
+@interface CMPTestMocks : NSObject
 
-@property (nonatomic, strong) CMPPlaceholderTextView *inputTextView;
-@property (nonatomic, strong) UIButton *sendButton;
-@property (nonatomic, strong) UIButton *uploadButton;
-
-@property (nonatomic, strong) void(^didTapSendButton)(void);
-@property (nonatomic, strong) void(^didTapUploadButton)(void);
-
-- (instancetype)init;
++ (NSString *)mockAuthenticationToken;
++ (NSString *)mockApiSpaceID;
++ (NSURL *)mockBaseURL;
++ (NSErrorDomain)mockErrorDomain;
++ (NSUInteger)mockStatusCode;
 
 @end
 

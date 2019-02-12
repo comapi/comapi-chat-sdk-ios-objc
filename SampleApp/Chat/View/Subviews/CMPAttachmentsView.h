@@ -18,20 +18,15 @@
 
 #import "CMPBaseView.h"
 #import "CMPPlaceholderTextView.h"
-#import "CMPAttachmentsView.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatInputView : CMPBaseView <CMPViewConfiguring>
+@interface CMPAttachmentsView : CMPBaseView <CMPViewConfiguring>
 
-@property (nonatomic, strong) CMPPlaceholderTextView *inputTextView;
-@property (nonatomic, strong) UIButton *sendButton;
-@property (nonatomic, strong) UIButton *uploadButton;
+@property (nonatomic) BOOL isShown;
+@property (nonatomic, strong) UICollectionView *collectionView;
 
-@property (nonatomic, strong) void(^didTapSendButton)(void);
-@property (nonatomic, strong) void(^didTapUploadButton)(void);
-
-- (instancetype)init;
+- (void)reload;
 
 @end
 

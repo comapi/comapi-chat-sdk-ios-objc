@@ -39,7 +39,7 @@ NSString *const kModelName = @"CMPComapiChat";
     if (self) {
         NSURL *modelURL = [[NSBundle bundleForClass:self.class] URLForResource:kModelName withExtension:@"momd"];
         NSAssert(modelURL, @"Failed to locate momd bundle in application");
-
+        
         NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
         NSAssert(mom, @"Failed to initialize mom from URL: %@", modelURL);
         

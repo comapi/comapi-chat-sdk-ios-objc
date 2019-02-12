@@ -16,22 +16,23 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPBaseView.h"
-#import "CMPPlaceholderTextView.h"
-#import "CMPAttachmentsView.h"
+#import "CMPChatMessagePart.h"
+#import "CMPViewConfiguring.h"
+
+#import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatInputView : CMPBaseView <CMPViewConfiguring>
+@interface CMPAttachmentCell : UICollectionViewCell <CMPViewConfiguring>
 
-@property (nonatomic, strong) CMPPlaceholderTextView *inputTextView;
-@property (nonatomic, strong) UIButton *sendButton;
-@property (nonatomic, strong) UIButton *uploadButton;
+@property (nonatomic, strong) UIButton *deleteButton;
+@property (nonatomic, strong) UIView *cellBackgroundView;
+@property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) UIActivityIndicatorView *loader;
 
-@property (nonatomic, strong) void(^didTapSendButton)(void);
-@property (nonatomic, strong) void(^didTapUploadButton)(void);
+@property (nonatomic, copy, nullable) void(^didTapDelete)(void);
 
-- (instancetype)init;
+- (void)configureWithImage:(UIImage *)image;
 
 @end
 

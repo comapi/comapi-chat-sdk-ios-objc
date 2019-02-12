@@ -16,22 +16,29 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPBaseView.h"
-#import "CMPPlaceholderTextView.h"
-#import "CMPAttachmentsView.h"
+#import <Foundation/Foundation.h>
+#import "CMPRequestPerforming.h"
+#import "NSHTTPURLResponse+CMPTestUtility.h"
+#import "CMPTestMocks.h"
+#import "CMPResourceLoader.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatInputView : CMPBaseView <CMPViewConfiguring>
+@interface CMPMockRequestResult : NSObject <NSCopying>
 
-@property (nonatomic, strong) CMPPlaceholderTextView *inputTextView;
-@property (nonatomic, strong) UIButton *sendButton;
-@property (nonatomic, strong) UIButton *uploadButton;
+@property (nonatomic, strong, nullable) NSData *data;
+@property (nonatomic, strong, nullable) NSURLResponse *response;
+@property (nonatomic, strong, nullable) NSError *error;
 
-@property (nonatomic, strong) void(^didTapSendButton)(void);
-@property (nonatomic, strong) void(^didTapUploadButton)(void);
+- (instancetype)initWithData:(nullable NSData *)data response:(nullable NSURLResponse *)response error:(nullable NSError *)error;
 
-- (instancetype)init;
+@end
+
+@interface CMPMockRequestPerformer : NSObject <CMPRequestPerforming>
+
+@property (nonatomic, strong) NSMutableArray<CMPMockRequestResult *> *completionValues;
+
+- (instancetype)initWithSessionAndAuth;
 
 @end
 

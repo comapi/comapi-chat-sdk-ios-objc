@@ -42,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)participantIsTyping:(NSString *)conversationID isTyping:(BOOL)isTyping completion:(void(^)(CMPChatResult *))completion;
 
 - (void)sendMessage:(NSString *)conversationID message:(CMPSendableMessage *)message completion:(void(^)(CMPChatResult *))completion;
-- (void)sendMessage:(NSString *)conversationID message:(CMPSendableMessage *)message attachments:(NSArray<CMPChatAttachment *> *)attachments completion:(void(^)(CMPChatResult *))completion;
+- (void)sendMessage:(NSString *)conversationID message:(nullable CMPSendableMessage *)message attachments:(NSArray<CMPChatAttachment *> *)attachments completion:(void(^)(CMPChatResult *))completion;
 - (void)getPreviousMessages:(NSString *)conversationID completion:(void(^)(CMPChatResult *))completion;
 - (void)markMessagesAsRead:(NSString *)conversationID messageIDs:(NSArray<NSString *> *)messageIDs completion:(void(^)(CMPChatResult *))completion;
 

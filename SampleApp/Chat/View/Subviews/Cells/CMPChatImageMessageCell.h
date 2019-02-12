@@ -20,6 +20,7 @@
 #import "CMPViewConfiguring.h"
 #import "CMPChatMessage.h"
 #import "CMPImageDownloader.h"
+#import "CMPMessageOwnership.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

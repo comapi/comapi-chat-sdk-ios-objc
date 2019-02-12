@@ -33,7 +33,7 @@ extern NSUInteger const kMaxPartDataLength;
 @property (nonatomic, strong, readonly) NSString *tempMessageId;
 @property (nonatomic, strong, readonly) NSString *sender;
 
-- (instancetype)initWithModelAdapter:(CMPModelAdapter *)adapter message:(CMPSendableMessage *) message attachments:(NSArray<CMPChatAttachment *> *) attachments toConversationWithID:(NSString *) conversationId from:(NSString *) sender maxPartSize:(NSUInteger) maxSize ;
+- (instancetype)initWithModelAdapter:(CMPModelAdapter *)adapter message:(nullable CMPSendableMessage *) message attachments:(NSArray<CMPChatAttachment *> *) attachments toConversationWithID:(NSString *) conversationId from:(NSString *) sender maxPartSize:(NSUInteger) maxSize ;
 
 - (CMPChatMessage *)createPreUploadMessage;
 - (CMPChatMessage *)createPostUploadMessageWithAttachments:(NSArray<CMPChatAttachment *> *) attachments;

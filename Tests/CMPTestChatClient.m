@@ -16,23 +16,32 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPBaseView.h"
-#import "CMPPlaceholderTextView.h"
-#import "CMPAttachmentsView.h"
+#import "CMPComapiChatClient.h"
+#import "CMPMockAuthenticationDelegate.h"
+#import "CMPTestMocks.h"
 
-NS_ASSUME_NONNULL_BEGIN
+#import <XCTest/XCTest.h>
 
-@interface CMPChatInputView : CMPBaseView <CMPViewConfiguring>
 
-@property (nonatomic, strong) CMPPlaceholderTextView *inputTextView;
-@property (nonatomic, strong) UIButton *sendButton;
-@property (nonatomic, strong) UIButton *uploadButton;
 
-@property (nonatomic, strong) void(^didTapSendButton)(void);
-@property (nonatomic, strong) void(^didTapUploadButton)(void);
+@interface CMPTestChatClient : XCTestCase
 
-- (instancetype)init;
+@property (nonatomic, strong) CMPChatConfig *config;
+@property (nonatomic, strong) CMPComapiChatClient *client;
 
 @end
 
-NS_ASSUME_NONNULL_END
+@implementation CMPTestChatClient
+
+- (void)setUp {
+    CMPMockAuthenticationDelegate *mockAuthDelegate = [[CMPMockAuthenticationDelegate alloc] init];
+    _config = [[CMPChatConfig alloc] initWithApiSpaceID:[CMPTestMocks mockApiSpaceID] authenticationDelegate:mockAuthDelegate logLevel:CMPLogLevelVerbose];
+    
+}
+
+- (void)tearDown {
+    // Put teardown code here. This method is called after the invocation of each test method in the class.
+}
+
+
+@end

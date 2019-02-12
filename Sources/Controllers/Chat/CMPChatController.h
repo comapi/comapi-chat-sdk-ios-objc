@@ -48,7 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Messages
 
-- (void)sendMessage:(CMPSendableMessage *)message withAttachments:(nullable NSArray<CMPChatAttachment *> *)attachments toConversationWithID: (NSString *)conversationId completion:(void(^)(CMPChatResult *))completion;
+- (void)sendMessage:(nullable CMPSendableMessage *)message withAttachments:(nullable NSArray<CMPChatAttachment *> *)attachments toConversationWithID: (NSString *)conversationId completion:(void(^)(CMPChatResult *))completion;
 - (void)handleMessage:(CMPChatMessage *)message completion:(void(^ _Nullable)(BOOL))completion;
 - (void)getPreviousMessages:(NSString *)ID completion:(void(^)(CMPChatResult *))completion;
 - (void)handleMessageStatusToUpdate:(NSString *)ID statusUpdates:(NSArray<CMPMessageStatusUpdate *> *)statusUpdates result:(CMPResult *)result completion:(void(^)(CMPChatResult *))completion;
