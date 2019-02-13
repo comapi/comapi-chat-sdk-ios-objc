@@ -33,6 +33,8 @@
         self.conversation = conversation;
         self.fetchController = [self setupFetchController];
         self.downloader = [[CMPImageDownloader alloc] init];
+        self.imageAttachments = [NSMutableArray new];
+        
     }
     
     return self;
@@ -64,12 +66,31 @@
     }];
 }
 
-- (void)sendMessage:(NSString *)message attachments:(NSArray<CMPChatAttachment *> *)attachments completion:(void (^)(NSError * _Nullable))completion {
-    CMPMessagePart *textPart = [[CMPMessagePart alloc] initWithName:@"" type:@"text/plain" url:nil data:message ? message : @"New image." size:@(message.length)];
-    CMPSendableMessage *newMessage = [[CMPSendableMessage alloc] initWithMetadata:nil parts:@[textPart] alert:nil];
-    [self.client.services.messaging sendMessage:_conversation.id message:newMessage attachments:attachments completion:^(CMPChatResult * result) {
-        completion(result.error);
-    }];
+- (NSArray<CMPChatAttachment *> *)convertImagesToAttachments {
+    NSMutableArray<CMPChatAttachment *> *attachments = [NSMutableArray new];
+    for (UIImage *i in _imageAttachments) {
+        NSData *data = UIImageJPEGRepresentation(i, 1.0);
+        CMPContentData *contentData = [[CMPContentData alloc] initWithData:data type:@"image/jpg" name:nil];
+        CMPChatAttachment *attachment = [[CMPChatAttachment alloc] initWithContentData:contentData folder:@"images"];
+        [attachments addObject:attachment];
+    }
+    
+    return attachments;
+}
+
+- (void)sendMessage:(NSString *)message completion:(void (^)(NSError * _Nullable))completion {
+    NSArray<CMPChatAttachment *> *attachments = [self convertImagesToAttachments];
+    if (message) {
+        CMPMessagePart *textPart = [[CMPMessagePart alloc] initWithName:@"" type:@"text/plain" url:nil data:message size:@(message.length)];
+        CMPSendableMessage *newMessage = [[CMPSendableMessage alloc] initWithMetadata:nil parts:@[textPart] alert:nil];
+        __weak typeof(self) weakSelf = self;
+        [self.client.services.messaging sendMessage:_conversation.id message:newMessage attachments:attachments completion:^(CMPChatResult * result) {
+            weakSelf.imageAttachments = [NSMutableArray new];
+            completion(result.error);
+        }];
+    } else {
+        completion(nil);
+    }
 }
 
 - (void)showPhotoSourceControllerWithPresenter:(void (^)(UIViewController * _Nonnull))presenter alertPresenter:(void (^)(UIViewController * _Nonnull))alertPresenter pickerPresenter:(void (^)(UIViewController * _Nonnull))pickerPresenter {

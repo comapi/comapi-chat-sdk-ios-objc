@@ -16,23 +16,12 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPBaseView.h"
-#import "CMPPlaceholderTextView.h"
-#import "CMPAttachmentsView.h"
+#import <Foundation/Foundation.h>
 
-NS_ASSUME_NONNULL_BEGIN
+@interface NSHTTPURLResponse (CMPTestUtility)
 
-@interface CMPChatInputView : CMPBaseView <CMPViewConfiguring>
-
-@property (nonatomic, strong) CMPPlaceholderTextView *inputTextView;
-@property (nonatomic, strong) UIButton *sendButton;
-@property (nonatomic, strong) UIButton *uploadButton;
-
-@property (nonatomic, strong) void(^didTapSendButton)(void);
-@property (nonatomic, strong) void(^didTapUploadButton)(void);
-
-- (instancetype)init;
++ (instancetype)mockedWithURL:(NSURL *)url;
++ (instancetype)mockedWithURL:(NSURL *)url statusCode:(NSUInteger)statusCode httpVersion:(NSString *)httpVersion headers:(NSDictionary<NSString *, NSString *> *)headers;
 
 @end
 
-NS_ASSUME_NONNULL_END

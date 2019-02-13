@@ -17,8 +17,13 @@
 //
 
 #import "CMPChatView.h"
-#import "CMPChatTextMessageCell.h"
-#import "CMPChatImageMessageCell.h"
+#import "CMPMessagePartCell.h"
+
+@interface CMPChatView ()
+
+@property (nonatomic, strong, nullable) NSLayoutConstraint *attachmentsTrailingConstraint;
+
+@end
 
 @implementation CMPChatView
 
@@ -28,6 +33,7 @@
     if (self) {
         self.tableView = [UITableView new];
         self.inputMessageView = [[CMPChatInputView alloc] init];
+        self.attachmentsView = [[CMPAttachmentsView alloc] init];
         
         [self configure];
     }
@@ -44,13 +50,12 @@
 - (void)customize {
     self.backgroundColor = UIColor.grayColor;
     
-    self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
+    self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
     self.tableView.backgroundColor = UIColor.grayColor;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     self.tableView.estimatedRowHeight = 44;
-    [self.tableView registerClass:CMPChatTextMessageCell.class forCellReuseIdentifier:@"textCell"];
-    [self.tableView registerClass:CMPChatImageMessageCell.class forCellReuseIdentifier:@"imageCell"];
+    [self.tableView registerClass:CMPMessagePartCell.class forCellReuseIdentifier:@"cell"];
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
     
     __weak typeof(self) weakSelf = self;
@@ -62,7 +67,6 @@
     };
     self.inputMessageView.inputTextView.didChangeText = ^(UITextView *textView) {
         [weakSelf adjustTableViewContentInset];
-        //[weakSelf scrollToBottomAnimated:YES];
         weakSelf.inputMessageView.sendButton.enabled = ![textView.text isEqualToString:@""];
     };
     self.inputMessageView.didTapUploadButton = ^{
@@ -71,10 +75,15 @@
         }
     };
     self.inputMessageView.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    self.attachmentsView.alpha = 0.0;
+    self.attachmentsView.isShown = NO;
+    self.attachmentsView.translatesAutoresizingMaskIntoConstraints = NO;
 }
 
 - (void)layout {
     [self addSubview:self.tableView];
+    [self addSubview:self.attachmentsView];
     [self addSubview:self.inputMessageView];
 }
 
@@ -99,6 +108,51 @@
     NSLayoutConstraint *tableBottom = [self.tableView.bottomAnchor constraintEqualToAnchor:self.inputMessageView.topAnchor];
     
     [NSLayoutConstraint activateConstraints:@[tableTrailing, tableLeading, tableTop, tableBottom]];
+    
+    NSLayoutConstraint *avTrailing = [self.attachmentsView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:0];
+    NSLayoutConstraint *avLeading = [self.attachmentsView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:0];
+    NSLayoutConstraint *avBottom = [self.attachmentsView.bottomAnchor constraintEqualToAnchor:self.inputMessageView.topAnchor constant:0];
+    NSLayoutConstraint *avHeight = [self.attachmentsView.heightAnchor constraintEqualToConstant:64];
+    
+    [NSLayoutConstraint activateConstraints:@[avLeading, avTrailing, avBottom, avHeight]];
+}
+
+- (void)reloadAttachments {
+    [self.attachmentsView reload];
+}
+
+- (void)hideAttachmentsWithCompletion:(void (^)(void))completion {
+    CGFloat alpha = 0.0;
+    if (alpha == self.attachmentsView.alpha) {
+        completion();
+        return;
+    }
+    
+    [UIView animateWithDuration:0.33 animations:^{
+        self.attachmentsView.alpha = alpha;
+    } completion:^(BOOL finished) {
+        self.attachmentsView.isShown = NO;
+        if (completion) {
+            completion();
+        }
+    }];
+}
+
+- (void)showAttachmentsWithCompletion:(void (^)(void))completion {
+    CGFloat alpha = 1.0;
+    if (alpha == self.attachmentsView.alpha) {
+        completion();
+        return;
+    }
+    
+    [UIView animateWithDuration:0.33 animations:^{
+        self.attachmentsView.alpha = alpha;
+    } completion:^(BOOL finished) {
+        self.attachmentsView.isShown = YES;
+        if (completion) {
+            completion();
+        }
+    }];
 }
 
 - (void)animateOnKeyboardChangeWithNotification:(NSNotification *)notification completion:(void(^)(void))completion {
@@ -107,17 +161,17 @@
     UIViewAnimationCurve curve = (UIViewAnimationCurve)userInfo[UIKeyboardAnimationCurveUserInfoKey];
     NSTimeInterval duration = (NSTimeInterval)[(NSNumber *)userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     CGRect endFrame = [(NSValue *)userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    
+    if ([name isEqualToString:UIKeyboardWillShowNotification]) {
+        [self.animatableConstraint setConstant:-endFrame.size.height];
+    } else {
+        [self.animatableConstraint setConstant:0.0];
+    }
     [UIView animateWithDuration:duration delay:0.0 options: curve << 16 animations:^{
-        if ([name isEqualToString:UIKeyboardWillShowNotification]) {
-            [self.animatableConstraint setConstant:-endFrame.size.height];
-        } else {
-            [self.animatableConstraint setConstant:0.0];
-        }
-        self.tableView.contentInset = UIEdgeInsetsZero;
         [self layoutIfNeeded];
-        
     } completion:^(BOOL finished) {
+//        if ([name isEqualToString:UIKeyboardWillShowNotification]) {
+//            [self scrollToBottomAnimated:YES];
+//        }
         if (completion) {
             completion();
         }
@@ -128,12 +182,17 @@
     if (self.tableView.contentSize.height < self.tableView.bounds.size.height) {
         return;
     }
-    CGFloat offset = self.tableView.contentSize.height - self.tableView.bounds.size.height;
+    CGFloat offset = self.tableView.contentSize.height + self.tableView.contentInset.bottom - self.tableView.frame.size.height;
     [self.tableView setContentOffset:CGPointMake(0.0, offset) animated:animated];
 }
 
+- (CGFloat)adjustedContentInsetWithAdditionalHeight:(CGFloat)height {
+    CGFloat offset = self.attachmentsView.alpha == 0.0 ? 0.0 + height : self.attachmentsView.bounds.size.height + height;
+    return offset;
+}
+
 - (void)adjustTableViewContentInset {
-    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, self.inputMessageView.bounds.size.height, 0);
+    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, [self adjustedContentInsetWithAdditionalHeight:0], 0);
     [self layoutIfNeeded];
 }
 

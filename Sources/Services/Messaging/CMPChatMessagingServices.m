@@ -107,7 +107,7 @@
     [_chatController sendMessage:message withAttachments:@[] toConversationWithID:conversationID completion:completion];
 }
 
-- (void)sendMessage:(NSString *)conversationID message:(CMPSendableMessage *)message attachments:(NSArray<CMPChatAttachment *> *)attachments completion:(void (^)(CMPChatResult * ))completion {
+- (void)sendMessage:(NSString *)conversationID message:(nullable CMPSendableMessage *)message attachments:(NSArray<CMPChatAttachment *> *)attachments completion:(void (^)(CMPChatResult * ))completion {
     [_chatController sendMessage:message withAttachments:attachments toConversationWithID:conversationID completion:completion];
 }
 

@@ -16,28 +16,26 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatTextMessageCell.h"
-#import "NSDate+CMPUtility.h"
+#import "CMPTextPartView.h"
 
-//CGFloat const kMaxTextViewWidth = 200;
+CGFloat const kMaxTextViewWidth = 200;
 
-@interface CMPChatTextMessageCell ()
+@interface CMPTextPartView ()
 
 @property (nonatomic, copy, readonly) NSDictionary<NSAttributedStringKey, id> *selfAttributes;
 @property (nonatomic, copy, readonly) NSDictionary<NSAttributedStringKey, id> *otherAttributes;
 
 @end
 
-@implementation CMPChatTextMessageCell
+@implementation CMPTextPartView
 
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+- (instancetype)init {
+    self = [super init];
     
     if (self) {
         self.bubbleView = [UIView new];
         self.textView = [UITextView new];
-        self.dateLabel = [UILabel new];
-
+        
         _selfAttributes = @{NSFontAttributeName : [UIFont systemFontOfSize:18],
                             NSForegroundColorAttributeName : UIColor.blackColor};
         _otherAttributes = @{NSFontAttributeName : [UIFont systemFontOfSize:18],
@@ -49,20 +47,13 @@
     return self;
 }
 
-- (void)prepareForReuse {
-    [super prepareForReuse];
-    self.dateLabel.text = nil;
-    self.textView.text = nil;
-}
-
 - (void)configure {
     [self layout];
 }
 
 - (void)customizeWithOwnership:(CMPMessageOwnership)ownership {
-    self.selectionStyle = UITableViewCellSelectionStyleNone;
+    self.translatesAutoresizingMaskIntoConstraints = NO;
     self.backgroundColor = UIColor.clearColor;
-    self.contentView.backgroundColor = UIColor.clearColor;
     
     self.bubbleView.backgroundColor = ownership == CMPMessageOwnershipSelf ? UIColor.whiteColor : UIColor.blackColor;
     self.bubbleView.layer.cornerRadius = 15;
@@ -72,47 +63,26 @@
     self.bubbleView.layer.shadowRadius = 4;
     self.bubbleView.layer.shadowOpacity = 0.14;
     self.bubbleView.translatesAutoresizingMaskIntoConstraints = NO;
-
+    
     self.textView.scrollEnabled = NO;
     self.textView.backgroundColor = UIColor.clearColor;
     self.textView.editable = NO;
     self.textView.textAlignment = ownership == CMPMessageOwnershipSelf ? NSTextAlignmentRight : NSTextAlignmentLeft;
     self.textView.translatesAutoresizingMaskIntoConstraints = NO;
-
-    self.dateLabel.textColor = ownership == CMPMessageOwnershipSelf ? UIColor.whiteColor : UIColor.blackColor;
-    self.dateLabel.textAlignment = ownership == CMPMessageOwnershipSelf ? NSTextAlignmentRight : NSTextAlignmentLeft;
-    self.dateLabel.font = [UIFont systemFontOfSize:11];
-    self.dateLabel.numberOfLines = 0;
-    self.dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
-
 }
 
 - (void)layout {
-    [self.contentView addSubview:self.bubbleView];
-    [self.contentView addSubview:self.dateLabel];
+    [self addSubview:self.bubbleView];
     
     [self.bubbleView addSubview:self.textView];
 }
 
 - (void)constrainWithOwnership:(CMPMessageOwnership)ownership applyWidthConstraint:(BOOL)applyWidthConstraint {
-    [NSLayoutConstraint deactivateConstraints:[self.contentView constraints]];
-    [NSLayoutConstraint deactivateConstraints:[self.dateLabel constraints]];
+    [NSLayoutConstraint deactivateConstraints:[self constraints]];
     [NSLayoutConstraint deactivateConstraints:[self.bubbleView constraints]];
     [NSLayoutConstraint deactivateConstraints:[self.textView constraints]];
-    
-    NSLayoutConstraint *dateTop = [self.dateLabel.topAnchor constraintEqualToAnchor:self.dateLabel.superview.topAnchor constant:2];
-    NSLayoutConstraint *dateHeight = [self.dateLabel.heightAnchor constraintGreaterThanOrEqualToConstant:10];
-    NSLayoutConstraint *dateSide;
-    if (ownership == CMPMessageOwnershipSelf) {
-        dateSide = [self.dateLabel.trailingAnchor constraintEqualToAnchor:self.dateLabel.superview.trailingAnchor constant:-18];
-    } else {
-        dateSide = [self.dateLabel.leadingAnchor constraintEqualToAnchor:self.dateLabel.superview.leadingAnchor constant:18];
-    }
-    
-    [NSLayoutConstraint activateConstraints:@[dateTop, dateSide, dateHeight]];
-    
-    NSLayoutConstraint *bubbleTop = [self.bubbleView.topAnchor constraintEqualToAnchor:self.dateLabel.bottomAnchor constant:4];
-    NSLayoutConstraint *bubbleHeight = [self.bubbleView.heightAnchor constraintGreaterThanOrEqualToConstant:40];
+
+    NSLayoutConstraint *bubbleTop = [self.bubbleView.topAnchor constraintEqualToAnchor:self.topAnchor constant:4];
     NSLayoutConstraint *bubbleBottom = [self.bubbleView.bottomAnchor constraintEqualToAnchor:self.bubbleView.superview.bottomAnchor constant:-8];
     
     NSLayoutConstraint *bubbleSide;
@@ -124,9 +94,11 @@
     
     if (applyWidthConstraint) {
         NSLayoutConstraint *bubbleWidth = [self.bubbleView.widthAnchor constraintLessThanOrEqualToConstant:kMaxTextViewWidth];
-        [NSLayoutConstraint activateConstraints:@[bubbleTop, bubbleHeight, bubbleBottom, bubbleSide, bubbleWidth]];
+        [NSLayoutConstraint activateConstraints:@[bubbleTop, bubbleBottom, bubbleSide, bubbleWidth]];
+    } else {
+        [NSLayoutConstraint activateConstraints:@[bubbleTop, bubbleBottom, bubbleSide]];
     }
-    [NSLayoutConstraint activateConstraints:@[bubbleTop, bubbleHeight, bubbleBottom, bubbleSide]];
+    
     
     NSLayoutConstraint *textViewTop = [self.textView.topAnchor constraintEqualToAnchor:self.textView.superview.topAnchor constant:4];
     NSLayoutConstraint *textViewLeading = [self.textView.leadingAnchor constraintEqualToAnchor:self.textView.superview.leadingAnchor constant:4];
@@ -136,31 +108,18 @@
     [NSLayoutConstraint activateConstraints:@[textViewTop, textViewLeading, textViewBottom, textViewTrailing]];
 }
 
-- (void)configureWithMessage:(CMPChatMessage *)message ownership:(CMPMessageOwnership)ownership {
-    NSArray<CMPChatMessagePart *> *parts = message.parts;
-    NSString *sentOn = [message.context.sentOn ISO8061String];
-    CMPChatMessageParticipant *participant = message.context.from;
-    if (parts && sentOn && participant) {
-        self.dateLabel.text = sentOn;
-        
-        [parts enumerateObjectsUsingBlock:^(CMPChatMessagePart * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            if (obj.type) {
-                if ([obj.type isEqualToString:@"text/plain"]) {
-                    if (obj.data) {
-                        self.textView.attributedText = [[NSAttributedString alloc] initWithString:obj.data attributes:ownership == CMPMessageOwnershipSelf ? self->_selfAttributes : self->_otherAttributes];
-                    }
-                }
-            }
-        }];
+- (void)configureWithMessagePart:(CMPChatMessagePart *)messagePart ownership:(CMPMessageOwnership)ownership {
+    if (messagePart.data) {
+        self.textView.attributedText = [[NSAttributedString alloc] initWithString:messagePart.data attributes:ownership == CMPMessageOwnershipSelf ? self->_selfAttributes : self->_otherAttributes];
     }
-    
+
     [self customizeWithOwnership:ownership];
     [self constrainWithOwnership:ownership applyWidthConstraint:[self shouldApplyWidthConstraintForOwnership:ownership]];
 }
 
 - (BOOL)shouldApplyWidthConstraintForOwnership:(CMPMessageOwnership)ownership {
     CGSize size = [self.textView.attributedText.string boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)
-                   options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading) attributes:ownership == CMPMessageOwnershipSelf ? self->_selfAttributes : self->_otherAttributes context:nil].size;
+                                                                    options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading) attributes:ownership == CMPMessageOwnershipSelf ? self->_selfAttributes : self->_otherAttributes context:nil].size;
     return size.width > kMaxTextViewWidth;
 }
 

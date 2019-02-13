@@ -33,8 +33,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) CMPChatConversation *conversation;
 @property (nonatomic, strong) CMPImageDownloader *downloader;
 @property (nonatomic, strong) NSFetchedResultsController *fetchController;
+@property (nonatomic, strong) NSMutableArray<UIImage *> *imageAttachments;
 
-@property (nonatomic, copy) void(^shouldUpdateRows)(NSInteger, NSInteger);
+@property (nonatomic, copy) void(^shouldReloadAttachments)(void);
 @property (nonatomic, copy) void(^shouldReloadData)(void);
 @property (nonatomic, copy) void(^didTakeNewPhoto)(UIImage *);
 
@@ -42,7 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)getPreviousMessages:(void (^)(NSError * _Nullable))completion;
 - (void)synchroniseConversation:(void (^)(NSError * _Nullable))completion;
-- (void)sendMessage:(NSString *)message attachments:(NSArray<CMPChatAttachment *> *)attachments completion:(void(^)(NSError * _Nullable))completion;
+- (void)sendMessage:(NSString *)message completion:(void(^)(NSError * _Nullable))completion;
 - (void)showPhotoSourceControllerWithPresenter:(void (^)(UIViewController *))presenter alertPresenter:(void (^)(UIViewController *))alertPresenter pickerPresenter:(void (^)(UIViewController *))pickerPresenter;
 - (void)showPhotoCropControllerWithImage:(UIImage *)image presenter:(void(^)(UIViewController *))presenter;
 

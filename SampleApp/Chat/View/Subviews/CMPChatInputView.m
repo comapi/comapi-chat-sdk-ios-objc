@@ -66,7 +66,6 @@
     [self.uploadButton setImage:[UIImage imageNamed:@"photo"] forState:0];
     [self.uploadButton addTarget:self action:@selector(uploadTapped) forControlEvents:UIControlEventTouchUpInside];
     self.uploadButton.translatesAutoresizingMaskIntoConstraints = NO;
-
 }
 
 - (void)layout {

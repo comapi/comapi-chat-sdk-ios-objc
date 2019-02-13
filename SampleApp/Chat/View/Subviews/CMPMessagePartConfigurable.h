@@ -16,22 +16,19 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPBaseView.h"
-#import "CMPPlaceholderTextView.h"
-#import "CMPAttachmentsView.h"
+#import "CMPChatMessagePart.h"
+#import "CMPImageDownloader.h"
+#import "CMPMessageOwnership.h"
+
+#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatInputView : CMPBaseView <CMPViewConfiguring>
+@protocol CMPMessagePartConfigurable <NSObject>
 
-@property (nonatomic, strong) CMPPlaceholderTextView *inputTextView;
-@property (nonatomic, strong) UIButton *sendButton;
-@property (nonatomic, strong) UIButton *uploadButton;
-
-@property (nonatomic, strong) void(^didTapSendButton)(void);
-@property (nonatomic, strong) void(^didTapUploadButton)(void);
-
-- (instancetype)init;
+@optional
+- (void)configureWithMessagePart:(CMPChatMessagePart *)messagePart ownership:(CMPMessageOwnership)ownership;
+- (void)configureWithMessagePart:(CMPChatMessagePart *)messagePart ownership:(CMPMessageOwnership)ownership downloader:(CMPImageDownloader *)downloader;
 
 @end
 

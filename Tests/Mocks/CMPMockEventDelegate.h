@@ -16,22 +16,22 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPBaseView.h"
-#import "CMPPlaceholderTextView.h"
-#import "CMPAttachmentsView.h"
+#import <Foundation/Foundation.h>
+#import "CMPComapiClient.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatInputView : CMPBaseView <CMPViewConfiguring>
+@class CMPMockEventDelegate;
 
-@property (nonatomic, strong) CMPPlaceholderTextView *inputTextView;
-@property (nonatomic, strong) UIButton *sendButton;
-@property (nonatomic, strong) UIButton *uploadButton;
+@interface CMPMockEventBroadcaster : NSObject
 
-@property (nonatomic, strong) void(^didTapSendButton)(void);
-@property (nonatomic, strong) void(^didTapUploadButton)(void);
+@property (weak) CMPMockEventDelegate *delegate;
 
-- (instancetype)init;
+- (void)sendEvent;
+
+@end
+
+@interface CMPMockEventDelegate : NSObject <CMPEventDelegate>
 
 @end
 

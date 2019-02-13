@@ -17,9 +17,10 @@
 //
 
 #import "CMPChatViewController.h"
-#import "CMPChatTextMessageCell.h"
-#import "CMPChatImageMessageCell.h"
 #import "CMPAddParticipantsViewController.h"
+#import "CMPMessagePartCell.h"
+#import "CMPAttachmentCell.h"
+
 
 @interface CMPChatViewController ()
 
@@ -63,9 +64,17 @@
         if (error) {
             NSLog(@"%@", error.localizedDescription);
         }
-        [weakSelf reload];
+        [self.viewModel.fetchController performFetch:&error];
+        if (error) {
+            NSLog(@"%@", error.localizedDescription);
+        }
+        [self reload];
     }];
+}
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    self.viewModel.shouldReloadAttachments();
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -76,6 +85,8 @@
 - (void)delegates {
     self.chatView.tableView.delegate = self;
     self.chatView.tableView.dataSource = self;
+    self.chatView.attachmentsView.collectionView.delegate = self;
+    self.chatView.attachmentsView.collectionView.dataSource = self;
     
     __weak typeof(self) weakSelf = self;
     self.keyboardWillShow = ^(NSNotification * _Nonnull notif) {
@@ -85,8 +96,9 @@
         [weakSelf.chatView animateOnKeyboardChangeWithNotification:notif completion:nil];
     };
     self.chatView.didTapSendButton = ^(NSString * _Nonnull text) {
-        [weakSelf.viewModel sendMessage:text attachments:@[] completion:^(NSError * _Nullable error) {
+        [weakSelf.viewModel sendMessage:text completion:^(NSError * _Nullable error) {
             [weakSelf reload];
+            weakSelf.viewModel.shouldReloadAttachments();
         }];
     };
     self.chatView.didTapUploadButton = ^{
@@ -102,6 +114,19 @@
         [weakSelf.viewModel showPhotoCropControllerWithImage:image presenter:^(UIViewController * _Nonnull vc) {
             [weakSelf.navigationController pushViewController:vc animated:YES];
         }];
+    };
+    self.viewModel.shouldReloadAttachments = ^{
+        if (weakSelf.viewModel.imageAttachments.count > 0) {
+            [weakSelf.chatView showAttachmentsWithCompletion:^{
+                [weakSelf.chatView reloadAttachments];
+                [weakSelf.chatView adjustTableViewContentInset];
+            }];
+        } else if (weakSelf.viewModel.imageAttachments.count == 0) {
+            [weakSelf.chatView hideAttachmentsWithCompletion:^{
+                [weakSelf.chatView reloadAttachments];
+                [weakSelf.chatView adjustTableViewContentInset];
+            }];
+        }
     };
 }
 
@@ -126,11 +151,7 @@
 }
 
 - (void)reload {
-    NSError *err;
-    [self.viewModel.fetchController performFetch:&err];
-    if (err) {
-        NSLog(@"%@", err.localizedDescription);
-    }
+    [self.chatView scrollToBottomAnimated:YES];
     [self.chatView.tableView reloadData];
 }
 
@@ -157,51 +178,58 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     CMPChatMessage *msg = [_viewModel.fetchController objectAtIndexPath:indexPath];
-    if (msg.parts.firstObject.url) {
-        CMPChatImageMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:@"imageCell" forIndexPath:indexPath];
-        
-        NSString *fromID = msg.context.from.id;
-        NSString *selfID = _viewModel.client.profileID;
-        
-        BOOL isMine = [fromID isEqualToString:selfID];
-        [cell configureWithMessage:msg ownership:isMine ? CMPMessageOwnershipSelf : CMPMessageOwnershipOther downloader:_viewModel.downloader animate:NO];
+    CMPMessagePartCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
+    NSString *fromID = msg.context.from.id;
+    NSString *selfID = _viewModel.client.profileID;
 
-        return cell;
-    } else {
-        CMPChatTextMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:@"textCell" forIndexPath:indexPath];
-        
-        NSString *fromID = msg.context.from.id;
-        NSString *selfID = _viewModel.client.profileID;
-        BOOL isMine = [fromID isEqualToString:selfID];
-        [cell configureWithMessage:msg ownership:isMine ? CMPMessageOwnershipSelf : CMPMessageOwnershipOther];
-        
-        return cell;
-    }
+    BOOL isMine = [fromID isEqualToString:selfID];
+    [cell configureWithMessage:msg ownership:isMine ? CMPMessageOwnershipSelf : CMPMessageOwnershipOther downloader:_viewModel.downloader];
+
+    return cell;
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+
     switch (type) {
         case NSFetchedResultsChangeInsert: {
+
             [self.chatView.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
-                                                    withRowAnimation:UITableViewRowAnimationFade];
+                                           withRowAnimation:UITableViewRowAnimationNone];
+
             break;
         }
         case NSFetchedResultsChangeDelete: {
             [self.chatView.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-                                                    withRowAnimation:UITableViewRowAnimationFade];
+                                           withRowAnimation:UITableViewRowAnimationNone];
             break;
         }
         case NSFetchedResultsChangeMove: {
             break;
         }
         case NSFetchedResultsChangeUpdate: {
-            [self.chatView.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [self.chatView.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
             break;
-            
         }
     }
+
+}
+
+#pragma mark - UICollectionViewDelegate & UICollectionViewDataSource
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    return self.viewModel.imageAttachments.count;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    CMPAttachmentCell *cell = (CMPAttachmentCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
+    [cell configureWithImage:self.viewModel.imageAttachments[indexPath.row]];
+    cell.didTapDelete = ^{
+        [self.viewModel.imageAttachments removeObjectAtIndex:indexPath.row];
+        self.viewModel.shouldReloadAttachments();
+    };
+    return cell;
 }
 
 @end

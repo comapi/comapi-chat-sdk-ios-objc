@@ -142,7 +142,7 @@ NSInteger const kETagNotValid = 412;
 #pragma mark - Messages
 #pragma mark - public
 
-- (void) sendMessage: (CMPSendableMessage *)message withAttachments: (NSArray<CMPChatAttachment *> *) attachments toConversationWithID: (NSString *) conversationId completion:(void(^)(CMPChatResult *))completion {
+- (void) sendMessage: (nullable CMPSendableMessage *)message withAttachments: (NSArray<CMPChatAttachment *> *) attachments toConversationWithID: (NSString *) conversationId completion:(void(^)(CMPChatResult *))completion {
     
     NSString *profileId = [_client getProfileID];
     if (profileId != nil) {

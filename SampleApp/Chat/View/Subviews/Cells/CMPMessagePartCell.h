@@ -16,22 +16,24 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPBaseView.h"
-#import "CMPPlaceholderTextView.h"
-#import "CMPAttachmentsView.h"
+#import "CMPBaseCell.h"
+#import "CMPChatMessage.h"
+#import "CMPMessageOwnership.h"
+#import "CMPImageDownloader.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatInputView : CMPBaseView <CMPViewConfiguring>
+typedef NS_ENUM(NSUInteger, CMPPartType) {
+    CMPPartTypeText,
+    CMPPartTypeImage,
+    CMPPartTypeUnknown
+};
 
-@property (nonatomic, strong) CMPPlaceholderTextView *inputTextView;
-@property (nonatomic, strong) UIButton *sendButton;
-@property (nonatomic, strong) UIButton *uploadButton;
+@interface CMPMessagePartCell : CMPBaseCell
 
-@property (nonatomic, strong) void(^didTapSendButton)(void);
-@property (nonatomic, strong) void(^didTapUploadButton)(void);
+@property (nonatomic, strong) UILabel *dateLabel;
 
-- (instancetype)init;
+- (void)configureWithMessage:(CMPChatMessage *)message ownership:(CMPMessageOwnership)ownership downloader:(CMPImageDownloader *)downloader;
 
 @end
 

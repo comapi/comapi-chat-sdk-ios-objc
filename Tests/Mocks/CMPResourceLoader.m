@@ -16,23 +16,20 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPBaseView.h"
-#import "CMPPlaceholderTextView.h"
-#import "CMPAttachmentsView.h"
+#import "CMPResourceLoader.h"
 
-NS_ASSUME_NONNULL_BEGIN
+@implementation CMPResourceLoader
 
-@interface CMPChatInputView : CMPBaseView <CMPViewConfiguring>
++ (NSBundle *)bundle {
+    return [NSBundle bundleForClass:CMPTestMocks.class];
+}
 
-@property (nonatomic, strong) CMPPlaceholderTextView *inputTextView;
-@property (nonatomic, strong) UIButton *sendButton;
-@property (nonatomic, strong) UIButton *uploadButton;
++ (NSURL *)urlForFile:(NSString *)file extension:(NSString *)extension {
+    return [[CMPResourceLoader bundle] URLForResource:file withExtension:extension];
+}
 
-@property (nonatomic, strong) void(^didTapSendButton)(void);
-@property (nonatomic, strong) void(^didTapUploadButton)(void);
-
-- (instancetype)init;
++ (NSData *)loadJSONWithName:(NSString *)JSON {
+    return [NSData dataWithContentsOfURL:[CMPResourceLoader urlForFile:JSON extension:@"json"]];
+}
 
 @end
-
-NS_ASSUME_NONNULL_END

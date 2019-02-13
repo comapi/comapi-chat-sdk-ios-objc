@@ -19,6 +19,7 @@
 #import "CMPBaseCell.h"
 #import "CMPChatMessage.h"
 #import "CMPViewConfiguring.h"
+#import "CMPMessageOwnership.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

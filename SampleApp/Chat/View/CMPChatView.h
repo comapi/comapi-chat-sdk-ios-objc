@@ -18,6 +18,7 @@
 
 #import "CMPBaseView.h"
 #import "CMPChatInputView.h"
+#import "CMPAttachmentsView.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -25,6 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) CMPChatInputView *inputMessageView;
+@property (nonatomic, strong) CMPAttachmentsView *attachmentsView;
 
 @property (nonatomic, copy, nullable) void(^didTapSendButton)(NSString *);
 @property (nonatomic, copy, nullable) void(^didTapUploadButton)(void);
@@ -33,8 +35,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)init;
 
+- (void)reloadAttachments;
+- (void)showAttachmentsWithCompletion:(void (^)(void))completion;
+- (void)hideAttachmentsWithCompletion:(void (^)(void))completion;
+
 - (void)animateOnKeyboardChangeWithNotification:(NSNotification *)notification completion:(void(^_Nullable)(void))completion;
 - (void)scrollToBottomAnimated:(BOOL)animated;
+- (void)adjustTableViewContentInset;
+
 @end
 
 NS_ASSUME_NONNULL_END

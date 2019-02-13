@@ -16,23 +16,28 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPBaseView.h"
-#import "CMPPlaceholderTextView.h"
-#import "CMPAttachmentsView.h"
+#import "CMPTestMocks.h"
 
-NS_ASSUME_NONNULL_BEGIN
+@implementation CMPTestMocks
 
-@interface CMPChatInputView : CMPBaseView <CMPViewConfiguring>
++ (NSString *)mockAuthenticationToken {
+    return @"MOCK_AUTHENTICATION_TOKEN";
+}
 
-@property (nonatomic, strong) CMPPlaceholderTextView *inputTextView;
-@property (nonatomic, strong) UIButton *sendButton;
-@property (nonatomic, strong) UIButton *uploadButton;
++ (NSString *)mockApiSpaceID {
+    return @"MOCK_API_SPACE_ID";
+}
 
-@property (nonatomic, strong) void(^didTapSendButton)(void);
-@property (nonatomic, strong) void(^didTapUploadButton)(void);
++ (NSURL *)mockBaseURL {
+    return [NSURL URLWithString:@"http://192.168.99.100:8000"];
+}
 
-- (instancetype)init;
++ (NSErrorDomain)mockErrorDomain {
+    return @"comapi.mocks.domain";
+}
+
++ (NSUInteger)mockStatusCode {
+    return 11111;
+}
 
 @end
-
-NS_ASSUME_NONNULL_END
