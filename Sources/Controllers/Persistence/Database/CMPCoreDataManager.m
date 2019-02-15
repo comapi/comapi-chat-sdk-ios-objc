@@ -33,7 +33,7 @@ NSString *const kModelName = @"CMPComapiChat";
 @synthesize workerContext = _workerContext;
 
 
-- (instancetype)initWithCompletion:(void (^)(NSError * _Nullable))completion {
+- (instancetype)initWithConfig:(CMPCoreDataConfig *)config completion:(void (^)(NSError * _Nullable))completion {
     self = [super init];
     
     if (self) {
