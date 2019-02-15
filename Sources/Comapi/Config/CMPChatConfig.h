@@ -21,6 +21,7 @@
 #import "CMPTypingDelegate.h"
 #import "CMPParticipantDelegate.h"
 #import "CMPProfileDelegate.h"
+#import "CMPCoreDataConfig.h"
 
 #import <CMPComapiFoundation/CMPComapiConfig.h>
 #import <CMPComapiFoundation/CMPComapiClient.h>
@@ -31,6 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) CMPStoreFactory *storeFactory;
 @property (nonatomic, strong) CMPInternalConfig *internalConfig;
+@property (nonatomic, strong) CMPCoreDataConfig *storeConfig;
 
 - (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate logLevel:(CMPLogLevel)logLevel storeFactory:(CMPStoreFactory *)factory internalConfig:(CMPInternalConfig *)config;
 - (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(CMPStoreFactory *)factory internalConfig:(CMPInternalConfig *)config;
