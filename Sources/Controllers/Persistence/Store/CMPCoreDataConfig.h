@@ -14,26 +14,17 @@
 // IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-//
 
-#import "CMPCoreDataConfig.h"
-
-#import <CoreData/CoreData.h>
+#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol CMPCoreDataManagable <NSObject>
+@interface CMPCoreDataConfig : NSObject
 
-@property (nonatomic, strong, readonly) NSManagedObjectContext *mainContext;
-@property (nonatomic, strong, readonly) NSManagedObjectContext *workerContext;
+@property (nonatomic, strong) NSString *persistentStoreType;
+@property (nonatomic) NSUInteger concurrencyType;
 
-- (void)saveToDiskWithCompletion:(void (^)(NSError * _Nullable))completion;
-
-@end
-
-@interface CMPCoreDataManager : NSObject <CMPCoreDataManagable>
-
-- (instancetype)initWithConfig:(CMPCoreDataConfig *)config completion:(void (^)(NSError * _Nullable))completion;
+- (instancetype)initWithPersistentStoreType:(NSString *)persistentStoreType concurrencyType:(NSUInteger)concurrencyType;
 
 @end
 
