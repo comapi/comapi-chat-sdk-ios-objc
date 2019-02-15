@@ -74,7 +74,7 @@
     return self;
 }
 
-- (BOOL)isSessionSuccesfullyCreated {
+- (BOOL)sessionSuccessfullyCreated {
     return [_client isSessionSuccessfullyCreated];
 }
 

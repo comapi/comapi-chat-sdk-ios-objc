@@ -16,37 +16,13 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPLifecycleDelegate.h"
-#import "CMPTypingDelegate.h"
-#import "CMPProfileDelegate.h"
-#import "CMPParticipantDelegate.h"
-#import "CMPChatServices.h"
-#import "CMPChatConfig.h"
+#import "CMPChatStore.h"
 
-#import <CMPComapiFoundation/CMPSession.h>
+#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPComapiChatClient : NSObject <CMPLifecycleDelegate>
-
-@property (nonatomic, weak) id<CMPLifecycleDelegate> lifecycleDelegate;
-
-@property (nonatomic, strong, readonly) CMPChatServices *services;
-@property (nonatomic, strong, readonly, nullable) NSString *profileID;
-@property (nonatomic, readonly) BOOL sessionSuccessfullyCreated;
-
-- (instancetype)initWithClient:(CMPComapiClient *)client chatConfig:(CMPChatConfig *)chatConfig;
-
-- (void)setPushToken:(NSString *)deviceToken completion:(void(^)(BOOL, NSError * _Nullable))completion NS_SWIFT_NAME(set(pushToken:completion:));
-
-- (void)addTypingDelegate:(id<CMPTypingDelegate>)delegate;
-- (void)removeTypingDelegate:(id<CMPTypingDelegate>)delegate;
-
-- (void)addProfileDelegate:(id<CMPProfileDelegate>)delegate;
-- (void)removeProfileDelegate:(id<CMPProfileDelegate>)delegate;
-
-- (void)addParticipantDelegate:(id<CMPParticipantDelegate>)delegate;
-- (void)removeParticipantDelegate:(id<CMPParticipantDelegate>)delegate;
+@interface CMPMockChatStore : NSObject <CMPChatStore>
 
 @end
 

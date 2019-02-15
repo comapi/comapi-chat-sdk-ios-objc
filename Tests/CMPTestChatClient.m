@@ -19,28 +19,78 @@
 #import "CMPComapiChatClient.h"
 #import "CMPMockAuthenticationDelegate.h"
 #import "CMPTestMocks.h"
+#import "CMPMockRequestPerformer.h"
+#import "CMPMockClientFactory.h"
 
 #import <XCTest/XCTest.h>
 
-
+#import <CMPComapiFoundation/CMPComapi.h>
+#import <CMPComapiFoundation/CMPKeychain.h>
 
 @interface CMPTestChatClient : XCTestCase
 
-@property (nonatomic, strong) CMPChatConfig *config;
-@property (nonatomic, strong) CMPComapiChatClient *client;
-
+@property (nonatomic, strong, nullable) CMPComapiChatClient *client;
+@property (nonatomic, strong, nullable) CMPMockRequestPerformer *requestPerformer;
+@property (nonatomic, strong, nullable) CMPMockAuthenticationDelegate *authDelegate;
 @end
 
 @implementation CMPTestChatClient
 
 - (void)setUp {
-    CMPMockAuthenticationDelegate *mockAuthDelegate = [[CMPMockAuthenticationDelegate alloc] init];
-    _config = [[CMPChatConfig alloc] initWithApiSpaceID:[CMPTestMocks mockApiSpaceID] authenticationDelegate:mockAuthDelegate logLevel:CMPLogLevelVerbose];
+    [super setUp];
+
+    [CMPKeychain deleteItemForKey:[NSString stringWithFormat:@"%@%@", @"ComapiSessionToken_", [CMPTestMocks mockApiSpaceID]]];
+    [CMPKeychain deleteItemForKey:[NSString stringWithFormat:@"%@%@", @"ComapiSessionDetails_", [CMPTestMocks mockApiSpaceID]]];
+    
+    _requestPerformer = [[CMPMockRequestPerformer alloc] initWithSessionAndAuth];
+    _authDelegate = [[CMPMockAuthenticationDelegate alloc] init];
+    _client = [CMPMockClientFactory instantiateChatClient:_requestPerformer authDelegate:_authDelegate];
     
 }
 
 - (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
+    _requestPerformer = nil;
+    _client = nil;
+    
+    [super tearDown];
+}
+
+- (void)testStartSession {
+    NSData *data = [CMPResourceLoader loadJSONWithName:@"SessionAuth"];
+    CMPMockRequestResult *completionValue = [[CMPMockRequestResult alloc] initWithData:data response:[NSHTTPURLResponse mockedWithURL:[CMPTestMocks mockBaseURL]] error:nil];
+    [self.requestPerformer.completionValues addObject:completionValue];
+
+    XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
+    
+    __weak typeof(self) weakSelf = self;
+    [self.client.services.session startSessionWithCompletion:^{
+        id self = weakSelf;
+        XCTAssertEqualObjects(weakSelf.client.profileID, @"dominik.kowalski");
+        XCTAssertEqual(weakSelf.client.sessionSuccessfullyCreated, YES);
+        
+        [expectation fulfill];
+    } failure:^(NSError * _Nullable error) {
+        XCTFail();
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectations:@[expectation] timeout:5.0];
+}
+
+- (void)testEndSession {
+    NSHTTPURLResponse *response = [NSHTTPURLResponse mockedWithURL:[CMPTestMocks mockBaseURL] statusCode:204 httpVersion:@"HTTP/1.1" headers:@{}];
+    CMPMockRequestResult *endSessionCompletionValue = [[CMPMockRequestResult alloc] initWithData:nil response:response error:nil];
+    [self.requestPerformer.completionValues addObject:endSessionCompletionValue];
+    
+    XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
+    [self.client.services.session endSessionWithCompletion:^(CMPChatResult * result) {
+        XCTAssertTrue(result.isSuccessful);
+        XCTAssertEqualObjects(result.error, nil);
+        
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectations:@[expectation] timeout:5.0];
 }
 
 

@@ -7,9 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		580347199DF5F837F1D78AF0 /* Pods_SampleApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E6153C239173D7193C160CC /* Pods_SampleApp.framework */; };
-		5A4B6170A521B77D97A086F0 /* Pods_CMPComapiChatTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB9D135D6C6DD93AD1724CA9 /* Pods_CMPComapiChatTests.framework */; };
-		82E9169CFDB3B725E9E0F00F /* Pods_CMPComapiChat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EF80143AE7E5E4DCF4D2E4F /* Pods_CMPComapiChat.framework */; };
+		0ABC2F193FB30F0C9988E131 /* Pods_CMPComapiChatTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6233C88F08A12B21C3DD58E3 /* Pods_CMPComapiChatTests.framework */; };
+		3E9B4BD6DC73F7B2BC5686A4 /* Pods_CMPComapiChat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 887682907A524773BAB9C29E /* Pods_CMPComapiChat.framework */; };
 		890F81312209F15F006EF1A6 /* CMPImagePartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 890F81302209F15F006EF1A6 /* CMPImagePartView.m */; };
 		890F81342209F16C006EF1A6 /* CMPTextPartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 890F81332209F16C006EF1A6 /* CMPTextPartView.m */; };
 		890F8139220B42D7006EF1A6 /* CMPMessagePartCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 890F8138220B42D7006EF1A6 /* CMPMessagePartCell.m */; };
@@ -153,6 +152,45 @@
 		898EB0EC221328E8002CD17D /* NSHTTPURLResponse+CMPTestUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 898EB0EB221328E8002CD17D /* NSHTTPURLResponse+CMPTestUtility.m */; };
 		898EB0F122132991002CD17D /* CMPTestMocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 898EB0EE22132991002CD17D /* CMPTestMocks.m */; };
 		898EB0F222132991002CD17D /* CMPResourceLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 898EB0EF22132991002CD17D /* CMPResourceLoader.m */; };
+		898EB0F5221454C9002CD17D /* CMPMockClientFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 898EB0F4221454C9002CD17D /* CMPMockClientFactory.m */; };
+		898EB120221474C8002CD17D /* ProfileUpdate.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB0F7221474C7002CD17D /* ProfileUpdate.json */; };
+		898EB121221474C8002CD17D /* AuthorizeSessionBody.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB0F8221474C7002CD17D /* AuthorizeSessionBody.json */; };
+		898EB122221474C8002CD17D /* Session.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB0F9221474C7002CD17D /* Session.json */; };
+		898EB123221474C8002CD17D /* ProfileArray.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB0FA221474C7002CD17D /* ProfileArray.json */; };
+		898EB125221474C8002CD17D /* SessionAuth.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB0FC221474C7002CD17D /* SessionAuth.json */; };
+		898EB126221474C8002CD17D /* AuthenticationChallenge.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB0FD221474C7002CD17D /* AuthenticationChallenge.json */; };
+		898EB127221474C8002CD17D /* mock_image.png in Resources */ = {isa = PBXBuildFile; fileRef = 898EB0FE221474C7002CD17D /* mock_image.png */; };
+		898EB128221474C8002CD17D /* Event.conversation.delete.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB100221474C7002CD17D /* Event.conversation.delete.json */; };
+		898EB129221474C8002CD17D /* Event.conversationMessage.delivered.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB101221474C7002CD17D /* Event.conversationMessage.delivered.json */; };
+		898EB12A221474C8002CD17D /* Event.conversationMessage.read.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB102221474C7002CD17D /* Event.conversationMessage.read.json */; };
+		898EB12B221474C8002CD17D /* Event.conversationMessage.sent.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB103221474C7002CD17D /* Event.conversationMessage.sent.json */; };
+		898EB12C221474C8002CD17D /* Event.conversation.participantAdded.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB104221474C7002CD17D /* Event.conversation.participantAdded.json */; };
+		898EB12D221474C8002CD17D /* Event.socket.info.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB105221474C7002CD17D /* Event.socket.info.json */; };
+		898EB12E221474C8002CD17D /* Event.conversation.create.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB106221474C7002CD17D /* Event.conversation.create.json */; };
+		898EB12F221474C8002CD17D /* Event.conversation.participantUpdated.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB107221474C7002CD17D /* Event.conversation.participantUpdated.json */; };
+		898EB130221474C8002CD17D /* Event.profile.update.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB108221474C7002CD17D /* Event.profile.update.json */; };
+		898EB131221474C8002CD17D /* Event.conversation.undelete.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB109221474C7002CD17D /* Event.conversation.undelete.json */; };
+		898EB132221474C8002CD17D /* Event.conversation.update.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB10A221474C7002CD17D /* Event.conversation.update.json */; };
+		898EB133221474C8002CD17D /* Event.conversation.participantRemoved.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB10B221474C7002CD17D /* Event.conversation.participantRemoved.json */; };
+		898EB134221474C8002CD17D /* APNSDetailsBody.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB10C221474C7002CD17D /* APNSDetailsBody.json */; };
+		898EB135221474C8002CD17D /* GetAllConversationsResult.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB10E221474C7002CD17D /* GetAllConversationsResult.json */; };
+		898EB136221474C8002CD17D /* NewConversation.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB10F221474C7002CD17D /* NewConversation.json */; };
+		898EB137221474C8002CD17D /* SendableMessage.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB110221474C7002CD17D /* SendableMessage.json */; };
+		898EB138221474C8002CD17D /* Conversations.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB111221474C7002CD17D /* Conversations.json */; };
+		898EB139221474C8002CD17D /* SendMessagesResult.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB112221474C7002CD17D /* SendMessagesResult.json */; };
+		898EB13A221474C8002CD17D /* Events.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB113221474C7002CD17D /* Events.json */; };
+		898EB13B221474C8002CD17D /* GetMessagesResult.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB114221474C7002CD17D /* GetMessagesResult.json */; };
+		898EB13C221474C8002CD17D /* Conversation.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB115221474C7002CD17D /* Conversation.json */; };
+		898EB13D221474C8002CD17D /* ContentUploadResult.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB116221474C7002CD17D /* ContentUploadResult.json */; };
+		898EB13E221474C8002CD17D /* PostMessagesResult.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB117221474C7002CD17D /* PostMessagesResult.json */; };
+		898EB13F221474C8002CD17D /* MessageStatusUpdate.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB118221474C7002CD17D /* MessageStatusUpdate.json */; };
+		898EB140221474C8002CD17D /* MessageAlert.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB119221474C7002CD17D /* MessageAlert.json */; };
+		898EB141221474C8002CD17D /* ConversationParticipant.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB11A221474C7002CD17D /* ConversationParticipant.json */; };
+		898EB142221474C8002CD17D /* ConversationParticipants.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB11B221474C7002CD17D /* ConversationParticipants.json */; };
+		898EB143221474C8002CD17D /* PostConversationsResult.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB11C221474C7002CD17D /* PostConversationsResult.json */; };
+		898EB144221474C8002CD17D /* Message.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB11D221474C7002CD17D /* Message.json */; };
+		898EB145221474C8002CD17D /* Profile.json in Resources */ = {isa = PBXBuildFile; fileRef = 898EB11F221474C7002CD17D /* Profile.json */; };
+		898EB14A2216CA97002CD17D /* CMPMockChatStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 898EB1492216CA97002CD17D /* CMPMockChatStore.m */; };
 		8995262121C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 8995261F21C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.h */; };
 		8995262221C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 8995262021C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.m */; };
 		8998F4A221B800AA00BD6C52 /* CMPComapiChat.h in Headers */ = {isa = PBXBuildFile; fileRef = 8998F4A021B800AA00BD6C52 /* CMPComapiChat.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -174,6 +212,7 @@
 		89D0224321E8EBD700E85A85 /* CMPTypingDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 89D0224221E8EBD700E85A85 /* CMPTypingDelegate.h */; };
 		89D0224521E8EC0900E85A85 /* CMPProfileDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 89D0224421E8EC0900E85A85 /* CMPProfileDelegate.h */; };
 		89EE87AA21FF64860089F606 /* NSManagedObject+CMPUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = 89EE87A921FF64860089F606 /* NSManagedObject+CMPUpdate.m */; };
+		E31BB31C9CCF3D736A5BCA2B /* Pods_SampleApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EC5D26D64ABD039BC641911 /* Pods_SampleApp.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -206,10 +245,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		036F683D56AE12E7BA04E7E0 /* Pods-SampleApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-SampleApp/Pods-SampleApp.release.xcconfig"; sourceTree = "<group>"; };
-		1724185288BF8D94F10D7D39 /* Pods-CMPComapiChatTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CMPComapiChatTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CMPComapiChatTests/Pods-CMPComapiChatTests.debug.xcconfig"; sourceTree = "<group>"; };
-		35F86425543963FC760105C9 /* Pods-CMPComapiChatTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CMPComapiChatTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-CMPComapiChatTests/Pods-CMPComapiChatTests.release.xcconfig"; sourceTree = "<group>"; };
-		4FB95DF586558A8F3B6DA934 /* Pods-SampleApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SampleApp/Pods-SampleApp.debug.xcconfig"; sourceTree = "<group>"; };
+		0FB02BA1AF30A28E10297364 /* Pods-CMPComapiChat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CMPComapiChat.release.xcconfig"; path = "Pods/Target Support Files/Pods-CMPComapiChat/Pods-CMPComapiChat.release.xcconfig"; sourceTree = "<group>"; };
+		4435D313075BD666831E2C07 /* Pods-SampleApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SampleApp/Pods-SampleApp.debug.xcconfig"; sourceTree = "<group>"; };
+		5EC5D26D64ABD039BC641911 /* Pods_SampleApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SampleApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6233C88F08A12B21C3DD58E3 /* Pods_CMPComapiChatTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CMPComapiChatTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		69241A434EA792329A874275 /* Pods-CMPComapiChat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CMPComapiChat.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CMPComapiChat/Pods-CMPComapiChat.debug.xcconfig"; sourceTree = "<group>"; };
+		732B6A8C153B4A8DC66D6CB5 /* Pods-SampleApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-SampleApp/Pods-SampleApp.release.xcconfig"; sourceTree = "<group>"; };
+		7B0665EC579BA78CFF97CAE9 /* Pods-CMPComapiChatTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CMPComapiChatTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CMPComapiChatTests/Pods-CMPComapiChatTests.debug.xcconfig"; sourceTree = "<group>"; };
+		887682907A524773BAB9C29E /* Pods_CMPComapiChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CMPComapiChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		890F812F2209F15F006EF1A6 /* CMPImagePartView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPImagePartView.h; sourceTree = "<group>"; };
 		890F81302209F15F006EF1A6 /* CMPImagePartView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPImagePartView.m; sourceTree = "<group>"; };
 		890F81322209F16C006EF1A6 /* CMPTextPartView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPTextPartView.h; sourceTree = "<group>"; };
@@ -424,6 +467,47 @@
 		898EB0EE22132991002CD17D /* CMPTestMocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPTestMocks.m; sourceTree = "<group>"; };
 		898EB0EF22132991002CD17D /* CMPResourceLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPResourceLoader.m; sourceTree = "<group>"; };
 		898EB0F022132991002CD17D /* CMPTestMocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPTestMocks.h; sourceTree = "<group>"; };
+		898EB0F3221454C9002CD17D /* CMPMockClientFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPMockClientFactory.h; sourceTree = "<group>"; };
+		898EB0F4221454C9002CD17D /* CMPMockClientFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPMockClientFactory.m; sourceTree = "<group>"; };
+		898EB0F7221474C7002CD17D /* ProfileUpdate.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ProfileUpdate.json; sourceTree = "<group>"; };
+		898EB0F8221474C7002CD17D /* AuthorizeSessionBody.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = AuthorizeSessionBody.json; sourceTree = "<group>"; };
+		898EB0F9221474C7002CD17D /* Session.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Session.json; sourceTree = "<group>"; };
+		898EB0FA221474C7002CD17D /* ProfileArray.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ProfileArray.json; sourceTree = "<group>"; };
+		898EB0FC221474C7002CD17D /* SessionAuth.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SessionAuth.json; sourceTree = "<group>"; };
+		898EB0FD221474C7002CD17D /* AuthenticationChallenge.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = AuthenticationChallenge.json; sourceTree = "<group>"; };
+		898EB0FE221474C7002CD17D /* mock_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mock_image.png; sourceTree = "<group>"; };
+		898EB100221474C7002CD17D /* Event.conversation.delete.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Event.conversation.delete.json; sourceTree = "<group>"; };
+		898EB101221474C7002CD17D /* Event.conversationMessage.delivered.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Event.conversationMessage.delivered.json; sourceTree = "<group>"; };
+		898EB102221474C7002CD17D /* Event.conversationMessage.read.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Event.conversationMessage.read.json; sourceTree = "<group>"; };
+		898EB103221474C7002CD17D /* Event.conversationMessage.sent.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Event.conversationMessage.sent.json; sourceTree = "<group>"; };
+		898EB104221474C7002CD17D /* Event.conversation.participantAdded.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Event.conversation.participantAdded.json; sourceTree = "<group>"; };
+		898EB105221474C7002CD17D /* Event.socket.info.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Event.socket.info.json; sourceTree = "<group>"; };
+		898EB106221474C7002CD17D /* Event.conversation.create.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Event.conversation.create.json; sourceTree = "<group>"; };
+		898EB107221474C7002CD17D /* Event.conversation.participantUpdated.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Event.conversation.participantUpdated.json; sourceTree = "<group>"; };
+		898EB108221474C7002CD17D /* Event.profile.update.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Event.profile.update.json; sourceTree = "<group>"; };
+		898EB109221474C7002CD17D /* Event.conversation.undelete.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Event.conversation.undelete.json; sourceTree = "<group>"; };
+		898EB10A221474C7002CD17D /* Event.conversation.update.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Event.conversation.update.json; sourceTree = "<group>"; };
+		898EB10B221474C7002CD17D /* Event.conversation.participantRemoved.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Event.conversation.participantRemoved.json; sourceTree = "<group>"; };
+		898EB10C221474C7002CD17D /* APNSDetailsBody.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = APNSDetailsBody.json; sourceTree = "<group>"; };
+		898EB10E221474C7002CD17D /* GetAllConversationsResult.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = GetAllConversationsResult.json; sourceTree = "<group>"; };
+		898EB10F221474C7002CD17D /* NewConversation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = NewConversation.json; sourceTree = "<group>"; };
+		898EB110221474C7002CD17D /* SendableMessage.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SendableMessage.json; sourceTree = "<group>"; };
+		898EB111221474C7002CD17D /* Conversations.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Conversations.json; sourceTree = "<group>"; };
+		898EB112221474C7002CD17D /* SendMessagesResult.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SendMessagesResult.json; sourceTree = "<group>"; };
+		898EB113221474C7002CD17D /* Events.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Events.json; sourceTree = "<group>"; };
+		898EB114221474C7002CD17D /* GetMessagesResult.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = GetMessagesResult.json; sourceTree = "<group>"; };
+		898EB115221474C7002CD17D /* Conversation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Conversation.json; sourceTree = "<group>"; };
+		898EB116221474C7002CD17D /* ContentUploadResult.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ContentUploadResult.json; sourceTree = "<group>"; };
+		898EB117221474C7002CD17D /* PostMessagesResult.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = PostMessagesResult.json; sourceTree = "<group>"; };
+		898EB118221474C7002CD17D /* MessageStatusUpdate.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = MessageStatusUpdate.json; sourceTree = "<group>"; };
+		898EB119221474C7002CD17D /* MessageAlert.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = MessageAlert.json; sourceTree = "<group>"; };
+		898EB11A221474C7002CD17D /* ConversationParticipant.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ConversationParticipant.json; sourceTree = "<group>"; };
+		898EB11B221474C7002CD17D /* ConversationParticipants.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ConversationParticipants.json; sourceTree = "<group>"; };
+		898EB11C221474C7002CD17D /* PostConversationsResult.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = PostConversationsResult.json; sourceTree = "<group>"; };
+		898EB11D221474C7002CD17D /* Message.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Message.json; sourceTree = "<group>"; };
+		898EB11F221474C7002CD17D /* Profile.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Profile.json; sourceTree = "<group>"; };
+		898EB1482216CA97002CD17D /* CMPMockChatStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPMockChatStore.h; sourceTree = "<group>"; };
+		898EB1492216CA97002CD17D /* CMPMockChatStore.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPMockChatStore.m; sourceTree = "<group>"; };
 		8995261F21C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSManagedObjectContext+CMPOrphanedEvent.h"; sourceTree = "<group>"; };
 		8995262021C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObjectContext+CMPOrphanedEvent.m"; sourceTree = "<group>"; };
 		8998F49D21B800AA00BD6C52 /* CMPComapiChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CMPComapiChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -451,11 +535,7 @@
 		89EE87A821FF64860089F606 /* NSManagedObject+CMPUpdate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+CMPUpdate.h"; sourceTree = "<group>"; };
 		89EE87A921FF64860089F606 /* NSManagedObject+CMPUpdate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+CMPUpdate.m"; sourceTree = "<group>"; };
 		89EE87AB22007E3F0089F606 /* SampleApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SampleApp.entitlements; sourceTree = "<group>"; };
-		9E6153C239173D7193C160CC /* Pods_SampleApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SampleApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		9EF80143AE7E5E4DCF4D2E4F /* Pods_CMPComapiChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CMPComapiChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DB9D135D6C6DD93AD1724CA9 /* Pods_CMPComapiChatTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CMPComapiChatTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		F36586DF7055BAC3677D4308 /* Pods-CMPComapiChat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CMPComapiChat.release.xcconfig"; path = "Pods/Target Support Files/Pods-CMPComapiChat/Pods-CMPComapiChat.release.xcconfig"; sourceTree = "<group>"; };
-		F5801150CE9DAEEA837EB93D /* Pods-CMPComapiChat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CMPComapiChat.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CMPComapiChat/Pods-CMPComapiChat.debug.xcconfig"; sourceTree = "<group>"; };
+		C39FAE4B15EEC7A4F772DDE1 /* Pods-CMPComapiChatTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CMPComapiChatTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-CMPComapiChatTests/Pods-CMPComapiChatTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -463,7 +543,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				580347199DF5F837F1D78AF0 /* Pods_SampleApp.framework in Frameworks */,
+				E31BB31C9CCF3D736A5BCA2B /* Pods_SampleApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -471,7 +551,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				82E9169CFDB3B725E9E0F00F /* Pods_CMPComapiChat.framework in Frameworks */,
+				3E9B4BD6DC73F7B2BC5686A4 /* Pods_CMPComapiChat.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -480,32 +560,32 @@
 			buildActionMask = 2147483647;
 			files = (
 				8998F4B321B8012F00BD6C52 /* CMPComapiChat.framework in Frameworks */,
-				5A4B6170A521B77D97A086F0 /* Pods_CMPComapiChatTests.framework in Frameworks */,
+				0ABC2F193FB30F0C9988E131 /* Pods_CMPComapiChatTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		19123B06DD6E27ED3D806BAB /* Pods */ = {
+		45FC2355131DE1D8FC3C736C /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				F5801150CE9DAEEA837EB93D /* Pods-CMPComapiChat.debug.xcconfig */,
-				F36586DF7055BAC3677D4308 /* Pods-CMPComapiChat.release.xcconfig */,
-				1724185288BF8D94F10D7D39 /* Pods-CMPComapiChatTests.debug.xcconfig */,
-				35F86425543963FC760105C9 /* Pods-CMPComapiChatTests.release.xcconfig */,
-				4FB95DF586558A8F3B6DA934 /* Pods-SampleApp.debug.xcconfig */,
-				036F683D56AE12E7BA04E7E0 /* Pods-SampleApp.release.xcconfig */,
+				69241A434EA792329A874275 /* Pods-CMPComapiChat.debug.xcconfig */,
+				0FB02BA1AF30A28E10297364 /* Pods-CMPComapiChat.release.xcconfig */,
+				7B0665EC579BA78CFF97CAE9 /* Pods-CMPComapiChatTests.debug.xcconfig */,
+				C39FAE4B15EEC7A4F772DDE1 /* Pods-CMPComapiChatTests.release.xcconfig */,
+				4435D313075BD666831E2C07 /* Pods-SampleApp.debug.xcconfig */,
+				732B6A8C153B4A8DC66D6CB5 /* Pods-SampleApp.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		61FB9A4ABB67742452F83840 /* Frameworks */ = {
+		5556C4A84E6D9BCD3B6F0FE7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				9EF80143AE7E5E4DCF4D2E4F /* Pods_CMPComapiChat.framework */,
-				DB9D135D6C6DD93AD1724CA9 /* Pods_CMPComapiChatTests.framework */,
-				9E6153C239173D7193C160CC /* Pods_SampleApp.framework */,
+				887682907A524773BAB9C29E /* Pods_CMPComapiChat.framework */,
+				6233C88F08A12B21C3DD58E3 /* Pods_CMPComapiChatTests.framework */,
+				5EC5D26D64ABD039BC641911 /* Pods_SampleApp.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1019,6 +1099,7 @@
 		896015AF21B82D6600370AF2 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				898EB0F6221474C7002CD17D /* JSON */,
 				898EB0E9221328E8002CD17D /* Categories */,
 				898EB0DC22132382002CD17D /* Mocks */,
 				8933AC3A2201C6FB000855C1 /* CMPTestMessageProcessing.m */,
@@ -1330,13 +1411,17 @@
 				898EB0F022132991002CD17D /* CMPTestMocks.h */,
 				898EB0EE22132991002CD17D /* CMPTestMocks.m */,
 				898EB0DE22132382002CD17D /* CMPMockAuthenticationDelegate.h */,
+				898EB0E122132382002CD17D /* CMPMockAuthenticationDelegate.m */,
 				898EB0DD22132382002CD17D /* CMPMockEventDelegate.h */,
 				898EB0E222132382002CD17D /* CMPMockEventDelegate.m */,
 				898EB0E322132382002CD17D /* CMPMockUserDefaults.h */,
 				898EB0E022132382002CD17D /* CMPMockUserDefaults.m */,
 				898EB0E422132382002CD17D /* CMPMockRequestPerformer.h */,
 				898EB0DF22132382002CD17D /* CMPMockRequestPerformer.m */,
-				898EB0E122132382002CD17D /* CMPMockAuthenticationDelegate.m */,
+				898EB0F3221454C9002CD17D /* CMPMockClientFactory.h */,
+				898EB0F4221454C9002CD17D /* CMPMockClientFactory.m */,
+				898EB1482216CA97002CD17D /* CMPMockChatStore.h */,
+				898EB1492216CA97002CD17D /* CMPMockChatStore.m */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -1350,6 +1435,66 @@
 			path = Categories;
 			sourceTree = "<group>";
 		};
+		898EB0F6221474C7002CD17D /* JSON */ = {
+			isa = PBXGroup;
+			children = (
+				898EB0FF221474C7002CD17D /* Events */,
+				898EB10D221474C7002CD17D /* Messaging */,
+				898EB0F7221474C7002CD17D /* ProfileUpdate.json */,
+				898EB0F8221474C7002CD17D /* AuthorizeSessionBody.json */,
+				898EB0F9221474C7002CD17D /* Session.json */,
+				898EB0FA221474C7002CD17D /* ProfileArray.json */,
+				898EB0FC221474C7002CD17D /* SessionAuth.json */,
+				898EB0FD221474C7002CD17D /* AuthenticationChallenge.json */,
+				898EB0FE221474C7002CD17D /* mock_image.png */,
+				898EB10C221474C7002CD17D /* APNSDetailsBody.json */,
+				898EB11F221474C7002CD17D /* Profile.json */,
+			);
+			path = JSON;
+			sourceTree = "<group>";
+		};
+		898EB0FF221474C7002CD17D /* Events */ = {
+			isa = PBXGroup;
+			children = (
+				898EB100221474C7002CD17D /* Event.conversation.delete.json */,
+				898EB101221474C7002CD17D /* Event.conversationMessage.delivered.json */,
+				898EB102221474C7002CD17D /* Event.conversationMessage.read.json */,
+				898EB103221474C7002CD17D /* Event.conversationMessage.sent.json */,
+				898EB104221474C7002CD17D /* Event.conversation.participantAdded.json */,
+				898EB105221474C7002CD17D /* Event.socket.info.json */,
+				898EB106221474C7002CD17D /* Event.conversation.create.json */,
+				898EB107221474C7002CD17D /* Event.conversation.participantUpdated.json */,
+				898EB108221474C7002CD17D /* Event.profile.update.json */,
+				898EB109221474C7002CD17D /* Event.conversation.undelete.json */,
+				898EB10A221474C7002CD17D /* Event.conversation.update.json */,
+				898EB10B221474C7002CD17D /* Event.conversation.participantRemoved.json */,
+			);
+			path = Events;
+			sourceTree = "<group>";
+		};
+		898EB10D221474C7002CD17D /* Messaging */ = {
+			isa = PBXGroup;
+			children = (
+				898EB10E221474C7002CD17D /* GetAllConversationsResult.json */,
+				898EB10F221474C7002CD17D /* NewConversation.json */,
+				898EB110221474C7002CD17D /* SendableMessage.json */,
+				898EB111221474C7002CD17D /* Conversations.json */,
+				898EB112221474C7002CD17D /* SendMessagesResult.json */,
+				898EB113221474C7002CD17D /* Events.json */,
+				898EB114221474C7002CD17D /* GetMessagesResult.json */,
+				898EB115221474C7002CD17D /* Conversation.json */,
+				898EB116221474C7002CD17D /* ContentUploadResult.json */,
+				898EB117221474C7002CD17D /* PostMessagesResult.json */,
+				898EB118221474C7002CD17D /* MessageStatusUpdate.json */,
+				898EB119221474C7002CD17D /* MessageAlert.json */,
+				898EB11A221474C7002CD17D /* ConversationParticipant.json */,
+				898EB11B221474C7002CD17D /* ConversationParticipants.json */,
+				898EB11C221474C7002CD17D /* PostConversationsResult.json */,
+				898EB11D221474C7002CD17D /* Message.json */,
+			);
+			path = Messaging;
+			sourceTree = "<group>";
+		};
 		8998F49321B800AA00BD6C52 = {
 			isa = PBXGroup;
 			children = (
@@ -1359,8 +1504,8 @@
 				896015AF21B82D6600370AF2 /* Tests */,
 				896CB99821BA9966003FB3DF /* SampleApp */,
 				8998F49E21B800AA00BD6C52 /* Products */,
-				19123B06DD6E27ED3D806BAB /* Pods */,
-				61FB9A4ABB67742452F83840 /* Frameworks */,
+				45FC2355131DE1D8FC3C736C /* Pods */,
+				5556C4A84E6D9BCD3B6F0FE7 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1464,11 +1609,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 896CB9AA21BA9968003FB3DF /* Build configuration list for PBXNativeTarget "SampleApp" */;
 			buildPhases = (
-				62D49AFF9F8246E77B341EFF /* [CP] Check Pods Manifest.lock */,
+				BFBB460EFED0E79574B1CA19 /* [CP] Check Pods Manifest.lock */,
 				896CB99321BA9966003FB3DF /* Sources */,
 				896CB99421BA9966003FB3DF /* Frameworks */,
 				896CB99521BA9966003FB3DF /* Resources */,
-				9D27FACE2BDFEEDBF7027303 /* [CP] Embed Pods Frameworks */,
+				A11B33D23A8E7B2497F86CC3 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1483,7 +1628,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8998F4A521B800AA00BD6C52 /* Build configuration list for PBXNativeTarget "CMPComapiChat" */;
 			buildPhases = (
-				E549F71DBE80C6AB8D06D419 /* [CP] Check Pods Manifest.lock */,
+				839595F2FA009D355F46A5DD /* [CP] Check Pods Manifest.lock */,
 				8998F49821B800AA00BD6C52 /* Headers */,
 				8998F49921B800AA00BD6C52 /* Sources */,
 				8998F49A21B800AA00BD6C52 /* Frameworks */,
@@ -1503,11 +1648,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8998F4B621B8012F00BD6C52 /* Build configuration list for PBXNativeTarget "CMPComapiChatTests" */;
 			buildPhases = (
-				9E340D9033535D959F548C3E /* [CP] Check Pods Manifest.lock */,
+				5D950ACF6942839652535564 /* [CP] Check Pods Manifest.lock */,
 				8998F4AA21B8012F00BD6C52 /* Sources */,
 				8998F4AB21B8012F00BD6C52 /* Frameworks */,
 				8998F4AC21B8012F00BD6C52 /* Resources */,
-				AEA66306D16AD05ACBBEC23A /* [CP] Embed Pods Frameworks */,
+				6962AEBA6DBCE05EC8E06203 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1543,6 +1688,7 @@
 					};
 					8998F4AD21B8012F00BD6C52 = {
 						CreatedOnToolsVersion = 10.1;
+						TestTargetID = 896CB99621BA9966003FB3DF;
 					};
 				};
 			};
@@ -1588,13 +1734,50 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				898EB138221474C8002CD17D /* Conversations.json in Resources */,
+				898EB137221474C8002CD17D /* SendableMessage.json in Resources */,
+				898EB129221474C8002CD17D /* Event.conversationMessage.delivered.json in Resources */,
+				898EB121221474C8002CD17D /* AuthorizeSessionBody.json in Resources */,
+				898EB139221474C8002CD17D /* SendMessagesResult.json in Resources */,
+				898EB141221474C8002CD17D /* ConversationParticipant.json in Resources */,
+				898EB133221474C8002CD17D /* Event.conversation.participantRemoved.json in Resources */,
+				898EB13A221474C8002CD17D /* Events.json in Resources */,
+				898EB12B221474C8002CD17D /* Event.conversationMessage.sent.json in Resources */,
+				898EB143221474C8002CD17D /* PostConversationsResult.json in Resources */,
+				898EB130221474C8002CD17D /* Event.profile.update.json in Resources */,
+				898EB12E221474C8002CD17D /* Event.conversation.create.json in Resources */,
+				898EB135221474C8002CD17D /* GetAllConversationsResult.json in Resources */,
+				898EB123221474C8002CD17D /* ProfileArray.json in Resources */,
+				898EB13E221474C8002CD17D /* PostMessagesResult.json in Resources */,
+				898EB12A221474C8002CD17D /* Event.conversationMessage.read.json in Resources */,
+				898EB128221474C8002CD17D /* Event.conversation.delete.json in Resources */,
+				898EB120221474C8002CD17D /* ProfileUpdate.json in Resources */,
+				898EB145221474C8002CD17D /* Profile.json in Resources */,
+				898EB13B221474C8002CD17D /* GetMessagesResult.json in Resources */,
+				898EB12D221474C8002CD17D /* Event.socket.info.json in Resources */,
+				898EB131221474C8002CD17D /* Event.conversation.undelete.json in Resources */,
+				898EB125221474C8002CD17D /* SessionAuth.json in Resources */,
+				898EB122221474C8002CD17D /* Session.json in Resources */,
+				898EB134221474C8002CD17D /* APNSDetailsBody.json in Resources */,
+				898EB140221474C8002CD17D /* MessageAlert.json in Resources */,
+				898EB144221474C8002CD17D /* Message.json in Resources */,
+				898EB127221474C8002CD17D /* mock_image.png in Resources */,
+				898EB136221474C8002CD17D /* NewConversation.json in Resources */,
+				898EB142221474C8002CD17D /* ConversationParticipants.json in Resources */,
+				898EB13F221474C8002CD17D /* MessageStatusUpdate.json in Resources */,
+				898EB13D221474C8002CD17D /* ContentUploadResult.json in Resources */,
+				898EB132221474C8002CD17D /* Event.conversation.update.json in Resources */,
+				898EB13C221474C8002CD17D /* Conversation.json in Resources */,
+				898EB12F221474C8002CD17D /* Event.conversation.participantUpdated.json in Resources */,
+				898EB12C221474C8002CD17D /* Event.conversation.participantAdded.json in Resources */,
+				898EB126221474C8002CD17D /* AuthenticationChallenge.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		62D49AFF9F8246E77B341EFF /* [CP] Check Pods Manifest.lock */ = {
+		5D950ACF6942839652535564 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1605,14 +1788,54 @@
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-SampleApp-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-CMPComapiChatTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		9D27FACE2BDFEEDBF7027303 /* [CP] Embed Pods Frameworks */ = {
+		6962AEBA6DBCE05EC8E06203 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-CMPComapiChatTests/Pods-CMPComapiChatTests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/CMPComapiFoundation/CMPComapiFoundation.framework",
+				"${BUILT_PRODUCTS_DIR}/SocketRocket/SocketRocket.framework",
+				"${BUILT_PRODUCTS_DIR}/CMPComapiChat/CMPComapiChat.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CMPComapiFoundation.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SocketRocket.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CMPComapiChat.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CMPComapiChatTests/Pods-CMPComapiChatTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		839595F2FA009D355F46A5DD /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-CMPComapiChat-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A11B33D23A8E7B2497F86CC3 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1638,7 +1861,7 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SampleApp/Pods-SampleApp-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		9E340D9033535D959F548C3E /* [CP] Check Pods Manifest.lock */ = {
+		BFBB460EFED0E79574B1CA19 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1649,47 +1872,7 @@
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-CMPComapiChatTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		AEA66306D16AD05ACBBEC23A /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-CMPComapiChatTests/Pods-CMPComapiChatTests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/CMPComapiFoundation/CMPComapiFoundation.framework",
-				"${BUILT_PRODUCTS_DIR}/SocketRocket/SocketRocket.framework",
-				"${BUILT_PRODUCTS_DIR}/CMPComapiChat/CMPComapiChat.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CMPComapiFoundation.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SocketRocket.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CMPComapiChat.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CMPComapiChatTests/Pods-CMPComapiChatTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		E549F71DBE80C6AB8D06D419 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-CMPComapiChat-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-SampleApp-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1824,10 +2007,12 @@
 				898EB0E822132383002CD17D /* CMPMockEventDelegate.m in Sources */,
 				898EB0E522132383002CD17D /* CMPMockRequestPerformer.m in Sources */,
 				898EB0F222132991002CD17D /* CMPResourceLoader.m in Sources */,
+				898EB14A2216CA97002CD17D /* CMPMockChatStore.m in Sources */,
 				898EB0EC221328E8002CD17D /* NSHTTPURLResponse+CMPTestUtility.m in Sources */,
 				898EB0D72211FB6F002CD17D /* CMPComapiChat.xcdatamodeld in Sources */,
 				898EB0D62211FB67002CD17D /* CMPTestChatClient.m in Sources */,
 				898EB0E622132383002CD17D /* CMPMockUserDefaults.m in Sources */,
+				898EB0F5221454C9002CD17D /* CMPMockClientFactory.m in Sources */,
 				898EB0F122132991002CD17D /* CMPTestMocks.m in Sources */,
 				898EB0E722132383002CD17D /* CMPMockAuthenticationDelegate.m in Sources */,
 			);
@@ -1862,7 +2047,7 @@
 /* Begin XCBuildConfiguration section */
 		896CB9AB21BA9968003FB3DF /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4FB95DF586558A8F3B6DA934 /* Pods-SampleApp.debug.xcconfig */;
+			baseConfigurationReference = 4435D313075BD666831E2C07 /* Pods-SampleApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = SampleApp/SampleApp.entitlements;
@@ -1883,7 +2068,7 @@
 		};
 		896CB9AC21BA9968003FB3DF /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 036F683D56AE12E7BA04E7E0 /* Pods-SampleApp.release.xcconfig */;
+			baseConfigurationReference = 732B6A8C153B4A8DC66D6CB5 /* Pods-SampleApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = SampleApp/SampleApp.entitlements;
@@ -2025,7 +2210,7 @@
 		};
 		8998F4A621B800AA00BD6C52 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F5801150CE9DAEEA837EB93D /* Pods-CMPComapiChat.debug.xcconfig */;
+			baseConfigurationReference = 69241A434EA792329A874275 /* Pods-CMPComapiChat.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -2055,7 +2240,7 @@
 		};
 		8998F4A721B800AA00BD6C52 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F36586DF7055BAC3677D4308 /* Pods-CMPComapiChat.release.xcconfig */;
+			baseConfigurationReference = 0FB02BA1AF30A28E10297364 /* Pods-CMPComapiChat.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -2084,8 +2269,9 @@
 		};
 		8998F4B721B8012F00BD6C52 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1724185288BF8D94F10D7D39 /* Pods-CMPComapiChatTests.debug.xcconfig */;
+			baseConfigurationReference = 7B0665EC579BA78CFF97CAE9 /* Pods-CMPComapiChatTests.debug.xcconfig */;
 			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = JE27K8BAX2;
 				INFOPLIST_FILE = CMPComapiChatTests/Info.plist;
@@ -2097,13 +2283,15 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.donkynetworks.CMPComapiChatTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SampleApp.app/SampleApp";
 			};
 			name = Debug;
 		};
 		8998F4B821B8012F00BD6C52 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 35F86425543963FC760105C9 /* Pods-CMPComapiChatTests.release.xcconfig */;
+			baseConfigurationReference = C39FAE4B15EEC7A4F772DDE1 /* Pods-CMPComapiChatTests.release.xcconfig */;
 			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = JE27K8BAX2;
 				INFOPLIST_FILE = CMPComapiChatTests/Info.plist;
@@ -2115,6 +2303,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.donkynetworks.CMPComapiChatTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SampleApp.app/SampleApp";
 			};
 			name = Release;
 		};
