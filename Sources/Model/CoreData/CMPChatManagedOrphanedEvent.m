@@ -52,4 +52,8 @@
     self.timestamp = event.data.payload.timestamp;
 }
 
+- (void)setType:(CMPChatMessageDeliveryStatus)type {
+    _eventType = type;
+}
+
 @end
