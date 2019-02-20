@@ -16,36 +16,57 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+#import <Foundation/Foundation.h>
+#import <XCTest/XCTest.h>
+
 #import "CMPRetryManager.h"
 
-@implementation CMPRetryManager
+@interface CMPTestRetries : XCTestCase
+@end
 
-+ (void)retryBlock:(void (^)(void(^)(BOOL)))block attempts:(NSUInteger)attempts interval:(NSUInteger)interval {
-    [CMPRetryManager retryBlock:block currentAttempt:1 attempts:attempts interval:interval];
+@implementation CMPTestRetries
+
+- (void)testRetryManager {
+    
+    __block XCTestExpectation *expectation = [self expectationWithDescription:@"ok"];
+    
+    __block NSInteger i = 0;
+    
+    [CMPRetryManager retryBlock:^(void (^successBlock)(BOOL)) {
+        i += 1;
+        [expectation fulfill];
+        return;
+    } attempts:1 interval:0];
+    
+    [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
+        
+    }];
+    
+    XCTAssertEqual(1, i);
 }
 
-+ (void)retryBlock:(void (^)(void(^)(BOOL)))block currentAttempt:(NSUInteger)currentAttempt attempts:(NSUInteger)attempts interval:(NSUInteger)interval {
-    if (currentAttempt > attempts) {
+- (void)testRetryManager2 {
+    
+    __block XCTestExpectation *expectation = [self expectationWithDescription:@"ok"];
+    
+    __block NSInteger i = 0;
+    
+    [CMPRetryManager retryBlock:^(void (^successBlock)(BOOL)) {
+        i += 1;
+        if (i < 3) {
+            successBlock(NO);
+        } else {
+            successBlock(YES);
+            [expectation fulfill];
+        }
         return;
-    } else if (currentAttempt == 1) {
-        block(^(BOOL success) {
-            if (success) {
-                return;
-            } else {
-                [CMPRetryManager retryBlock:block currentAttempt:currentAttempt+1 attempts:attempts interval:interval];
-            }
-        });
-    } else {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * interval), dispatch_get_main_queue(), ^{
-            block(^(BOOL success){
-                if (success) {
-                    return;
-                } else {
-                    [CMPRetryManager retryBlock:block currentAttempt:currentAttempt+1 attempts:attempts interval:interval];
-                }
-            });
-        });
-    }
+    } attempts:3 interval:0];
+    
+    [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
+        
+    }];
+    
+    XCTAssertEqual(3, i);
 }
 
 @end

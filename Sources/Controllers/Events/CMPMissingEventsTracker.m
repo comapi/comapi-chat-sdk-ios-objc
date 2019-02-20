@@ -56,7 +56,7 @@
             }
             
             if (last.integerValue < conversationEventID.integerValue - 1) {
-                [delegate missingEvents:conversationID from:last.integerValue + 1 limit:conversationEventID.integerValue - last.integerValue];
+                [delegate missingEvents:conversationID from:last.integerValue + 1 limit:conversationEventID.integerValue - last.integerValue - 1];
             }
             
             while (ids.count > 10) {
