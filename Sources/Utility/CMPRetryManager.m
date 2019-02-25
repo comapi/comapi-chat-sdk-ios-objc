@@ -25,7 +25,7 @@
 }
 
 + (void)retryBlock:(void (^)(void(^)(BOOL)))block currentAttempt:(NSUInteger)currentAttempt attempts:(NSUInteger)attempts interval:(NSUInteger)interval {
-    if (currentAttempt == attempts) {
+    if (currentAttempt > attempts) {
         return;
     } else if (currentAttempt == 1) {
         block(^(BOOL success) {

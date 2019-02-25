@@ -47,8 +47,18 @@
 - (NSArray<CMPChatMessage *> *)adaptMessages:(NSArray<CMPMessage *> *)messages {
     NSMutableArray<CMPChatMessage *> *adapted = [NSMutableArray new];
     
-    [messages enumerateObjectsUsingBlock:^(CMPMessage * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        [adapted addObject:[[CMPChatMessage alloc] initWithMessage:obj]];
+    [messages enumerateObjectsUsingBlock:^(CMPMessage * _Nonnull message, NSUInteger idx, BOOL * _Nonnull stop) {
+        
+        CMPChatMessage *adaptedMsg = [[CMPChatMessage alloc] initWithMessage:message];
+        
+        NSMutableDictionary<NSString *, CMPChatMessageStatus *> *statusUpdates = [NSMutableDictionary dictionary];
+        [[self adaptStatusesForConversationID:message.context.conversationID messageID:message.id statuses:message.statusUpdates] enumerateObjectsUsingBlock:^(CMPChatMessageStatus * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [statusUpdates setObject:obj forKey:obj.profileID];
+        }];
+        adaptedMsg.statusUpdates = statusUpdates;
+        
+        [adapted addObject:adaptedMsg];
+        
     }];
     
     return adapted;
@@ -86,7 +96,7 @@
                 [adapted addObject:status];
                 break;
             }
-            case CMPEventTypeConversationMessageDelivered: {
+            case CMPChatMessageDeliveryStatusDelivered: {
                 CMPChatMessageStatus *status = [[CMPChatMessageStatus alloc] initWithConversationID:obj.conversationID messageID:obj.messageID profileID:obj.profileID conversationEventID:[formatter numberFromString:obj.eventID] timestamp:obj.timestamp messageStatus:CMPChatMessageDeliveryStatusDelivered];
                 [adapted addObject:status];
                 break;
