@@ -19,74 +19,87 @@
 #import "CMPMockChatStore.h"
 #import "CMPResourceLoader.h"
 
+@interface CMPMockChatStore ()
+
+@property (nonatomic, readonly) NSMutableDictionary<NSString *, CMPChatConversation *> *conversations;
+@property (nonatomic, readonly) NSMutableDictionary<NSString *, CMPChatMessage *> *messages;
+@property (nonatomic, readonly) BOOL inTransaction;
+
+@end
+
 @implementation CMPMockChatStore
 
-#pragma mark - CMPCoreDataManagable
+- (CMPChatConversation *)getConversation:(NSString *)ID {
+    return [_conversations objectForKey:ID];
+}
+
+- (NSArray<CMPChatConversation *> *)getAllConversations {
+    return [_conversations allValues];
+}
+
+- (BOOL)upsertConversation:(CMPChatConversation *)conversation {
+    [_conversations setValue:conversation forKey:conversation.id];
+    return YES;
+}
+
+- (BOOL)updateConversation:(CMPChatConversation *)conversation {
+    [_conversations setValue:conversation forKey:conversation.id];
+    return YES;
+}
+
+- (BOOL)deleteConversation:(NSString *)ID {
+    [_conversations removeObjectForKey:ID];
+    return YES;
+}
+
+#pragma mark - Messages
+
+- (BOOL)upsertMessage:(CMPChatMessage *)message {
+    [_messages setObject:message forKeyedSubscript:message.id];
+    return YES;
+}
+
+- (BOOL)updateMessageStatus:(CMPChatMessageStatus *)messageStatus {
+    CMPChatMessage *message = [_messages objectForKey:messageStatus.messageID];
+    CMPChatMessageStatus *old =[message.statusUpdates objectForKey:messageStatus.profileID];
+    if ([old messageStatus] < messageStatus.messageStatus) {
+        [message.statusUpdates setValue:messageStatus forKey:messageStatus.profileID];
+    }
+    return YES;
+}
+
+- (BOOL)deleteAllMessages:(NSString *)conversationID {
+    [_messages removeAllObjects];
+    return YES;
+}
+
+- (BOOL)deleteMessage:(NSString *)conversationID messageID:(NSString *)messageID {
+    [_messages objectForKey:messageID];
+    return YES;
+}
+
+#pragma mark - Database operations
+
+- (BOOL)clearDatabase {
+    [_conversations removeAllObjects];
+    [_messages removeAllObjects];
+    return YES;
+}
 
 - (void)beginTransaction {
-    
+    if (!_inTransaction) {
+        _inTransaction = YES;
+    } else {
+        [NSException raise:@"transaction not finished" format:@"transaction not finished", nil];
+    }
 }
 
 - (void)endTransaction {
-    
-}
-
-- (BOOL)clearDatabase {
-    return YES;
-}
-
-- (BOOL)deleteAllMessages:(nonnull NSString *)conversationID {
-    return YES;
-}
-
-- (BOOL)deleteConversation:(nonnull NSString *)ID {
-    return YES;
-}
-
-- (BOOL)deleteMessage:(nonnull NSString *)conversationID messageID:(nonnull NSString *)messageID {
-    return YES;
-}
-
-- (nonnull NSArray<CMPChatConversation *> *)getAllConversations {
-    NSData *data = [CMPResourceLoader loadJSONWithName:@"Conversations"];
-    __block NSError *parseError = nil;
-    NSArray<NSDictionary<NSString *, id> *> *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
-    if (parseError) {
-        return @[];
+    if (_inTransaction) {
+        _inTransaction = NO;
+    } else {
+        [NSException raise:@"transaction not finished" format:@"transaction not finished", nil];
     }
-    NSMutableArray<CMPChatConversation *> *conversations = [NSMutableArray new];
-
-    [json enumerateObjectsUsingBlock:^(NSDictionary<NSString *, id> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        [conversations addObject:[[CMPChatConversation alloc] initWithConversation:[CMPConversation decodeWithData:[NSJSONSerialization dataWithJSONObject:obj options:0 error:&parseError]]]];
-    }];
-
-    return [NSArray arrayWithArray:conversations];
-}
-
-- (nonnull CMPChatConversation *)getConversation:(nonnull NSString *)ID {
-    NSData *data = [CMPResourceLoader loadJSONWithName:@"Conversation"];
-    NSError *err;
-    CMPChatConversation *c = [[CMPChatConversation alloc] initWithConversation:[[CMPConversation alloc] initWithJSON:[NSJSONSerialization dataWithJSONObject:data options:0 error:&err]]];
-    if (err) {
-        return nil;
-    }
-    return c;
-}
-
-- (BOOL)updateConversation:(nonnull CMPChatConversation *)conversation {
-    return YES;
-}
-
-- (BOOL)updateMessageStatus:(nonnull CMPChatMessageStatus *)messageStatus {
-    return YES;
-}
-
-- (BOOL)upsertConversation:(nonnull CMPChatConversation *)conversation {
-    return YES;
-}
-
-- (BOOL)upsertMessage:(nonnull CMPChatMessage *)message {
-    return YES;
 }
 
 @end
