@@ -52,6 +52,8 @@
         _smallLimitCalls = smallCallLimit;
         
         _shutdownPeriod = shutdownPeriod;
+        
+        _largeLimitTimestamp = [[NSDate date] timeIntervalSince1970] + largeTimeFrame;
     }
     
     return self;

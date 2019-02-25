@@ -16,44 +16,57 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatManagedOrphanedEvent.h"
+#import <Foundation/Foundation.h>
+#import <XCTest/XCTest.h>
 
-@implementation CMPChatManagedOrphanedEvent
+#import "CMPRetryManager.h"
 
-@synthesize eventType = _eventType;
+@interface CMPTestRetries : XCTestCase
+@end
 
-@dynamic id;
-@dynamic messageID;
-@dynamic profileID;
-@dynamic conversationID;
-@dynamic eventID;
-@dynamic name;
-@dynamic isPublicConversation;
-@dynamic timestamp;
+@implementation CMPTestRetries
 
-- (CMPChatMessageDeliveryStatus)eventType {
-    if ([self.name isEqualToString:@"delivered"]) {
-        return CMPChatMessageDeliveryStatusDelivered;
-    } else if ([self.name isEqualToString:@"read"]) {
-        return CMPChatMessageDeliveryStatusRead;
-    } else {
-        return CMPChatMessageDeliveryStatusUnknown;
-    }
+- (void)testRetryManager {
+    
+    __block XCTestExpectation *expectation = [self expectationWithDescription:@"ok"];
+    
+    __block NSInteger i = 0;
+    
+    [CMPRetryManager retryBlock:^(void (^successBlock)(BOOL)) {
+        i += 1;
+        [expectation fulfill];
+        return;
+    } attempts:1 interval:0];
+    
+    [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
+        
+    }];
+    
+    XCTAssertEqual(1, i);
 }
 
-- (void)populateWithOrphanedEvent:(CMPOrphanedEvent *)event {
-    self.id = event.id;
-    self.messageID = event.data.payload.messageID;
-    self.profileID = event.data.profileID != nil ? event.data.profileID : event.data.payload.profileID;
-    self.conversationID = event.data.payload.conversationID;
-    self.eventID = event.data.eventID;
-    self.name = event.data.name;
-    self.isPublicConversation = event.data.payload.isPublicConversation;
-    self.timestamp = event.data.payload.timestamp;
-}
-
-- (void)setType:(CMPChatMessageDeliveryStatus)type {
-    _eventType = type;
+- (void)testRetryManager2 {
+    
+    __block XCTestExpectation *expectation = [self expectationWithDescription:@"ok"];
+    
+    __block NSInteger i = 0;
+    
+    [CMPRetryManager retryBlock:^(void (^successBlock)(BOOL)) {
+        i += 1;
+        if (i < 3) {
+            successBlock(NO);
+        } else {
+            successBlock(YES);
+            [expectation fulfill];
+        }
+        return;
+    } attempts:3 interval:0];
+    
+    [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
+        
+    }];
+    
+    XCTAssertEqual(3, i);
 }
 
 @end

@@ -45,7 +45,7 @@ NSString *const kModelName = @"CMPComapiChat";
         
         NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
         
-        _mainContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+        _mainContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:config.concurrencyType];
         [_mainContext setPersistentStoreCoordinator:coordinator];
         
         _workerContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
@@ -58,7 +58,7 @@ NSString *const kModelName = @"CMPComapiChat";
             NSURL* storeURL = [NSURL fileURLWithPath:[documentsDirectory stringByAppendingString:[NSString stringWithFormat:@"/%@.sqlite", kModelName]] isDirectory:NO];
             
             NSError *err = nil;
-            NSPersistentStore *store = [psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&err];
+            NSPersistentStore *store = [psc addPersistentStoreWithType:config.persistentStoreType configuration:nil URL:storeURL options:nil error:&err];
             if (!store) {
                 logWithLevel(CMPLogLevelError, @"Core Data: error", err, nil);
                 dispatch_sync(dispatch_get_main_queue(), ^{
