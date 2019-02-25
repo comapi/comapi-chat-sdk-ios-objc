@@ -32,6 +32,8 @@
 @property (nonatomic, strong, nullable) CMPComapiChatClient *client;
 @property (nonatomic, strong, nullable) CMPMockRequestPerformer *requestPerformer;
 @property (nonatomic, strong, nullable) CMPMockAuthenticationDelegate *authDelegate;
+@property (nonatomic, strong, nullable) CMPMockStoreFactoryBuilder *storeFactoryBuilder;
+
 @end
 
 @implementation CMPTestChatClient
@@ -44,20 +46,21 @@
     
     _requestPerformer = [[CMPMockRequestPerformer alloc] initWithSessionAndAuth];
     _authDelegate = [[CMPMockAuthenticationDelegate alloc] init];
-    _client = [CMPMockClientFactory instantiateChatClient:_requestPerformer authDelegate:_authDelegate];
-    
+    _storeFactoryBuilder = [[CMPMockStoreFactoryBuilder alloc] init];
+    _client = [CMPMockClientFactory instantiateChatClient:_requestPerformer authDelegate:_authDelegate storeFactoryBuilder:_storeFactoryBuilder];
 }
 
 - (void)tearDown {
     _requestPerformer = nil;
+    _authDelegate = nil;
+    _storeFactoryBuilder = nil;
     _client = nil;
     
     [super tearDown];
 }
 
 - (void)testStartSession {
-    NSData *data = [CMPResourceLoader loadJSONWithName:@"SessionAuth"];
-    CMPMockRequestResult *completionValue = [[CMPMockRequestResult alloc] initWithData:data response:[NSHTTPURLResponse mockedWithURL:[CMPTestMocks mockBaseURL]] error:nil];
+    CMPMockRequestResult *completionValue = [[CMPMockRequestResult alloc] initWithData:nil response:[NSHTTPURLResponse mockedWithURL:[CMPTestMocks mockBaseURL]] error:nil];
     [self.requestPerformer.completionValues addObject:completionValue];
 
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
@@ -93,5 +96,109 @@
     [self waitForExpectations:@[expectation] timeout:5.0];
 }
 
+- (void)testGetProfile {
+    NSData *data = [CMPResourceLoader loadJSONWithName:@"Profile"];
+    NSHTTPURLResponse *response = [NSHTTPURLResponse mockedWithURL:[CMPTestMocks mockBaseURL] statusCode:200 httpVersion:@"HTTP/1.1" headers:@{}];
+    CMPMockRequestResult *endSessionCompletionValue = [[CMPMockRequestResult alloc] initWithData:data response:response error:nil];
+    [self.requestPerformer.completionValues addObject:endSessionCompletionValue];
+    
+    XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
+    [self.client.services.profile getProfileForProfileID:@"" completion:^(CMPResult<CMPProfile *> * _Nonnull result) {
+        XCTAssertTrue(result.error == nil);
+        XCTAssertTrue(result.object != nil);
+        
+        CMPProfile *p = result.object;
+        XCTAssertEqualObjects(p.firstName, @"Dominik");
+        XCTAssertEqualObjects(p.lastName, @"Kowalski");
+        XCTAssertEqualObjects(p.email, @"test@mail.com");
+        XCTAssertEqualObjects(p.phoneNumber, @"48222222222");
+        XCTAssertEqualObjects(p.phoneNumberCountryCode, @"PL");
+        XCTAssertEqualObjects(p.id, @"90419e09-1f5b-4fc2-97c8-b878793c53f0");
+        
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectations:@[expectation] timeout:5.0];
+}
+
+- (void)testUpdateProfile {
+    NSData *data = [CMPResourceLoader loadJSONWithName:@"Profile"];
+    NSHTTPURLResponse *response = [NSHTTPURLResponse mockedWithURL:[CMPTestMocks mockBaseURL] statusCode:200 httpVersion:@"HTTP/1.1" headers:@{}];
+    CMPMockRequestResult *endSessionCompletionValue = [[CMPMockRequestResult alloc] initWithData:data response:response error:nil];
+    [self.requestPerformer.completionValues addObject:endSessionCompletionValue];
+    
+    XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
+    [self.client.services.profile updateProfileWithProfileID:@"" attributes:@{} eTag:@"ETag" completion:^(CMPResult<CMPProfile *> * _Nonnull result) {
+        XCTAssertTrue(result.error == nil);
+        XCTAssertTrue(result.object != nil);
+        
+        CMPProfile *p = result.object;
+        XCTAssertEqualObjects(p.firstName, @"Dominik");
+        XCTAssertEqualObjects(p.lastName, @"Kowalski");
+        XCTAssertEqualObjects(p.email, @"test@mail.com");
+        XCTAssertEqualObjects(p.phoneNumber, @"48222222222");
+        XCTAssertEqualObjects(p.phoneNumberCountryCode, @"PL");
+        XCTAssertEqualObjects(p.id, @"90419e09-1f5b-4fc2-97c8-b878793c53f0");
+        
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectations:@[expectation] timeout:5.0];
+}
+
+- (void)testPatchProfile {
+    NSData *data = [CMPResourceLoader loadJSONWithName:@"Profile"];
+    NSHTTPURLResponse *response = [NSHTTPURLResponse mockedWithURL:[CMPTestMocks mockBaseURL] statusCode:200 httpVersion:@"HTTP/1.1" headers:@{}];
+    CMPMockRequestResult *endSessionCompletionValue = [[CMPMockRequestResult alloc] initWithData:data response:response error:nil];
+    [self.requestPerformer.completionValues addObject:endSessionCompletionValue];
+    
+    XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
+    [self.client.services.profile patchProfileWithProfileID:@"" attributes:@{} eTag:@"ETag" completion:^(CMPResult<CMPProfile *> * _Nonnull result) {
+        XCTAssertTrue(result.error == nil);
+        XCTAssertTrue(result.object != nil);
+        
+        CMPProfile *p = result.object;
+        XCTAssertEqualObjects(p.firstName, @"Dominik");
+        XCTAssertEqualObjects(p.lastName, @"Kowalski");
+        XCTAssertEqualObjects(p.email, @"test@mail.com");
+        XCTAssertEqualObjects(p.phoneNumber, @"48222222222");
+        XCTAssertEqualObjects(p.phoneNumberCountryCode, @"PL");
+        XCTAssertEqualObjects(p.id, @"90419e09-1f5b-4fc2-97c8-b878793c53f0");
+        
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectations:@[expectation] timeout:5.0];
+}
+
+- (void)testQueryProfile {
+    NSData *data = [CMPResourceLoader loadJSONWithName:@"ProfileArray"];
+    NSHTTPURLResponse *response = [NSHTTPURLResponse mockedWithURL:[CMPTestMocks mockBaseURL] statusCode:200 httpVersion:@"HTTP/1.1" headers:@{}];
+    CMPMockRequestResult *endSessionCompletionValue = [[CMPMockRequestResult alloc] initWithData:data response:response error:nil];
+    [self.requestPerformer.completionValues addObject:endSessionCompletionValue];
+    
+    XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
+    [self.client.services.profile queryProfilesWithQueryElements:@[] completion:^(CMPResult<NSArray<CMPProfile *> *> * _Nonnull result) {
+        XCTAssertTrue(result.error == nil);
+        XCTAssertTrue(result.object != nil);
+        XCTAssertTrue(result.object.count > 0);
+        
+        CMPProfile *p = result.object[0];
+        XCTAssertEqualObjects(p.firstName, @"Dominik");
+        XCTAssertEqualObjects(p.lastName, @"Kowalski");
+        XCTAssertEqualObjects(p.email, @"test@mail.com");
+        XCTAssertEqualObjects(p.phoneNumber, @"48222222222");
+        XCTAssertEqualObjects(p.phoneNumberCountryCode, @"PL");
+        XCTAssertEqualObjects(p.id, @"90419e09-1f5b-4fc2-97c8-b878793c53f0");
+        
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectations:@[expectation] timeout:5.0];
+}
+
+- (void)testSendMessage {
+    
+}
 
 @end

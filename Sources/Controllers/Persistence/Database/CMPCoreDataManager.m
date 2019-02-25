@@ -19,6 +19,7 @@
 #import "CMPCoreDataManager.h"
 #import "NSManagedObjectContext+CMPUtility.h"
 
+#import <UIKit/UIDevice.h>
 #import <CMPComapiFoundation/CMPLogger.h>
 
 NSString *const kModelName = @"CMPComapiChat";
@@ -31,7 +32,7 @@ NSString *const kModelName = @"CMPComapiChat";
 
 @synthesize mainContext = _mainContext;
 @synthesize workerContext = _workerContext;
-
+@synthesize persistentContainer = _persistentContainer;
 
 - (instancetype)initWithConfig:(CMPCoreDataConfig *)config completion:(void (^)(NSError * _Nullable))completion {
     self = [super init];
@@ -39,54 +40,54 @@ NSString *const kModelName = @"CMPComapiChat";
     if (self) {
         NSURL *modelURL = [[NSBundle bundleForClass:self.class] URLForResource:kModelName withExtension:@"momd"];
         NSAssert(modelURL, @"Failed to locate momd bundle in application");
-        
+
         NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
         NSAssert(mom, @"Failed to initialize mom from URL: %@", modelURL);
         
-        NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
-        
-        _mainContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
-        [_mainContext setPersistentStoreCoordinator:coordinator];
-        
-        _workerContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-        _workerContext.parentContext = _mainContext;
-        
-        __weak typeof(self) weakSelf = self;
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-            NSPersistentStoreCoordinator *psc = [weakSelf.mainContext persistentStoreCoordinator];
-            NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-            NSURL* storeURL = [NSURL fileURLWithPath:[documentsDirectory stringByAppendingString:[NSString stringWithFormat:@"/%@.sqlite", kModelName]] isDirectory:NO];
-            
-            NSError *err = nil;
-            NSPersistentStore *store = [psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&err];
-            if (!store) {
-                logWithLevel(CMPLogLevelError, @"Core Data: error", err, nil);
-                dispatch_sync(dispatch_get_main_queue(), ^{
-                    completion(err);
-                });
-            } else {
-                logWithLevel(CMPLogLevelInfo, @"Core Data: initialized.", nil);
-                dispatch_sync(dispatch_get_main_queue(), ^{
-                    completion(nil);
-                });
-            }
-        });
+        if (@available(iOS 10.0, *)) {
+            _persistentContainer = [[NSPersistentContainer alloc] initWithName:kModelName managedObjectModel:mom];
+            NSPersistentStoreDescription *psd = _persistentContainer.persistentStoreDescriptions.firstObject;
+            psd.type = config.persistentStoreType;
+            [_persistentContainer loadPersistentStoresWithCompletionHandler:^(NSPersistentStoreDescription * psd, NSError * _Nullable error) {
+                if (error) {
+                    logWithLevel(CMPLogLevelError, @"Core Data: error", error, nil);
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        completion(error);
+                    });
+                } else {
+                    logWithLevel(CMPLogLevelInfo, @"Core Data: initialized.", nil);
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        completion(nil);
+                    });
+                }
+            }];
+        } else {
+            logWithLevel(CMPLogLevelInfo, @"Core Data: unsupported iOS version - %@, minimum supported version - 10.0", UIDevice.currentDevice.systemVersion, nil);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(nil);
+            });
+        }
     }
     
     return self;
 }
 
-- (void)saveToDiskWithCompletion:(void (^)(NSError * _Nullable))completion {
-    __weak typeof(self) weakSelf = self;
-    [_workerContext saveWithCompletion:^(NSError * _Nullable err) {
-        if (err) {
-            completion(err);
-        } else {
-            [weakSelf.mainContext saveWithCompletion:^(NSError * _Nullable err) {
-                completion(err);
-            }];
-        }
-    }];
+- (NSManagedObjectContext *)mainContext {
+    NSManagedObjectContext *ctx = _persistentContainer.viewContext;
+    if (@available(iOS 10.0, *)) {
+        ctx.automaticallyMergesChangesFromParent = YES;
+    } else {
+        logWithLevel(CMPLogLevelInfo, @"Core Data: unsupported iOS version - %@, minimum supported version - 10.0", UIDevice.currentDevice.systemVersion, nil);
+    }
+    
+    return ctx;
+}
+
+- (NSManagedObjectContext *)workerContext {
+    NSManagedObjectContext *ctx = [_persistentContainer newBackgroundContext];
+    ctx.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy;
+    
+    return ctx;
 }
 
 @end

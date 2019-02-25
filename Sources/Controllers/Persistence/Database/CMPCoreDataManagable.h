@@ -16,28 +16,20 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPStoreFactory.h"
-#import "CMPInternalConfig.h"
-#import "CMPTypingDelegate.h"
-#import "CMPParticipantDelegate.h"
-#import "CMPProfileDelegate.h"
 #import "CMPCoreDataConfig.h"
 
-#import <CMPComapiFoundation/CMPComapiConfig.h>
-#import <CMPComapiFoundation/CMPComapiClient.h>
+#import <CoreData/CoreData.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatConfig : CMPComapiConfig
+API_AVAILABLE(ios(10.0))
+@protocol CMPCoreDataManagable <NSObject>
 
-@property (nonatomic, strong) CMPStoreFactory *storeFactory;
-@property (nonatomic, strong) CMPInternalConfig *internalConfig;
-@property (nonatomic, strong) CMPCoreDataConfig *storeConfig;
+@property (nonatomic, strong, readonly) NSPersistentContainer *persistentContainer;
+@property (nonatomic, strong, readonly) NSManagedObjectContext *mainContext;
+@property (nonatomic, strong, readonly) NSManagedObjectContext *workerContext;
 
-- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate logLevel:(CMPLogLevel)logLevel storeFactory:(CMPStoreFactory *)factory internalConfig:(CMPInternalConfig *)config;
-- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(CMPStoreFactory *)factory internalConfig:(CMPInternalConfig *)config;
-
-- (CMPComapiConfig *)foundationConfig;
+- (instancetype)initWithConfig:(CMPCoreDataConfig *)config completion:(void (^)(NSError * _Nullable))completion;
 
 @end
 

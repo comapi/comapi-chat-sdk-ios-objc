@@ -16,9 +16,9 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+#import "CMPCoreDataManagable.h"
 #import "CMPChatStore.h"
-
-#import <Foundation/Foundation.h>
+#import "CMPCoreDataConfig.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

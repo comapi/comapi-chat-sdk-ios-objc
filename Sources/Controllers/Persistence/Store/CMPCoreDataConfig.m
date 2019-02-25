@@ -10,13 +10,11 @@
 
 @implementation CMPCoreDataConfig
 
-- (instancetype)initWithPersistentStoreType:(NSString *)persistentStoreType concurrencyType:(NSUInteger)concurrencyType {
-    
+- (instancetype)initWithPersistentStoreType:(NSString *)persistentStoreType {
     self = [super init];
     
     if (self) {
         _persistentStoreType = persistentStoreType;
-        _concurrencyType = concurrencyType;
     }
     
     return self;

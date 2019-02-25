@@ -51,7 +51,7 @@
         
         CMPModelAdapter *adapter = [[CMPModelAdapter alloc] init];
         CMPMissingEventsTracker *tracker = [[CMPMissingEventsTracker alloc] init];
-        CMPCoreDataConfig *config = chatConfig.storeConfig != nil ? chatConfig.storeConfig : [[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSSQLiteStoreType concurrencyType:NSMainQueueConcurrencyType];
+        CMPCoreDataConfig *config = chatConfig.storeConfig != nil ? chatConfig.storeConfig : [[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSSQLiteStoreType];
         CMPCoreDataManager *coreDataManager = [[CMPCoreDataManager alloc] initWithConfig:config completion:^(NSError * _Nullable error) {
             if (error) {
                 logWithLevel(CMPLogLevelError, @"Error configuring CoreData stack.", nil);

@@ -16,29 +16,12 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPStoreFactory.h"
-#import "CMPInternalConfig.h"
-#import "CMPTypingDelegate.h"
-#import "CMPParticipantDelegate.h"
-#import "CMPProfileDelegate.h"
-#import "CMPCoreDataConfig.h"
+#import "CMPMockStoreFactoryBuilder.h"
 
-#import <CMPComapiFoundation/CMPComapiConfig.h>
-#import <CMPComapiFoundation/CMPComapiClient.h>
+@implementation CMPMockStoreFactoryBuilder
 
-NS_ASSUME_NONNULL_BEGIN
-
-@interface CMPChatConfig : CMPComapiConfig
-
-@property (nonatomic, strong) CMPStoreFactory *storeFactory;
-@property (nonatomic, strong) CMPInternalConfig *internalConfig;
-@property (nonatomic, strong) CMPCoreDataConfig *storeConfig;
-
-- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate logLevel:(CMPLogLevel)logLevel storeFactory:(CMPStoreFactory *)factory internalConfig:(CMPInternalConfig *)config;
-- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(CMPStoreFactory *)factory internalConfig:(CMPInternalConfig *)config;
-
-- (CMPComapiConfig *)foundationConfig;
+- (void)buildWithCompletion:(void (^)(id<CMPChatStore> _Nullable, NSError * _Nullable))completion {
+    completion([[CMPMockChatStore alloc] init], nil);
+}
 
 @end
-
-NS_ASSUME_NONNULL_END
