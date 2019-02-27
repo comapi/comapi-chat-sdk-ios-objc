@@ -23,6 +23,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPMockStoreFactoryBuilder : NSObject <CMPStoreFactoryBuildable>
 
+- (instancetype)initWithChatStore:(id<CMPChatStore>)chatStore;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -72,7 +72,7 @@
 }
 
 - (void)addStatusUpdate:(CMPChatMessageStatus *)statusUpdate {
-    NSString *unique = [NSString stringWithFormat:@"%@%@%ld", statusUpdate.messageID, statusUpdate.profileID, (long)statusUpdate.messageStatus];
+    NSString *unique = [NSUUID UUID].UUIDString;
     if (!_statusUpdates) {
         _statusUpdates = [NSDictionary new];
     }

@@ -18,10 +18,26 @@
 
 #import "CMPMockStoreFactoryBuilder.h"
 
+@interface CMPMockStoreFactoryBuilder ()
+
+@property (nonatomic, strong) id<CMPChatStore> store;
+
+@end
+
 @implementation CMPMockStoreFactoryBuilder
 
+- (instancetype)initWithChatStore:(id<CMPChatStore>)chatStore {
+    self = [super init];
+    
+    if (self) {
+        self.store = chatStore;
+    }
+    
+    return self;
+}
+
 - (void)buildWithCompletion:(void (^)(id<CMPChatStore> _Nullable, NSError * _Nullable))completion {
-    completion([[CMPMockChatStore alloc] init], nil);
+    completion(self.store, nil);
 }
 
 @end

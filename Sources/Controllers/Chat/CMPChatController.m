@@ -174,6 +174,8 @@ NSInteger const kETagNotValid = 412;
                 completion([[CMPChatResult alloc] initWithError:result.error success:NO]);
             }
         }];
+    } else {
+        completion([[CMPChatResult alloc] initWithError:nil success:NO]);
     }
 }
 

@@ -24,6 +24,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPMockChatStore : NSObject <CMPChatStore>
 
+- (CMPChatMessage *)getMessage:(NSString *)id;
+- (NSArray<CMPChatMessage *> *)getMessages:(NSString *)conversationID;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -18,6 +18,7 @@
 
 #import "CMPMockChatStore.h"
 #import "CMPResourceLoader.h"
+#import "NSArray+CMPUtility.h"
 
 @interface CMPMockChatStore ()
 
@@ -28,6 +29,17 @@
 @end
 
 @implementation CMPMockChatStore
+
+- (instancetype)init {
+    self = [super init];
+    
+    if (self) {
+        _conversations = [NSMutableDictionary new];
+        _messages = [NSMutableDictionary new];
+    }
+    
+    return self;
+}
 
 - (CMPChatConversation *)getConversation:(NSString *)ID {
     return [_conversations objectForKey:ID];
@@ -74,8 +86,24 @@
 }
 
 - (BOOL)deleteMessage:(NSString *)conversationID messageID:(NSString *)messageID {
-    [_messages objectForKey:messageID];
+    [_messages removeObjectForKey:messageID];
     return YES;
+}
+
+- (CMPChatMessage *)getMessage:(NSString *)id {
+    return [_messages objectForKey:id];
+}
+
+- (NSArray<CMPChatMessage *> *)getMessages:(NSString *)conversationID {
+    NSMutableArray<CMPChatMessage *> *messages = [NSMutableArray new];
+    
+    [_messages enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, CMPChatMessage * _Nonnull obj, BOOL * _Nonnull stop) {
+        if ([obj.context.conversationID isEqualToString:conversationID]) {
+            [messages addObject:obj];
+        }
+    }];
+    
+    return messages;
 }
 
 #pragma mark - Database operations

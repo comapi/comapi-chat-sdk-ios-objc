@@ -18,6 +18,8 @@
 		892C860C222443A400A596BC /* CMPTestModelAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 892C8607222443A300A596BC /* CMPTestModelAdapter.m */; };
 		892C860D222443A400A596BC /* CMPTestRetries.m in Sources */ = {isa = PBXBuildFile; fileRef = 892C8608222443A300A596BC /* CMPTestRetries.m */; };
 		892C860E222443A400A596BC /* CMPTestEventTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 892C8609222443A400A596BC /* CMPTestEventTracker.m */; };
+		892C86102226B8A100A596BC /* ConversationUpdated.json in Resources */ = {isa = PBXBuildFile; fileRef = 892C860F2226B8A100A596BC /* ConversationUpdated.json */; };
+		892C86122226EA4300A596BC /* GetMessagesResult-GetPreviousMessages.json in Resources */ = {isa = PBXBuildFile; fileRef = 892C86112226EA4300A596BC /* GetMessagesResult-GetPreviousMessages.json */; };
 		892F49B721BE7C3100FA52C9 /* CMPModelAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 892F49B521BE7C3100FA52C9 /* CMPModelAdapter.h */; };
 		892F49B821BE7C3100FA52C9 /* CMPModelAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 892F49B621BE7C3100FA52C9 /* CMPModelAdapter.m */; };
 		892F49BB21BE981A00FA52C9 /* CMPChatMessageDeliveryStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 892F49B921BE981900FA52C9 /* CMPChatMessageDeliveryStatus.h */; };
@@ -274,6 +276,8 @@
 		892C8607222443A300A596BC /* CMPTestModelAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPTestModelAdapter.m; sourceTree = "<group>"; };
 		892C8608222443A300A596BC /* CMPTestRetries.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPTestRetries.m; sourceTree = "<group>"; };
 		892C8609222443A400A596BC /* CMPTestEventTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPTestEventTracker.m; sourceTree = "<group>"; };
+		892C860F2226B8A100A596BC /* ConversationUpdated.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ConversationUpdated.json; sourceTree = "<group>"; };
+		892C86112226EA4300A596BC /* GetMessagesResult-GetPreviousMessages.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "GetMessagesResult-GetPreviousMessages.json"; sourceTree = "<group>"; };
 		892F49B521BE7C3100FA52C9 /* CMPModelAdapter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPModelAdapter.h; sourceTree = "<group>"; };
 		892F49B621BE7C3100FA52C9 /* CMPModelAdapter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPModelAdapter.m; sourceTree = "<group>"; };
 		892F49B921BE981900FA52C9 /* CMPChatMessageDeliveryStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPChatMessageDeliveryStatus.h; sourceTree = "<group>"; };
@@ -1499,7 +1503,9 @@
 				898EB112221474C7002CD17D /* SendMessagesResult.json */,
 				898EB113221474C7002CD17D /* Events.json */,
 				898EB114221474C7002CD17D /* GetMessagesResult.json */,
+				892C86112226EA4300A596BC /* GetMessagesResult-GetPreviousMessages.json */,
 				898EB115221474C7002CD17D /* Conversation.json */,
+				892C860F2226B8A100A596BC /* ConversationUpdated.json */,
 				898EB116221474C7002CD17D /* ContentUploadResult.json */,
 				898EB117221474C7002CD17D /* PostMessagesResult.json */,
 				898EB118221474C7002CD17D /* MessageStatusUpdate.json */,
@@ -1770,6 +1776,7 @@
 				898EB137221474C8002CD17D /* SendableMessage.json in Resources */,
 				898EB129221474C8002CD17D /* Event.conversationMessage.delivered.json in Resources */,
 				898EB121221474C8002CD17D /* AuthorizeSessionBody.json in Resources */,
+				892C86102226B8A100A596BC /* ConversationUpdated.json in Resources */,
 				898EB139221474C8002CD17D /* SendMessagesResult.json in Resources */,
 				898EB141221474C8002CD17D /* ConversationParticipant.json in Resources */,
 				898EB133221474C8002CD17D /* Event.conversation.participantRemoved.json in Resources */,
@@ -1778,6 +1785,7 @@
 				898EB143221474C8002CD17D /* PostConversationsResult.json in Resources */,
 				898EB130221474C8002CD17D /* Event.profile.update.json in Resources */,
 				898EB12E221474C8002CD17D /* Event.conversation.create.json in Resources */,
+				892C86122226EA4300A596BC /* GetMessagesResult-GetPreviousMessages.json in Resources */,
 				898EB135221474C8002CD17D /* GetAllConversationsResult.json in Resources */,
 				898EB123221474C8002CD17D /* ProfileArray.json in Resources */,
 				898EB13E221474C8002CD17D /* PostMessagesResult.json in Resources */,
