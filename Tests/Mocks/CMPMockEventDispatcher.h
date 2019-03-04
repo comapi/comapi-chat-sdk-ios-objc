@@ -16,24 +16,20 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPComapiChatClient.h"
-#import "CMPTestMocks.h"
-#import "CMPMockAuthenticationDelegate.h"
-#import "CMPMockRequestPerformer.h"
-#import "CMPMockStoreFactoryBuilder.h"
-#import "CMPEventsController.h"
+#import <CMPComapiFoundation/CMPEvent.h>
+#import <CMPComapiFoundation/CMPSocketEvents.h>
+#import <CMPComapiFoundation/CMPConversationEvents.h>
+#import <CMPComapiFoundation/CMPProfileEvents.h>
+#import <CMPComapiFoundation/CMPConversationMessageEvents.h>
+#import <CMPComapiFoundation/CMPComapiClient.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPComapiChatClient ()
+@interface CMPMockEventDispatcher : NSObject
 
-- (instancetype)initWithClient:(CMPComapiClient *)client chatConfig:(CMPChatConfig *)chatConfig eventsController:(CMPEventsController *)eventsController;
+- (instancetype)initWithClient:(CMPComapiClient *)client delegate:(id<CMPEventDelegate>)delegate;
 
-@end
-
-@interface CMPMockClientFactory : NSObject
-
-+ (CMPComapiChatClient *)instantiateChatClient:(id<CMPRequestPerforming>)requestPerformer authDelegate:(id<CMPAuthenticationDelegate>)authDelegate storeFactoryBuilder:(id<CMPStoreFactoryBuildable>)storeFactoryBuilder;
+- (void)dispatchEventOfType:(CMPEventType)eventType;
 
 @end
 

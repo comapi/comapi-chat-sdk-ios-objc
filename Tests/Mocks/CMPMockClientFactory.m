@@ -18,12 +18,6 @@
 
 #import "CMPMockClientFactory.h"
 
-@interface CMPMockClientFactory ()
-
-
-
-@end
-
 @interface CMPComapiClient ()
 
 - (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)delegate apiConfiguration:(CMPAPIConfiguration *)configuration;

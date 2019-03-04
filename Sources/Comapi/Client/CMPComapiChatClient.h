@@ -20,6 +20,8 @@
 #import "CMPTypingDelegate.h"
 #import "CMPProfileDelegate.h"
 #import "CMPParticipantDelegate.h"
+#import "CMPChatController.h"
+#import "CMPEventsController.h"
 #import "CMPChatServices.h"
 #import "CMPChatConfig.h"
 
@@ -28,6 +30,11 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPComapiChatClient : NSObject <CMPLifecycleDelegate>
+
+@property (nonatomic, strong, readonly) CMPComapiClient *foundationClient;
+
+@property (nonatomic, strong, readonly) CMPEventsController *eventsController;
+@property (nonatomic, strong, readonly) CMPChatController *chatController;
 
 @property (nonatomic, weak) id<CMPLifecycleDelegate> lifecycleDelegate;
 

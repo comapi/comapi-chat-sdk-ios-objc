@@ -5,24 +5,23 @@
 	"context": {
 		"createdBy": "175f7d6d-9422-466f-9c1b-c6da5c818c4b"
 	},
-	"messageId": "1d8f9efc-159d-49f0-b01b-ce72bc2d23f7",
-	"conversationEventId":123,
+	"messageId": "myId",
+	"conversationEventId":1,
 	"publishedOn":"2016-10-06T06:45:26.904Z",
 	"payload": {
-		"messageId":"1d8f9efc-159d-49f0-b01b-ce72bc2d23f7",
+		"messageId":"myId",
 		"metadata":{
-            "id" : "coolass id",
             "color" : "red",
             "count" : 3,
             "other" : 3.553
 		},
 		"context":{
 			"from":{
-				"id":"ID:USR/alex.stevens",
-				"name":"NAME:USR/alex.stevens"
+				"id":"dominik.kowalski",
+				"name":"dominik.kowalski"
 			},
 			"conversationId":"myConversation",
-			"sentBy":"USR/alex.stevens",
+			"sentBy":"dominik.kowalski",
 			"sentOn":"2016-10-06T06:45:26.502Z"
 		},
 		"parts":[

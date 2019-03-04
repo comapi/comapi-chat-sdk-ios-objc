@@ -121,8 +121,8 @@
                     logWithLevel(CMPLogLevelError, @"Store update failed with error:", result.error, nil);
                 }
             }];
-        }
             break;
+        }
         case CMPEventTypeConversationMessageDelivered: {
             CMPConversationMessageEventDelivered *e = (CMPConversationMessageEventDelivered *)event;
             [_tracker checkEvent:e.payload.conversationID conversationEventID:e.conversationEventID delegate:self];
@@ -145,9 +145,12 @@
         }
         case CMPEventTypeConversationMessageSent: {
             CMPConversationMessageEventSent *e = (CMPConversationMessageEventSent *)event;
-            
             [_tracker checkEvent:e.payload.context.conversationID conversationEventID:e.conversationEventID delegate:self];
-            [_chatController handleMessage:[[CMPChatMessage alloc] initWithSentEvent:e] completion:nil];
+            [_chatController handleMessage:[[CMPChatMessage alloc] initWithSentEvent:e] completion:^(BOOL success) {
+                if (!success) {
+                    logWithLevel(CMPLogLevelError, @"Sent message handling failure.", nil);
+                }
+            }];
             break;
         }
         

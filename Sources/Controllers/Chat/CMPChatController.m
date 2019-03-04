@@ -542,11 +542,15 @@ NSInteger const kETagNotValid = 412;
         }];
         
         dispatch_group_notify(group, dispatch_get_main_queue(), ^{
-            completion(queryResult);
+            if (completion) {
+                completion(queryResult);
+            }
         });
     } else {
-        logWithLevel(CMPLogLevelWarning, @"Events array empty or nil, returning...");
-        completion(queryResult);
+        logWithLevel(CMPLogLevelWarning, @"Events array empty or nil, returning...", nil);
+        if (completion) {
+            completion(queryResult);
+        }
     }
 }
 

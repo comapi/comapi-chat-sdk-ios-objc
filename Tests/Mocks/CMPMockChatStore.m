@@ -73,7 +73,7 @@
 
 - (BOOL)updateMessageStatus:(CMPChatMessageStatus *)messageStatus {
     CMPChatMessage *message = [_messages objectForKey:messageStatus.messageID];
-    CMPChatMessageStatus *old =[message.statusUpdates objectForKey:messageStatus.profileID];
+    CMPChatMessageStatus *old = [message.statusUpdates objectForKey:messageStatus.profileID];
     if ([old messageStatus] < messageStatus.messageStatus) {
         [message.statusUpdates setValue:messageStatus forKey:messageStatus.profileID];
     }
