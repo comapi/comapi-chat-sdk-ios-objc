@@ -17,6 +17,7 @@
 //
 
 #import "CMPChatMessage.h"
+#import "CMPChatParticipant.h"
 #import "CMPSendableMessage.h"
 #import "CMPChatMessagePart.h"
 #import "CMPChatMessageStatus.h"
@@ -38,7 +39,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Participants
 
-- (NSArray<CMPChatMessageParticipant *> *)adaptParticipants:(NSArray<CMPMessageParticipant *> *)participants;
+- (NSArray<CMPChatMessageParticipant *> *)adaptMessageParticipants:(NSArray<CMPMessageParticipant *> *)participants;
+- (NSArray<CMPChatParticipant *> *)adaptConversationParticipants:(NSArray<CMPConversationParticipant *> *)participants;
 
 #pragma mark - Messages
 

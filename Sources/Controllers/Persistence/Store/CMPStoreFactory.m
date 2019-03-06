@@ -22,6 +22,16 @@
 
 @implementation CMPStoreFactory
 
+- (instancetype)initWithBuilder:(id<CMPStoreFactoryBuildable>)builder {
+    self = [super init];
+    
+    if (self) {
+        self.builder = builder;
+    }
+    
+    return self;
+}
+
 - (void)executeTransaction:(void (^)(id<CMPChatStore> _Nullable, NSError * _Nullable))transaction {
     [_builder buildWithCompletion:^(id<CMPChatStore> store, NSError * err) {
         if (err) {

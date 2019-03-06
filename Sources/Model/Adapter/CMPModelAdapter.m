@@ -34,11 +34,21 @@
     return adapted;
 }
 
-- (NSArray<CMPChatMessageParticipant *> *)adaptParticipants:(NSArray<CMPMessageParticipant *> *)participants {
+- (NSArray<CMPChatMessageParticipant *> *)adaptMessageParticipants:(NSArray<CMPMessageParticipant *> *)participants {
     NSMutableArray<CMPChatMessageParticipant *> *adapted = [NSMutableArray new];
     
     [participants enumerateObjectsUsingBlock:^(CMPMessageParticipant * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         [adapted addObject:[[CMPChatMessageParticipant alloc] initWithMessageParticipant:obj]];
+    }];
+    
+    return adapted;
+}
+
+- (NSArray<CMPChatParticipant *> *)adaptConversationParticipants:(NSArray<CMPConversationParticipant *> *)participants {
+    NSMutableArray<CMPChatParticipant *> *adapted = [NSMutableArray new];
+    
+    [participants enumerateObjectsUsingBlock:^(CMPConversationParticipant * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [adapted addObject:[[CMPChatParticipant alloc] initWithParticipant:obj]];
     }];
     
     return adapted;

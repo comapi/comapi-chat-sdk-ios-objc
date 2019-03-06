@@ -1,0 +1,36 @@
+{
+    "latestEventId": 2,
+    "earliestEventId": 1,
+    "messages": [
+        {
+            "id": "2",
+            "metadata": {
+
+            },
+            "context": {
+                "from": {
+                    "id": "dominik.kowalski",
+                    "name": "dominik.kowalski"
+                },
+                "conversationId": "1",
+                "sentBy": "dominik.kowalski",
+                "sentOn": "2019-02-27T16:55:46.534Z"
+            },
+            "parts": [
+                {
+                    "name": "part2",
+                    "type": "text/plain",
+                    "url": null,
+                    "data": "message 2",
+                    "size": 100
+                }
+            ],
+            "statusUpdates": {
+                
+            }
+        }
+    ],
+    "orphanedEvents": [
+       
+    ]
+}

@@ -82,7 +82,7 @@
     
     if (self) {
         self.id = event.conversationID;
-        self.name = event.name;
+        self.name = event.payload.name;
         self.conversationDescription = event.payload.eventDescription;
         self.isPublic = event.payload.isPublic;
         self.roles = [[CMPChatRoles alloc] initWithRoles:event.payload.roles];
@@ -96,7 +96,7 @@
     
     if (self) {
         self.id = event.conversationID;
-        self.name = event.name;
+        self.name = event.payload.name;
         self.conversationDescription = event.payload.eventDescription;
         self.isPublic = event.payload.isPublic;
         self.roles = [[CMPChatRoles alloc] initWithRoles:event.payload.roles];

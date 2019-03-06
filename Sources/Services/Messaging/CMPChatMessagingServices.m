@@ -72,7 +72,7 @@
 - (void)getParticipants:(NSString *)conversationID participantIDs:(NSArray<NSString *> *)participantsIDs completion:(void(^)(NSArray<CMPChatParticipant *> *))completion {
     __weak typeof(self) weakSelf = self;
     [_foundation.services.messaging getParticipantsWithConversationID:conversationID completion:^(CMPResult<NSArray<CMPConversationParticipant *> *> * result) {
-        [weakSelf.adapter adaptParticipants:result.object ? result.object : @[]];
+        completion([weakSelf.adapter adaptConversationParticipants:result.object ? result.object : @[]]);
     }];
 }
 
@@ -93,6 +93,7 @@
     }];
 }
 
+// TODO: -
 - (void)participantIsTyping:(NSString *)conversationID isTyping:(BOOL)isTyping completion:(void (^)(CMPChatResult * _Nonnull))completion {
     if (isTyping) {
         //[_foundation.services.messaging partic]

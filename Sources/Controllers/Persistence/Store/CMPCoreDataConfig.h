@@ -15,16 +15,17 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+
+#import <CoreData/CoreData.h>
 #import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPCoreDataConfig : NSObject
 
-@property (nonatomic, strong) NSString *persistentStoreType;
-@property (nonatomic) NSUInteger concurrencyType;
+@property (nonatomic) NSString *persistentStoreType;
 
-- (instancetype)initWithPersistentStoreType:(NSString *)persistentStoreType concurrencyType:(NSUInteger)concurrencyType;
+- (instancetype)initWithPersistentStoreType:(NSString *)persistentStoreType;
 
 @end
 

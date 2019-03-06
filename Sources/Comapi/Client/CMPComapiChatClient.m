@@ -18,8 +18,6 @@
 
 #import "CMPComapiChatClient.h"
 #import "CMPChatConfig.h"
-#import "CMPChatController.h"
-#import "CMPEventsController.h"
 #import "CMPPersistenceController.h"
 #import "CMPCoreDataManager.h"
 #import "CMPModelAdapter.h"
@@ -29,11 +27,6 @@
 #import <CMPComapiFoundation/CMPBroadcastDelegate.h>
 
 @interface CMPComapiChatClient ()
-
-@property (nonatomic, strong, readonly) CMPComapiClient *client;
-
-@property (nonatomic, strong, readonly) CMPEventsController *eventsController;
-@property (nonatomic, strong, readonly) CMPChatController *chatController;
 
 @property (nonatomic, strong) CMPBroadcastDelegate<id<CMPTypingDelegate>> *typingDelegates;
 @property (nonatomic, strong) CMPBroadcastDelegate<id<CMPProfileDelegate>> *profileDelegates;
@@ -47,25 +40,25 @@
     self = [super init];
     
     if (self) {
-        _client = client;
+        _foundationClient = client;
         
         CMPModelAdapter *adapter = [[CMPModelAdapter alloc] init];
         CMPMissingEventsTracker *tracker = [[CMPMissingEventsTracker alloc] init];
-        CMPCoreDataConfig *config = chatConfig.storeConfig != nil ? chatConfig.storeConfig : [[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSSQLiteStoreType concurrencyType:NSMainQueueConcurrencyType];
+        CMPCoreDataConfig *config = chatConfig.storeConfig != nil ? chatConfig.storeConfig : [[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSSQLiteStoreType];
         CMPCoreDataManager *coreDataManager = [[CMPCoreDataManager alloc] initWithConfig:config completion:^(NSError * _Nullable error) {
             if (error) {
                 logWithLevel(CMPLogLevelError, @"Error configuring CoreData stack.", nil);
             }
         }];
         CMPPersistenceController *persistenceController = [[CMPPersistenceController alloc] initWithFactory:chatConfig.storeFactory adapter:adapter coreDataManager:coreDataManager];
-        CMPAttachmentController *attachmentController = [[CMPAttachmentController alloc] initWithClient:_client];
+        CMPAttachmentController *attachmentController = [[CMPAttachmentController alloc] initWithClient:_foundationClient];
         
-        _chatController = [[CMPChatController alloc] initWithClient:_client persistenceController:persistenceController attachmentController:attachmentController adapter:adapter config:chatConfig.internalConfig];
+        _chatController = [[CMPChatController alloc] initWithClient:_foundationClient persistenceController:persistenceController attachmentController:attachmentController adapter:adapter config:chatConfig.internalConfig];
         _eventsController = [[CMPEventsController alloc] initWithPersistenceController:persistenceController chatController:_chatController missingEventsTracker:tracker chatConfig:chatConfig];
         
-        _services = [[CMPChatServices alloc] initWithFoundation:_client chatController:_chatController persistenceController:persistenceController modelAdapter:adapter];
+        _services = [[CMPChatServices alloc] initWithFoundation:_foundationClient chatController:_chatController persistenceController:persistenceController modelAdapter:adapter];
         
-        [_client addEventDelegate:_eventsController];
+        [_foundationClient addEventDelegate:_eventsController];
         
         _typingDelegates = [[CMPBroadcastDelegate alloc] init];
         _profileDelegates = [[CMPBroadcastDelegate alloc] init];
@@ -75,16 +68,16 @@
     return self;
 }
 
-- (BOOL)isSessionSuccesfullyCreated {
-    return [_client isSessionSuccessfullyCreated];
+- (BOOL)sessionSuccessfullyCreated {
+    return [_foundationClient isSessionSuccessfullyCreated];
 }
 
 - (NSString *)profileID {
-    return [_client getProfileID];
+    return [_foundationClient getProfileID];
 }
 
 - (void)setPushToken:(NSString *)deviceToken completion:(void (^)(BOOL, NSError * _Nullable))completion {
-    [_client setPushToken:deviceToken completion:completion];
+    [_foundationClient setPushToken:deviceToken completion:completion];
 }
 
 - (void)addTypingDelegate:(id<CMPTypingDelegate>)delegate {
@@ -118,7 +111,7 @@
 }
 
 - (void)applicationWillEnterForeground:(nonnull UIApplication *)application {
-    if (_client != nil) {
+    if (_foundationClient != nil) {
         [_services.messaging synchroniseStore:nil];
     }
 }

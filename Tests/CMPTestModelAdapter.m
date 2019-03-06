@@ -237,7 +237,7 @@
     
     NSArray *participants = [NSArray arrayWithObjects:p1, p2, nil];
     
-    NSArray<CMPChatMessageParticipant *> *adapted = [_adapter adaptParticipants:participants];
+    NSArray<CMPChatMessageParticipant *> *adapted = [_adapter adaptMessageParticipants:participants];
     
     for (int i=0; i<2; i++) {
         NSString *cid = [@"pId" stringByAppendingString:[NSString stringWithFormat:@"%d", i+1]];

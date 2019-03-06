@@ -19,6 +19,7 @@
 #import "CMPPersistenceController.h"
 #import "CMPChatStore.h"
 #import "NSManagedObjectContext+CMPOrphanedEvent.h"
+#import "NSManagedObjectContext+CMPUtility.h"
 #import "NSArray+CMPUtility.h"
 #import "CMPChatConstants.h"
 #import "CMPChatMessageDeliveryStatus.h"
@@ -257,18 +258,19 @@
 }
 
 - (void)processOrphanedEvents:(CMPGetMessagesResult *)eventsResult completion:(void (^)(NSError * _Nullable))completion {
+    NSManagedObjectContext *ctx = _manager.workerContext;
     NSArray<CMPMessage *> *messages = eventsResult.messages;
     NSArray<CMPOrphanedEvent *> *orphanedEvents = eventsResult.orphanedEvents;
     __weak typeof(self) weakSelf = self;
     if (messages && orphanedEvents) {
         NSArray<NSString *> *ids = [messages map:^id (CMPMessage * obj) { return obj.id; }];
-        [_manager.workerContext upsertOrphanedEvents:orphanedEvents completion:^(NSInteger inserted, NSError * _Nullable error) {
+        [ctx upsertOrphanedEvents:orphanedEvents completion:^(NSInteger inserted, NSError * _Nullable error) {
             if (error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     completion(error);
                 });
             } else {
-                [weakSelf.manager.workerContext queryOrphanedEventsForIDs:ids completion:^(NSArray<CMPChatManagedOrphanedEvent *> * _Nullable toDelete, NSError * _Nullable error) {
+                [ctx queryOrphanedEventsForIDs:ids completion:^(NSArray<CMPChatManagedOrphanedEvent *> * _Nullable toDelete, NSError * _Nullable error) {
                     if (error) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             completion(error);
@@ -281,14 +283,14 @@
                                 [store updateMessageStatus:obj];
                             }];
                             NSArray<NSString *> *toDeleteIDs = [toDelete map:^id _Nonnull(CMPChatManagedOrphanedEvent * obj) { return obj.id; }];
-                            [weakSelf.manager.workerContext deleteOrphanedEventsForIDs:toDeleteIDs completion:^(NSInteger deleted, NSError * _Nullable error) {
+                            [ctx deleteOrphanedEventsForIDs:toDeleteIDs completion:^(NSInteger deleted, NSError * _Nullable error) {
                                 [store endTransaction];
                                 if (error) {
                                     dispatch_async(dispatch_get_main_queue(), ^{
                                         completion(error);
                                     });
                                 } else {
-                                    [weakSelf.manager saveToDiskWithCompletion:^(NSError * _Nullable error) {
+                                    [ctx saveWithCompletion:^(NSError * _Nullable error) {
                                         dispatch_async(dispatch_get_main_queue(), ^{
                                             completion(error);
                                         });
@@ -309,10 +311,13 @@
 }
 
 - (void)deleteOrphanedEvents:(NSArray<NSString *> *)IDs completion:(void(^)(CMPStoreResult<NSNumber *> *))completion {
-    [_manager.workerContext deleteOrphanedEventsForIDs:IDs completion:^(NSInteger deleted, NSError * _Nullable error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            completion([CMPStoreResult resultWithObject:@(deleted) error:error]);
-        });
+    NSManagedObjectContext *ctx = _manager.workerContext;
+    [ctx deleteOrphanedEventsForIDs:IDs completion:^(NSInteger deleted, NSError * _Nullable error) {
+        [ctx saveWithCompletion:^(NSError * _Nullable error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion([CMPStoreResult resultWithObject:@(deleted) error:error]);
+            });
+        }];
     }];
 }
 

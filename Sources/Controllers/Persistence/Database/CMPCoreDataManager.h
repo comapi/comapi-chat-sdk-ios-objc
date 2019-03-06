@@ -17,23 +17,13 @@
 //
 
 #import "CMPCoreDataConfig.h"
+#import "CMPCoreDataManagable.h"
 
 #import <CoreData/CoreData.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol CMPCoreDataManagable <NSObject>
-
-@property (nonatomic, strong, readonly) NSManagedObjectContext *mainContext;
-@property (nonatomic, strong, readonly) NSManagedObjectContext *workerContext;
-
-- (void)saveToDiskWithCompletion:(void (^)(NSError * _Nullable))completion;
-
-@end
-
 @interface CMPCoreDataManager : NSObject <CMPCoreDataManagable>
-
-- (instancetype)initWithConfig:(CMPCoreDataConfig *)config completion:(void (^)(NSError * _Nullable))completion;
 
 @end
 

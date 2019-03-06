@@ -31,6 +31,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, weak) id<CMPStoreFactoryBuildable> builder;
 
+- (instancetype)initWithBuilder:(id<CMPStoreFactoryBuildable>)builder;
+
 - (void)executeTransaction:(void(^)(id<CMPChatStore> _Nullable, NSError * _Nullable))transaction;
 
 @end
