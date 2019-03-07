@@ -25,6 +25,10 @@
 
 static CMPComapiChatClient *_shared = nil;
 
++ (void)setShared:(CMPComapiChatClient *)shared {
+    _shared = shared;
+}
+
 + (CMPComapiChatClient *)shared {
     CMPComapiChatClient *client = _shared;
     if (!client) {
@@ -42,19 +46,16 @@ static CMPComapiChatClient *_shared = nil;
 }
 
 + (CMPComapiChatClient *)initialiseSharedWithConfig:(CMPChatConfig *)chatConfig {
-    if (_shared) {
+    if (CMPChat.shared) {
         logWithLevel(CMPLogLevelError, @"Client already initialised, returnig current client...", nil);
-        return _shared;
+        return CMPChat.shared;
     }
-    
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _shared = [CMPChat initialiseSharedWithConfig:chatConfig];
-    });
+
+    CMPChat.shared = [CMPChat initialiseWithConfig:chatConfig];
     
     logWithLevel(CMPLogLevelInfo, @"Shared client initialised.", nil);
     
-    return _shared;
+    return CMPChat.shared;
 }
 
 @end

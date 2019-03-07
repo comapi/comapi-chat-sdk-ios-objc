@@ -3,10 +3,10 @@
 	"apiSpaceId": "MOCK_API_SPACE_ID",
 	"name": "conversationMessage.sent",
 	"context": {
-		"createdBy": "175f7d6d-9422-466f-9c1b-c6da5c818c4b"
+		"createdBy": "dominik.kowalski"
 	},
 	"messageId": "myId",
-	"conversationEventId":1,
+	"conversationEventId":-1,
 	"publishedOn":"2016-10-06T06:45:26.904Z",
 	"payload": {
 		"messageId":"myId",

@@ -195,9 +195,9 @@
 - (void)testConversationMessageEvents {
     [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationCreate];
     
-    CMPChatConversation *c = [self.chatStore getConversation:@"myConversation"];
+    CMPChatConversation *conv = [self.chatStore getConversation:@"myConversation"];
     
-    XCTAssertNotNil(c);
+    XCTAssertNotNil(conv);
     
     BOOL success = YES;
     NSData *data = [NSData dataWithBytes:&success length:sizeof(success)];
@@ -206,105 +206,84 @@
     [self.requestPerformer.completionValues addObject:completionValue];
     
     [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationMessageSent];
-    
+
     CMPChatMessage *m = [self.chatStore getMessage:@"myId"];
     
-    
-    
-//    "eventId": "2e611475-e12c-4d2f-9430-1f30cf6b4064",
-//    "apiSpaceId": "MOCK_API_SPACE_ID",
-//    "name": "conversationMessage.sent",
-//    "context": {
-//        "createdBy": "175f7d6d-9422-466f-9c1b-c6da5c818c4b"
-//    },
-//    "messageId": "myId",
-//    "conversationEventId":1,
-//    "publishedOn":"2016-10-06T06:45:26.904Z",
-//    "payload": {
-//        "messageId":"myId",
-//        "metadata":{
-//            "color" : "red",
-//            "count" : 3,
-//            "other" : 3.553
-//        },
-//        "context":{
-//            "from":{
-//                "id":"dominik.kowalski",
-//                "name":"dominik.kowalski"
-//            },
-//            "conversationId":"myConversation",
-//            "sentBy":"dominik.kowalski",
-//            "sentOn":"2016-10-06T06:45:26.502Z"
-//        },
-//        "parts":[
-//                 {
-//                     "name":"PART_NAME",
-//                     "type":"image/jpeg",
-//                     "url":"http://url.test",
-//                     "data":"base64EncodedData",
-//                     "size":12535
-//                 }
-//                 ],
-//        "alert":{
-//            "platforms":{
-//                "apns":{
-//                    "apnsKey1": "apnsValue1"
-//                },
-//                "fcm":{
-//                    "fcmKey1": "fcmValue1"
-//                }
-//            }
-//        }
-//    }
-    
-//    @property (nonatomic, strong, nullable) NSString *id;
-//    @property (nonatomic, strong, nullable) NSNumber *sentEventID;
-//    @property (nonatomic, strong, nullable) NSDictionary<NSString *, id> *metadata;
-//    @property (nonatomic, strong, nullable) NSDictionary<NSString *, CMPChatMessageStatus *> *statusUpdates;
-//    @property (nonatomic, strong, nullable) NSArray<CMPChatMessagePart *> *parts;
-//    @property (nonatomic, strong, nullable) CMPChatMessageContext *context;
-    
+    //    @property (nonatomic, strong, nullable) NSString *id;
+    //    @property (nonatomic, strong, nullable) NSNumber *sentEventID;
+    //    @property (nonatomic, strong, nullable) NSDictionary<NSString *, id> *metadata;
+    //    @property (nonatomic, strong, nullable) NSDictionary<NSString *, CMPChatMessageStatus *> *statusUpdates;
+    //    @property (nonatomic, strong, nullable) NSArray<CMPChatMessagePart *> *parts;
+    //    @property (nonatomic, strong, nullable) CMPChatMessageContext *context;
+
     XCTAssertNotNil(m);
     
     XCTAssertEqualObjects(m.id, @"myId");
-    XCTAssertEqualObjects(m.sentEventID, @(1));
+    XCTAssertEqualObjects(m.sentEventID, @(-1));
     XCTAssertEqualObjects(m.metadata[@"color"], @"red");
     XCTAssertEqualObjects(m.metadata[@"count"], @(3));
     XCTAssertEqualObjects(m.metadata[@"other"], @(3.553));
-    //XCTAssertEqualObjects(m.statusUpdates, @(3.553));
     
-    NSLog(@"%@", m.statusUpdates);
+    CMPChatMessageContext *c = m.context;
+ 
+    XCTAssertEqualObjects(c.from.id, @"dominik.kowalski");
+    XCTAssertEqualObjects(c.from.name, @"dominik.kowalski");
+    XCTAssertEqualObjects(c.conversationID, @"myConversation");
+    XCTAssertEqualObjects(c.sentBy, @"dominik.kowalski");
+    XCTAssertNotNil(c.sentOn);
     
-    CMPChatMessageStatus *s = m.statusUpdates[m.context.from.id];
+    CMPChatMessagePart *p = m.parts[0];
+    
+    XCTAssertEqualObjects(p.size, @(12535));
+    XCTAssertEqualObjects(p.name, @"PART_NAME");
+    XCTAssertEqualObjects(p.url.absoluteString, @"http://url.test");
+    XCTAssertEqualObjects(p.data, @"base64EncodedData");
+    XCTAssertEqualObjects(p.type, @"image/jpeg");
+
+    CMPChatMessageStatus *s = [m.statusUpdates.objectEnumerator nextObject];
     
     XCTAssertEqualObjects(s.messageID, @"myId");
     XCTAssertEqualObjects(s.profileID, @"dominik.kowalski");
     XCTAssertEqualObjects(s.conversationID, @"myConversation");
-    XCTAssertEqualObjects(s.conversationEventID, @(1));
+    XCTAssertEqualObjects(s.conversationEventID, nil);
     
-    XCTAssertEqual(s.messageStatus, CMPChatMessageDeliveryStatusSent);
+    XCTAssertEqual(s.messageStatus, CMPChatMessageDeliveryStatusSending);
     
     [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationMessageDelivered];
-    
+
     m = [self.chatStore getMessage:@"myId"];
     
     XCTAssertNotNil(m);
     
     XCTAssertEqualObjects(m.id, @"myId");
-    XCTAssertEqualObjects(m.sentEventID, @(1));
+    XCTAssertEqualObjects(m.sentEventID, @(-1));
     XCTAssertEqualObjects(m.metadata[@"color"], @"red");
     XCTAssertEqualObjects(m.metadata[@"count"], @(3));
     XCTAssertEqualObjects(m.metadata[@"other"], @(3.553));
     
-    s = m.statusUpdates[m.context.from.id];
+    c = m.context;
+    
+    XCTAssertEqualObjects(c.from.id, @"dominik.kowalski");
+    XCTAssertEqualObjects(c.from.name, @"dominik.kowalski");
+    XCTAssertEqualObjects(c.conversationID, @"myConversation");
+    XCTAssertEqualObjects(c.sentBy, @"dominik.kowalski");
+    XCTAssertNotNil(c.sentOn);
+    
+    p = m.parts[0];
+    
+    XCTAssertEqualObjects(p.size, @(12535));
+    XCTAssertEqualObjects(p.name, @"PART_NAME");
+    XCTAssertEqualObjects(p.url.absoluteString, @"http://url.test");
+    XCTAssertEqualObjects(p.data, @"bbase64EncodedData");
+    XCTAssertEqualObjects(p.type, @"image/jpeg");
+    
+    s = [m.statusUpdates.objectEnumerator nextObject];
     
     XCTAssertEqualObjects(s.messageID, @"myId");
     XCTAssertEqualObjects(s.profileID, @"dominik.kowalski");
     XCTAssertEqualObjects(s.conversationID, @"myConversation");
-    XCTAssertEqualObjects(s.conversationEventID, @(1));
-    
-    XCTAssertEqual(s.messageStatus, CMPChatMessageDeliveryStatusDelivered);
-    
+    XCTAssertEqualObjects(s.conversationEventID, nil);
+
     [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationMessageRead];
     
     m = [self.chatStore getMessage:@"myId"];
@@ -312,19 +291,33 @@
     XCTAssertNotNil(m);
     
     XCTAssertEqualObjects(m.id, @"myId");
-    XCTAssertEqualObjects(m.sentEventID, @(1));
+    XCTAssertEqualObjects(m.sentEventID, @(-1));
     XCTAssertEqualObjects(m.metadata[@"color"], @"red");
     XCTAssertEqualObjects(m.metadata[@"count"], @(3));
     XCTAssertEqualObjects(m.metadata[@"other"], @(3.553));
     
-    s = m.statusUpdates[m.context.from.id];
+    c = m.context;
+    
+    XCTAssertEqualObjects(c.from.id, @"dominik.kowalski");
+    XCTAssertEqualObjects(c.from.name, @"dominik.kowalski");
+    XCTAssertEqualObjects(c.conversationID, @"myConversation");
+    XCTAssertEqualObjects(c.sentBy, @"dominik.kowalski");
+    XCTAssertNotNil(c.sentOn);
+    
+    p = m.parts[0];
+    
+    XCTAssertEqualObjects(p.size, @(12535));
+    XCTAssertEqualObjects(p.name, @"PART_NAME");
+    XCTAssertEqualObjects(p.url.absoluteString, @"http://url.test");
+    XCTAssertEqualObjects(p.data, @"bbase64EncodedData");
+    XCTAssertEqualObjects(p.type, @"image/jpeg");
+    
+    s = [m.statusUpdates.objectEnumerator nextObject];
     
     XCTAssertEqualObjects(s.messageID, @"myId");
     XCTAssertEqualObjects(s.profileID, @"dominik.kowalski");
     XCTAssertEqualObjects(s.conversationID, @"myConversation");
-    XCTAssertEqualObjects(s.conversationEventID, @(1));
-    
-    XCTAssertEqual(s.messageStatus, CMPChatMessageDeliveryStatusRead);
+    XCTAssertEqualObjects(s.conversationEventID, nil);
 }
 
 

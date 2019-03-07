@@ -16,22 +16,32 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPCoreDataManager.h"
-#import "CMPChatManagedOrphanedEvent.h"
-#import "NSArray+CMPUtility.h"
+#import <XCTest/XCTest.h>
 
-#import <CMPComapiFoundation/CMPOrphanedEvent.h>
-
-NS_ASSUME_NONNULL_BEGIN
-
-@interface NSManagedObjectContext (CMPOrphanedEvent)
-
-- (void)queryOrphanedEventsForIDs:(NSArray<NSNumber *> *)IDs completion:(void(^)(NSArray<CMPChatManagedOrphanedEvent *> * _Nullable, NSError * _Nullable))completion;
-
-- (void)upsertOrphanedEvents:(NSArray<CMPOrphanedEvent *> *)orphanedEvents completion:(void(^)(NSInteger, NSError * _Nullable))completion;
-
-- (void)deleteOrphanedEventsForIDs:(NSArray<NSNumber *> *)IDs completion:(void(^)(NSInteger, NSError * _Nullable))completion;
+@interface CMPTestPersistenceController : XCTestCase
 
 @end
 
-NS_ASSUME_NONNULL_END
+@implementation CMPTestPersistenceController
+
+- (void)setUp {
+    // Put setup code here. This method is called before the invocation of each test method in the class.
+}
+
+- (void)tearDown {
+    // Put teardown code here. This method is called after the invocation of each test method in the class.
+}
+
+- (void)testExample {
+    // This is an example of a functional test case.
+    // Use XCTAssert and related functions to verify your tests produce the correct results.
+}
+
+- (void)testPerformanceExample {
+    // This is an example of a performance test case.
+    [self measureBlock:^{
+        // Put the code you want to measure the time of here.
+    }];
+}
+
+@end

@@ -30,12 +30,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPChatConfig : CMPComapiConfig
 
-@property (nonatomic, strong) CMPStoreFactory *storeFactory;
+@property (nonatomic, strong) id<CMPStoreFactoryBuildable> storeFactory;
 @property (nonatomic, strong) CMPInternalConfig *internalConfig;
 @property (nonatomic, strong) CMPCoreDataConfig *storeConfig;
 
-- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate logLevel:(CMPLogLevel)logLevel storeFactory:(CMPStoreFactory *)factory internalConfig:(CMPInternalConfig *)config;
-- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(CMPStoreFactory *)factory internalConfig:(CMPInternalConfig *)config;
+- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate logLevel:(CMPLogLevel)logLevel storeFactory:(id<CMPStoreFactoryBuildable>)factory internalConfig:(CMPInternalConfig *)config;
+- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(id<CMPStoreFactoryBuildable>)factory internalConfig:(CMPInternalConfig *)config;
 
 - (CMPComapiConfig *)foundationConfig;
 

@@ -127,7 +127,7 @@
 #pragma mark - Store
 
 - (void)synchroniseStore:(void (^ _Nullable)(CMPChatResult *))completion {
-    [_chatController synchronizeStore:completion];
+    [_chatController synchroniseStore:completion];
 }
 
 @end

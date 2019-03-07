@@ -80,7 +80,7 @@
         [expectation fulfill];
     }];
     
-    [self waitForExpectations:@[expectation] timeout:5.0];
+    [self waitForExpectations:@[expectation] timeout:10.0];
 }
 
 - (void)testEndSession {
@@ -96,7 +96,7 @@
         [expectation fulfill];
     }];
     
-    [self waitForExpectations:@[expectation] timeout:5.0];
+    [self waitForExpectations:@[expectation] timeout:10.0];
 }
 
 - (void)testGetProfile {
@@ -121,7 +121,7 @@
         [expectation fulfill];
     }];
     
-    [self waitForExpectations:@[expectation] timeout:5.0];
+    [self waitForExpectations:@[expectation] timeout:10.0];
 }
 
 - (void)testUpdateProfile {
@@ -146,7 +146,7 @@
         [expectation fulfill];
     }];
     
-    [self waitForExpectations:@[expectation] timeout:5.0];
+    [self waitForExpectations:@[expectation] timeout:10.0];
 }
 
 - (void)testPatchProfile {
@@ -171,7 +171,7 @@
         [expectation fulfill];
     }];
     
-    [self waitForExpectations:@[expectation] timeout:5.0];
+    [self waitForExpectations:@[expectation] timeout:10.0];
 }
 
 - (void)testQueryProfile {
@@ -197,7 +197,7 @@
         [expectation fulfill];
     }];
     
-    [self waitForExpectations:@[expectation] timeout:5.0];
+    [self waitForExpectations:@[expectation] timeout:10.0];
 }
 
 - (void)testGetPreviousMessages {
@@ -306,7 +306,7 @@
     }];
     
     
-    [self waitForExpectations:@[expectation] timeout:5.0];
+    [self waitForExpectations:@[expectation] timeout:10.0];
 }
 
 - (void)testSendMessageWithAttachment {
@@ -379,7 +379,7 @@
     }];
     
     
-    [self waitForExpectations:@[expectation] timeout:5.0];
+    [self waitForExpectations:@[expectation] timeout:10.0];
 }
 
 - (void)testAddConversation {
@@ -438,7 +438,7 @@
         XCTFail();
     }];
     
-    [self waitForExpectations:@[expectation] timeout:5.0];
+    [self waitForExpectations:@[expectation] timeout:10.0];
 }
 
 - (void)testDeleteConversation {
@@ -486,7 +486,7 @@
         XCTFail();
     }];
     
-    [self waitForExpectations:@[expectation] timeout:5.0];
+    [self waitForExpectations:@[expectation] timeout:10.0];
 }
 
 - (void)testUpdateConversation {
@@ -561,7 +561,7 @@
         XCTFail();
     }];
     
-    [self waitForExpectations:@[expectation] timeout:5.0];
+    [self waitForExpectations:@[expectation] timeout:10.0];
 }
 
 - (void)testSynchroniseConversation {
@@ -598,7 +598,7 @@
         XCTFail();
     }];
     
-    [self waitForExpectations:@[expectation] timeout:5.0];
+    [self waitForExpectations:@[expectation] timeout:10.0];
 }
 
 - (void)testGetParticipants {
@@ -630,7 +630,7 @@
         [expectation fulfill];
     }];
     
-    [self waitForExpectations:@[expectation] timeout:5.0];
+    [self waitForExpectations:@[expectation] timeout:10.0];
 }
 
 - (void)testRemoveParticipants {
@@ -648,7 +648,7 @@
         [expectation fulfill];
     }];
     
-    [self waitForExpectations:@[expectation] timeout:5.0];
+    [self waitForExpectations:@[expectation] timeout:10.0];
 }
 
 - (void)testAddParticipants {
@@ -694,7 +694,7 @@
         XCTFail();
     }];
     
-    [self waitForExpectations:@[expectation] timeout:5.0];
+    [self waitForExpectations:@[expectation] timeout:10.0];
 }
 
 @end
