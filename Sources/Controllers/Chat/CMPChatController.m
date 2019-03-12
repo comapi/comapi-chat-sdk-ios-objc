@@ -46,14 +46,17 @@ NSInteger const kETagNotValid = 412;
 @property (nonatomic, strong, readonly) CMPInternalConfig *config;
 @property (nonatomic, strong, readonly) CMPCallLimiter *callLimiter;
 
-@property (atomic) BOOL isSynchronising;
-@property (atomic) BOOL socketWasDisconnected;
+@property (nonatomic) BOOL isSynchronising;
+@property (nonatomic) BOOL socketWasDisconnected;
 
 - (nullable CMPComapiClient *)withClient;
 
 @end
 
 @implementation CMPChatController
+
+@synthesize isSynchronising = _isSynchronising;
+@synthesize socketWasDisconnected = _socketWasDisconnected;
 
 - (instancetype)initWithClient:(CMPComapiClient *)client persistenceController:(CMPPersistenceController *)persistenceController attachmentController:(CMPAttachmentController *)attachmentController adapter:(CMPModelAdapter *)adapter config:(CMPInternalConfig *)config {
     self = [super init];
@@ -81,6 +84,14 @@ NSInteger const kETagNotValid = 412;
 }
 
 #pragma mark -
+#pragma mark - Getters & Setters
+#pragma mark - private
+
+- (void)setClient:(CMPComapiClient * _Nullable)client {
+    _client = client;
+}
+
+#pragma mark -
 #pragma mark - Client
 #pragma mark - public
 
@@ -103,7 +114,7 @@ NSInteger const kETagNotValid = 412;
 #pragma mark - Store
 #pragma mark - public
 
-- (void)synchronizeStore:(void(^ _Nullable)(CMPChatResult *))completion {
+- (void)synchroniseStore:(void(^ _Nullable)(CMPChatResult *))completion {
     if (self.isSynchronising) {
         logWithLevel(CMPLogLevelWarning, @"Synchronisation in progress.", nil);
         completion([[CMPChatResult alloc] initWithError:nil success:YES]);
@@ -129,7 +140,7 @@ NSInteger const kETagNotValid = 412;
     if (_socketWasDisconnected == YES) {
         _socketWasDisconnected = NO;
         if ([_callLimiter checkAndIncrease]) {
-            [self synchronizeStore:nil];
+            [self synchroniseStore:nil];
         }
     }
 }

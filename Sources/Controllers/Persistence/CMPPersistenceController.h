@@ -33,7 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, readonly) CMPModelAdapter *adapter;
 @property (nonatomic, strong, readonly) CMPCoreDataManager *manager;
 
-- (instancetype)initWithFactory:(CMPStoreFactory *)factory adapter:(CMPModelAdapter *)adapter coreDataManager:(CMPCoreDataManager *)manager;
+- (instancetype)initWithFactory:(id<CMPStoreFactoryBuildable>)factory adapter:(CMPModelAdapter *)adapter coreDataManager:(CMPCoreDataManager *)manager;
 
 - (void)getConversation:(NSString *)conversationID completion:(void(^)(CMPStoreResult<CMPChatConversation *> *))completion;
 - (void)getAllConversations:(void(^)(CMPStoreResult<NSArray<CMPChatConversation *> *> *))completion;

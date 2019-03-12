@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Store
 
-- (void)synchronizeStore:(void(^ _Nullable)(CMPChatResult *))completion;
+- (void)synchroniseStore:(void(^ _Nullable)(CMPChatResult *))completion;
 
 #pragma mark - Sockets
 

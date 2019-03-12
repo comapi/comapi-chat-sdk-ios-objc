@@ -3,15 +3,15 @@
 	"apiSpaceId": "MOCK_API_SPACE_ID",
 	"name": "conversationMessage.read",
 	"context": {
-		"createdBy": "175f7d6d-9422-466f-9c1b-c6da5c818c4b"
+		"createdBy": "dominik.kowalski"
 	},
-	"messageId": "1d8f9efc-159d-49f0-b01b-ce72bc2d23f7",
-	"conversationEventId":123,
+	"messageId": "myId",
+	"conversationEventId": 2,
 	"publishedOn":"2016-10-06T06:45:26.904Z",
 	"payload": {
-		"messageId":"1d8f9efc-159d-49f0-b01b-ce72bc2d23f7",
+		"messageId":"myId",
 		"conversationId":"myConversation",
-		"profileId":"myProfile",
+		"profileId":"dominik.kowalski",
 		"timestamp":"2016-10-06T06:45:26.910Z"
 	}
 }

@@ -16,21 +16,21 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPCoreDataManager.h"
-#import "CMPChatManagedOrphanedEvent.h"
-#import "NSArray+CMPUtility.h"
-
-#import <CMPComapiFoundation/CMPOrphanedEvent.h>
+#import "CMPChatController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NSManagedObjectContext (CMPOrphanedEvent)
+@interface CMPChatController ()
 
-- (void)queryOrphanedEventsForIDs:(NSArray<NSNumber *> *)IDs completion:(void(^)(NSArray<CMPChatManagedOrphanedEvent *> * _Nullable, NSError * _Nullable))completion;
+- (BOOL)isSynchronising;
+- (void)setIsSynchronising:(BOOL)IsSynchronising;
 
-- (void)upsertOrphanedEvents:(NSArray<CMPOrphanedEvent *> *)orphanedEvents completion:(void(^)(NSInteger, NSError * _Nullable))completion;
+- (BOOL)socketWasDisconnected;
+- (void)setSocketWasDisconnected:(BOOL)SocketWasDisconnected;
 
-- (void)deleteOrphanedEventsForIDs:(NSArray<NSNumber *> *)IDs completion:(void(^)(NSInteger, NSError * _Nullable))completion;
+- (CMPComapiClient *)client;
+- (void)setClient:(CMPComapiClient * _Nullable)client;
+- (CMPComapiClient *)withClient;
 
 @end
 
