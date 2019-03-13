@@ -21,6 +21,9 @@
 #import "CMPTestMocks.h"
 #import "CMPMockRequestPerformer.h"
 #import "CMPMockClientFactory.h"
+#import "CMPComapiChatClient+TestHelper.h"
+#import "CMPMockChatClientDelegate.h"
+#import "CMPMockEventDispatcher.h"
 
 #import <XCTest/XCTest.h>
 
@@ -34,6 +37,8 @@
 @property (nonatomic, strong, nullable) CMPMockAuthenticationDelegate *authDelegate;
 @property (nonatomic, strong, nullable) CMPMockStoreFactoryBuilder *storeFactoryBuilder;
 @property (nonatomic, strong, nullable) CMPMockChatStore *chatStore;
+@property (nonatomic, strong, nullable) CMPMockChatClientDelegate *chatClientDelegate;
+@property (nonatomic, strong, nullable) CMPMockEventDispatcher *eventDispatcher;
 
 @end
 
@@ -50,6 +55,9 @@
     _chatStore = [[CMPMockChatStore alloc] init];
     _storeFactoryBuilder = [[CMPMockStoreFactoryBuilder alloc] initWithChatStore:_chatStore];
     _client = [CMPMockClientFactory instantiateChatClient:_requestPerformer authDelegate:_authDelegate storeFactoryBuilder:_storeFactoryBuilder];
+    _chatClientDelegate = [[CMPMockChatClientDelegate alloc] init];
+    
+    _eventDispatcher = [[CMPMockEventDispatcher alloc] initWithClient:_client.foundationClient delegate:_client.eventsController];
 }
 
 - (void)tearDown {
@@ -58,8 +66,67 @@
     _storeFactoryBuilder = nil;
     _client = nil;
     _chatStore = nil;
+    _chatClientDelegate = nil;
     
     [super tearDown];
+}
+
+- (void)testAddDelegates {
+    NSDate *date = [NSDate dateWithTimeIntervalSinceNow:0];
+    CMPChatRoleAttributes *owner = [[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES];
+    CMPChatRoleAttributes *participant = [[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:NO canRemoveParticipants:NO];
+    CMPChatRoles *roles = [[CMPChatRoles alloc] initWithOwnerAttributes:owner participantAttributes:participant];
+    CMPChatConversation *c = [[CMPChatConversation alloc] initWithID:@"myConversation" firstLocalEventID:@(1) lastLocalEventID:@(3) latestRemoteEventID:@(2) eTag:@"ETag" updatedOn:date name:@"name" conversationDescription:@"description" roles:roles isPublic:@(NO)];
+    
+    [self.chatStore upsertConversation:c];
+    
+    [_client addTypingDelegate:_chatClientDelegate];
+    [_client addProfileDelegate:_chatClientDelegate];
+    [_client addParticipantDelegate:_chatClientDelegate];
+    
+    XCTestExpectation *typingExpectation = [[XCTestExpectation alloc] initWithDescription:@"typing received"];
+    XCTestExpectation *typingOffExpectation = [[XCTestExpectation alloc] initWithDescription:@"typing off received"];
+    XCTestExpectation *profileUpdateExpectation = [[XCTestExpectation alloc] initWithDescription:@"profile received"];
+    XCTestExpectation *participantAddedExpectation = [[XCTestExpectation alloc] initWithDescription:@"participant added received"];
+    XCTestExpectation *participantUpdatedExpectation = [[XCTestExpectation alloc] initWithDescription:@"participant updated received"];
+    XCTestExpectation *participantRemovedExpectation = [[XCTestExpectation alloc] initWithDescription:@"participant removed received"];
+    
+    _chatClientDelegate.profileUpdateCallback = ^(CMPProfileEventUpdate * _Nonnull update) {
+        [profileUpdateExpectation fulfill];
+    };
+    
+    _chatClientDelegate.typingCallback = ^(NSString * _Nonnull conversationID, NSString * _Nonnull participantID, BOOL isTyping) {
+        if (isTyping) {
+            [typingExpectation fulfill];
+        } else {
+            [typingOffExpectation fulfill];
+        }
+    };
+    
+    _chatClientDelegate.participantAddedCallback = ^(CMPConversationEventParticipantAdded * _Nonnull event) {
+        [participantAddedExpectation fulfill];
+    };
+    
+    _chatClientDelegate.participantUpdatedCallback = ^(CMPConversationEventParticipantUpdated * _Nonnull event) {
+        [participantUpdatedExpectation fulfill];
+    };
+    
+    _chatClientDelegate.participantRemovedCallback = ^(CMPConversationEventParticipantRemoved * _Nonnull event) {
+        [participantRemovedExpectation fulfill];
+    };
+    
+    [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationParticipantTyping];
+    [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationParticipantTypingOff];
+    [_eventDispatcher dispatchEventOfType:CMPEventTypeProfileUpdate];
+    [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationParticipantAdded];
+    [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationParticipantUpdated];
+    [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationParticipantRemoved];
+    
+    [self waitForExpectations:@[typingExpectation, profileUpdateExpectation, participantAddedExpectation, participantUpdatedExpectation, participantRemovedExpectation] timeout:5.0];
+}
+
+- (void)testRemoveDelegates {
+    
 }
 
 - (void)testStartSession {

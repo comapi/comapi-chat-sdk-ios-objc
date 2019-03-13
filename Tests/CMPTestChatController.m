@@ -24,6 +24,7 @@
 #import "CMPMockChatStore.h"
 #import "CMPMockClientFactory.h"
 
+#import "CMPChatConversation+CMPTestUtility.h"
 #import "CMPChatController+TestHelper.h"
 
 #import <XCTest/XCTest.h>
@@ -133,7 +134,6 @@
     [_chatController setIsSynchronising:YES];
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback recieved"];
-    __weak typeof(self) weakSelf = self;
     [_chatController synchroniseStore:^(CMPChatResult * _Nonnull result) {
         XCTAssertTrue(result.isSuccessful);
         XCTAssertNil(result.error);
@@ -145,23 +145,85 @@
 }
 
 - (void)testSynchroniseStoreSuccess {
+    CMPChatConversation *toUpdateConversation = [CMPChatConversation testInstanceWithID:@"1"];
+    
+    [self.chatStore upsertConversation:toUpdateConversation];
+    
+    CMPChatConversation *toDeleteConversation = [CMPChatConversation testInstanceWithID:@"3"];
+    
+    [self.chatStore upsertConversation:toDeleteConversation];
+
     NSData *data = [CMPResourceLoader loadJSONWithName:@"Conversations"];
     NSHTTPURLResponse *response = [NSHTTPURLResponse mockedWithURL:[CMPTestMocks mockBaseURL]];
     CMPMockRequestResult *completionValue = [[CMPMockRequestResult alloc] initWithData:data response:response error:nil];
     [self.requestPerformer.completionValues addObject:completionValue];
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback recieved"];
-    [_chatController synchroniseStore:^(CMPChatResult * _Nonnull result) {
-        XCTAssertTrue(result.isSuccessful);
-        XCTAssertNil(result.error);
-        
-        [expectation fulfill];
+    __weak typeof(self) weakSelf = self;
+    [_client.services.session startSessionWithCompletion:^{
+        [weakSelf.chatController synchroniseStore:^(CMPChatResult * _Nonnull result) {
+            XCTAssertTrue(result.isSuccessful);
+            XCTAssertNil(result.error);
+            
+            NSArray<CMPChatConversation *> *conversations = [weakSelf.chatStore getAllConversations];
+
+            XCTAssertTrue(conversations.count == 2);
+            
+            CMPChatConversation *updated = [self.chatStore getConversation:@"1"];
+            
+            XCTAssertNotNil(updated);
+            XCTAssertEqualObjects(updated.id, @"1");
+            XCTAssertEqualObjects(updated.name, @"Support1");
+            XCTAssertEqualObjects(updated.conversationDescription, @"The Support Channel1");
+            XCTAssertEqualObjects(updated.eTag, nil);
+            XCTAssertNotNil(updated.updatedOn);
+            XCTAssertEqualObjects(updated.isPublic, @(NO));
+            XCTAssertEqualObjects(@(updated.roles.ownerAttributes.canSend), @(YES));
+            XCTAssertEqualObjects(@(updated.roles.ownerAttributes.canAddParticipants), @(YES));
+            XCTAssertEqualObjects(@(updated.roles.ownerAttributes.canRemoveParticipants), @(YES));
+            XCTAssertEqualObjects(@(updated.roles.participantAttributes.canSend), @(YES));
+            XCTAssertEqualObjects(@(updated.roles.participantAttributes.canAddParticipants), @(YES));
+            XCTAssertEqualObjects(@(updated.roles.participantAttributes.canRemoveParticipants), @(YES));
+            
+            XCTAssertEqualObjects(updated.firstLocalEventID, @(0));
+            XCTAssertEqualObjects(updated.lastLocalEventID, @(0));
+            XCTAssertEqualObjects(updated.latestRemoteEventID, @(3));
+            
+            CMPChatConversation *regular = [self.chatStore getConversation:@"2"];
+            
+            XCTAssertNotNil(regular);
+            XCTAssertEqualObjects(regular.id, @"2");
+            XCTAssertEqualObjects(regular.name, @"Support2");
+            XCTAssertEqualObjects(regular.conversationDescription, @"The Support Channel2");
+            XCTAssertEqualObjects(regular.eTag, nil);
+            XCTAssertEqualObjects(regular.isPublic, @(NO));
+            XCTAssertEqualObjects(@(regular.roles.ownerAttributes.canSend), @(YES));
+            XCTAssertEqualObjects(@(regular.roles.ownerAttributes.canAddParticipants), @(YES));
+            XCTAssertEqualObjects(@(regular.roles.ownerAttributes.canRemoveParticipants), @(YES));
+            XCTAssertEqualObjects(@(regular.roles.participantAttributes.canSend), @(YES));
+            XCTAssertEqualObjects(@(regular.roles.participantAttributes.canAddParticipants), @(YES));
+            XCTAssertEqualObjects(@(regular.roles.participantAttributes.canRemoveParticipants), @(YES));
+            
+            XCTAssertEqualObjects(regular.firstLocalEventID, @(-1));
+            XCTAssertEqualObjects(regular.lastLocalEventID, @(-1));
+            XCTAssertEqualObjects(regular.latestRemoteEventID, @(-1));
+            
+            CMPChatConversation *deleted = [self.chatStore getConversation:@"3"];
+            
+            XCTAssertNil(deleted);
+            
+            [expectation fulfill];
+        }];
+    } failure:^(NSError * _Nullable err) {
+        XCTFail();
     }];
-    
+
     [self waitForExpectations:@[expectation] timeout:5.0];
 }
 
 - (void)testSendMessage {
+    
+    
     CMPMockRequestResult *completionValue = [[CMPMockRequestResult alloc] initWithData:nil response:[NSHTTPURLResponse mockedWithURL:[CMPTestMocks mockBaseURL]] error:nil];
     [self.requestPerformer.completionValues addObject:completionValue];
     
@@ -210,6 +272,24 @@
     [self waitForExpectations:@[expectation] timeout:5.0];
 }
 
+- (void)testGetPreviousMessages {
+    NSDate *date = [NSDate dateWithTimeIntervalSinceNow:0];
+    CMPChatRoleAttributes *owner = [[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES];
+    CMPChatRoleAttributes *participant = [[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:NO canRemoveParticipants:NO];
+    CMPChatRoles *roles = [[CMPChatRoles alloc] initWithOwnerAttributes:owner participantAttributes:participant];
+    CMPChatConversation *c = [[CMPChatConversation alloc] initWithID:@"1" firstLocalEventID:@(1) lastLocalEventID:@(3) latestRemoteEventID:@(2) eTag:@"ETag" updatedOn:date name:@"name" conversationDescription:@"description" roles:roles isPublic:@(NO)];
+    
+    XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback recieved"];
+    __weak typeof(self) weakSelf = self;
+    [_persistenceController upsertConversations:@[c] completion:^(CMPStoreResult<NSNumber *> * _Nonnull storeResult) {
+        [weakSelf.chatController getPreviousMessages:@"1" completion:^(CMPChatResult * _Nonnull result) {
+            
+            [expectation fulfill];
+        }];
+    }];
+    
+    [self waitForExpectations:@[expectation] timeout:5.0];
+}
 
 
 @end

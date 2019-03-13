@@ -429,14 +429,22 @@ NSInteger const kETagNotValid = 412;
         limitedList = [[NSMutableArray alloc] initWithArray:nonEmptyConversations copyItems:YES];
     } else {
         [nonEmptyConversations sortUsingComparator:^NSComparisonResult(CMPChatConversation * obj1, CMPChatConversation * obj2) {
-            return [obj1.updatedOn compare:obj2.updatedOn];
+            if (obj1.updatedOn && obj2.updatedOn) {
+                return [obj1.updatedOn compare:obj2.updatedOn];
+            } else if (obj1.updatedOn && !obj2.updatedOn) {
+                return NSOrderedAscending;
+            } else if (!obj1.updatedOn && obj2.updatedOn) {
+                return NSOrderedDescending;
+            } else {
+                return NSOrderedSame;
+            }
         }];
         for (int i = 0; i < _maxConversationsSynced; i++) {
             [limitedList addObject:nonEmptyConversations[i]];
         }
     }
     
-    return nil;
+    return limitedList;
 }
 
 - (NSDictionary<NSString *, CMPChatConversation *> *)dictionaryFromLocalConversations:(NSArray<CMPChatConversation *> *)conversations {
@@ -597,6 +605,7 @@ NSInteger const kETagNotValid = 412;
     
     if (limited.count == 0) {
         completion(YES);
+        return;
     }
     
     dispatch_group_t group = dispatch_group_create();

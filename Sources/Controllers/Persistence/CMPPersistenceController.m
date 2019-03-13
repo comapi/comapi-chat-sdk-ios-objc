@@ -140,7 +140,7 @@
             [store beginTransaction];
             __block BOOL success = YES;
             [conversations enumerateObjectsUsingBlock:^(CMPChatConversation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                CMPChatConversation *newConversation = [[CMPChatConversation alloc] init];
+                CMPChatConversation *newConversation = [obj copy];
                 CMPChatConversation *savedConversation = [store getConversation:obj.id];
                 if (savedConversation) {
                     newConversation.id = savedConversation.id;

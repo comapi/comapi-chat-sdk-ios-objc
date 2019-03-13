@@ -28,10 +28,6 @@
 
 @interface CMPComapiChatClient ()
 
-@property (nonatomic, strong) CMPBroadcastDelegate<id<CMPTypingDelegate>> *typingDelegates;
-@property (nonatomic, strong) CMPBroadcastDelegate<id<CMPProfileDelegate>> *profileDelegates;
-@property (nonatomic, strong) CMPBroadcastDelegate<id<CMPParticipantDelegate>> *participantDelegates;
-
 @end
 
 @implementation CMPComapiChatClient
@@ -59,10 +55,6 @@
         _services = [[CMPChatServices alloc] initWithFoundation:_foundationClient chatController:_chatController persistenceController:persistenceController modelAdapter:adapter];
         
         [_foundationClient addEventDelegate:_eventsController];
-        
-        _typingDelegates = [[CMPBroadcastDelegate alloc] init];
-        _profileDelegates = [[CMPBroadcastDelegate alloc] init];
-        _participantDelegates = [[CMPBroadcastDelegate alloc] init];
     }
     
     return self;
@@ -81,27 +73,27 @@
 }
 
 - (void)addTypingDelegate:(id<CMPTypingDelegate>)delegate {
-    [_typingDelegates addDelegate:delegate];
+    [_eventsController addTypingDelegate:delegate];
 }
 
 - (void)removeTypingDelegate:(id<CMPTypingDelegate>)delegate {
-    [_typingDelegates removeDelegate:delegate];
+    [_eventsController removeTypingDelegate:delegate];
 }
 
 - (void)addProfileDelegate:(id<CMPProfileDelegate>)delegate {
-    [_profileDelegates addDelegate:delegate];
+    [_eventsController addProfileDelegate:delegate];
 }
 
 - (void)removeProfileDelegate:(id<CMPProfileDelegate>)delegate {
-    [_profileDelegates removeDelegate:delegate];
+    [_eventsController.profileDelegates removeDelegate:delegate];
 }
 
 - (void)addParticipantDelegate:(id<CMPParticipantDelegate>)delegate {
-    [_participantDelegates addDelegate:delegate];
+    [_eventsController addParticipantDelegate:delegate];
 }
 
 - (void)removeParticipantDelegate:(id<CMPParticipantDelegate>)delegate {
-    [_participantDelegates removeDelegate:delegate];
+    [_eventsController.participantDelegates removeDelegate:delegate];
 }
 
 #pragma mark - CMPLifecycleDelegate

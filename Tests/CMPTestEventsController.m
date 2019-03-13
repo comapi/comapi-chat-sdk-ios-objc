@@ -320,5 +320,4 @@
     XCTAssertEqualObjects(s.conversationEventID, nil);
 }
 
-
 @end
