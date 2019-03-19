@@ -21,6 +21,8 @@
 #import "NSManagedObjectContext+CMPOrphanedEvent.h"
 #import "NSManagedObjectContext+CMPUtility.h"
 
+#import "CMPCoreDataManager+TestHelper.h"
+
 #import <CoreData/CoreData.h>
 #import <XCTest/XCTest.h>
 
@@ -35,12 +37,9 @@
 @implementation CMPTestOrphanedEvent
 
 - (void)setUp {
+    [super setUp];
+    
     _config = [[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType];
-    _manager = [[CMPCoreDataManager alloc] initWithConfig:_config completion:^(NSError * _Nullable err) {
-        if (err) {
-            XCTFail();
-        }
-    }];
 }
 
 - (void)tearDown {
@@ -59,50 +58,64 @@
 
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     __weak typeof(self) weakSelf = self;
-    [_manager.mainContext upsertOrphanedEvents:@[e] completion:^(NSInteger inserted, NSError * _Nullable err) {
-        id self = weakSelf;
-        XCTAssertNil(err);
+    _manager = [[CMPCoreDataManager alloc] initWithConfig:_config completion:^(NSError * _Nullable err) {
+        if (err) {
+            XCTFail();
+            return;
+        }
         
-        XCTAssertEqual(1, inserted);
-        
-        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"CMPChatManagedOrphanedEvent"];
-        request.predicate = [NSPredicate predicateWithFormat:@"%K = %@", @"id", @(1)];
-        
-        NSArray<CMPChatManagedOrphanedEvent *> *events = [weakSelf.manager.mainContext executeFetchRequest:request error:&err];
-        XCTAssertNil(err);
-        
-        XCTAssertEqual(events.count, 1);
-        
-        CMPChatManagedOrphanedEvent *event = events[0];
-
-        XCTAssertEqualObjects(event.id, @(1));
-        XCTAssertEqualObjects(event.messageID, @"messageId");
-        XCTAssertEqualObjects(event.profileID, @"profileId");
-        XCTAssertEqualObjects(event.conversationID, @"conversationId");
-        XCTAssertEqualObjects(event.eventID, @"eventId");
-        XCTAssertEqualObjects(event.name, @"name");
-        XCTAssertEqualObjects(event.isPublicConversation, @(NO));
-        XCTAssertEqualObjects(event.timestamp, [NSDate dateWithTimeIntervalSince1970:0]);
-        
-        [expectation fulfill];
+        [weakSelf.manager.mainContext upsertOrphanedEvents:@[e] completion:^(NSInteger inserted, NSError * _Nullable err) {
+            id self = weakSelf;
+            XCTAssertNil(err);
+            
+            XCTAssertEqual(1, inserted);
+            
+            NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"CMPChatManagedOrphanedEvent"];
+            request.predicate = [NSPredicate predicateWithFormat:@"%K = %@", @"id", @(1)];
+            
+            NSArray<CMPChatManagedOrphanedEvent *> *events = [weakSelf.manager.mainContext executeFetchRequest:request error:&err];
+            XCTAssertNil(err);
+            
+            XCTAssertEqual(events.count, 1);
+            
+            CMPChatManagedOrphanedEvent *event = events[0];
+            
+            XCTAssertEqualObjects(event.id, @(1));
+            XCTAssertEqualObjects(event.messageID, @"messageId");
+            XCTAssertEqualObjects(event.profileID, @"profileId");
+            XCTAssertEqualObjects(event.conversationID, @"conversationId");
+            XCTAssertEqualObjects(event.eventID, @"eventId");
+            XCTAssertEqualObjects(event.name, @"name");
+            XCTAssertEqualObjects(event.isPublicConversation, @(NO));
+            XCTAssertEqualObjects(event.timestamp, [NSDate dateWithTimeIntervalSince1970:0]);
+            
+            [expectation fulfill];
+        }];
     }];
     
     [self waitForExpectations:@[expectation] timeout:5.0];
+    
+    [self.manager reset];
 }
 
 - (void)testDeleteOrphanedEvent {
-    NSDate *date = [NSDate dateWithTimeIntervalSince1970:0];
-    CMPOrphanedEventPayload *payload = [[CMPOrphanedEventPayload alloc] initWithProfileID:@"profileId" messageID:@"messageId" conversationID:@"conversationId" isPublicConversation:@(NO) timestamp:date];
-    CMPOrphanedEventData *data = [[CMPOrphanedEventData alloc] initWithName:@"name" eventID:@"eventId" profileID:@"profileId" payload:payload];
-    CMPOrphanedEvent *e = [[CMPOrphanedEvent alloc] initWithID:@(1) data:data];
-    
-    CMPChatManagedOrphanedEvent *mo = [[CMPChatManagedOrphanedEvent alloc] initWithContext:_manager.mainContext];
-    [mo populateWithOrphanedEvent:e];
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     __weak typeof(self) weakSelf = self;
-    [_manager.mainContext saveWithCompletion:^(NSError * _Nullable err) {
-        id self = weakSelf;
+    _manager = [[CMPCoreDataManager alloc] initWithConfig:_config completion:^(NSError * _Nullable err) {
+        if (err) {
+            XCTFail();
+            return;
+        }
+        
+        NSDate *date = [NSDate dateWithTimeIntervalSince1970:0];
+        CMPOrphanedEventPayload *payload = [[CMPOrphanedEventPayload alloc] initWithProfileID:@"profileId" messageID:@"messageId" conversationID:@"conversationId" isPublicConversation:@(NO) timestamp:date];
+        CMPOrphanedEventData *data = [[CMPOrphanedEventData alloc] initWithName:@"name" eventID:@"eventId" profileID:@"profileId" payload:payload];
+        CMPOrphanedEvent *e = [[CMPOrphanedEvent alloc] initWithID:@(1) data:data];
+        
+        CMPChatManagedOrphanedEvent *mo = [[CMPChatManagedOrphanedEvent alloc] initWithContext:weakSelf.manager.mainContext];
+        [mo populateWithOrphanedEvent:e];
+        
         [weakSelf.manager.mainContext deleteOrphanedEventsForIDs:@[mo.id] completion:^(NSInteger deleted, NSError * _Nullable err) {
             XCTAssertNil(err);
             
@@ -117,33 +130,40 @@
             
             [expectation fulfill];
         }];
+
     }];
     
     [self waitForExpectations:@[expectation] timeout:5.0];
+    
+    [self.manager reset];
 }
 
 - (void)testQueryOrphanedEvent {
-    NSDate *date = [NSDate dateWithTimeIntervalSince1970:0];
-    CMPOrphanedEventPayload *payload = [[CMPOrphanedEventPayload alloc] initWithProfileID:@"profileId" messageID:@"messageId" conversationID:@"conversationId" isPublicConversation:@(NO) timestamp:date];
-    CMPOrphanedEventData *data = [[CMPOrphanedEventData alloc] initWithName:@"name" eventID:@"eventId" profileID:@"profileId" payload:payload];
-    CMPOrphanedEvent *e = [[CMPOrphanedEvent alloc] initWithID:@(1) data:data];
-    
-    CMPChatManagedOrphanedEvent *mo = [[CMPChatManagedOrphanedEvent alloc] initWithContext:_manager.mainContext];
-    [mo populateWithOrphanedEvent:e];
-    
     XCTestExpectation *expectation1 = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
-    __weak typeof(self) weakSelf = self;
-    [_manager.mainContext queryOrphanedEventsForIDs:@[@(2)] completion:^(NSArray<CMPChatManagedOrphanedEvent *> * _Nullable events, NSError * _Nullable err) {
-        XCTAssertNil(err);
-        
-        XCTAssertEqual(events.count, 0);
-        
-        [expectation1 fulfill];
-    }];
-    
     XCTestExpectation *expectation2 = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
-    [_manager.mainContext saveWithCompletion:^(NSError * _Nullable err) {
-        id self = weakSelf;
+    __weak typeof(self) weakSelf = self;
+    _manager = [[CMPCoreDataManager alloc] initWithConfig:_config completion:^(NSError * _Nullable err) {
+        if (err) {
+            XCTFail();
+            return;
+        }
+        
+        NSDate *date = [NSDate dateWithTimeIntervalSince1970:0];
+        CMPOrphanedEventPayload *payload = [[CMPOrphanedEventPayload alloc] initWithProfileID:@"profileId" messageID:@"messageId" conversationID:@"conversationId" isPublicConversation:@(NO) timestamp:date];
+        CMPOrphanedEventData *data = [[CMPOrphanedEventData alloc] initWithName:@"name" eventID:@"eventId" profileID:@"profileId" payload:payload];
+        CMPOrphanedEvent *e = [[CMPOrphanedEvent alloc] initWithID:@(1) data:data];
+        
+        CMPChatManagedOrphanedEvent *mo = [[CMPChatManagedOrphanedEvent alloc] initWithContext:weakSelf.manager.mainContext];
+        [mo populateWithOrphanedEvent:e];
+        
+        [weakSelf.manager.mainContext queryOrphanedEventsForIDs:@[@(2)] completion:^(NSArray<CMPChatManagedOrphanedEvent *> * _Nullable events, NSError * _Nullable err) {
+            XCTAssertNil(err);
+            
+            XCTAssertEqual(events.count, 0);
+            
+            [expectation1 fulfill];
+        }];
+        
         [weakSelf.manager.mainContext queryOrphanedEventsForIDs:@[@(1)] completion:^(NSArray<CMPChatManagedOrphanedEvent *> * _Nullable events, NSError * _Nullable err) {
             XCTAssertNil(err);
             
@@ -165,6 +185,8 @@
     }];
     
     [self waitForExpectations:@[expectation1, expectation2] timeout:5.0];
+    
+    [self.manager reset];
 }
 
 @end

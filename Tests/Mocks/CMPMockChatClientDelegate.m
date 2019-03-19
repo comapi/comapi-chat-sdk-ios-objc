@@ -16,27 +16,30 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatController.h"
+#import "CMPMockChatClientDelegate.h"
 
-NS_ASSUME_NONNULL_BEGIN
+@implementation CMPMockChatClientDelegate
 
-@interface CMPChatController ()
+- (void)didUpdateProfile:(nonnull CMPProfileEventUpdate *)event {
+    _profileUpdateCallback(event);
+}
 
-- (BOOL)isSynchronising;
-- (void)setIsSynchronising:(BOOL)IsSynchronising;
+- (void)participantTyping:(nonnull NSString *)conversationID participantID:(nonnull NSString *)participantID isTyping:(BOOL)isTyping {
+    _typingCallback(conversationID, participantID, isTyping);
+}
 
-- (BOOL)socketWasDisconnected;
-- (void)setSocketWasDisconnected:(BOOL)SocketWasDisconnected;
+- (void)didAddParticipant:(nonnull CMPConversationEventParticipantAdded *)event {
+    _participantAddedCallback(event);
+}
 
-- (CMPComapiClient *)client;
-- (void)setClient:(CMPComapiClient * _Nullable)client;
-- (CMPComapiClient *)withClient;
+- (void)didRemoveParicipant:(nonnull CMPConversationEventParticipantRemoved *)event {
+    _participantRemovedCallback(event);
+}
 
-- (void)processEventsQuery:(CMPResult<NSArray<CMPEvent *> *> *)queryResult completion:(void(^)(CMPResult<NSArray<CMPEvent *> *> *))completion;
-- (void)queryEventsRecursively:(NSString *)conversationID lastEventID:(NSNumber *)lastEventID count:(NSNumber *)count completion:(void(^)(CMPResult<NSArray<CMPEvent *> *> *))completion;
-- (void)lookForMissingEvents:(CMPConversationComparison *)comparison completion:(void(^)(CMPConversationComparison *))completion;
-- (void)synchronizeEvents:(NSArray<CMPChatConversation *> *)conversationsToUpdate completion:(void(^)(BOOL))completion;
+- (void)didUpdateParticipant:(nonnull CMPConversationEventParticipantUpdated *)event {
+    _participantUpdatedCallback(event);
+}
+
 
 @end
 
-NS_ASSUME_NONNULL_END

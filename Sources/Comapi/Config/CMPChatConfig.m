@@ -26,6 +26,19 @@
     if (self) {
         _storeFactory = factory;
         _internalConfig = config;
+        _storeConfig = [[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSSQLiteStoreType];
+    }
+    
+    return self;
+}
+
+- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate logLevel:(CMPLogLevel)logLevel storeFactory:(id<CMPStoreFactoryBuildable>)factory internalConfig:(CMPInternalConfig *)config storeConfig:(CMPCoreDataConfig *)storeConfig {
+    self = [super initWithApiSpaceID:apiSpaceID authenticationDelegate:authenticationDelegate logLevel:logLevel];
+    
+    if (self) {
+        _storeFactory = factory;
+        _internalConfig = config;
+        _storeConfig = storeConfig;
     }
     
     return self;
@@ -37,13 +50,26 @@
     if (self) {
         _storeFactory = factory;
         _internalConfig = config;
+        _storeConfig = [[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSSQLiteStoreType];
+    }
+    
+    return self;
+}
+
+- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(id<CMPStoreFactoryBuildable>)factory internalConfig:(CMPInternalConfig *)config storeConfig:(CMPCoreDataConfig *)storeConfig {
+    self = [super initWithApiSpaceID:apiSpaceID authenticationDelegate:authenticationDelegate];
+    
+    if (self) {
+        _storeFactory = factory;
+        _internalConfig = config;
+        _storeConfig = storeConfig;
     }
     
     return self;
 }
 
 - (CMPComapiConfig *)foundationConfig {
-    return [[CMPComapiConfig alloc] initWithApiSpaceID:self.id authenticationDelegate:self.authDelegate logLevel:self.logLevel ];
+    return [[CMPComapiConfig alloc] initWithApiSpaceID:self.id authenticationDelegate:self.authDelegate logLevel:self.logLevel];
 }
 
 @end

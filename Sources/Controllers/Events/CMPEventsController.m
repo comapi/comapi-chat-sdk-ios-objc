@@ -29,10 +29,7 @@
 @property (nonatomic, strong, readonly) CMPChatController *chatController;
 @property (nonatomic, strong, readonly) CMPMissingEventsTracker *tracker;
 
-@property (nonatomic, weak, readonly) id<CMPMissingEventsDelegate> missingEventsDelegate;
-@property (nonatomic, weak, readonly) id<CMPProfileDelegate> profileDelegate;
-@property (nonatomic, weak, readonly) id<CMPTypingDelegate> typingDelegate;
-@property (nonatomic, weak, readonly) id<CMPParticipantDelegate> participantDelegate;
+@property (nonatomic, strong, readonly) id<CMPMissingEventsDelegate> missingEventsDelegate;
 
 @end
 
@@ -45,21 +42,37 @@
         _persistenceController = persistenceController;
         _chatController = chatController;
         _tracker = tracker;
+        
+        _typingDelegates = [[CMPBroadcastDelegate alloc] init];
+        _participantDelegates = [[CMPBroadcastDelegate alloc] init];
+        _profileDelegates = [[CMPBroadcastDelegate alloc] init];
     }
     
     return self;
 }
 
 - (void)addTypingDelegate:(id<CMPTypingDelegate>)delegate {
-    _typingDelegate = delegate;
+    [_typingDelegates addDelegate:delegate];
 }
 
 - (void)addProfileDelegate:(id<CMPProfileDelegate>)delegate {
-    _profileDelegate = delegate;
+    [_profileDelegates addDelegate:delegate];
 }
 
 - (void)addParticipantDelegate:(id<CMPParticipantDelegate>)delegate {
-    _participantDelegate = delegate;
+    [_participantDelegates addDelegate:delegate];
+}
+
+- (void)removeTypingDelegate:(id<CMPTypingDelegate>)delegate {
+    [_typingDelegates removeDelegate:delegate];
+}
+
+- (void)removeProfileDelegate:(id<CMPProfileDelegate>)delegate {
+    [_profileDelegates removeDelegate:delegate];
+}
+
+- (void)removeParticipantDelegate:(id<CMPParticipantDelegate>)delegate {
+    [_participantDelegates removeDelegate:delegate];
 }
 
 #pragma mark - CMPMissingEventsDelegate
@@ -160,33 +173,45 @@
                 if (chatResult.error) {
                     logWithLevel(CMPLogLevelError, @"Chat update failed with error:", chatResult.error, nil);
                 }
-                [weakSelf.participantDelegate didAddParticipant:(CMPConversationEventParticipantAdded *)event];
+                [weakSelf.participantDelegates invokeDelegatesWithBlock:^(id<CMPParticipantDelegate> _Nonnull delegate) {
+                    [delegate didAddParticipant:(CMPConversationEventParticipantAdded *)event];
+                }];
             }];
             break;
         }
         case CMPEventTypeConversationParticipantRemoved: {
-            [weakSelf.participantDelegate didRemoveParicipant:(CMPConversationEventParticipantRemoved *)event];
+            [self.participantDelegates invokeDelegatesWithBlock:^(id<CMPParticipantDelegate> _Nonnull delegate) {
+                [delegate didRemoveParicipant:(CMPConversationEventParticipantRemoved *)event];
+            }];
             break;
         }
         case CMPEventTypeConversationParticipantUpdated: {
-            [weakSelf.participantDelegate didUpdateParticipant:(CMPConversationEventParticipantUpdated *)event];
+            [self.participantDelegates invokeDelegatesWithBlock:^(id<CMPParticipantDelegate> _Nonnull delegate) {
+                [delegate didUpdateParticipant:(CMPConversationEventParticipantUpdated *)event];
+            }];
             break;
         }
         case CMPEventTypeConversationParticipantTyping: {
             CMPConversationEventParticipantTyping *e = (CMPConversationEventParticipantTyping *)event;
-            [self.typingDelegate participantTyping:e.payload.conversationID participantID:e.payload.profileID isTyping:YES];
+            [self.typingDelegates invokeDelegatesWithBlock:^(id<CMPTypingDelegate> _Nonnull delegate) {
+                [delegate participantTyping:e.payload.conversationID participantID:e.payload.profileID isTyping:YES];
+            }];
             break;
         }
         case CMPEventTypeConversationParticipantTypingOff: {
             CMPConversationEventParticipantTypingOff *e = (CMPConversationEventParticipantTypingOff *)event;
-            [self.typingDelegate participantTyping:e.payload.conversationID participantID:e.payload.profileID isTyping:NO];
+            [self.typingDelegates invokeDelegatesWithBlock:^(id<CMPTypingDelegate> _Nonnull delegate) {
+                [delegate participantTyping:e.payload.conversationID participantID:e.payload.profileID isTyping:NO];
+            }];
             break;
         }
         case CMPEventTypeSocketInfo:
             break;
         case CMPEventTypeProfileUpdate: {
             CMPProfileEventUpdate *e = (CMPProfileEventUpdate *)event;
-            [self.profileDelegate didUpdateProfile:e];
+            [self.profileDelegates invokeDelegatesWithBlock:^(id<CMPProfileDelegate> _Nonnull delegate) {
+                [delegate didUpdateProfile:e];
+            }];
             break;
         }
         case CMPEventTypeNone:

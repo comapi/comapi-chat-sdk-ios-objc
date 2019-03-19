@@ -16,26 +16,19 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatController.h"
+#import "CMPComapiChatClient.h"
+
+#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatController ()
+@interface CMPMockChatClientDelegate : NSObject <CMPProfileDelegate, CMPTypingDelegate, CMPParticipantDelegate>
 
-- (BOOL)isSynchronising;
-- (void)setIsSynchronising:(BOOL)IsSynchronising;
-
-- (BOOL)socketWasDisconnected;
-- (void)setSocketWasDisconnected:(BOOL)SocketWasDisconnected;
-
-- (CMPComapiClient *)client;
-- (void)setClient:(CMPComapiClient * _Nullable)client;
-- (CMPComapiClient *)withClient;
-
-- (void)processEventsQuery:(CMPResult<NSArray<CMPEvent *> *> *)queryResult completion:(void(^)(CMPResult<NSArray<CMPEvent *> *> *))completion;
-- (void)queryEventsRecursively:(NSString *)conversationID lastEventID:(NSNumber *)lastEventID count:(NSNumber *)count completion:(void(^)(CMPResult<NSArray<CMPEvent *> *> *))completion;
-- (void)lookForMissingEvents:(CMPConversationComparison *)comparison completion:(void(^)(CMPConversationComparison *))completion;
-- (void)synchronizeEvents:(NSArray<CMPChatConversation *> *)conversationsToUpdate completion:(void(^)(BOOL))completion;
+@property (nonatomic, copy, nullable) void(^typingCallback)(NSString *, NSString *, BOOL);
+@property (nonatomic, copy, nullable) void(^profileUpdateCallback)(CMPProfileEventUpdate *);
+@property (nonatomic, copy, nullable) void(^participantAddedCallback)(CMPConversationEventParticipantAdded *);
+@property (nonatomic, copy, nullable) void(^participantUpdatedCallback)(CMPConversationEventParticipantUpdated *);
+@property (nonatomic, copy, nullable) void(^participantRemovedCallback)(CMPConversationEventParticipantRemoved *);
 
 @end
 

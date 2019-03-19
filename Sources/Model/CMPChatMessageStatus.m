@@ -41,7 +41,7 @@
     if (self) {
         self.messageID = event.payload.messageID;
         self.profileID = event.payload.profileID;
-        self.messageStatus = CMPMessageDeliveryStatusRead;
+        self.messageStatus = CMPChatMessageDeliveryStatusRead;
         self.timestamp = event.payload.timestamp;
         self.conversationID = event.payload.conversationID;
         self.conversationEventID = event.conversationEventID;
@@ -56,7 +56,7 @@
     if (self) {
         self.messageID = event.payload.messageID;
         self.profileID = event.payload.profileID;
-        self.messageStatus = CMPMessageDeliveryStatusDelivered;
+        self.messageStatus = CMPChatMessageDeliveryStatusDelivered;
         self.timestamp = event.payload.timestamp;
         self.conversationID = event.payload.conversationID;
         self.conversationEventID = event.conversationEventID;

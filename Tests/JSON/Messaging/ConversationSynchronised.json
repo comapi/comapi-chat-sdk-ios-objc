@@ -1,0 +1,18 @@
+{
+    "id": "1",
+    "name": "name",
+    "description": "description",
+    "roles": {
+        "owner": {
+            "canSend": true,
+            "canAddParticipants": true,
+            "canRemoveParticipants": true
+        },
+        "participant": {
+            "canSend": true,
+            "canAddParticipants": true,
+            "canRemoveParticipants": true
+        }
+    },
+    "isPublic": false
+}

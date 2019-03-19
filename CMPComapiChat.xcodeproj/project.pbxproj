@@ -30,6 +30,10 @@
 		892F49CA21BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 892F49C821BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.h */; };
 		892F49CB21BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 892F49C921BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.m */; };
 		8933AC3B2201C6FB000855C1 /* CMPTestMessageProcessing.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933AC3A2201C6FB000855C1 /* CMPTestMessageProcessing.m */; };
+		89510DE422367B5C0094C1F3 /* CMPMockChatClientDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 89510DE322367B5C0094C1F3 /* CMPMockChatClientDelegate.m */; };
+		89510DE6223684860094C1F3 /* Event.conversation.participantTyping.json in Resources */ = {isa = PBXBuildFile; fileRef = 89510DE5223684860094C1F3 /* Event.conversation.participantTyping.json */; };
+		89510DE82236863D0094C1F3 /* Event.conversation.participantTypingOff.json in Resources */ = {isa = PBXBuildFile; fileRef = 89510DE72236863D0094C1F3 /* Event.conversation.participantTypingOff.json */; };
+		89510DEC223942610094C1F3 /* CMPChatConversation+CMPTestUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 89510DEB223942610094C1F3 /* CMPChatConversation+CMPTestUtility.m */; };
 		89512A9521F0962000AA9C5D /* CMPStoreManagerStack.m in Sources */ = {isa = PBXBuildFile; fileRef = 89512A9421F0962000AA9C5D /* CMPStoreManagerStack.m */; };
 		89512A9821F0A6FF00AA9C5D /* SampleAppModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 89512A9621F0A6FF00AA9C5D /* SampleAppModel.xcdatamodeld */; };
 		89512A9C21F0B9F300AA9C5D /* Conversation.m in Sources */ = {isa = PBXBuildFile; fileRef = 89512A9B21F0B9F300AA9C5D /* Conversation.m */; };
@@ -66,6 +70,9 @@
 		89512B2721F727B300AA9C5D /* CMPProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89512B1E21F727B300AA9C5D /* CMPProfileViewController.m */; };
 		89512B2821F727B300AA9C5D /* CMPTitledCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 89512B2121F727B300AA9C5D /* CMPTitledCell.m */; };
 		89512B2921F727B300AA9C5D /* CMPProfileView.m in Sources */ = {isa = PBXBuildFile; fileRef = 89512B2421F727B300AA9C5D /* CMPProfileView.m */; };
+		8957E585223A8BC600A1C926 /* ConversationSynchronised.json in Resources */ = {isa = PBXBuildFile; fileRef = 8957E584223A8BC600A1C926 /* ConversationSynchronised.json */; };
+		8957E587223A8D7700A1C926 /* GetMessagesResult-SynchroniseConversation.json in Resources */ = {isa = PBXBuildFile; fileRef = 8957E586223A8D7700A1C926 /* GetMessagesResult-SynchroniseConversation.json */; };
+		8957E58A223AAC8300A1C926 /* Events-ProcessEventsQuery.json in Resources */ = {isa = PBXBuildFile; fileRef = 8957E589223AAC8300A1C926 /* Events-ProcessEventsQuery.json */; };
 		895CC8B421F7295F00EC1634 /* CMPProfileDetailsViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 895CC8AC21F7295F00EC1634 /* CMPProfileDetailsViewModel.m */; };
 		895CC8B521F7295F00EC1634 /* CMPProfileDetailsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 895CC8B021F7295F00EC1634 /* CMPProfileDetailsView.m */; };
 		895CC8B621F7295F00EC1634 /* CMPProfileDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 895CC8B221F7295F00EC1634 /* CMPProfileDetailsViewController.m */; };
@@ -296,6 +303,13 @@
 		892F49C821BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPChatManagedOrphanedEvent.h; sourceTree = "<group>"; };
 		892F49C921BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPChatManagedOrphanedEvent.m; sourceTree = "<group>"; };
 		8933AC3A2201C6FB000855C1 /* CMPTestMessageProcessing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPTestMessageProcessing.m; sourceTree = "<group>"; };
+		89510DE12236782A0094C1F3 /* CMPComapiChatClient+TestHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CMPComapiChatClient+TestHelper.h"; sourceTree = "<group>"; };
+		89510DE222367B5C0094C1F3 /* CMPMockChatClientDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPMockChatClientDelegate.h; sourceTree = "<group>"; };
+		89510DE322367B5C0094C1F3 /* CMPMockChatClientDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPMockChatClientDelegate.m; sourceTree = "<group>"; };
+		89510DE5223684860094C1F3 /* Event.conversation.participantTyping.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Event.conversation.participantTyping.json; sourceTree = "<group>"; };
+		89510DE72236863D0094C1F3 /* Event.conversation.participantTypingOff.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Event.conversation.participantTypingOff.json; sourceTree = "<group>"; };
+		89510DEA223942610094C1F3 /* CMPChatConversation+CMPTestUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CMPChatConversation+CMPTestUtility.h"; sourceTree = "<group>"; };
+		89510DEB223942610094C1F3 /* CMPChatConversation+CMPTestUtility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "CMPChatConversation+CMPTestUtility.m"; sourceTree = "<group>"; };
 		89512A9321F0962000AA9C5D /* CMPStoreManagerStack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPStoreManagerStack.h; sourceTree = "<group>"; };
 		89512A9421F0962000AA9C5D /* CMPStoreManagerStack.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPStoreManagerStack.m; sourceTree = "<group>"; };
 		89512A9721F0A6FF00AA9C5D /* SampleAppModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SampleAppModel.xcdatamodel; sourceTree = "<group>"; };
@@ -369,6 +383,10 @@
 		89512B2221F727B300AA9C5D /* CMPTitledCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPTitledCell.h; sourceTree = "<group>"; };
 		89512B2421F727B300AA9C5D /* CMPProfileView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPProfileView.m; sourceTree = "<group>"; };
 		89512B2521F727B300AA9C5D /* CMPProfileView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPProfileView.h; sourceTree = "<group>"; };
+		8957E584223A8BC600A1C926 /* ConversationSynchronised.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ConversationSynchronised.json; sourceTree = "<group>"; };
+		8957E586223A8D7700A1C926 /* GetMessagesResult-SynchroniseConversation.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "GetMessagesResult-SynchroniseConversation.json"; sourceTree = "<group>"; };
+		8957E588223A9AC400A1C926 /* CMPCoreDataManager+TestHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CMPCoreDataManager+TestHelper.h"; sourceTree = "<group>"; };
+		8957E589223AAC8300A1C926 /* Events-ProcessEventsQuery.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Events-ProcessEventsQuery.json"; sourceTree = "<group>"; };
 		895CC8AC21F7295F00EC1634 /* CMPProfileDetailsViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPProfileDetailsViewModel.m; sourceTree = "<group>"; };
 		895CC8AD21F7295F00EC1634 /* CMPProfileDetailsViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPProfileDetailsViewModel.h; sourceTree = "<group>"; };
 		895CC8AF21F7295F00EC1634 /* CMPProfileDetailsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPProfileDetailsView.h; sourceTree = "<group>"; };
@@ -1472,6 +1490,8 @@
 				898EB1532216F247002CD17D /* CMPMockStoreFactoryBuilder.m */,
 				892C861322280CC600A596BC /* CMPMockEventDispatcher.h */,
 				892C861422280CC600A596BC /* CMPMockEventDispatcher.m */,
+				89510DE222367B5C0094C1F3 /* CMPMockChatClientDelegate.h */,
+				89510DE322367B5C0094C1F3 /* CMPMockChatClientDelegate.m */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -1481,6 +1501,8 @@
 			children = (
 				898EB0EA221328E8002CD17D /* NSHTTPURLResponse+CMPTestUtility.h */,
 				898EB0EB221328E8002CD17D /* NSHTTPURLResponse+CMPTestUtility.m */,
+				89510DEA223942610094C1F3 /* CMPChatConversation+CMPTestUtility.h */,
+				89510DEB223942610094C1F3 /* CMPChatConversation+CMPTestUtility.m */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
@@ -1518,6 +1540,8 @@
 				898EB109221474C7002CD17D /* Event.conversation.undelete.json */,
 				898EB10A221474C7002CD17D /* Event.conversation.update.json */,
 				898EB10B221474C7002CD17D /* Event.conversation.participantRemoved.json */,
+				89510DE5223684860094C1F3 /* Event.conversation.participantTyping.json */,
+				89510DE72236863D0094C1F3 /* Event.conversation.participantTypingOff.json */,
 			);
 			path = Events;
 			sourceTree = "<group>";
@@ -1531,10 +1555,13 @@
 				898EB111221474C7002CD17D /* Conversations.json */,
 				898EB112221474C7002CD17D /* SendMessagesResult.json */,
 				898EB113221474C7002CD17D /* Events.json */,
+				8957E589223AAC8300A1C926 /* Events-ProcessEventsQuery.json */,
 				898EB114221474C7002CD17D /* GetMessagesResult.json */,
 				892C86112226EA4300A596BC /* GetMessagesResult-GetPreviousMessages.json */,
+				8957E586223A8D7700A1C926 /* GetMessagesResult-SynchroniseConversation.json */,
 				898EB115221474C7002CD17D /* Conversation.json */,
 				892C860F2226B8A100A596BC /* ConversationUpdated.json */,
+				8957E584223A8BC600A1C926 /* ConversationSynchronised.json */,
 				898EB116221474C7002CD17D /* ContentUploadResult.json */,
 				898EB117221474C7002CD17D /* PostMessagesResult.json */,
 				898EB118221474C7002CD17D /* MessageStatusUpdateRead.json */,
@@ -1594,6 +1621,8 @@
 			isa = PBXGroup;
 			children = (
 				89E824A9223168D8006D1324 /* CMPChatController+TestHelper.h */,
+				89510DE12236782A0094C1F3 /* CMPComapiChatClient+TestHelper.h */,
+				8957E588223A9AC400A1C926 /* CMPCoreDataManager+TestHelper.h */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1813,6 +1842,7 @@
 				89E8249C222D7D85006D1324 /* MessageStatusUpdateSent.json in Resources */,
 				898EB129221474C8002CD17D /* Event.conversationMessage.delivered.json in Resources */,
 				89E8249E222D7DB6006D1324 /* MessageStatusUpdateDelivered.json in Resources */,
+				89510DE6223684860094C1F3 /* Event.conversation.participantTyping.json in Resources */,
 				898EB121221474C8002CD17D /* AuthorizeSessionBody.json in Resources */,
 				892C86102226B8A100A596BC /* ConversationUpdated.json in Resources */,
 				898EB139221474C8002CD17D /* SendMessagesResult.json in Resources */,
@@ -1833,8 +1863,12 @@
 				898EB145221474C8002CD17D /* Profile.json in Resources */,
 				898EB13B221474C8002CD17D /* GetMessagesResult.json in Resources */,
 				898EB12D221474C8002CD17D /* Event.socket.info.json in Resources */,
+				8957E58A223AAC8300A1C926 /* Events-ProcessEventsQuery.json in Resources */,
 				898EB131221474C8002CD17D /* Event.conversation.undelete.json in Resources */,
 				898EB125221474C8002CD17D /* SessionAuth.json in Resources */,
+				8957E585223A8BC600A1C926 /* ConversationSynchronised.json in Resources */,
+				8957E587223A8D7700A1C926 /* GetMessagesResult-SynchroniseConversation.json in Resources */,
+				89510DE82236863D0094C1F3 /* Event.conversation.participantTypingOff.json in Resources */,
 				898EB122221474C8002CD17D /* Session.json in Resources */,
 				898EB134221474C8002CD17D /* APNSDetailsBody.json in Resources */,
 				898EB140221474C8002CD17D /* MessageAlert.json in Resources */,
@@ -2088,11 +2122,13 @@
 				898EB0E822132383002CD17D /* CMPMockEventDelegate.m in Sources */,
 				898EB1512216ED0C002CD17D /* SampleAppModel.xcdatamodeld in Sources */,
 				892C860C222443A400A596BC /* CMPTestModelAdapter.m in Sources */,
+				89510DE422367B5C0094C1F3 /* CMPMockChatClientDelegate.m in Sources */,
 				89E824A0222EDE64006D1324 /* CMPTestPersistenceController.m in Sources */,
 				898EB0E522132383002CD17D /* CMPMockRequestPerformer.m in Sources */,
 				898EB0F222132991002CD17D /* CMPResourceLoader.m in Sources */,
 				89E824A2222EDE74006D1324 /* CMPTestChatController.m in Sources */,
 				892C861722281A3B00A596BC /* CMPTestEventsController.m in Sources */,
+				89510DEC223942610094C1F3 /* CMPChatConversation+CMPTestUtility.m in Sources */,
 				892C860D222443A400A596BC /* CMPTestRetries.m in Sources */,
 				89E824A4222FE95F006D1324 /* CMPTestOrphanedEvent.m in Sources */,
 				898EB14A2216CA97002CD17D /* CMPMockChatStore.m in Sources */,
@@ -2369,7 +2405,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"COCOAPODS=1",
-					"TEST=1",
 				);
 				INFOPLIST_FILE = CMPComapiChatTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

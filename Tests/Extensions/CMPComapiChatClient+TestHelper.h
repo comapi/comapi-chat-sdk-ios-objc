@@ -16,26 +16,20 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatController.h"
+#import <CMPComapiChat/CMPComapiChat.h>
+#import <CMPComapiFoundation/CMPBroadcastDelegate.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatController ()
+@interface CMPComapiChatClient ()
 
-- (BOOL)isSynchronising;
-- (void)setIsSynchronising:(BOOL)IsSynchronising;
+- (CMPBroadcastDelegate<id<CMPTypingDelegate>> *)typingDelegates;
+- (CMPBroadcastDelegate<id<CMPProfileDelegate>> *)profileDelegates;
+- (CMPBroadcastDelegate<id<CMPParticipantDelegate>> *)participantDelegates;
 
-- (BOOL)socketWasDisconnected;
-- (void)setSocketWasDisconnected:(BOOL)SocketWasDisconnected;
-
-- (CMPComapiClient *)client;
-- (void)setClient:(CMPComapiClient * _Nullable)client;
-- (CMPComapiClient *)withClient;
-
-- (void)processEventsQuery:(CMPResult<NSArray<CMPEvent *> *> *)queryResult completion:(void(^)(CMPResult<NSArray<CMPEvent *> *> *))completion;
-- (void)queryEventsRecursively:(NSString *)conversationID lastEventID:(NSNumber *)lastEventID count:(NSNumber *)count completion:(void(^)(CMPResult<NSArray<CMPEvent *> *> *))completion;
-- (void)lookForMissingEvents:(CMPConversationComparison *)comparison completion:(void(^)(CMPConversationComparison *))completion;
-- (void)synchronizeEvents:(NSArray<CMPChatConversation *> *)conversationsToUpdate completion:(void(^)(BOOL))completion;
+- (CMPEventsController *)eventsController;
+- (CMPAttachmentController *)attachmentController;
+- (CMPPersistenceController *)persistenceController;
 
 @end
 

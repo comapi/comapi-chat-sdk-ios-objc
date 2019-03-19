@@ -191,28 +191,28 @@
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-
-    switch (type) {
-        case NSFetchedResultsChangeInsert: {
-
-            [self.chatView.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
-                                           withRowAnimation:UITableViewRowAnimationNone];
-
-            break;
-        }
-        case NSFetchedResultsChangeDelete: {
-            [self.chatView.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-                                           withRowAnimation:UITableViewRowAnimationNone];
-            break;
-        }
-        case NSFetchedResultsChangeMove: {
-            break;
-        }
-        case NSFetchedResultsChangeUpdate: {
-            [self.chatView.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
-            break;
-        }
-    }
+    [self reload];
+//    switch (type) {
+//        case NSFetchedResultsChangeInsert: {
+//
+//            [self.chatView.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
+//                                           withRowAnimation:UITableViewRowAnimationNone];
+//
+//            break;
+//        }
+//        case NSFetchedResultsChangeDelete: {
+//            [self.chatView.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+//                                           withRowAnimation:UITableViewRowAnimationNone];
+//            break;
+//        }
+//        case NSFetchedResultsChangeMove: {
+//            break;
+//        }
+//        case NSFetchedResultsChangeUpdate: {
+//            [self.chatView.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+//            break;
+//        }
+//    }
 
 }
 

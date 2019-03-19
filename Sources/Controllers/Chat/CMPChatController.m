@@ -282,23 +282,6 @@ NSInteger const kETagNotValid = 412;
     } attempts:3 interval:3];
 }
 
-#pragma mark - private
-
-- (void)upsertTempMessage:(CMPChatMessage *)message completion:(void(^)(BOOL))completion {
-    [_persistenceController updateStoreWithNewMessage:message completion:^(CMPStoreResult<NSNumber *> * result) {
-        if (result.error) {
-            logWithLevel(CMPLogLevelError, @"Error saving temp message: %@", result.error.localizedDescription, nil);
-        }
-        completion(result.object.boolValue);
-    }];
-}
-
-- (void)handleMessageError:(CMPMessageProcessor *)messageProcessor completion:(void(^)(CMPChatResult *))completion {
-    [_persistenceController updateStoreWithSentError:messageProcessor.conversationId tempID:messageProcessor.tempMessageId profileID:messageProcessor.sender completion:^(CMPStoreResult<NSNumber *> * result) {
-        completion([[CMPChatResult alloc] initWithError:result.error success:result.object.boolValue]);
-    }];
-}
-
 #pragma mark -
 #pragma mark - Conversations
 #pragma mark - public
@@ -429,14 +412,22 @@ NSInteger const kETagNotValid = 412;
         limitedList = [[NSMutableArray alloc] initWithArray:nonEmptyConversations copyItems:YES];
     } else {
         [nonEmptyConversations sortUsingComparator:^NSComparisonResult(CMPChatConversation * obj1, CMPChatConversation * obj2) {
-            return [obj1.updatedOn compare:obj2.updatedOn];
+            if (obj1.updatedOn && obj2.updatedOn) {
+                return [obj1.updatedOn compare:obj2.updatedOn];
+            } else if (obj1.updatedOn && !obj2.updatedOn) {
+                return NSOrderedAscending;
+            } else if (!obj1.updatedOn && obj2.updatedOn) {
+                return NSOrderedDescending;
+            } else {
+                return NSOrderedSame;
+            }
         }];
         for (int i = 0; i < _maxConversationsSynced; i++) {
             [limitedList addObject:nonEmptyConversations[i]];
         }
     }
     
-    return nil;
+    return limitedList;
 }
 
 - (NSDictionary<NSString *, CMPChatConversation *> *)dictionaryFromLocalConversations:(NSArray<CMPChatConversation *> *)conversations {
@@ -597,6 +588,7 @@ NSInteger const kETagNotValid = 412;
     
     if (limited.count == 0) {
         completion(YES);
+        return;
     }
     
     dispatch_group_t group = dispatch_group_create();

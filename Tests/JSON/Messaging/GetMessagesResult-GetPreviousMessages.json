@@ -20,7 +20,6 @@
                 {
                     "name": "part2",
                     "type": "text/plain",
-                    "url": null,
                     "data": "message 2",
                     "size": 100
                 }

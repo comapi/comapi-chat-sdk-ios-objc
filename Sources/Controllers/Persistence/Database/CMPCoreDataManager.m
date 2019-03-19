@@ -90,4 +90,20 @@ NSString *const kModelName = @"CMPComapiChat";
     return ctx;
 }
 
+- (void)reset {
+    NSError *err = nil;
+    for (NSPersistentStore *store in _persistentContainer.persistentStoreCoordinator.persistentStores) {
+        [_persistentContainer.persistentStoreCoordinator removePersistentStore:store error:&err];
+        if (err) {
+            logWithLevel(CMPLogLevelError, @"Core Data: error reseting stack - ", err, nil);
+        }
+        if ([[NSFileManager defaultManager] fileExistsAtPath:store.URL.absoluteString]) {
+            [[NSFileManager defaultManager] removeItemAtURL:store.URL error:&err];
+            if (err) {
+                logWithLevel(CMPLogLevelError, @"Core Data: error reseting stack - ", err, nil);
+            }
+        }
+    }
+}
+
 @end

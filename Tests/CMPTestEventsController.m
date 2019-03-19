@@ -21,6 +21,9 @@
 #import "CMPMockEventDispatcher.h"
 #import "CMPComapiChatClient.h"
 
+#import "CMPCoreDataManager+TestHelper.h"
+#import "CMPComapiChatClient+TestHelper.h"
+
 #import <CMPComapiFoundation/CMPKeychain.h>
 #import <XCTest/XCTest.h>
 
@@ -53,6 +56,9 @@
 }
 
 - (void)tearDown {
+    [_client.persistenceController.manager reset];
+    
+    
     _requestPerformer = nil;
     _authDelegate = nil;
     _storeFactoryBuilder = nil;
@@ -208,13 +214,6 @@
     [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationMessageSent];
 
     CMPChatMessage *m = [self.chatStore getMessage:@"myId"];
-    
-    //    @property (nonatomic, strong, nullable) NSString *id;
-    //    @property (nonatomic, strong, nullable) NSNumber *sentEventID;
-    //    @property (nonatomic, strong, nullable) NSDictionary<NSString *, id> *metadata;
-    //    @property (nonatomic, strong, nullable) NSDictionary<NSString *, CMPChatMessageStatus *> *statusUpdates;
-    //    @property (nonatomic, strong, nullable) NSArray<CMPChatMessagePart *> *parts;
-    //    @property (nonatomic, strong, nullable) CMPChatMessageContext *context;
 
     XCTAssertNotNil(m);
     
@@ -241,7 +240,7 @@
     XCTAssertEqualObjects(p.type, @"image/jpeg");
 
     CMPChatMessageStatus *s = [m.statusUpdates.objectEnumerator nextObject];
-    
+
     XCTAssertEqualObjects(s.messageID, @"myId");
     XCTAssertEqualObjects(s.profileID, @"dominik.kowalski");
     XCTAssertEqualObjects(s.conversationID, @"myConversation");
@@ -274,16 +273,17 @@
     XCTAssertEqualObjects(p.size, @(12535));
     XCTAssertEqualObjects(p.name, @"PART_NAME");
     XCTAssertEqualObjects(p.url.absoluteString, @"http://url.test");
-    XCTAssertEqualObjects(p.data, @"bbase64EncodedData");
+    XCTAssertEqualObjects(p.data, @"base64EncodedData");
     XCTAssertEqualObjects(p.type, @"image/jpeg");
     
-    s = [m.statusUpdates.objectEnumerator nextObject];
+    s = m.statusUpdates[c.from.id];
     
     XCTAssertEqualObjects(s.messageID, @"myId");
     XCTAssertEqualObjects(s.profileID, @"dominik.kowalski");
     XCTAssertEqualObjects(s.conversationID, @"myConversation");
-    XCTAssertEqualObjects(s.conversationEventID, nil);
-
+    XCTAssertEqualObjects(s.conversationEventID, @(1));
+    XCTAssertEqual(s.messageStatus, CMPChatMessageDeliveryStatusDelivered);
+    
     [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationMessageRead];
     
     m = [self.chatStore getMessage:@"myId"];
@@ -309,16 +309,16 @@
     XCTAssertEqualObjects(p.size, @(12535));
     XCTAssertEqualObjects(p.name, @"PART_NAME");
     XCTAssertEqualObjects(p.url.absoluteString, @"http://url.test");
-    XCTAssertEqualObjects(p.data, @"bbase64EncodedData");
+    XCTAssertEqualObjects(p.data, @"base64EncodedData");
     XCTAssertEqualObjects(p.type, @"image/jpeg");
     
-    s = [m.statusUpdates.objectEnumerator nextObject];
+    s = m.statusUpdates[c.from.id];
     
     XCTAssertEqualObjects(s.messageID, @"myId");
     XCTAssertEqualObjects(s.profileID, @"dominik.kowalski");
     XCTAssertEqualObjects(s.conversationID, @"myConversation");
-    XCTAssertEqualObjects(s.conversationEventID, nil);
+    XCTAssertEqualObjects(s.conversationEventID, @(2));
+    XCTAssertEqual(s.messageStatus, CMPChatMessageDeliveryStatusRead);
 }
-
 
 @end

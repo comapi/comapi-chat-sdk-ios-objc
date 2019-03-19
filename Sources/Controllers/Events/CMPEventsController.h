@@ -23,7 +23,9 @@
 #import "CMPProfileDelegate.h"
 #import "CMPTypingDelegate.h"
 #import "CMPParticipantDelegate.h"
+#import "CMPTypingDelegate.h"
 
+#import <CMPComapiFoundation/CMPBroadcastDelegate.h>
 #import <CMPComapiFoundation/CMPEventDelegate.h>
 #import <CMPComapiFoundation/CMPStateDelegate.h>
 
@@ -31,11 +33,19 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPEventsController : NSObject <CMPStateDelegate, CMPEventDelegate, CMPMissingEventsDelegate>
 
+@property (nonatomic, strong, readonly) CMPBroadcastDelegate<id<CMPTypingDelegate>> *typingDelegates;
+@property (nonatomic, strong, readonly) CMPBroadcastDelegate<id<CMPProfileDelegate>> *profileDelegates;
+@property (nonatomic, strong, readonly) CMPBroadcastDelegate<id<CMPParticipantDelegate>> *participantDelegates;
+
 - (instancetype)initWithPersistenceController:(CMPPersistenceController *)persistenceController chatController:(CMPChatController *)chatController missingEventsTracker:(CMPMissingEventsTracker *)tracker chatConfig:(CMPChatConfig *)config;
 
 - (void)addTypingDelegate:(id<CMPTypingDelegate>)delegate;
 - (void)addProfileDelegate:(id<CMPProfileDelegate>)delegate;
 - (void)addParticipantDelegate:(id<CMPParticipantDelegate>)delegate;
+
+- (void)removeTypingDelegate:(id<CMPTypingDelegate>)delegate;
+- (void)removeProfileDelegate:(id<CMPProfileDelegate>)delegate;
+- (void)removeParticipantDelegate:(id<CMPParticipantDelegate>)delegate;
 
 @end
 
