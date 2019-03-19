@@ -282,23 +282,6 @@ NSInteger const kETagNotValid = 412;
     } attempts:3 interval:3];
 }
 
-#pragma mark - private
-
-- (void)upsertTempMessage:(CMPChatMessage *)message completion:(void(^)(BOOL))completion {
-    [_persistenceController updateStoreWithNewMessage:message completion:^(CMPStoreResult<NSNumber *> * result) {
-        if (result.error) {
-            logWithLevel(CMPLogLevelError, @"Error saving temp message: %@", result.error.localizedDescription, nil);
-        }
-        completion(result.object.boolValue);
-    }];
-}
-
-- (void)handleMessageError:(CMPMessageProcessor *)messageProcessor completion:(void(^)(CMPChatResult *))completion {
-    [_persistenceController updateStoreWithSentError:messageProcessor.conversationId tempID:messageProcessor.tempMessageId profileID:messageProcessor.sender completion:^(CMPStoreResult<NSNumber *> * result) {
-        completion([[CMPChatResult alloc] initWithError:result.error success:result.object.boolValue]);
-    }];
-}
-
 #pragma mark -
 #pragma mark - Conversations
 #pragma mark - public

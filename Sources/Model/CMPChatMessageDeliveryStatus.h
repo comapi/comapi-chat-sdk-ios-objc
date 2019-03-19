@@ -19,7 +19,25 @@
 #import <CMPComapiFoundation/CMPMessageDeliveryStatus.h>
 
 NS_ASSUME_NONNULL_BEGIN
-
+///**
+// * Status set locally when the request to send the message has been sent.
+// */
+//sending(0),
+//
+///**
+// * Message status set when the 'delivered' event has been delivered from another device.
+// */
+//delivered(1),
+//
+///**
+// * Message status set when the 'read' event has been delivered from another device.
+// */
+//read(2),
+//
+///**
+// * Message status set locally when the sdk failed to send the message.
+// */
+//error(3);
 typedef NS_ENUM(NSInteger, CMPChatMessageDeliveryStatus) {
     CMPChatMessageDeliveryStatusSending,
     CMPChatMessageDeliveryStatusSent,

@@ -21,9 +21,11 @@
 #import "CMPTestMocks.h"
 #import "CMPMockRequestPerformer.h"
 #import "CMPMockClientFactory.h"
-#import "CMPComapiChatClient+TestHelper.h"
 #import "CMPMockChatClientDelegate.h"
 #import "CMPMockEventDispatcher.h"
+
+#import "CMPComapiChatClient+TestHelper.h"
+#import "CMPCoreDataManager+TestHelper.h"
 
 #import <XCTest/XCTest.h>
 
@@ -61,6 +63,8 @@
 }
 
 - (void)tearDown {
+    [_client.persistenceController.manager reset];
+    
     _requestPerformer = nil;
     _authDelegate = nil;
     _storeFactoryBuilder = nil;
@@ -71,7 +75,30 @@
     [super tearDown];
 }
 
-- (void)testAddDelegates {
+- (void)testSetPushToken {
+    BOOL result = YES;
+    NSData *data = [NSData dataWithBytes:&result length:sizeof(result)];
+    NSHTTPURLResponse *response = [NSHTTPURLResponse mockedWithURL:[CMPTestMocks mockBaseURL]];
+    CMPMockRequestResult *completionValue = [[CMPMockRequestResult alloc] initWithData:data response:response error:nil];
+    [self.requestPerformer.completionValues addObject:completionValue];
+    
+    XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
+    __weak typeof(self) weakSelf = self;
+    [_client.services.session startSessionWithCompletion:^{
+        [weakSelf.client setPushToken:@"token" completion:^(BOOL success, NSError * _Nullable error) {
+            XCTAssertTrue(success);
+            XCTAssertNil(error);
+            
+            [expectation fulfill];
+        }];
+    } failure:^(NSError * _Nullable err) {
+        XCTFail();
+    }];
+    
+    [self waitForExpectations:@[expectation] timeout:5.0];
+}
+
+- (void)testAddRemoveDelegates {
     NSDate *date = [NSDate dateWithTimeIntervalSinceNow:0];
     CMPChatRoleAttributes *owner = [[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES];
     CMPChatRoleAttributes *participant = [[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:NO canRemoveParticipants:NO];
@@ -123,10 +150,36 @@
     [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationParticipantRemoved];
     
     [self waitForExpectations:@[typingExpectation, profileUpdateExpectation, participantAddedExpectation, participantUpdatedExpectation, participantRemovedExpectation] timeout:5.0];
-}
-
-- (void)testRemoveDelegates {
     
+    [_client removeTypingDelegate:_chatClientDelegate];
+    [_client removeProfileDelegate:_chatClientDelegate];
+    [_client removeParticipantDelegate:_chatClientDelegate];
+    
+    __weak typeof(self) weakSelf = self;
+    _chatClientDelegate.profileUpdateCallback = ^(CMPProfileEventUpdate * _Nonnull update) {
+        id self = weakSelf;
+        XCTFail();
+    };
+    
+    _chatClientDelegate.typingCallback = ^(NSString * _Nonnull conversationID, NSString * _Nonnull participantID, BOOL isTyping) {
+        id self = weakSelf;
+        XCTFail();
+    };
+    
+    _chatClientDelegate.participantAddedCallback = ^(CMPConversationEventParticipantAdded * _Nonnull event) {
+        id self = weakSelf;
+        XCTFail();
+    };
+    
+    _chatClientDelegate.participantUpdatedCallback = ^(CMPConversationEventParticipantUpdated * _Nonnull event) {
+        id self = weakSelf;
+        XCTFail();
+    };
+    
+    _chatClientDelegate.participantRemovedCallback = ^(CMPConversationEventParticipantRemoved * _Nonnull event) {
+        id self = weakSelf;
+        XCTFail();
+    };
 }
 
 - (void)testStartSession {
@@ -402,8 +455,6 @@
             
             CMPChatMessage *message = [weakSelf.chatStore getMessage:@"MOCK_ID"];
             
-            NSLog(@"%@", [message json]);
-            
             XCTAssertNotNil(message);
             XCTAssertNotNil(message.parts);
             XCTAssertNotNil(message.statusUpdates);
@@ -470,9 +521,7 @@
             XCTAssertTrue(result.isSuccessful);
 
             CMPChatConversation *conversation = [weakSelf.chatStore getConversation:@"support"];
-            
-            NSLog(@"%@", [conversation json]);
-            
+
             XCTAssertNotNil(conversation);
             
             XCTAssertEqualObjects(conversation.name, @"Support");
@@ -679,9 +728,7 @@
     [self.client.services.messaging getParticipants:@"conversationID" participantIDs:@[@"1", @"2"] completion:^(NSArray<CMPChatParticipant *> * _Nonnull result) {
         id self = weakSelf;
         XCTAssertNotNil(result);
-        
-        NSLog(@"%@", result);
-        
+
         XCTAssertEqual(result.count, 2);
         
         CMPChatParticipant *p1 = result[0];

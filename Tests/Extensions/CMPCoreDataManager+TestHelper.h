@@ -17,19 +17,12 @@
 //
 
 #import <CMPComapiChat/CMPComapiChat.h>
-#import <CMPComapiFoundation/CMPBroadcastDelegate.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPComapiChatClient ()
+@interface CMPCoreDataManager ()
 
-- (CMPBroadcastDelegate<id<CMPTypingDelegate>> *)typingDelegates;
-- (CMPBroadcastDelegate<id<CMPProfileDelegate>> *)profileDelegates;
-- (CMPBroadcastDelegate<id<CMPParticipantDelegate>> *)participantDelegates;
-
-- (CMPEventsController *)eventsController;
-- (CMPAttachmentController *)attachmentController;
-- (CMPPersistenceController *)persistenceController;
+- (void)reset;
 
 @end
 

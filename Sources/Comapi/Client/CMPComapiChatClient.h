@@ -33,9 +33,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, readonly) CMPComapiClient *foundationClient;
 
-@property (nonatomic, strong, readonly) CMPEventsController *eventsController;
-@property (nonatomic, strong, readonly) CMPChatController *chatController;
-
 @property (nonatomic, weak) id<CMPLifecycleDelegate> lifecycleDelegate;
 
 @property (nonatomic, strong, readonly) CMPChatServices *services;

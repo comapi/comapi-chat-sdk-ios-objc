@@ -24,6 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)testInstance;
 + (instancetype)testInstanceWithID:(NSString *)ID;
++ (instancetype)testInstanceWithID:(NSString *)ID firstLocalEventID:(NSNumber *)firstLocalEventID lastLocalEventID:(NSNumber *)lastLocalEventID latestRemoteEventID:(NSNumber *)latestRemoteEventID;
 
 @end
 

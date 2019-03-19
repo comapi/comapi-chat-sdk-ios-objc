@@ -28,6 +28,11 @@
 
 @interface CMPComapiChatClient ()
 
+@property (nonatomic, strong, readonly) CMPAttachmentController *attachmentController;
+@property (nonatomic, strong, readonly) CMPPersistenceController *persistenceController;
+@property (nonatomic, strong, readonly) CMPEventsController *eventsController;
+@property (nonatomic, strong, readonly) CMPChatController *chatController;
+
 @end
 
 @implementation CMPComapiChatClient
@@ -46,13 +51,12 @@
                 logWithLevel(CMPLogLevelError, @"Error configuring CoreData stack.", nil);
             }
         }];
-        CMPPersistenceController *persistenceController = [[CMPPersistenceController alloc] initWithFactory:chatConfig.storeFactory adapter:adapter coreDataManager:coreDataManager];
-        CMPAttachmentController *attachmentController = [[CMPAttachmentController alloc] initWithClient:_foundationClient];
+        _persistenceController = [[CMPPersistenceController alloc] initWithFactory:chatConfig.storeFactory adapter:adapter coreDataManager:coreDataManager];
+        _attachmentController = [[CMPAttachmentController alloc] initWithClient:_foundationClient];
+        _chatController = [[CMPChatController alloc] initWithClient:_foundationClient persistenceController:_persistenceController attachmentController:_attachmentController adapter:adapter config:chatConfig.internalConfig];
+        _eventsController = [[CMPEventsController alloc] initWithPersistenceController:_persistenceController chatController:_chatController missingEventsTracker:tracker chatConfig:chatConfig];
         
-        _chatController = [[CMPChatController alloc] initWithClient:_foundationClient persistenceController:persistenceController attachmentController:attachmentController adapter:adapter config:chatConfig.internalConfig];
-        _eventsController = [[CMPEventsController alloc] initWithPersistenceController:persistenceController chatController:_chatController missingEventsTracker:tracker chatConfig:chatConfig];
-        
-        _services = [[CMPChatServices alloc] initWithFoundation:_foundationClient chatController:_chatController persistenceController:persistenceController modelAdapter:adapter];
+        _services = [[CMPChatServices alloc] initWithFoundation:_foundationClient chatController:_chatController persistenceController:_persistenceController modelAdapter:adapter];
         
         [_foundationClient addEventDelegate:_eventsController];
     }

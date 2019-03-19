@@ -73,10 +73,14 @@
 
 - (BOOL)updateMessageStatus:(CMPChatMessageStatus *)messageStatus {
     CMPChatMessage *message = [_messages objectForKey:messageStatus.messageID];
-    CMPChatMessageStatus *old = [message.statusUpdates objectForKey:messageStatus.profileID];
-    if ([old messageStatus] < messageStatus.messageStatus) {
-        [message.statusUpdates setValue:messageStatus forKey:messageStatus.profileID];
+    if (!message) {
+        return NO;
     }
+
+    NSMutableDictionary *newEntry = [NSMutableDictionary dictionaryWithDictionary:message.statusUpdates];
+    [newEntry setValue:messageStatus forKey:messageStatus.profileID];
+    message.statusUpdates = newEntry;
+    
     return YES;
 }
 

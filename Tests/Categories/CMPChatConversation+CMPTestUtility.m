@@ -42,4 +42,14 @@
     return c;
 }
 
++ (instancetype)testInstanceWithID:(NSString *)ID firstLocalEventID:(NSNumber *)firsLocalEventID lastLocalEventID:(NSNumber *)lastLocalEventID latestRemoteEventID:(NSNumber *)latestRemoteEventID {
+    NSDate *date = [NSDate dateWithTimeIntervalSinceNow:0];
+    CMPChatRoleAttributes *owner = [[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES];
+    CMPChatRoleAttributes *participant = [[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:NO canRemoveParticipants:NO];
+    CMPChatRoles *roles = [[CMPChatRoles alloc] initWithOwnerAttributes:owner participantAttributes:participant];
+    CMPChatConversation *c = [[CMPChatConversation alloc] initWithID:ID firstLocalEventID:firsLocalEventID lastLocalEventID:lastLocalEventID latestRemoteEventID:latestRemoteEventID eTag:@"ETag" updatedOn:date name:@"name" conversationDescription:@"description" roles:roles isPublic:@(NO)];
+    
+    return c;
+}
+
 @end

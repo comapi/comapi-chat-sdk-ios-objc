@@ -32,6 +32,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setClient:(CMPComapiClient * _Nullable)client;
 - (CMPComapiClient *)withClient;
 
+- (void)processEventsQuery:(CMPResult<NSArray<CMPEvent *> *> *)queryResult completion:(void(^)(CMPResult<NSArray<CMPEvent *> *> *))completion;
+- (void)queryEventsRecursively:(NSString *)conversationID lastEventID:(NSNumber *)lastEventID count:(NSNumber *)count completion:(void(^)(CMPResult<NSArray<CMPEvent *> *> *))completion;
+- (void)lookForMissingEvents:(CMPConversationComparison *)comparison completion:(void(^)(CMPConversationComparison *))completion;
+- (void)synchronizeEvents:(NSArray<CMPChatConversation *> *)conversationsToUpdate completion:(void(^)(BOOL))completion;
+
 @end
 
 NS_ASSUME_NONNULL_END

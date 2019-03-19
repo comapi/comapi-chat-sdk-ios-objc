@@ -93,13 +93,10 @@
     }];
 }
 
-// TODO: -
 - (void)participantIsTyping:(NSString *)conversationID isTyping:(BOOL)isTyping completion:(void (^)(CMPChatResult * _Nonnull))completion {
-    if (isTyping) {
-        //[_foundation.services.messaging partic]
-    } else {
-        
-    }
+    [_foundation.services.messaging participantIsTypingWithConversationID:conversationID isTyping:isTyping completion:^(CMPResult<NSNumber *> * result) {
+        completion([[CMPChatResult alloc] initWithComapiResult:result]);
+    }];
 }
 
 #pragma mark - Messages

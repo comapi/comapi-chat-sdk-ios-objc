@@ -30,7 +30,7 @@
 + (CMPComapiChatClient *)instantiateChatClient:(id<CMPRequestPerforming>)requestPerformer authDelegate:(nonnull id<CMPAuthenticationDelegate>)authDelegate storeFactoryBuilder:(id<CMPStoreFactoryBuildable>)storeFactoryBuilder {
     CMPInternalConfig *internalConfig = [[CMPInternalConfig alloc] init];
     CMPAPIConfiguration *apiConfig = [[CMPAPIConfiguration alloc] initWithScheme:@"https" host:@"stage-api.comapi.com" port:443];
-    CMPChatConfig *config = [[CMPChatConfig alloc] initWithApiSpaceID:[CMPTestMocks mockApiSpaceID] authenticationDelegate:authDelegate storeFactory:storeFactoryBuilder internalConfig:internalConfig];
+    CMPChatConfig *config = [[CMPChatConfig alloc] initWithApiSpaceID:[CMPTestMocks mockApiSpaceID] authenticationDelegate:authDelegate logLevel:CMPLogLevelError storeFactory:storeFactoryBuilder internalConfig:internalConfig storeConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType]];
     CMPComapiClient *foundationMockClient = [[CMPComapiClient alloc] initWithApiSpaceID:[CMPTestMocks mockApiSpaceID] authenticationDelegate:authDelegate apiConfiguration:apiConfig requestPerformer:requestPerformer];
     CMPComapiChatClient *mockChatClient = [[CMPComapiChatClient alloc] initWithClient:foundationMockClient chatConfig:config];
     
