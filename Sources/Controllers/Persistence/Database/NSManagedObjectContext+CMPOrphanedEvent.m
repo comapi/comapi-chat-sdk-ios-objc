@@ -29,7 +29,7 @@ NSString *const kCMPOrphanedEventEntityName = @"CMPChatManagedOrphanedEvent";
     __weak typeof(self) weakSelf = self;
     [weakSelf performBlock:^{
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:kCMPOrphanedEventEntityName];
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K IN %@", @"id", [orphanedEvents map:^(CMPOrphanedEvent * event) { return event.id; }]];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K IN %@", @"messageID", [orphanedEvents map:^(CMPOrphanedEvent * event) { return event.data.payload.messageID; }]];
         request.predicate = predicate;
         
         NSError *err;
@@ -91,11 +91,11 @@ NSString *const kCMPOrphanedEventEntityName = @"CMPChatManagedOrphanedEvent";
     }];
 }
 
-- (void)queryOrphanedEventsForIDs:(NSArray<NSNumber *> *)IDs completion:(void (^)(NSArray<CMPChatManagedOrphanedEvent *> * _Nullable, NSError * _Nullable))completion {
+- (void)queryOrphanedEventsForIDs:(NSArray<NSString *> *)IDs completion:(void (^)(NSArray<CMPChatManagedOrphanedEvent *> * _Nullable, NSError * _Nullable))completion {
     __weak typeof(self) weakSelf = self;
     [weakSelf performBlock:^{
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:kCMPOrphanedEventEntityName];
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K IN %@", @"id", IDs];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K IN %@", @"messageID", IDs];
         request.predicate = predicate;
         
         NSError *err;
