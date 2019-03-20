@@ -37,7 +37,9 @@ NSString *const kCMPOrphanedEventEntityName = @"CMPChatManagedOrphanedEvent";
         if (err) {
             logWithLevel(CMPLogLevelError, @"Core Data: error", err, nil);
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(0, err);
+                if (completion) {
+                    completion(0, err);
+                }
             });
         } else if (result) {
             __block NSInteger inserted = 0;
@@ -66,18 +68,24 @@ NSString *const kCMPOrphanedEventEntityName = @"CMPChatManagedOrphanedEvent";
                 if (err) {
                     logWithLevel(CMPLogLevelError, @"Core Data: error", err, nil);
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        completion(0, err);
+                        if (completion) {
+                            completion(0, err);
+                        }
                     });
                 } else {
                     logWithLevel(CMPLogLevelInfo, [NSString stringWithFormat:@"Core Data: from %lu events, inserted %lu new events, %lu were updated", (unsigned long)orphanedEvents.count, (unsigned long)inserted, (unsigned long)existing], nil);
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        completion(inserted, nil);
+                        if (completion) {
+                            completion(inserted, nil);
+                        }
                     });
                 }
             }];
         } else {
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(0, nil);
+                if (completion) {
+                    completion(0, nil);
+                }
             });
         }
     }];
@@ -96,12 +104,16 @@ NSString *const kCMPOrphanedEventEntityName = @"CMPChatManagedOrphanedEvent";
         if (err) {
             logWithLevel(CMPLogLevelError, @"Core Data: error", err, nil);
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(result, err);
+                if (completion) {
+                    completion(result, err);
+                }
             });
         } else {
             logWithLevel(CMPLogLevelInfo, [NSString stringWithFormat:@"Core Data: fetched %lu events.", (unsigned long)result.count], nil);
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(result, nil);
+                if (completion) {
+                    completion(result, nil);
+                }
             });
         }
     }];
@@ -119,7 +131,9 @@ NSString *const kCMPOrphanedEventEntityName = @"CMPChatManagedOrphanedEvent";
         if (err) {
             logWithLevel(CMPLogLevelError, @"Core Data: error", err, nil);
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(0, err);
+                if (completion) {
+                    completion(0, err);
+                }
             });
         } else if (result) {
             __block NSInteger deleted = 0;
@@ -132,18 +146,24 @@ NSString *const kCMPOrphanedEventEntityName = @"CMPChatManagedOrphanedEvent";
                 if (err) {
                     logWithLevel(CMPLogLevelError, @"Core Data: error", err, nil);
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        completion(0, err);
+                        if (completion) {
+                            completion(0, err);
+                        }
                     });
                 } else {
                     logWithLevel(CMPLogLevelInfo, [NSString stringWithFormat:@"Core Data: deleted %lu events.", (unsigned long)result.count], nil);
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        completion(deleted, nil);
+                        if (completion) {
+                            completion(deleted, nil);
+                        }
                     });
                 }
             }];
         } else {
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(0, nil);
+                if (completion) {
+                    completion(0, nil);
+                }
             });
         }
     }];

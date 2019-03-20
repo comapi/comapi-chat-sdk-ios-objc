@@ -72,13 +72,17 @@
 - (void)getParticipants:(NSString *)conversationID participantIDs:(NSArray<NSString *> *)participantsIDs completion:(void(^)(NSArray<CMPChatParticipant *> *))completion {
     __weak typeof(self) weakSelf = self;
     [_foundation.services.messaging getParticipantsWithConversationID:conversationID completion:^(CMPResult<NSArray<CMPConversationParticipant *> *> * result) {
-        completion([weakSelf.adapter adaptConversationParticipants:result.object ? result.object : @[]]);
+        if (completion) {
+            completion([weakSelf.adapter adaptConversationParticipants:result.object ? result.object : @[]]);
+        }
     }];
 }
 
 - (void)removeParticipants:(NSString *)conversationID participants:(NSArray<CMPConversationParticipant *> *)participants completion:(void(^)(CMPChatResult *))completion {
     [_foundation.services.messaging removeParticipantsWithConversationID:conversationID participants:participants completion:^(CMPResult<NSNumber *> * result) {
-        completion([[CMPChatResult alloc] initWithComapiResult:result]);
+        if (completion) {
+            completion([[CMPChatResult alloc] initWithComapiResult:result]);
+        }
     }];
 }
 
@@ -88,14 +92,18 @@
         if (!result.error) {
             [weakSelf.chatController handleParticipantsAdded:conversationID completion:completion];
         } else {
-            completion([[CMPChatResult alloc] initWithComapiResult:result]);
+            if (completion) {
+                completion([[CMPChatResult alloc] initWithComapiResult:result]);
+            }
         }
     }];
 }
 
 - (void)participantIsTyping:(NSString *)conversationID isTyping:(BOOL)isTyping completion:(void (^)(CMPChatResult * _Nonnull))completion {
     [_foundation.services.messaging participantIsTypingWithConversationID:conversationID isTyping:isTyping completion:^(CMPResult<NSNumber *> * result) {
-        completion([[CMPChatResult alloc] initWithComapiResult:result]);
+        if (completion) {
+            completion([[CMPChatResult alloc] initWithComapiResult:result]);
+        }
     }];
 }
 

@@ -80,11 +80,11 @@ NSString * const kCMPPushRegistrationStatusChangedNotification = @"CMPPushRegist
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    [_client applicationDidEnterBackground:application];
+    //[_client applicationDidEnterBackground:application];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    [_client applicationWillEnterForeground:application];
+    //[_client applicationWillEnterForeground:application];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {

@@ -32,12 +32,16 @@
                 logWithLevel(CMPLogLevelError, @"Core Data: error", err, nil);
             }
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(err);
+                if (completion) {
+                    completion(err);
+                }
             });
         } else {
             logWithLevel(CMPLogLevelVerbose, @"Core Data: no new changes.", nil);
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(nil);
+                if (completion) {
+                    completion(nil);
+                }
             });
         }
     }];

@@ -52,19 +52,25 @@ NSString *const kModelName = @"CMPComapiChat";
                 if (error) {
                     logWithLevel(CMPLogLevelError, @"Core Data: error", error, nil);
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        completion(error);
+                        if (completion) {
+                            completion(error);
+                        }
                     });
                 } else {
                     logWithLevel(CMPLogLevelInfo, @"Core Data: initialized.", nil);
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        completion(nil);
+                        if (completion) {
+                            completion(nil);
+                        }
                     });
                 }
             }];
         } else {
             logWithLevel(CMPLogLevelInfo, @"Core Data: unsupported iOS version - %@, minimum supported version - 10.0", UIDevice.currentDevice.systemVersion, nil);
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(nil);
+                if (completion) {
+                    completion(nil);
+                }
             });
         }
     }
