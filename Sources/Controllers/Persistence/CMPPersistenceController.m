@@ -239,7 +239,7 @@
                     lastRemote = [self nullOrNegative:savedConversation.lastLocalEventID] ? result.latestEventID : @(MAX(result.latestEventID.integerValue, savedConversation.latestRemoteEventID.integerValue));
                     NSDate *updatedOnDate = [NSDate dateWithTimeIntervalSince1970:MAX([savedConversation.updatedOn timeIntervalSince1970], updatedOn)];
                 
-                    CMPChatConversation *updateConversation = [[CMPChatConversation alloc] initWithID:savedConversation.id firstLocalEventID:firstLocal lastLocalEventID:lastLocal latestRemoteEventID:lastRemote eTag:savedConversation.eTag updatedOn:updatedOnDate name:nil conversationDescription:nil roles:nil isPublic:nil];
+                    CMPChatConversation *updateConversation = [[CMPChatConversation alloc] initWithID:savedConversation.id firstLocalEventID:firstLocal lastLocalEventID:lastLocal latestRemoteEventID:lastRemote eTag:savedConversation.eTag updatedOn:updatedOnDate name:savedConversation.name conversationDescription:savedConversation.conversationDescription roles:savedConversation.roles isPublic:savedConversation.isPublic];
                     [store updateConversation:updateConversation];
                 }
                 
@@ -263,7 +263,7 @@
     NSArray<CMPOrphanedEvent *> *orphanedEvents = eventsResult.orphanedEvents;
     __weak typeof(self) weakSelf = self;
     if (messages && orphanedEvents) {
-        NSArray<NSNumber *> *ids = [messages map:^id (CMPMessage * obj) { return obj.id; }];
+        NSArray<NSString *> *ids = [messages map:^id (CMPMessage * obj) { return obj.id; }];
         [ctx upsertOrphanedEvents:orphanedEvents completion:^(NSInteger inserted, NSError * _Nullable error) {
             if (error) {
                 dispatch_async(dispatch_get_main_queue(), ^{

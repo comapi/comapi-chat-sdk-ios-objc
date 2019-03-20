@@ -26,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NSManagedObjectContext (CMPOrphanedEvent)
 
-- (void)queryOrphanedEventsForIDs:(NSArray<NSNumber *> *)IDs completion:(void(^)(NSArray<CMPChatManagedOrphanedEvent *> * _Nullable, NSError * _Nullable))completion;
+- (void)queryOrphanedEventsForIDs:(NSArray<NSString *> *)IDs completion:(void(^)(NSArray<CMPChatManagedOrphanedEvent *> * _Nullable, NSError * _Nullable))completion;
 
 - (void)upsertOrphanedEvents:(NSArray<CMPOrphanedEvent *> *)orphanedEvents completion:(void(^)(NSInteger, NSError * _Nullable))completion;
 
