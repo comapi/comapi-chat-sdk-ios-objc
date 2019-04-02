@@ -39,8 +39,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, readonly, nullable) NSString *profileID;
 @property (nonatomic, readonly) BOOL sessionSuccessfullyCreated;
 
-- (instancetype)initWithClient:(CMPComapiClient *)client chatConfig:(CMPChatConfig *)chatConfig;
-
 - (void)setPushToken:(NSString *)deviceToken completion:(void(^)(BOOL, NSError * _Nullable))completion NS_SWIFT_NAME(set(pushToken:completion:));
 
 - (void)addTypingDelegate:(id<CMPTypingDelegate>)delegate;

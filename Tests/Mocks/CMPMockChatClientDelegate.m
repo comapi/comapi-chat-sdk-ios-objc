@@ -28,7 +28,7 @@
     _typingCallback(conversationID, participantID, isTyping);
 }
 
-- (void)didAddParticipant:(nonnull CMPConversationEventParticipantAdded *)event {
+- (void)didAddParticipant:(CMPConversationEventParticipantAdded *)event {
     _participantAddedCallback(event);
 }
 

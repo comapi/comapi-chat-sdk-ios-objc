@@ -50,14 +50,10 @@
     _authDelegate = [[CMPMockAuthenticationDelegate alloc] init];
     _chatStore = [[CMPMockChatStore alloc] init];
     _storeFactoryBuilder = [[CMPMockStoreFactoryBuilder alloc] initWithChatStore:_chatStore];
-    _client = [CMPMockClientFactory instantiateChatClient:_requestPerformer authDelegate:_authDelegate storeFactoryBuilder:_storeFactoryBuilder];
-    
-    _eventDispatcher = [[CMPMockEventDispatcher alloc] initWithClient:_client.foundationClient delegate:_client.eventsController];
 }
 
 - (void)tearDown {
     [_client.persistenceController.manager reset];
-    
     
     _requestPerformer = nil;
     _authDelegate = nil;
@@ -68,257 +64,308 @@
     [super tearDown];
 }
 
+- (void)createClient:(void(^)(CMPComapiChatClient * _Nullable))completion {
+    __weak typeof(self) weakSelf = self;
+    [CMPMockClientFactory instantiateChatClient:_requestPerformer authDelegate:_authDelegate storeFactoryBuilder:_storeFactoryBuilder completion:^(CMPComapiChatClient * _Nullable client, NSError * _Nullable error) {
+        weakSelf.eventDispatcher = [[CMPMockEventDispatcher alloc] initWithClient:client.foundationClient delegate:client.eventsController];
+        if (completion) {
+            completion(client);
+        }
+    }];
+}
+
 - (void)testCreateConversationEvent {
-    [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationCreate];
+    XCTestExpectation *exp = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
+    __weak typeof(self) weakSelf = self;
+    [self createClient:^(CMPComapiChatClient * _Nullable client) {
+        [weakSelf.eventDispatcher dispatchEventOfType:CMPEventTypeConversationCreate];
+        
+        CMPChatConversation *c = [self.chatStore getConversation:@"myConversation"];
+        
+        XCTAssertNotNil(c);
+        
+        XCTAssertEqualObjects(c.id, @"myConversation");
+        XCTAssertEqualObjects(c.name, @"myConversationName");
+        XCTAssertEqualObjects(c.conversationDescription, nil);
+        
+        XCTAssertEqual(c.roles.ownerAttributes.canSend, YES);
+        XCTAssertEqual(c.roles.ownerAttributes.canAddParticipants, NO);
+        XCTAssertEqual(c.roles.ownerAttributes.canRemoveParticipants, YES);
+        XCTAssertEqual(c.roles.ownerAttributes.canSend, YES);
+        XCTAssertEqual(c.roles.ownerAttributes.canAddParticipants, NO);
+        XCTAssertEqual(c.roles.ownerAttributes.canRemoveParticipants, YES);
+        XCTAssertEqual(c.isPublic.boolValue, YES);
+        
+        XCTAssertEqualObjects(c.firstLocalEventID, @(-1));
+        XCTAssertEqualObjects(c.lastLocalEventID, @(-1));
+        XCTAssertEqualObjects(c.latestRemoteEventID, @(-1));
+        
+        [exp fulfill];
+    }];
     
-    CMPChatConversation *c = [self.chatStore getConversation:@"myConversation"];
-    
-    XCTAssertNotNil(c);
-    
-    XCTAssertEqualObjects(c.id, @"myConversation");
-    XCTAssertEqualObjects(c.name, @"myConversationName");
-    XCTAssertEqualObjects(c.conversationDescription, nil);
-    
-    XCTAssertEqual(c.roles.ownerAttributes.canSend, YES);
-    XCTAssertEqual(c.roles.ownerAttributes.canAddParticipants, NO);
-    XCTAssertEqual(c.roles.ownerAttributes.canRemoveParticipants, YES);
-    XCTAssertEqual(c.roles.ownerAttributes.canSend, YES);
-    XCTAssertEqual(c.roles.ownerAttributes.canAddParticipants, NO);
-    XCTAssertEqual(c.roles.ownerAttributes.canRemoveParticipants, YES);
-    XCTAssertEqual(c.isPublic.boolValue, YES);
-    
-    XCTAssertEqualObjects(c.firstLocalEventID, @(-1));
-    XCTAssertEqualObjects(c.lastLocalEventID, @(-1));
-    XCTAssertEqualObjects(c.latestRemoteEventID, @(-1));
+    [self waitForExpectations:@[exp] timeout:5.0];
 }
 
 - (void)testUpdateConversationEvent {
-    [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationUpdate];
+    XCTestExpectation *exp = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
+    __weak typeof(self) weakSelf = self;
+    [self createClient:^(CMPComapiChatClient * _Nullable client) {
+        [weakSelf.eventDispatcher dispatchEventOfType:CMPEventTypeConversationUpdate];
+        
+        CMPChatConversation *c = [self.chatStore getConversation:@"myConversation"];
+        
+        XCTAssertNotNil(c);
+        
+        XCTAssertEqualObjects(c.id, @"myConversation");
+        XCTAssertEqualObjects(c.name, @"myConversationName");
+        XCTAssertEqualObjects(c.conversationDescription, @"myConversationDescription");
+        
+        XCTAssertEqual(c.roles.ownerAttributes.canSend, YES);
+        XCTAssertEqual(c.roles.ownerAttributes.canAddParticipants, NO);
+        XCTAssertEqual(c.roles.ownerAttributes.canRemoveParticipants, YES);
+        XCTAssertEqual(c.roles.ownerAttributes.canSend, YES);
+        XCTAssertEqual(c.roles.ownerAttributes.canAddParticipants, NO);
+        XCTAssertEqual(c.roles.ownerAttributes.canRemoveParticipants, YES);
+        XCTAssertEqual(c.isPublic.boolValue, NO);
+        
+        XCTAssertEqualObjects(c.firstLocalEventID, @(-1));
+        XCTAssertEqualObjects(c.lastLocalEventID, @(-1));
+        XCTAssertEqualObjects(c.latestRemoteEventID, @(-1));
+        
+        [exp fulfill];
+    }];
     
-    CMPChatConversation *c = [self.chatStore getConversation:@"myConversation"];
-    
-    XCTAssertNotNil(c);
-    
-    XCTAssertEqualObjects(c.id, @"myConversation");
-    XCTAssertEqualObjects(c.name, @"myConversationName");
-    XCTAssertEqualObjects(c.conversationDescription, @"myConversationDescription");
-    
-    XCTAssertEqual(c.roles.ownerAttributes.canSend, YES);
-    XCTAssertEqual(c.roles.ownerAttributes.canAddParticipants, NO);
-    XCTAssertEqual(c.roles.ownerAttributes.canRemoveParticipants, YES);
-    XCTAssertEqual(c.roles.ownerAttributes.canSend, YES);
-    XCTAssertEqual(c.roles.ownerAttributes.canAddParticipants, NO);
-    XCTAssertEqual(c.roles.ownerAttributes.canRemoveParticipants, YES);
-    XCTAssertEqual(c.isPublic.boolValue, NO);
-    
-    XCTAssertEqualObjects(c.firstLocalEventID, @(-1));
-    XCTAssertEqualObjects(c.lastLocalEventID, @(-1));
-    XCTAssertEqualObjects(c.latestRemoteEventID, @(-1));
+    [self waitForExpectations:@[exp] timeout:5.0];
 }
 
 - (void)testDeleteConversationEvent {
-    [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationCreate];
-    
-    CMPChatConversation *c = [self.chatStore getConversation:@"myConversation"];
-    
-    XCTAssertNotNil(c);
-    
-    XCTAssertEqualObjects(c.id, @"myConversation");
-    XCTAssertEqualObjects(c.name, @"myConversationName");
-    XCTAssertEqualObjects(c.conversationDescription, nil);
-    
-    XCTAssertEqual(c.roles.ownerAttributes.canSend, YES);
-    XCTAssertEqual(c.roles.ownerAttributes.canAddParticipants, NO);
-    XCTAssertEqual(c.roles.ownerAttributes.canRemoveParticipants, YES);
-    XCTAssertEqual(c.roles.ownerAttributes.canSend, YES);
-    XCTAssertEqual(c.roles.ownerAttributes.canAddParticipants, NO);
-    XCTAssertEqual(c.roles.ownerAttributes.canRemoveParticipants, YES);
-    XCTAssertEqual(c.isPublic.boolValue, YES);
-    
-    XCTAssertEqualObjects(c.firstLocalEventID, @(-1));
-    XCTAssertEqualObjects(c.lastLocalEventID, @(-1));
-    XCTAssertEqualObjects(c.latestRemoteEventID, @(-1));
-    
-    [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationDelete];
-    
-    c = [self.chatStore getConversation:@"myConversation"];
-    
-    XCTAssertNil(c);
+    XCTestExpectation *exp = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
+    __weak typeof(self) weakSelf = self;
+    [self createClient:^(CMPComapiChatClient * _Nullable client) {
+        [weakSelf.eventDispatcher dispatchEventOfType:CMPEventTypeConversationCreate];
+        
+        CMPChatConversation *c = [self.chatStore getConversation:@"myConversation"];
+        
+        XCTAssertNotNil(c);
+        
+        XCTAssertEqualObjects(c.id, @"myConversation");
+        XCTAssertEqualObjects(c.name, @"myConversationName");
+        XCTAssertEqualObjects(c.conversationDescription, nil);
+        
+        XCTAssertEqual(c.roles.ownerAttributes.canSend, YES);
+        XCTAssertEqual(c.roles.ownerAttributes.canAddParticipants, NO);
+        XCTAssertEqual(c.roles.ownerAttributes.canRemoveParticipants, YES);
+        XCTAssertEqual(c.roles.ownerAttributes.canSend, YES);
+        XCTAssertEqual(c.roles.ownerAttributes.canAddParticipants, NO);
+        XCTAssertEqual(c.roles.ownerAttributes.canRemoveParticipants, YES);
+        XCTAssertEqual(c.isPublic.boolValue, YES);
+        
+        XCTAssertEqualObjects(c.firstLocalEventID, @(-1));
+        XCTAssertEqualObjects(c.lastLocalEventID, @(-1));
+        XCTAssertEqualObjects(c.latestRemoteEventID, @(-1));
+        
+        [weakSelf.eventDispatcher dispatchEventOfType:CMPEventTypeConversationDelete];
+        
+        c = [self.chatStore getConversation:@"myConversation"];
+        
+        XCTAssertNil(c);
+        
+        [exp fulfill];
+    }];
+
+    [self waitForExpectations:@[exp] timeout:5.0];
 }
 
 - (void)testUndeleteConversationEvent {
-    [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationCreate];
+    XCTestExpectation *exp = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
+    __weak typeof(self) weakSelf = self;
+    [self createClient:^(CMPComapiChatClient * _Nullable client) {
+        [weakSelf.eventDispatcher dispatchEventOfType:CMPEventTypeConversationCreate];
+        
+        CMPChatConversation *c = [self.chatStore getConversation:@"myConversation"];
+        
+        XCTAssertNotNil(c);
+        
+        XCTAssertEqualObjects(c.id, @"myConversation");
+        XCTAssertEqualObjects(c.name, @"myConversationName");
+        XCTAssertEqualObjects(c.conversationDescription, nil);
+        
+        XCTAssertEqual(c.roles.ownerAttributes.canSend, YES);
+        XCTAssertEqual(c.roles.ownerAttributes.canAddParticipants, NO);
+        XCTAssertEqual(c.roles.ownerAttributes.canRemoveParticipants, YES);
+        XCTAssertEqual(c.roles.ownerAttributes.canSend, YES);
+        XCTAssertEqual(c.roles.ownerAttributes.canAddParticipants, NO);
+        XCTAssertEqual(c.roles.ownerAttributes.canRemoveParticipants, YES);
+        XCTAssertEqual(c.isPublic.boolValue, YES);
+        
+        XCTAssertEqualObjects(c.firstLocalEventID, @(-1));
+        XCTAssertEqualObjects(c.lastLocalEventID, @(-1));
+        XCTAssertEqualObjects(c.latestRemoteEventID, @(-1));
+        
+        [weakSelf.eventDispatcher dispatchEventOfType:CMPEventTypeConversationDelete];
+        
+        c = [self.chatStore getConversation:@"myConversation"];
+        
+        XCTAssertNil(c);
+        
+        [weakSelf.eventDispatcher dispatchEventOfType:CMPEventTypeConversationUndelete];
+        
+        c = [self.chatStore getConversation:@"myConversation"];
+        
+        XCTAssertNotNil(c);
+        
+        XCTAssertEqualObjects(c.id, @"myConversation");
+        XCTAssertEqualObjects(c.name, @"myConversationName");
+        XCTAssertEqualObjects(c.conversationDescription, @"myConversationDescription");
+        
+        XCTAssertEqual(c.roles.ownerAttributes.canSend, YES);
+        XCTAssertEqual(c.roles.ownerAttributes.canAddParticipants, NO);
+        XCTAssertEqual(c.roles.ownerAttributes.canRemoveParticipants, YES);
+        XCTAssertEqual(c.roles.ownerAttributes.canSend, YES);
+        XCTAssertEqual(c.roles.ownerAttributes.canAddParticipants, NO);
+        XCTAssertEqual(c.roles.ownerAttributes.canRemoveParticipants, YES);
+        XCTAssertEqual(c.isPublic.boolValue, YES);
+        
+        XCTAssertEqualObjects(c.firstLocalEventID, @(-1));
+        XCTAssertEqualObjects(c.lastLocalEventID, @(-1));
+        XCTAssertEqualObjects(c.latestRemoteEventID, @(-1));
+        
+        [exp fulfill];
+    }];
     
-    CMPChatConversation *c = [self.chatStore getConversation:@"myConversation"];
-    
-    XCTAssertNotNil(c);
-    
-    XCTAssertEqualObjects(c.id, @"myConversation");
-    XCTAssertEqualObjects(c.name, @"myConversationName");
-    XCTAssertEqualObjects(c.conversationDescription, nil);
-    
-    XCTAssertEqual(c.roles.ownerAttributes.canSend, YES);
-    XCTAssertEqual(c.roles.ownerAttributes.canAddParticipants, NO);
-    XCTAssertEqual(c.roles.ownerAttributes.canRemoveParticipants, YES);
-    XCTAssertEqual(c.roles.ownerAttributes.canSend, YES);
-    XCTAssertEqual(c.roles.ownerAttributes.canAddParticipants, NO);
-    XCTAssertEqual(c.roles.ownerAttributes.canRemoveParticipants, YES);
-    XCTAssertEqual(c.isPublic.boolValue, YES);
-    
-    XCTAssertEqualObjects(c.firstLocalEventID, @(-1));
-    XCTAssertEqualObjects(c.lastLocalEventID, @(-1));
-    XCTAssertEqualObjects(c.latestRemoteEventID, @(-1));
-    
-    [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationDelete];
-    
-    c = [self.chatStore getConversation:@"myConversation"];
-    
-    XCTAssertNil(c);
-    
-    [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationUndelete];
-    
-    c = [self.chatStore getConversation:@"myConversation"];
-    
-    XCTAssertNotNil(c);
-    
-    XCTAssertEqualObjects(c.id, @"myConversation");
-    XCTAssertEqualObjects(c.name, @"myConversationName");
-    XCTAssertEqualObjects(c.conversationDescription, @"myConversationDescription");
-    
-    XCTAssertEqual(c.roles.ownerAttributes.canSend, YES);
-    XCTAssertEqual(c.roles.ownerAttributes.canAddParticipants, NO);
-    XCTAssertEqual(c.roles.ownerAttributes.canRemoveParticipants, YES);
-    XCTAssertEqual(c.roles.ownerAttributes.canSend, YES);
-    XCTAssertEqual(c.roles.ownerAttributes.canAddParticipants, NO);
-    XCTAssertEqual(c.roles.ownerAttributes.canRemoveParticipants, YES);
-    XCTAssertEqual(c.isPublic.boolValue, YES);
-    
-    XCTAssertEqualObjects(c.firstLocalEventID, @(-1));
-    XCTAssertEqualObjects(c.lastLocalEventID, @(-1));
-    XCTAssertEqualObjects(c.latestRemoteEventID, @(-1));
+    [self waitForExpectations:@[exp] timeout:5.0];
 }
 
 - (void)testConversationMessageEvents {
-    [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationCreate];
-    
-    CMPChatConversation *conv = [self.chatStore getConversation:@"myConversation"];
-    
-    XCTAssertNotNil(conv);
-    
-    BOOL success = YES;
-    NSData *data = [NSData dataWithBytes:&success length:sizeof(success)];
-    NSHTTPURLResponse *response = [NSHTTPURLResponse mockedWithURL:[CMPTestMocks mockBaseURL]];
-    CMPMockRequestResult *completionValue = [[CMPMockRequestResult alloc] initWithData:data response:response error:nil];
-    [self.requestPerformer.completionValues addObject:completionValue];
-    
-    [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationMessageSent];
+    XCTestExpectation *exp = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
+    __weak typeof(self) weakSelf = self;
+    [self createClient:^(CMPComapiChatClient * _Nullable client) {
+        [weakSelf.eventDispatcher dispatchEventOfType:CMPEventTypeConversationCreate];
+        
+        CMPChatConversation *conv = [self.chatStore getConversation:@"myConversation"];
+        
+        XCTAssertNotNil(conv);
+        
+        weakSelf.requestPerformer = [[CMPMockRequestPerformer alloc] initWithSessionAndAuth];
+        BOOL success = YES;
+        NSData *data = [NSData dataWithBytes:&success length:sizeof(success)];
+        NSHTTPURLResponse *response = [NSHTTPURLResponse mockedWithURL:[CMPTestMocks mockBaseURL]];
+        CMPMockRequestResult *completionValue = [[CMPMockRequestResult alloc] initWithData:data response:response error:nil];
+        [weakSelf.requestPerformer.completionValues addObject:completionValue];
+        
+        [weakSelf.eventDispatcher dispatchEventOfType:CMPEventTypeConversationMessageSent];
 
-    CMPChatMessage *m = [self.chatStore getMessage:@"myId"];
+        CMPChatMessage *m = [self.chatStore getMessage:@"myId"];
 
-    XCTAssertNotNil(m);
-    
-    XCTAssertEqualObjects(m.id, @"myId");
-    XCTAssertEqualObjects(m.sentEventID, @(-1));
-    XCTAssertEqualObjects(m.metadata[@"color"], @"red");
-    XCTAssertEqualObjects(m.metadata[@"count"], @(3));
-    XCTAssertEqualObjects(m.metadata[@"other"], @(3.553));
-    
-    CMPChatMessageContext *c = m.context;
- 
-    XCTAssertEqualObjects(c.from.id, @"dominik.kowalski");
-    XCTAssertEqualObjects(c.from.name, @"dominik.kowalski");
-    XCTAssertEqualObjects(c.conversationID, @"myConversation");
-    XCTAssertEqualObjects(c.sentBy, @"dominik.kowalski");
-    XCTAssertNotNil(c.sentOn);
-    
-    CMPChatMessagePart *p = m.parts[0];
-    
-    XCTAssertEqualObjects(p.size, @(12535));
-    XCTAssertEqualObjects(p.name, @"PART_NAME");
-    XCTAssertEqualObjects(p.url.absoluteString, @"http://url.test");
-    XCTAssertEqualObjects(p.data, @"base64EncodedData");
-    XCTAssertEqualObjects(p.type, @"image/jpeg");
+        XCTAssertNotNil(m);
+        
+        XCTAssertEqualObjects(m.id, @"myId");
+        XCTAssertEqualObjects(m.sentEventID, @(-1));
+        XCTAssertEqualObjects(m.metadata[@"color"], @"red");
+        XCTAssertEqualObjects(m.metadata[@"count"], @(3));
+        XCTAssertEqualObjects(m.metadata[@"other"], @(3.553));
+        
+        CMPChatMessageContext *c = m.context;
+     
+        XCTAssertEqualObjects(c.from.id, @"dominik.kowalski");
+        XCTAssertEqualObjects(c.from.name, @"dominik.kowalski");
+        XCTAssertEqualObjects(c.conversationID, @"myConversation");
+        XCTAssertEqualObjects(c.sentBy, @"dominik.kowalski");
+        XCTAssertNotNil(c.sentOn);
+        
+        CMPChatMessagePart *p = m.parts[0];
+        
+        XCTAssertEqualObjects(p.size, @(12535));
+        XCTAssertEqualObjects(p.name, @"PART_NAME");
+        XCTAssertEqualObjects(p.url.absoluteString, @"http://url.test");
+        XCTAssertEqualObjects(p.data, @"base64EncodedData");
+        XCTAssertEqualObjects(p.type, @"image/jpeg");
 
-    CMPChatMessageStatus *s = [m.statusUpdates.objectEnumerator nextObject];
+        CMPChatMessageStatus *s = [m.statusUpdates.objectEnumerator nextObject];
 
-    XCTAssertEqualObjects(s.messageID, @"myId");
-    XCTAssertEqualObjects(s.profileID, @"dominik.kowalski");
-    XCTAssertEqualObjects(s.conversationID, @"myConversation");
-    XCTAssertEqualObjects(s.conversationEventID, nil);
-    
-    XCTAssertEqual(s.messageStatus, CMPChatMessageDeliveryStatusSending);
-    
-    [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationMessageDelivered];
+        XCTAssertEqualObjects(s.messageID, @"myId");
+        XCTAssertEqualObjects(s.profileID, @"dominik.kowalski");
+        XCTAssertEqualObjects(s.conversationID, @"myConversation");
+        XCTAssertEqualObjects(s.conversationEventID, nil);
+        
+        XCTAssertEqual(s.messageStatus, CMPChatMessageDeliveryStatusSending);
+        
+        [weakSelf.eventDispatcher dispatchEventOfType:CMPEventTypeConversationMessageDelivered];
 
-    m = [self.chatStore getMessage:@"myId"];
+        m = [self.chatStore getMessage:@"myId"];
+        
+        XCTAssertNotNil(m);
+        
+        XCTAssertEqualObjects(m.id, @"myId");
+        XCTAssertEqualObjects(m.sentEventID, @(-1));
+        XCTAssertEqualObjects(m.metadata[@"color"], @"red");
+        XCTAssertEqualObjects(m.metadata[@"count"], @(3));
+        XCTAssertEqualObjects(m.metadata[@"other"], @(3.553));
+        
+        c = m.context;
+        
+        XCTAssertEqualObjects(c.from.id, @"dominik.kowalski");
+        XCTAssertEqualObjects(c.from.name, @"dominik.kowalski");
+        XCTAssertEqualObjects(c.conversationID, @"myConversation");
+        XCTAssertEqualObjects(c.sentBy, @"dominik.kowalski");
+        XCTAssertNotNil(c.sentOn);
+        
+        p = m.parts[0];
+        
+        XCTAssertEqualObjects(p.size, @(12535));
+        XCTAssertEqualObjects(p.name, @"PART_NAME");
+        XCTAssertEqualObjects(p.url.absoluteString, @"http://url.test");
+        XCTAssertEqualObjects(p.data, @"base64EncodedData");
+        XCTAssertEqualObjects(p.type, @"image/jpeg");
+        
+        s = m.statusUpdates[c.from.id];
+        
+        XCTAssertEqualObjects(s.messageID, @"myId");
+        XCTAssertEqualObjects(s.profileID, @"dominik.kowalski");
+        XCTAssertEqualObjects(s.conversationID, @"myConversation");
+        XCTAssertEqualObjects(s.conversationEventID, @(1));
+        XCTAssertEqual(s.messageStatus, CMPChatMessageDeliveryStatusDelivered);
+        
+        [weakSelf.eventDispatcher dispatchEventOfType:CMPEventTypeConversationMessageRead];
+        
+        m = [self.chatStore getMessage:@"myId"];
+        
+        XCTAssertNotNil(m);
+        
+        XCTAssertEqualObjects(m.id, @"myId");
+        XCTAssertEqualObjects(m.sentEventID, @(-1));
+        XCTAssertEqualObjects(m.metadata[@"color"], @"red");
+        XCTAssertEqualObjects(m.metadata[@"count"], @(3));
+        XCTAssertEqualObjects(m.metadata[@"other"], @(3.553));
+        
+        c = m.context;
+        
+        XCTAssertEqualObjects(c.from.id, @"dominik.kowalski");
+        XCTAssertEqualObjects(c.from.name, @"dominik.kowalski");
+        XCTAssertEqualObjects(c.conversationID, @"myConversation");
+        XCTAssertEqualObjects(c.sentBy, @"dominik.kowalski");
+        XCTAssertNotNil(c.sentOn);
+        
+        p = m.parts[0];
+        
+        XCTAssertEqualObjects(p.size, @(12535));
+        XCTAssertEqualObjects(p.name, @"PART_NAME");
+        XCTAssertEqualObjects(p.url.absoluteString, @"http://url.test");
+        XCTAssertEqualObjects(p.data, @"base64EncodedData");
+        XCTAssertEqualObjects(p.type, @"image/jpeg");
+        
+        s = m.statusUpdates[c.from.id];
+        
+        XCTAssertEqualObjects(s.messageID, @"myId");
+        XCTAssertEqualObjects(s.profileID, @"dominik.kowalski");
+        XCTAssertEqualObjects(s.conversationID, @"myConversation");
+        XCTAssertEqualObjects(s.conversationEventID, @(2));
+        XCTAssertEqual(s.messageStatus, CMPChatMessageDeliveryStatusRead);
+        
+        [exp fulfill];
+    }];
     
-    XCTAssertNotNil(m);
-    
-    XCTAssertEqualObjects(m.id, @"myId");
-    XCTAssertEqualObjects(m.sentEventID, @(-1));
-    XCTAssertEqualObjects(m.metadata[@"color"], @"red");
-    XCTAssertEqualObjects(m.metadata[@"count"], @(3));
-    XCTAssertEqualObjects(m.metadata[@"other"], @(3.553));
-    
-    c = m.context;
-    
-    XCTAssertEqualObjects(c.from.id, @"dominik.kowalski");
-    XCTAssertEqualObjects(c.from.name, @"dominik.kowalski");
-    XCTAssertEqualObjects(c.conversationID, @"myConversation");
-    XCTAssertEqualObjects(c.sentBy, @"dominik.kowalski");
-    XCTAssertNotNil(c.sentOn);
-    
-    p = m.parts[0];
-    
-    XCTAssertEqualObjects(p.size, @(12535));
-    XCTAssertEqualObjects(p.name, @"PART_NAME");
-    XCTAssertEqualObjects(p.url.absoluteString, @"http://url.test");
-    XCTAssertEqualObjects(p.data, @"base64EncodedData");
-    XCTAssertEqualObjects(p.type, @"image/jpeg");
-    
-    s = m.statusUpdates[c.from.id];
-    
-    XCTAssertEqualObjects(s.messageID, @"myId");
-    XCTAssertEqualObjects(s.profileID, @"dominik.kowalski");
-    XCTAssertEqualObjects(s.conversationID, @"myConversation");
-    XCTAssertEqualObjects(s.conversationEventID, @(1));
-    XCTAssertEqual(s.messageStatus, CMPChatMessageDeliveryStatusDelivered);
-    
-    [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationMessageRead];
-    
-    m = [self.chatStore getMessage:@"myId"];
-    
-    XCTAssertNotNil(m);
-    
-    XCTAssertEqualObjects(m.id, @"myId");
-    XCTAssertEqualObjects(m.sentEventID, @(-1));
-    XCTAssertEqualObjects(m.metadata[@"color"], @"red");
-    XCTAssertEqualObjects(m.metadata[@"count"], @(3));
-    XCTAssertEqualObjects(m.metadata[@"other"], @(3.553));
-    
-    c = m.context;
-    
-    XCTAssertEqualObjects(c.from.id, @"dominik.kowalski");
-    XCTAssertEqualObjects(c.from.name, @"dominik.kowalski");
-    XCTAssertEqualObjects(c.conversationID, @"myConversation");
-    XCTAssertEqualObjects(c.sentBy, @"dominik.kowalski");
-    XCTAssertNotNil(c.sentOn);
-    
-    p = m.parts[0];
-    
-    XCTAssertEqualObjects(p.size, @(12535));
-    XCTAssertEqualObjects(p.name, @"PART_NAME");
-    XCTAssertEqualObjects(p.url.absoluteString, @"http://url.test");
-    XCTAssertEqualObjects(p.data, @"base64EncodedData");
-    XCTAssertEqualObjects(p.type, @"image/jpeg");
-    
-    s = m.statusUpdates[c.from.id];
-    
-    XCTAssertEqualObjects(s.messageID, @"myId");
-    XCTAssertEqualObjects(s.profileID, @"dominik.kowalski");
-    XCTAssertEqualObjects(s.conversationID, @"myConversation");
-    XCTAssertEqualObjects(s.conversationEventID, @(2));
-    XCTAssertEqual(s.messageStatus, CMPChatMessageDeliveryStatusRead);
+    [self waitForExpectations:@[exp] timeout:5.0];
 }
 
 @end

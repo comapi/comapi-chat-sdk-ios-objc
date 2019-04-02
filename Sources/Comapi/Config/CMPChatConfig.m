@@ -20,6 +20,18 @@
 
 @implementation CMPChatConfig
 
+- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(id<CMPStoreFactoryBuildable>)storeFactory {
+    self = [super initWithApiSpaceID:apiSpaceID authenticationDelegate:authenticationDelegate logLevel:CMPLogLevelVerbose];
+    
+    if (self) {
+        self.storeFactory = storeFactory;
+        self.storeConfig = [[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSSQLiteStoreType];
+        self.internalConfig = [[CMPInternalConfig alloc] init];
+    }
+    
+    return self;
+}
+
 - (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate logLevel:(CMPLogLevel)logLevel storeFactory:(id<CMPStoreFactoryBuildable>)factory internalConfig:(CMPInternalConfig *)config {
     self = [super initWithApiSpaceID:apiSpaceID authenticationDelegate:authenticationDelegate logLevel:logLevel];
     

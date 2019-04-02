@@ -34,6 +34,7 @@
         self.tableView = [UITableView new];
         self.inputMessageView = [[CMPChatInputView alloc] init];
         self.attachmentsView = [[CMPAttachmentsView alloc] init];
+        self.messageView = [[CMPNewMessageView alloc] init];
         
         [self configure];
     }
@@ -79,12 +80,22 @@
     self.attachmentsView.alpha = 0.0;
     self.attachmentsView.isShown = NO;
     self.attachmentsView.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    [self.messageView configureWithText:@"New message!"];
+    self.messageView.alpha = 0.0;
+    self.messageView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.messageView.didTapView = ^{
+        if (weakSelf.didTapNewMessageButton) {
+            weakSelf.didTapNewMessageButton();
+        }
+    };
 }
 
 - (void)layout {
     [self addSubview:self.tableView];
     [self addSubview:self.attachmentsView];
     [self addSubview:self.inputMessageView];
+    [self addSubview:self.messageView];
 }
 
 - (void)constrain {
@@ -115,10 +126,36 @@
     NSLayoutConstraint *avHeight = [self.attachmentsView.heightAnchor constraintEqualToConstant:64];
     
     [NSLayoutConstraint activateConstraints:@[avLeading, avTrailing, avBottom, avHeight]];
+    
+    NSLayoutConstraint *nmCenterX = [self.messageView.centerXAnchor constraintEqualToAnchor:self.centerXAnchor constant:0];
+    NSLayoutConstraint *nmBottom = [self.messageView.bottomAnchor constraintEqualToAnchor:self.attachmentsView.topAnchor constant:-8];
+    NSLayoutConstraint *nmHeight = [self.messageView.heightAnchor constraintEqualToConstant:44];
+    
+    [NSLayoutConstraint activateConstraints:@[nmCenterX, nmBottom, nmHeight]];
 }
 
 - (void)reloadAttachments {
     [self.attachmentsView reload];
+}
+
+- (void)showNewMessageView:(BOOL)show completion:(void (^ _Nullable)(void))completion {
+    if ((self.messageView.isVisible && show) || (!self.messageView.isVisible && !show)) {
+        if (completion) {
+            completion();
+        }
+    } else if (show) {
+        [self.messageView showWithCompletion:^{
+            if (completion) {
+                completion();
+            }
+        }];
+    } else if (!show) {
+        [self.messageView hideWithCompletion:^{
+            if (completion) {
+                completion();
+            }
+        }];
+    }
 }
 
 - (void)hideAttachmentsWithCompletion:(void (^)(void))completion {
@@ -182,7 +219,7 @@
     if (self.tableView.contentSize.height < self.tableView.bounds.size.height) {
         return;
     }
-    CGFloat offset = self.tableView.contentSize.height + self.tableView.contentInset.bottom - self.tableView.frame.size.height;
+    CGFloat offset = self.tableView.contentSize.height + self.tableView.contentInset.bottom;
     [self.tableView setContentOffset:CGPointMake(0.0, offset) animated:animated];
 }
 

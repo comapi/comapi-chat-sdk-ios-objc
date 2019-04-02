@@ -27,7 +27,6 @@
 @interface CMPTestModelAdapter : XCTestCase
 
 @property (nonatomic, strong) CMPModelAdapter *adapter;
-@property (nonatomic, strong) CMPCoreDataManager *manager;
 
 @end
 
@@ -44,7 +43,7 @@
 - (void)testAdaptingOrphanedEvents {
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"core data set"];
     __weak typeof(self) weakSelf = self;
-    _manager = [[CMPCoreDataManager alloc] initWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType] completion:^(NSError * _Nullable err) {
+    [CMPCoreDataManager initialiseStackWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType] completion:^(id<CMPCoreDataManagable> _Nullable store, NSError * _Nullable err) {
         if (err) {
             XCTFail();
         }
@@ -52,7 +51,9 @@
         NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
         formatter.numberStyle = NSNumberFormatterNoStyle;
         
-        CMPChatManagedOrphanedEvent *event1 = [[CMPChatManagedOrphanedEvent alloc] initWithContext:weakSelf.manager.mainContext];
+        NSManagedObjectContext *ctx = store.workerContext;
+        
+        CMPChatManagedOrphanedEvent *event1 = [[CMPChatManagedOrphanedEvent alloc] initWithContext:ctx];
         event1.conversationID = @"conversationID1";
         event1.id = [NSNumber numberWithInteger:1];
         event1.messageID = @"messageID1";
@@ -63,7 +64,7 @@
         event1.timestamp = [[NSDate alloc] initWithTimeIntervalSince1970:0];
         [event1 setType:CMPChatMessageDeliveryStatusDelivered];
         
-        CMPChatManagedOrphanedEvent *event2 = [[CMPChatManagedOrphanedEvent alloc] initWithContext:weakSelf.manager.mainContext];
+        CMPChatManagedOrphanedEvent *event2 = [[CMPChatManagedOrphanedEvent alloc] initWithContext:ctx];
         event2.conversationID = @"conversationID2";
         event2.id = [NSNumber numberWithInteger:2];
         event2.messageID = @"messageID2";
@@ -98,12 +99,9 @@
     }];
     
     [self waitForExpectations:@[expectation] timeout:5.0];
-    
-    [_manager reset];
 }
 
 - (void)testAdaptStatuses {
-    
     NSMutableDictionary<NSString *,CMPMessageStatus *> *dictionary = [[NSMutableDictionary alloc] init];
     CMPMessageStatus *status1 = [[CMPMessageStatus alloc] initWithStatus:CMPMessageDeliveryStatusDelivered timestamp:[[NSDate alloc] initWithTimeIntervalSince1970:0]];
     CMPMessageStatus *status2 = [[CMPMessageStatus alloc] initWithStatus:CMPMessageDeliveryStatusRead timestamp:[[NSDate alloc] initWithTimeIntervalSince1970:0]];
@@ -191,8 +189,8 @@
     CMPMessageContext *context1 = [[CMPMessageContext alloc] initWithConversationID:@"cId1" from:p1 sentBy:@"sender1" sentOn:[NSDate dateWithTimeIntervalSince1970:1]];
     CMPMessageContext *context2 = [[CMPMessageContext alloc] initWithConversationID:@"cId2" from:p2 sentBy:@"sender2" sentOn:[NSDate dateWithTimeIntervalSince1970:2]];
 
-    CMPMessage *msg1 = [[CMPMessage alloc] initWithID:@"id1" sentEventID:@"sId1" metadata:metadata context:context1 parts:parts statusUpdates:statuses];
-    CMPMessage *msg2 = [[CMPMessage alloc] initWithID:@"id2" sentEventID:@"sId2" metadata:metadata context:context2 parts:parts statusUpdates:statuses];
+    CMPMessage *msg1 = [[CMPMessage alloc] initWithID:@"id1" sentEventID:@(1) metadata:metadata context:context1 parts:parts statusUpdates:statuses];
+    CMPMessage *msg2 = [[CMPMessage alloc] initWithID:@"id2" sentEventID:@(2) metadata:metadata context:context2 parts:parts statusUpdates:statuses];
     NSArray<CMPMessage *> *messages = [NSArray arrayWithObjects:msg1, msg2, nil];
     NSArray<CMPChatMessage *> *adapted = [_adapter adaptMessages:messages];
     
@@ -232,7 +230,6 @@
         
         NSString *name = [@"pName" stringByAppendingString:[NSString stringWithFormat:@"%d", i+1]];
         XCTAssertTrue([adapted[i].context.from.name compare:name] == NSOrderedSame);
-        
         
         NSString *pId = [@"pId" stringByAppendingString:[NSString stringWithFormat:@"%d", i+1]];
         XCTAssertTrue([adapted[i].context.from.id compare:pId] == NSOrderedSame);

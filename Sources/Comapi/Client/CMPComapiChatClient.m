@@ -37,32 +37,33 @@
 
 @implementation CMPComapiChatClient
 
-- (instancetype)initWithClient:(CMPComapiClient *)client chatConfig:(CMPChatConfig *)chatConfig {
-    self = [super init];
-    
-    if (self) {
-        _foundationClient = client;
-        
-        CMPModelAdapter *adapter = [[CMPModelAdapter alloc] init];
-        CMPMissingEventsTracker *tracker = [[CMPMissingEventsTracker alloc] init];
-        CMPCoreDataConfig *config = chatConfig.storeConfig != nil ? chatConfig.storeConfig : [[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSSQLiteStoreType];
-        CMPCoreDataManager *coreDataManager = [[CMPCoreDataManager alloc] initWithConfig:config completion:^(NSError * _Nullable error) {
-            if (error) {
-                logWithLevel(CMPLogLevelError, @"Error configuring CoreData stack.", nil);
-            }
-        }];
-        _persistenceController = [[CMPPersistenceController alloc] initWithFactory:chatConfig.storeFactory adapter:adapter coreDataManager:coreDataManager];
-        _attachmentController = [[CMPAttachmentController alloc] initWithClient:_foundationClient];
-        _chatController = [[CMPChatController alloc] initWithClient:_foundationClient persistenceController:_persistenceController attachmentController:_attachmentController adapter:adapter config:chatConfig.internalConfig];
-        _eventsController = [[CMPEventsController alloc] initWithPersistenceController:_persistenceController chatController:_chatController missingEventsTracker:tracker chatConfig:chatConfig];
-        
-        _services = [[CMPChatServices alloc] initWithFoundation:_foundationClient chatController:_chatController persistenceController:_persistenceController modelAdapter:adapter];
-        
-        [_foundationClient addEventDelegate:_eventsController];
-    }
-    
-    return self;
+#pragma mark - private setters;
+
+- (void)setFoundationClient:(CMPComapiClient * _Nonnull)foundationClient {
+    _foundationClient = foundationClient;
 }
+
+- (void)setServices:(CMPChatServices *)services {
+    _services = services;
+}
+
+- (void)setAttachmentController:(CMPAttachmentController *)attachmentController {
+    _attachmentController = attachmentController;
+}
+
+- (void)setPersistenceController:(CMPPersistenceController *)persistenceController {
+    _persistenceController = persistenceController;
+}
+
+- (void)setChatController:(CMPChatController *)chatController {
+    _chatController = chatController;
+}
+
+- (void)setEventsController:(CMPEventsController *)eventsController {
+    _eventsController = eventsController;
+}
+
+#pragma mark - public methods
 
 - (BOOL)sessionSuccessfullyCreated {
     return [_foundationClient isSessionSuccessfullyCreated];

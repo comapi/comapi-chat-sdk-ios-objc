@@ -32,8 +32,10 @@ typedef NS_ENUM(NSUInteger, CMPPartType) {
 @interface CMPMessagePartCell : CMPBaseCell
 
 @property (nonatomic, strong) UILabel *dateLabel;
+@property (nonatomic, strong) UILabel *statusLabel;
+@property (nonatomic, strong) UILabel *profileLabel;
 
-- (void)configureWithMessage:(CMPChatMessage *)message ownership:(CMPMessageOwnership)ownership downloader:(CMPImageDownloader *)downloader;
+- (void)configureWithMessage:(CMPChatMessage *)message profileID:(NSString *)profileID ownership:(CMPMessageOwnership)ownership downloader:(CMPImageDownloader *)downloader;
 
 @end
 

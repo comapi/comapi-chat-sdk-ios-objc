@@ -21,7 +21,7 @@
 #import "CMPImageDownloader.h"
 #import "CMPStore.h"
 #import "CMPChatAttachment.h"
-
+#import "Message.h"
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) CMPComapiChatClient *client;
 @property (nonatomic, strong) CMPChatConversation *conversation;
 @property (nonatomic, strong) CMPImageDownloader *downloader;
-@property (nonatomic, strong) NSFetchedResultsController *fetchController;
+@property (nonatomic, strong) NSFetchedResultsController<Message *> *fetchController;
 @property (nonatomic, strong) NSMutableArray<UIImage *> *imageAttachments;
 
 @property (nonatomic, copy) void(^shouldReloadAttachments)(void);

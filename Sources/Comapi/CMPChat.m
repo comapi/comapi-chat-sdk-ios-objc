@@ -37,25 +37,25 @@ static CMPComapiChatClient *_shared = nil;
     return client;
 }
 
-+ (CMPComapiChatClient *)initialiseWithConfig:(CMPChatConfig *)chatConfig {
++ (void)initialiseWithConfig:(CMPChatConfig *)chatConfig completion:(void (^ _Nullable)(CMPComapiChatClient * _Nullable))completion {
     CMPComapiClient *client = [CMPComapi initialiseWithConfig:chatConfig];
-    CMPComapiChatClient *chatClient = [[CMPComapiChatClient alloc] initWithClient:client chatConfig:chatConfig];
-    logWithLevel(CMPLogLevelInfo, @"Chat Client initialised.", nil);
-    
-    return chatClient;
+    [CMPComapiChatClientFactory initialiseClient:client chatConfig:chatConfig completion:^(CMPComapiChatClient * _Nullable chatClient) {
+        if (completion) {
+            completion(chatClient);
+        }
+    }];
 }
 
-+ (CMPComapiChatClient *)initialiseSharedWithConfig:(CMPChatConfig *)chatConfig {
++ (void)initialiseSharedWithConfig:(CMPChatConfig *)chatConfig completion:(void (^ _Nullable)(CMPComapiChatClient * _Nullable))completion {
     if (CMPChat.shared) {
-        logWithLevel(CMPLogLevelError, @"Client already initialised, returnig current client...", nil);
-        return CMPChat.shared;
+        logWithLevel(CMPLogLevelWarning, @"Client already initialised, returnig current client...", nil);
+        completion(CMPChat.shared);
     }
 
-    CMPChat.shared = [CMPChat initialiseWithConfig:chatConfig];
-    
-    logWithLevel(CMPLogLevelInfo, @"Shared client initialised.", nil);
-    
-    return CMPChat.shared;
+    [CMPChat initialiseWithConfig:chatConfig completion:^(CMPComapiChatClient * _Nullable client) {
+        CMPChat.shared = client;
+        completion(client);
+    }];
 }
 
 @end

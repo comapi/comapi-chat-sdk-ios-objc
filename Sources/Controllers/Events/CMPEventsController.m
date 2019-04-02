@@ -173,7 +173,7 @@
                 if (chatResult.error) {
                     logWithLevel(CMPLogLevelError, @"Chat update failed with error:", chatResult.error, nil);
                 }
-                [weakSelf.participantDelegates invokeDelegatesWithBlock:^(id<CMPParticipantDelegate> _Nonnull delegate) {
+                [self.participantDelegates invokeDelegatesWithBlock:^(id<CMPParticipantDelegate> _Nonnull delegate) {
                     [delegate didAddParticipant:(CMPConversationEventParticipantAdded *)event];
                 }];
             }];

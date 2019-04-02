@@ -24,19 +24,16 @@
 
 @interface CMPLoginViewModel ()
 
-
-@property (nonatomic, strong) CMPFactory *factory;
-
 @end
 
 @implementation CMPLoginViewModel
 
-- (instancetype)init {
+- (instancetype)initWithFactory:(CMPFactory *)factory {
     self = [super init];
 
     if (self) {
-        self.factory = [[CMPFactory alloc] init];
-        self.loginBundle = [[CMPLoginBundle alloc] initWithApiSpaceID:@"be466e4b-1340-41fc-826e-20445ab658f1" profileID:@"sub" issuer:@"local" audience:@"local" secret:@"secret"];
+        self.factory = factory;
+        self.loginBundle = [[CMPLoginBundle alloc] initWithApiSpaceID:@"e4d01003-b024-4bc6-bbfd-f33bff820dab" profileID:@"" issuer:@"Issuer" audience:@"Audience" secret:@"Secret"];
     }
     
     return self;
@@ -64,25 +61,23 @@
 
 - (void)login:(void(^)(CMPComapiChatClient * _Nullable, CMPStore * _Nullable, NSError * _Nullable))completion {
     if (self.loginBundle && [self.loginBundle isValid]) {
-        CMPChatConfig *config = [[CMPChatConfig alloc] initWithApiSpaceID:self.loginBundle.apiSpaceID authenticationDelegate:self logLevel:CMPLogLevelVerbose storeFactory:self.factory internalConfig:[[CMPInternalConfig alloc] init]];
+        CMPChatConfig *config = [[CMPChatConfig alloc] initWithApiSpaceID:self.loginBundle.apiSpaceID authenticationDelegate:self storeFactory:_factory];
         config.apiConfig = [[CMPAPIConfiguration alloc] initWithScheme:@"https" host:@"stage-api.comapi.com" port:443];
-        CMPComapiChatClient *client = [CMPChat initialiseWithConfig:config];
-        
-        AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-        delegate.client = client;
-        if (!client) {
-            NSLog(@"failed client init");
-            completion(nil, nil, nil);
-        }
         __weak typeof(self) weakSelf = self;
-        [client.services.session startSessionWithCompletion:^{
-            [client.services.profile getProfileForProfileID:client.profileID completion:^(CMPResult<CMPProfile *> * result) {
-                [weakSelf.factory buildWithCompletion:^(id<CMPChatStore> store, NSError * error) {
-                    completion(client, store, error);
+        [CMPChat initialiseWithConfig:config completion:^(CMPComapiChatClient * _Nullable client) {
+            AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+            delegate.client = client;
+            if (!client) {
+                NSLog(@"failed client init");
+                completion(nil, nil, nil);
+            }
+            [client.services.session startSessionWithCompletion:^{
+                [client.services.profile getProfileForProfileID:client.profileID completion:^(CMPResult<CMPProfile *> * result) {
+                    completion(client, weakSelf.factory.store, nil);
                 }];
+            } failure:^(NSError * _Nullable error) {
+                completion(nil, nil, error);
             }];
-        } failure:^(NSError * _Nullable error) {
-            completion(nil, nil, error);
         }];
     } else {
         NSLog(@"invliad login info");

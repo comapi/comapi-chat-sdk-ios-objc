@@ -34,6 +34,8 @@
     
     if (self) {
         self.dateLabel = [UILabel new];
+        self.profileLabel = [UILabel new];
+        self.statusLabel = [UILabel new];
         self.partViews = [NSMutableArray new];
         
         [self configureSelf];
@@ -52,7 +54,9 @@
         [NSLayoutConstraint deactivateConstraints:v.constraints];
         [v removeFromSuperview];
     }
+    self.profileLabel.text = nil;
     self.dateLabel.text = nil;
+    self.statusLabel.text = nil;
 }
 
 - (void)configureSelf {
@@ -64,7 +68,7 @@
 - (CMPPartType)partTypeForMessagePart:(CMPChatMessagePart *)messagePart {
     if ([messagePart.type isEqualToString:@"text/plain"]) {
         return CMPPartTypeText;
-    } else if ([messagePart.type isEqualToString:@"image/jpeg"] ||
+    } else if ([messagePart.type isEqualToString:@"comapi/upl"] ||
                [messagePart.type isEqualToString:@"image/jpg"] ||
                [messagePart.type isEqualToString:@"image/png"]) {
         return CMPPartTypeImage;
@@ -122,7 +126,7 @@
                 NSLayoutConstraint *trailing = [partView.trailingAnchor constraintEqualToAnchor:view.trailingAnchor constant:0];
                 NSLayoutConstraint *bottom;
                 if (i == parts.count - 1) {
-                    bottom = [partView.bottomAnchor constraintEqualToAnchor:view.bottomAnchor constant:-2];
+                    bottom = [partView.bottomAnchor constraintEqualToAnchor:view.bottomAnchor];
                 }
                 
                 NSMutableArray<NSLayoutConstraint *> *constraints = [NSMutableArray new];
@@ -148,6 +152,22 @@
     return view;;
 }
 
+- (void)configureProfileLabel:(NSString *)profile ownership:(CMPMessageOwnership)ownership {
+    self.profileLabel.textColor = ownership == CMPMessageOwnershipSelf ? UIColor.whiteColor : UIColor.blackColor;
+    self.profileLabel.textAlignment = ownership == CMPMessageOwnershipSelf ? NSTextAlignmentRight : NSTextAlignmentLeft;
+    self.profileLabel.font = [UIFont systemFontOfSize:13];
+    self.profileLabel.numberOfLines = 0;
+    self.profileLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    self.profileLabel.text = profile;
+    
+    [self.contentView addSubview:self.profileLabel];
+    
+    NSLayoutConstraint *top = [self.profileLabel.topAnchor constraintEqualToAnchor:self.contentView.topAnchor constant:8];
+    NSLayoutConstraint *centerX = [self.profileLabel.centerXAnchor constraintEqualToAnchor:self.contentView.centerXAnchor];
+    
+    [NSLayoutConstraint activateConstraints:@[top, centerX]];
+}
+
 - (void)configureDateLabel:(NSDate *)date ownership:(CMPMessageOwnership)ownership {
     self.dateLabel.textColor = ownership == CMPMessageOwnershipSelf ? UIColor.whiteColor : UIColor.blackColor;
     self.dateLabel.textAlignment = ownership == CMPMessageOwnershipSelf ? NSTextAlignmentRight : NSTextAlignmentLeft;
@@ -158,15 +178,48 @@
     
     [self.contentView addSubview:self.dateLabel];
     
-    NSLayoutConstraint *top = [self.dateLabel.topAnchor constraintEqualToAnchor:self.contentView.topAnchor constant:1];
+    NSLayoutConstraint *top = [self.dateLabel.topAnchor constraintEqualToAnchor:self.profileLabel.bottomAnchor constant:8];
     NSLayoutConstraint *side;
     if (ownership == CMPMessageOwnershipSelf) {
-        side = [self.dateLabel.trailingAnchor constraintEqualToAnchor:self.contentView.trailingAnchor constant:-14];
+        side = [self.dateLabel.trailingAnchor constraintEqualToAnchor:self.contentView.trailingAnchor constant:-22];
     } else {
-        side = [self.dateLabel.leadingAnchor constraintEqualToAnchor:self.contentView.leadingAnchor constant:14];
+        side = [self.dateLabel.leadingAnchor constraintEqualToAnchor:self.contentView.leadingAnchor constant:22];
     }
     
     [NSLayoutConstraint activateConstraints:@[top, side]];
+}
+
+- (void)configureStatusLabel:(CMPChatMessageDeliveryStatus)status ownership:(CMPMessageOwnership)ownership {
+    self.statusLabel.textColor = ownership == CMPMessageOwnershipSelf ? UIColor.whiteColor : UIColor.blackColor;
+    self.statusLabel.textAlignment = ownership == CMPMessageOwnershipSelf ? NSTextAlignmentRight : NSTextAlignmentLeft;
+    self.statusLabel.font = [UIFont systemFontOfSize:9];
+    self.statusLabel.numberOfLines = 0;
+    self.statusLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    switch (status) {
+        case CMPChatMessageDeliveryStatusDelivered:
+            self.statusLabel.text = @"delivered";
+            break;
+        case CMPChatMessageDeliveryStatusRead:
+            self.statusLabel.text = @"read";
+            break;
+        default:
+            self.statusLabel.text = @"";
+            break;
+    }
+    
+    [self.contentView addSubview:self.statusLabel];
+    
+    NSLayoutConstraint *top = [self.statusLabel.topAnchor constraintEqualToAnchor:((UIView *)self.partViews.lastObject).bottomAnchor];
+    NSLayoutConstraint *bottom = [self.statusLabel.bottomAnchor constraintEqualToAnchor:self.contentView.bottomAnchor constant:-8];
+    bottom.priority = 999;
+    NSLayoutConstraint *side;
+    if (ownership == CMPMessageOwnershipSelf) {
+        side = [self.statusLabel.trailingAnchor constraintEqualToAnchor:self.contentView.trailingAnchor constant:-22];
+    } else {
+        side = [self.statusLabel.leadingAnchor constraintEqualToAnchor:self.contentView.leadingAnchor constant:22];
+    }
+    
+    [NSLayoutConstraint activateConstraints:@[top, bottom, side]];
 }
 
 - (void)configurePartsView:(CMPChatMessage *)message ownership:(CMPMessageOwnership)ownership downloader:(CMPImageDownloader *)downloader {
@@ -175,9 +228,6 @@
     [self.contentView addSubview:partsView];
     
     NSLayoutConstraint *top = [partsView.topAnchor constraintEqualToAnchor:self.dateLabel.bottomAnchor constant:4];
-    NSLayoutConstraint *bottom = [partsView.bottomAnchor constraintEqualToAnchor:self.contentView.bottomAnchor constant:-8];
-    bottom.priority = 999;
-    
     NSLayoutConstraint *side;
     if (ownership == CMPMessageOwnershipSelf) {
         side = [partsView.trailingAnchor constraintEqualToAnchor:self.contentView.trailingAnchor constant:0];
@@ -185,13 +235,21 @@
         side = [partsView.leadingAnchor constraintEqualToAnchor:self.contentView.leadingAnchor constant:0];
     }
     
-    [NSLayoutConstraint activateConstraints:@[top, bottom, side]];
+    [NSLayoutConstraint activateConstraints:@[top, side]];
 }
 
-- (void)configureWithMessage:(CMPChatMessage *)message ownership:(CMPMessageOwnership)ownership downloader:(CMPImageDownloader *)downloader {
+- (void)configureWithMessage:(CMPChatMessage *)message profileID:(NSString *)profileID ownership:(CMPMessageOwnership)ownership downloader:(CMPImageDownloader *)downloader {
+    [self configureProfileLabel:message.context.from.id ownership:ownership];
     [self configureDateLabel:message.context.sentOn ownership:ownership];
     [self configurePartsView:message ownership:ownership downloader:downloader];
     
+    if ([profileID isEqualToString:message.context.from.id]) {
+        CMPChatMessageDeliveryStatus status = [[message.statusUpdates objectEnumerator] nextObject].messageStatus;
+        [self configureStatusLabel:status ownership:ownership];
+    } else {
+        [self configureStatusLabel:CMPChatMessageDeliveryStatusSent ownership:ownership];
+    }
+
     for (int i = 0; i < message.parts.count; i++) {
         if ([_partViews[i] isKindOfClass:CMPTextPartView.class]) {
             [_partViews[i] configureWithMessagePart:message.parts[i] ownership:ownership];

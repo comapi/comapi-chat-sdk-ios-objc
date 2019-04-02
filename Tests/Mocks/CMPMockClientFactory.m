@@ -20,21 +20,23 @@
 
 @interface CMPComapiClient ()
 
-- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)delegate apiConfiguration:(CMPAPIConfiguration *)configuration;
 - (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)delegate apiConfiguration:(CMPAPIConfiguration *)configuration requestPerformer:(id<CMPRequestPerforming>)requestPerformer;
 
 @end
 
 @implementation CMPMockClientFactory
 
-+ (CMPComapiChatClient *)instantiateChatClient:(id<CMPRequestPerforming>)requestPerformer authDelegate:(nonnull id<CMPAuthenticationDelegate>)authDelegate storeFactoryBuilder:(id<CMPStoreFactoryBuildable>)storeFactoryBuilder {
++ (void)instantiateChatClient:(id<CMPRequestPerforming>)requestPerformer authDelegate:(nonnull id<CMPAuthenticationDelegate>)authDelegate storeFactoryBuilder:(id<CMPStoreFactoryBuildable>)storeFactoryBuilder completion:(void (^)(CMPComapiChatClient * _Nullable, NSError * _Nullable))completion {
     CMPInternalConfig *internalConfig = [[CMPInternalConfig alloc] init];
     CMPAPIConfiguration *apiConfig = [[CMPAPIConfiguration alloc] initWithScheme:@"https" host:@"stage-api.comapi.com" port:443];
     CMPChatConfig *config = [[CMPChatConfig alloc] initWithApiSpaceID:[CMPTestMocks mockApiSpaceID] authenticationDelegate:authDelegate logLevel:CMPLogLevelError storeFactory:storeFactoryBuilder internalConfig:internalConfig storeConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType]];
-    CMPComapiClient *foundationMockClient = [[CMPComapiClient alloc] initWithApiSpaceID:[CMPTestMocks mockApiSpaceID] authenticationDelegate:authDelegate apiConfiguration:apiConfig requestPerformer:requestPerformer];
-    CMPComapiChatClient *mockChatClient = [[CMPComapiChatClient alloc] initWithClient:foundationMockClient chatConfig:config];
-    
-    return mockChatClient;
+    config.apiConfig = apiConfig;
+    CMPComapiClient *foundation = [[CMPComapiClient alloc] initWithApiSpaceID:[CMPTestMocks mockApiSpaceID] authenticationDelegate:authDelegate apiConfiguration:apiConfig requestPerformer:requestPerformer];
+    [CMPComapiChatClientFactory initialiseClient:foundation chatConfig:config completion:^(CMPComapiChatClient * _Nullable client) {
+        if (completion) {
+            completion(client, nil);
+        }
+    }];
 }
 
 @end

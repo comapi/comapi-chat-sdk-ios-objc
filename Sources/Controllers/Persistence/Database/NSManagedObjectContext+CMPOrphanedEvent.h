@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)upsertOrphanedEvents:(NSArray<CMPOrphanedEvent *> *)orphanedEvents completion:(void(^)(NSInteger, NSError * _Nullable))completion;
 
-- (void)deleteOrphanedEventsForIDs:(NSArray<NSNumber *> *)IDs completion:(void(^)(NSInteger, NSError * _Nullable))completion;
+- (void)deleteOrphanedEventsForIDs:(NSArray<NSString *> *)IDs completion:(void(^)(NSInteger, NSError * _Nullable))completion;
 
 @end
 

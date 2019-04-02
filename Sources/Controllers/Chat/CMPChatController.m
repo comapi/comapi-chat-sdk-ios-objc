@@ -204,37 +204,21 @@ NSInteger const kETagNotValid = 412;
 }
 
 - (void)handleMessage:(CMPChatMessage *)message completion:(void(^ _Nullable)(BOOL))completion {
-    NSString *sender = message.context.from.id;
-    
-    __block BOOL updateStoreSuccess = YES;
-    __block CMPChatResult *markDeliveredResult;
-    
-    dispatch_group_t group = dispatch_group_create();
-    
-    dispatch_group_enter(group);
-    [_persistenceController updateStoreWithNewMessage:message completion:^(CMPStoreResult<NSNumber *> * result) {
-        updateStoreSuccess = [result.object boolValue];
-        dispatch_group_leave(group);
+    [_persistenceController updateStoreWithNewMessage:message completion:^(CMPStoreResult<NSNumber *> * storeResult) {
+        NSString *sender = message.context.from.id;
+        if (sender != nil && ![sender isEqualToString:@""] && ![sender isEqualToString:[self getProfileID]]) {
+            NSArray<NSString *> *ids = [NSArray arrayWithObjects:message.id, nil];
+            [self markDelivered:message.context.conversationID messageIDs:ids completion:^(CMPChatResult * result) {
+                if (completion) {
+                    completion(result.isSuccessful);
+                }
+            }];
+        } else {
+            if (completion) {
+                completion(storeResult.error == nil);
+            }
+        }
     }];
-    
-    if (sender != nil && ![sender isEqualToString:@""] && ![sender isEqualToString:[self getProfileID]]) {
-        NSArray<NSString *> *ids = [NSArray arrayWithObjects:message.id, nil];
-        
-        dispatch_group_enter(group);
-        [self markDelivered:message.context.conversationID messageIDs:ids completion:^(CMPChatResult * result) {
-            markDeliveredResult = result;
-            dispatch_group_leave(group);
-        }];
-    }
-    
-    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
-        if (markDeliveredResult.error) {
-            logWithLevel(CMPLogLevelError, [NSString stringWithFormat:@"Chat controller: error handling message - %@", markDeliveredResult.error], nil);
-        }
-        if (completion) {
-            completion(updateStoreSuccess && markDeliveredResult != nil ? markDeliveredResult.isSuccessful : YES);
-        }
-    });
 }
 
 - (void)getPreviousMessages:(NSString *)ID completion:(void(^)(CMPChatResult *))completion {
@@ -300,7 +284,7 @@ NSInteger const kETagNotValid = 412;
     __weak typeof(self) weakSelf = self;
     [CMPRetryManager retryBlock:^(void (^successBlock)(BOOL)) {
         [[weakSelf withClient].services.messaging updateStatusForMessagesWithIDs:IDs status:CMPMessageDeliveryStatusDelivered conversationID:ID timestamp:[NSDate date] completion:^(CMPResult<NSNumber *> * result) {
-            BOOL success = !result.error && result.object.boolValue ;
+            BOOL success = !result.error && result.object.boolValue;
             successBlock(success);
             if (success && completion) {
                 completion([[CMPChatResult alloc] initWithComapiResult:result]);

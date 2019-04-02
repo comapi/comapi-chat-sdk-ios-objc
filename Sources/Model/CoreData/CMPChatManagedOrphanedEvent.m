@@ -42,14 +42,14 @@
 }
 
 - (void)populateWithOrphanedEvent:(CMPOrphanedEvent *)event {
-    self.id = event.id;
-    self.messageID = event.data.payload.messageID;
-    self.profileID = event.data.profileID != nil ? event.data.profileID : event.data.payload.profileID;
-    self.conversationID = event.data.payload.conversationID;
-    self.eventID = event.data.eventID;
-    self.name = event.data.name;
-    self.isPublicConversation = event.data.payload.isPublicConversation;
-    self.timestamp = event.data.payload.timestamp;
+    [self setValue:event.id forKey:@"id"];
+    [self setValue:event.data.payload.messageID forKey:@"messageID"];
+    [self setValue:event.data.profileID != nil ? event.data.profileID : event.data.payload.profileID forKey:@"profileID"];
+    [self setValue:event.data.payload.conversationID forKey:@"conversationID"];
+    [self setValue:event.data.eventID forKey:@"eventID"];
+    [self setValue:event.data.name forKey:@"name"];
+    [self setValue:event.data.payload.isPublicConversation forKey:@"isPublicConversation"];
+    [self setValue:event.data.payload.timestamp forKey:@"timestamp"];
 }
 
 - (void)setType:(CMPChatMessageDeliveryStatus)type {

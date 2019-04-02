@@ -17,6 +17,7 @@
 //
 
 #import "CMPComapiChatClient.h"
+#import "CMPFactory.h"
 
 #import <UIKit/UIKit.h>
 #import <UserNotifications/UserNotifications.h>
@@ -27,6 +28,7 @@ extern NSString * const kCMPPushRegistrationStatusChangedNotification;
 
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic, nullable) CMPComapiChatClient *client;
+@property (strong, nonatomic, nullable) CMPFactory *factory;
 
 @end
 

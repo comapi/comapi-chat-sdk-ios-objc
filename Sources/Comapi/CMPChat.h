@@ -16,6 +16,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+#import "CMPComapiChatClientFactory.h"
 #import "CMPComapiChatClient.h"
 #import "CMPChatConfig.h"
 
@@ -27,8 +28,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (class, nonatomic, strong, nullable, readonly) CMPComapiChatClient *shared;
 
-+ (CMPComapiChatClient *)initialiseWithConfig:(CMPChatConfig *)chatConfig;
-+ (CMPComapiChatClient *)initialiseSharedWithConfig:(CMPChatConfig *)chatConfig;
++ (void)initialiseWithConfig:(CMPChatConfig *)chatConfig completion:(void (^ _Nullable)(CMPComapiChatClient * _Nullable))completion;
++ (void)initialiseSharedWithConfig:(CMPChatConfig *)chatConfig completion:(void (^ _Nullable)(CMPComapiChatClient * _Nullable))completion;
 
 @end
 

@@ -22,6 +22,7 @@
 #import "CMPMockRequestPerformer.h"
 #import "CMPMockStoreFactoryBuilder.h"
 #import "CMPEventsController.h"
+#import "CMPComapiChatClientFactory.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -33,7 +34,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPMockClientFactory : NSObject
 
-+ (CMPComapiChatClient *)instantiateChatClient:(id<CMPRequestPerforming>)requestPerformer authDelegate:(id<CMPAuthenticationDelegate>)authDelegate storeFactoryBuilder:(id<CMPStoreFactoryBuildable>)storeFactoryBuilder;
++ (void)instantiateChatClient:(id<CMPRequestPerforming>)requestPerformer authDelegate:(nonnull id<CMPAuthenticationDelegate>)authDelegate storeFactoryBuilder:(id<CMPStoreFactoryBuildable>)storeFactoryBuilder completion:(void (^)(CMPComapiChatClient * _Nullable, NSError * _Nullable))completion;
+
 
 @end
 

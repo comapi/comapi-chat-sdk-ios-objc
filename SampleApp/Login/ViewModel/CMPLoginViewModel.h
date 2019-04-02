@@ -29,6 +29,9 @@
 @interface CMPLoginViewModel : NSObject <CMPAuthenticationDelegate>
 
 @property (nonatomic, strong) CMPLoginBundle *loginBundle;
+@property (nonatomic, strong) CMPFactory *factory;
+
+- (instancetype)initWithFactory:(CMPFactory *)factory;
 
 - (void)login:(void(^)(CMPComapiChatClient * _Nullable, CMPStore * _Nullable, NSError * _Nullable))completion;
 - (void)getProfile:(CMPComapiChatClient *)client completion:(void (^)(CMPProfile * _Nullable, NSError * _Nullable))completion;

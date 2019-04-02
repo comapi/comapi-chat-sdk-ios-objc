@@ -16,6 +16,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+
 #import "MessageContext.h"
 #import "MessagePart.h"
 
@@ -23,6 +24,8 @@
 #import "CMPChatMessageStatus.h"
 
 #import <CoreData/CoreData.h>
+
+@class MessageStatus;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -32,8 +35,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSNumber *sentEventID;
 @property (nonatomic, strong, nullable) MessageContext *context;
 @property (nonatomic, strong, nullable) NSOrderedSet<MessagePart *> *parts;
+@property (nonatomic, strong, nullable) NSOrderedSet<MessageStatus *> *statusUpdates;
 @property (nonatomic, strong, nullable) NSDictionary<NSString *, id> *metadata;
-@property (nonatomic, strong, nullable) NSDictionary<NSString *, CMPChatMessageStatus *> *statusUpdates;
 
 - (CMPChatMessage *)chatMessage;
 

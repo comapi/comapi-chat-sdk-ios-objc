@@ -18,6 +18,7 @@
 
 #import "AppDelegate.h"
 #import "CMPLoginViewController.h"
+#import "CMPChatViewController.h"
 
 NSString * const kCMPPushRegistrationStatusChangedNotification = @"CMPPushRegistrationStatusChangedNotification";
 
@@ -28,7 +29,9 @@ NSString * const kCMPPushRegistrationStatusChangedNotification = @"CMPPushRegist
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    CMPLoginViewModel *vm = [[CMPLoginViewModel alloc] init];
+    [UNUserNotificationCenter currentNotificationCenter].delegate = self;
+    _factory = [[CMPFactory alloc] init];
+    CMPLoginViewModel *vm = [[CMPLoginViewModel alloc] initWithFactory:_factory];
     CMPLoginViewController *vc = [[CMPLoginViewController alloc] initWithViewModel:vm];
     
     _window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
@@ -70,6 +73,19 @@ NSString * const kCMPPushRegistrationStatusChangedNotification = @"CMPPushRegist
 }
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler {
+    if ([_client sessionSuccessfullyCreated]) {
+        NSString *conversationID = response.notification.request.content.userInfo[@"conversationId"];
+        UINavigationController *nav = (UINavigationController *)_window.rootViewController;
+        UIViewController *topVC = nav.topViewController;
+        if ([nav.topViewController isKindOfClass:CMPChatViewController.class]) {
+            [(CMPChatViewController *)topVC reload:YES];
+        } else {
+            CMPChatConversation *conversation = [_factory.store getConversation:conversationID];
+            CMPChatViewModel *vm = [[CMPChatViewModel alloc] initWithClient:_client store:_factory.store conversation:conversation];
+            CMPChatViewController *vc = [[CMPChatViewController alloc] initWithViewModel:vm];
+            [nav pushViewController:vc animated:YES];
+        }
+    }
     
     completionHandler();
 }
@@ -80,11 +96,11 @@ NSString * const kCMPPushRegistrationStatusChangedNotification = @"CMPPushRegist
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    //[_client applicationDidEnterBackground:application];
+    [_client applicationDidEnterBackground:application];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    //[_client applicationWillEnterForeground:application];
+    [_client applicationWillEnterForeground:application];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {

@@ -17,6 +17,7 @@
 //
 
 #import "Message.h"
+#import "MessageStatus.h"
 
 @implementation Message
 
@@ -33,7 +34,11 @@
     chatMessage.id = self.id;
     chatMessage.metadata = self.metadata;
     chatMessage.sentEventID = self.sentEventID;
-    chatMessage.statusUpdates = self.statusUpdates;
+    NSMutableDictionary<NSString *, CMPChatMessageStatus *> *statusUpdates = [NSMutableDictionary new];
+    for (MessageStatus *ms in self.statusUpdates) {
+        [statusUpdates setObject:[ms chatMessageStatus] forKey:ms.profileID];
+    }
+    chatMessage.statusUpdates = statusUpdates;
     chatMessage.context = [self.context chatMessageContext];
     NSMutableArray<CMPChatMessagePart *> *partsArray = [NSMutableArray new];
     for (MessagePart *part in self.parts) {
@@ -48,7 +53,13 @@
     self.id = chatMessage.id;
     self.metadata = chatMessage.metadata;
     self.sentEventID = chatMessage.sentEventID;
-    self.metadata = chatMessage.metadata;
+    NSMutableArray<MessageStatus *> *statusArray = [NSMutableArray new];
+    [chatMessage.statusUpdates enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, CMPChatMessageStatus * _Nonnull obj, BOOL * _Nonnull stop) {
+        MessageStatus *ms = [[MessageStatus alloc] initWithContext:self.managedObjectContext];
+        [ms update:obj];
+        [statusArray addObject:ms];
+    }];
+    self.statusUpdates = [NSOrderedSet orderedSetWithArray:statusArray];
     if (self.context == nil) {
         self.context = [[MessageContext alloc] initWithContext:self.managedObjectContext];
     }

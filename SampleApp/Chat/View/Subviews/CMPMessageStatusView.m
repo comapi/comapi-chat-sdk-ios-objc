@@ -16,23 +16,9 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <CMPComapiFoundation/CMPMessageDeliveryStatus.h>
+#import "CMPMessageStatusView.h"
 
-NS_ASSUME_NONNULL_BEGIN
+@implementation CMPMessageStatusView
 
-typedef NS_ENUM(NSInteger, CMPChatMessageDeliveryStatus) {
-    CMPChatMessageDeliveryStatusSending,
-    CMPChatMessageDeliveryStatusSent,
-    CMPChatMessageDeliveryStatusDelivered,
-    CMPChatMessageDeliveryStatusRead,
-    CMPChatMessageDeliveryStatusError,
-    CMPChatMessageDeliveryStatusUnknown
-} NS_SWIFT_NAME(ChatMessageDeliveryStatus);
-
-@interface CMPChatMessageDeliveryStatusParser : NSObject
-
-+ (CMPChatMessageDeliveryStatus)parseStatus:(CMPMessageDeliveryStatus)status;
 
 @end
-
-NS_ASSUME_NONNULL_END

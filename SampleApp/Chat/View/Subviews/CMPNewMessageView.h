@@ -16,23 +16,22 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <CMPComapiFoundation/CMPMessageDeliveryStatus.h>
+#import "CMPBaseView.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NS_ENUM(NSInteger, CMPChatMessageDeliveryStatus) {
-    CMPChatMessageDeliveryStatusSending,
-    CMPChatMessageDeliveryStatusSent,
-    CMPChatMessageDeliveryStatusDelivered,
-    CMPChatMessageDeliveryStatusRead,
-    CMPChatMessageDeliveryStatusError,
-    CMPChatMessageDeliveryStatusUnknown
-} NS_SWIFT_NAME(ChatMessageDeliveryStatus);
+@interface CMPNewMessageView : CMPBaseView <CMPViewConfiguring>
 
-@interface CMPChatMessageDeliveryStatusParser : NSObject
+@property (nonatomic, strong) UIView *bubbleView;
+@property (nonatomic, strong) UIButton *textButton;
 
-+ (CMPChatMessageDeliveryStatus)parseStatus:(CMPMessageDeliveryStatus)status;
+@property (nonatomic, copy) void(^didTapView)(void);
 
+@property (nonatomic, readonly) BOOL isVisible;
+
+- (void)configureWithText:(NSString *)text;
+- (void)showWithCompletion:(void (^)(void))completion;
+- (void)hideWithCompletion:(void (^)(void))completion;
 @end
 
 NS_ASSUME_NONNULL_END

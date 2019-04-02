@@ -16,22 +16,13 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <CMPComapiFoundation/CMPMessageDeliveryStatus.h>
+#import "CMPComapiChatClient.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NS_ENUM(NSInteger, CMPChatMessageDeliveryStatus) {
-    CMPChatMessageDeliveryStatusSending,
-    CMPChatMessageDeliveryStatusSent,
-    CMPChatMessageDeliveryStatusDelivered,
-    CMPChatMessageDeliveryStatusRead,
-    CMPChatMessageDeliveryStatusError,
-    CMPChatMessageDeliveryStatusUnknown
-} NS_SWIFT_NAME(ChatMessageDeliveryStatus);
+@interface CMPComapiChatClientFactory : NSObject
 
-@interface CMPChatMessageDeliveryStatusParser : NSObject
-
-+ (CMPChatMessageDeliveryStatus)parseStatus:(CMPMessageDeliveryStatus)status;
++ (void)initialiseClient:(CMPComapiClient *)client chatConfig:(CMPChatConfig *)chatConfig completion:(void(^ _Nullable)(CMPComapiChatClient * _Nullable))completion;
 
 @end
 

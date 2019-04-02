@@ -47,314 +47,334 @@
 }
 
 - (void)testUpsert {
-    
-    _coreDataManager = [[CMPCoreDataManager alloc] initWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType] completion:^(NSError * _Nullable err) {
-        if (err) {
-            XCTFail();
-        }
-    }];
-    _persistenceController = [[CMPPersistenceController alloc] initWithFactory:_builder adapter:_adapter coreDataManager:_coreDataManager];
-        
     XCTestExpectation *expectation1 = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     XCTestExpectation *expectation2 = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     
-    NSMutableArray<CMPChatConversation *> *conversations = [NSMutableArray array];
-    
-    NSDate *date = [NSDate dateWithTimeIntervalSince1970:0];
-    
-    CMPChatRoles *roles = [[CMPChatRoles alloc] initWithOwnerAttributes:[[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES] participantAttributes:[[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES]];
-    
-    CMPChatConversation *c1 = [[CMPChatConversation alloc] initWithID:@"a" firstLocalEventID:[[NSNumber alloc] initWithInt:1] lastLocalEventID:[[NSNumber alloc] initWithInt:2] latestRemoteEventID:[[NSNumber alloc] initWithInt:3] eTag:@"tagA" updatedOn:date name:@"nameA" conversationDescription:@"descA" roles:roles isPublic:[[NSNumber alloc] initWithInt:4]];
-    CMPChatConversation *c2 = [[CMPChatConversation alloc] initWithID:@"b" firstLocalEventID:[[NSNumber alloc] initWithInt:11] lastLocalEventID:[[NSNumber alloc] initWithInt:12] latestRemoteEventID:[[NSNumber alloc] initWithInt:13] eTag:@"tagB" updatedOn:date name:@"nameB" conversationDescription:@"descB" roles:roles isPublic:[[NSNumber alloc] initWithInt:14]];
-    
-    [conversations addObject:c1];
-    [conversations addObject:c2];
-    
-    [_persistenceController upsertConversations:conversations completion:^(CMPStoreResult<NSNumber *> *storeResult) {
-        XCTAssertTrue(storeResult.object.boolValue);
-        [expectation1 fulfill];
-    }];
-    
-    [_persistenceController getAllConversations:^(CMPStoreResult<NSArray<CMPChatConversation *> *> *conversations) {
-        
-        XCTAssertTrue([@"a" caseInsensitiveCompare:conversations.object[0].id] == NSOrderedSame);
-        XCTAssertTrue([@"tagA" caseInsensitiveCompare:conversations.object[0].eTag] == NSOrderedSame);
-        XCTAssertTrue([@"nameA" caseInsensitiveCompare:conversations.object[0].name] == NSOrderedSame);
-        XCTAssertTrue([@"descA" caseInsensitiveCompare:conversations.object[0].conversationDescription] == NSOrderedSame);
-        
-        // -1 because no local conversation was saved in the store before with this id
-        XCTAssertEqual(-1, [conversations.object[0].firstLocalEventID integerValue]);
-        XCTAssertEqual(-1, [conversations.object[0].lastLocalEventID integerValue]);
-        
-        XCTAssertEqual(3, [conversations.object[0].latestRemoteEventID integerValue]);
-        XCTAssertEqual(4, [conversations.object[0].isPublic integerValue]);
-        XCTAssertNotNil(conversations.object[0].roles);
-        
-        XCTAssertTrue([@"b" caseInsensitiveCompare:conversations.object[1].id] == NSOrderedSame);
-        XCTAssertTrue([@"tagB" caseInsensitiveCompare:conversations.object[1].eTag] == NSOrderedSame);
-        XCTAssertTrue([@"nameB" caseInsensitiveCompare:conversations.object[1].name] == NSOrderedSame);
-        XCTAssertTrue([@"descB" caseInsensitiveCompare:conversations.object[1].conversationDescription] == NSOrderedSame);
-        
-        // -1 because no local conversation was saved in the store before with this id
-        XCTAssertEqual(-1, [conversations.object[0].firstLocalEventID integerValue]);
-        XCTAssertEqual(-1, [conversations.object[0].lastLocalEventID integerValue]);
-        
-        XCTAssertEqual(13, [conversations.object[1].latestRemoteEventID integerValue]);
-        XCTAssertEqual(14, [conversations.object[1].isPublic integerValue]);
-        XCTAssertNotNil(conversations.object[1].roles);
-        
-        [expectation2 fulfill];
+    __weak typeof(self) weakSelf = self;
+    [CMPCoreDataManager initialiseStackWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType] completion:^(id<CMPCoreDataManagable> _Nullable store, NSError * _Nullable err) {
+        if (err) {
+            XCTFail();
+        }
+        [CMPPersistenceController initialiseWithFactory:weakSelf.builder adapter:weakSelf.adapter coreDataManager:store completion:^(CMPPersistenceController * _Nullable persistenceController, NSError * _Nullable error) {
+            weakSelf.persistenceController = persistenceController;
+            NSMutableArray<CMPChatConversation *> *conversations = [NSMutableArray array];
+            
+            NSDate *date = [NSDate dateWithTimeIntervalSince1970:0];
+            
+            CMPChatRoles *roles = [[CMPChatRoles alloc] initWithOwnerAttributes:[[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES] participantAttributes:[[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES]];
+            
+            CMPChatConversation *c1 = [[CMPChatConversation alloc] initWithID:@"a" firstLocalEventID:[[NSNumber alloc] initWithInt:1] lastLocalEventID:[[NSNumber alloc] initWithInt:2] latestRemoteEventID:[[NSNumber alloc] initWithInt:3] eTag:@"tagA" updatedOn:date name:@"nameA" conversationDescription:@"descA" roles:roles isPublic:[[NSNumber alloc] initWithInt:4]];
+            CMPChatConversation *c2 = [[CMPChatConversation alloc] initWithID:@"b" firstLocalEventID:[[NSNumber alloc] initWithInt:11] lastLocalEventID:[[NSNumber alloc] initWithInt:12] latestRemoteEventID:[[NSNumber alloc] initWithInt:13] eTag:@"tagB" updatedOn:date name:@"nameB" conversationDescription:@"descB" roles:roles isPublic:[[NSNumber alloc] initWithInt:14]];
+            
+            [conversations addObject:c1];
+            [conversations addObject:c2];
+            
+            [weakSelf.persistenceController upsertConversations:conversations completion:^(CMPStoreResult<NSNumber *> *storeResult) {
+                XCTAssertTrue(storeResult.object.boolValue);
+                [expectation1 fulfill];
+            }];
+            
+            [weakSelf.persistenceController getAllConversations:^(CMPStoreResult<NSArray<CMPChatConversation *> *> *conversations) {
+                
+                XCTAssertTrue([@"a" caseInsensitiveCompare:conversations.object[0].id] == NSOrderedSame);
+                XCTAssertTrue([@"tagA" caseInsensitiveCompare:conversations.object[0].eTag] == NSOrderedSame);
+                XCTAssertTrue([@"nameA" caseInsensitiveCompare:conversations.object[0].name] == NSOrderedSame);
+                XCTAssertTrue([@"descA" caseInsensitiveCompare:conversations.object[0].conversationDescription] == NSOrderedSame);
+                
+                // -1 because no local conversation was saved in the store before with this id
+                XCTAssertEqual(-1, [conversations.object[0].firstLocalEventID integerValue]);
+                XCTAssertEqual(-1, [conversations.object[0].lastLocalEventID integerValue]);
+                
+                XCTAssertEqual(3, [conversations.object[0].latestRemoteEventID integerValue]);
+                XCTAssertEqual(4, [conversations.object[0].isPublic integerValue]);
+                XCTAssertNotNil(conversations.object[0].roles);
+                
+                XCTAssertTrue([@"b" caseInsensitiveCompare:conversations.object[1].id] == NSOrderedSame);
+                XCTAssertTrue([@"tagB" caseInsensitiveCompare:conversations.object[1].eTag] == NSOrderedSame);
+                XCTAssertTrue([@"nameB" caseInsensitiveCompare:conversations.object[1].name] == NSOrderedSame);
+                XCTAssertTrue([@"descB" caseInsensitiveCompare:conversations.object[1].conversationDescription] == NSOrderedSame);
+                
+                // -1 because no local conversation was saved in the store before with this id
+                XCTAssertEqual(-1, [conversations.object[0].firstLocalEventID integerValue]);
+                XCTAssertEqual(-1, [conversations.object[0].lastLocalEventID integerValue]);
+                
+                XCTAssertEqual(13, [conversations.object[1].latestRemoteEventID integerValue]);
+                XCTAssertEqual(14, [conversations.object[1].isPublic integerValue]);
+                XCTAssertNotNil(conversations.object[1].roles);
+                
+                [expectation2 fulfill];
+            }];
+            
+        }];
     }];
     
     [self waitForExpectations:@[expectation1, expectation2] timeout:10.0];
 }
 
 - (void)testUpdate {
+    XCTestExpectation *expectation3 = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
+    XCTestExpectation *expectation4 = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     
-    _coreDataManager = [[CMPCoreDataManager alloc] initWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType] completion:^(NSError * _Nullable err) {
+    __weak typeof(self) weakSelf = self;
+    [CMPCoreDataManager initialiseStackWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType] completion:^(id<CMPCoreDataManagable> _Nullable store, NSError * _Nullable err) {
         if (err) {
             XCTFail();
         }
+        [CMPPersistenceController initialiseWithFactory:weakSelf.builder adapter:weakSelf.adapter coreDataManager:store completion:^(CMPPersistenceController * _Nullable persistenceController, NSError * _Nullable error) {
+            weakSelf.persistenceController = persistenceController;
+            if (err) {
+                XCTFail();
+            }
+            CMPChatRoles *roles = [[CMPChatRoles alloc] initWithOwnerAttributes:[[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES] participantAttributes:[[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES]];
+            NSDate *date = [NSDate dateWithTimeIntervalSince1970:0];
+            CMPChatConversation *c1 = [[CMPChatConversation alloc] initWithID:@"a" firstLocalEventID:[[NSNumber alloc] initWithInt:1] lastLocalEventID:[[NSNumber alloc] initWithInt:2] latestRemoteEventID:[[NSNumber alloc] initWithInt:3] eTag:@"tagA" updatedOn:date name:@"nameA" conversationDescription:@"descA" roles:roles isPublic:[[NSNumber alloc] initWithInt:4]];
+            
+            [weakSelf.chatStore upsertConversation:c1];
+            
+            CMPChatConversation *c1a = [[CMPChatConversation alloc] initWithID:@"a" firstLocalEventID:[[NSNumber alloc] initWithInt:2] lastLocalEventID:[[NSNumber alloc] initWithInt:3] latestRemoteEventID:[[NSNumber alloc] initWithInt:4] eTag:@"tagA2" updatedOn:date name:@"nameA2" conversationDescription:@"descA2" roles:roles isPublic:[[NSNumber alloc] initWithInt:5]];
+
+            NSMutableArray<CMPChatConversation *> *conversations2 = [NSMutableArray arrayWithObjects:c1a, nil];
+            [conversations2 addObject:c1a];
+            [weakSelf.persistenceController updateConversations:conversations2 completion:^(CMPStoreResult<NSNumber *> *storeResult) {
+                XCTAssertTrue(storeResult.object.boolValue);
+                [expectation3 fulfill];
+            }];
+            [weakSelf.persistenceController getAllConversations:^(CMPStoreResult<NSArray<CMPChatConversation *> *> *conversations) {
+                
+                XCTAssertTrue([@"a" caseInsensitiveCompare:conversations.object[0].id] == NSOrderedSame);
+                XCTAssertTrue([@"tagA2" caseInsensitiveCompare:conversations.object[0].eTag] == NSOrderedSame);
+                XCTAssertTrue([@"nameA2" caseInsensitiveCompare:conversations.object[0].name] == NSOrderedSame);
+                XCTAssertTrue([@"descA2" caseInsensitiveCompare:conversations.object[0].conversationDescription] == NSOrderedSame);
+                
+                XCTAssertEqual(1, [conversations.object[0].firstLocalEventID integerValue]);
+                XCTAssertEqual(2, [conversations.object[0].lastLocalEventID integerValue]);
+                
+                XCTAssertEqual(4, [conversations.object[0].latestRemoteEventID integerValue]);
+                XCTAssertEqual(5, [conversations.object[0].isPublic integerValue]);
+                XCTAssertNotNil(conversations.object[0].roles);
+                
+                [expectation4 fulfill];
+            }];
+        }];
     }];
-    _persistenceController = [[CMPPersistenceController alloc] initWithFactory:_builder adapter:_adapter coreDataManager:_coreDataManager];
     
-    CMPChatRoles *roles = [[CMPChatRoles alloc] initWithOwnerAttributes:[[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES] participantAttributes:[[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES]];
-    NSDate *date = [NSDate dateWithTimeIntervalSince1970:0];
-    CMPChatConversation *c1 = [[CMPChatConversation alloc] initWithID:@"a" firstLocalEventID:[[NSNumber alloc] initWithInt:1] lastLocalEventID:[[NSNumber alloc] initWithInt:2] latestRemoteEventID:[[NSNumber alloc] initWithInt:3] eTag:@"tagA" updatedOn:date name:@"nameA" conversationDescription:@"descA" roles:roles isPublic:[[NSNumber alloc] initWithInt:4]];
-    
-    [_chatStore upsertConversation:c1];
-    
-    CMPChatConversation *c1a = [[CMPChatConversation alloc] initWithID:@"a" firstLocalEventID:[[NSNumber alloc] initWithInt:2] lastLocalEventID:[[NSNumber alloc] initWithInt:3] latestRemoteEventID:[[NSNumber alloc] initWithInt:4] eTag:@"tagA2" updatedOn:date name:@"nameA2" conversationDescription:@"descA2" roles:roles isPublic:[[NSNumber alloc] initWithInt:5]];
-    XCTestExpectation *expectation3 = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
-    XCTestExpectation *expectation4 = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
-    NSMutableArray<CMPChatConversation *> *conversations2 = [NSMutableArray arrayWithObjects:c1a, nil];
-    [conversations2 addObject:c1a];
-    [_persistenceController updateConversations:conversations2 completion:^(CMPStoreResult<NSNumber *> *storeResult) {
-        XCTAssertTrue(storeResult.object.boolValue);
-        [expectation3 fulfill];
-    }];
-    [_persistenceController getAllConversations:^(CMPStoreResult<NSArray<CMPChatConversation *> *> *conversations) {
-        
-        XCTAssertTrue([@"a" caseInsensitiveCompare:conversations.object[0].id] == NSOrderedSame);
-        XCTAssertTrue([@"tagA2" caseInsensitiveCompare:conversations.object[0].eTag] == NSOrderedSame);
-        XCTAssertTrue([@"nameA2" caseInsensitiveCompare:conversations.object[0].name] == NSOrderedSame);
-        XCTAssertTrue([@"descA2" caseInsensitiveCompare:conversations.object[0].conversationDescription] == NSOrderedSame);
-        
-        XCTAssertEqual(1, [conversations.object[0].firstLocalEventID integerValue]);
-        XCTAssertEqual(2, [conversations.object[0].lastLocalEventID integerValue]);
-        
-        XCTAssertEqual(4, [conversations.object[0].latestRemoteEventID integerValue]);
-        XCTAssertEqual(5, [conversations.object[0].isPublic integerValue]);
-        XCTAssertNotNil(conversations.object[0].roles);
-        
-        [expectation4 fulfill];
-    }];
     [self waitForExpectations:@[expectation3, expectation4] timeout:10.0];
 }
 
 -(void)testDelete {
-    
-    _coreDataManager = [[CMPCoreDataManager alloc] initWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType] completion:^(NSError * _Nullable err) {
-        if (err) {
-            XCTFail();
-        }
-    }];
-    _persistenceController = [[CMPPersistenceController alloc] initWithFactory:_builder adapter:_adapter coreDataManager:_coreDataManager];
-    
-    CMPChatConversation *c1 = [[CMPChatConversation alloc] initWithID:@"a" firstLocalEventID:[[NSNumber alloc] initWithInt:1] lastLocalEventID:[[NSNumber alloc] initWithInt:2] latestRemoteEventID:[[NSNumber alloc] initWithInt:3] eTag:@"tagA" updatedOn:nil name:@"nameA" conversationDescription:@"descA" roles:nil isPublic:[[NSNumber alloc] initWithInt:4]];
-    CMPChatConversation *c2 = [[CMPChatConversation alloc] initWithID:@"b" firstLocalEventID:[[NSNumber alloc] initWithInt:11] lastLocalEventID:[[NSNumber alloc] initWithInt:12] latestRemoteEventID:[[NSNumber alloc] initWithInt:13] eTag:@"tagB" updatedOn:nil name:@"nameB" conversationDescription:@"descB" roles:nil isPublic:[[NSNumber alloc] initWithInt:14]];
-    
-    [_chatStore upsertConversation:c1];
-    [_chatStore upsertConversation:c2];
-    
-    XCTAssertNotNil([_chatStore getConversation:@"a"]);
-    
-    XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
-
-    [_persistenceController deleteConversation:@"a" completion:^(CMPStoreResult<NSNumber *> *result) {
-        XCTAssertNotNil(result.object);
-        [expectation fulfill];
-    }];
-    [self waitForExpectations:@[expectation] timeout:10.0];
-    XCTAssertNil([_chatStore getConversation:@"a"]);
-}
-
--(void)testDeleteAll {
-    
-    _coreDataManager = [[CMPCoreDataManager alloc] initWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType] completion:^(NSError * _Nullable err) {
-        if (err) {
-            XCTFail();
-        }
-    }];
-    _persistenceController = [[CMPPersistenceController alloc] initWithFactory:_builder adapter:_adapter coreDataManager:_coreDataManager];
-    
-    CMPChatConversation *c1 = [[CMPChatConversation alloc] initWithID:@"a" firstLocalEventID:[[NSNumber alloc] initWithInt:1] lastLocalEventID:[[NSNumber alloc] initWithInt:2] latestRemoteEventID:[[NSNumber alloc] initWithInt:3] eTag:@"tagA" updatedOn:nil name:@"nameA" conversationDescription:@"descA" roles:nil isPublic:[[NSNumber alloc] initWithInt:4]];
-    CMPChatConversation *c2 = [[CMPChatConversation alloc] initWithID:@"b" firstLocalEventID:[[NSNumber alloc] initWithInt:11] lastLocalEventID:[[NSNumber alloc] initWithInt:12] latestRemoteEventID:[[NSNumber alloc] initWithInt:13] eTag:@"tagB" updatedOn:nil name:@"nameB" conversationDescription:@"descB" roles:nil isPublic:[[NSNumber alloc] initWithInt:14]];
-    
-    [_chatStore upsertConversation:c1];
-    [_chatStore upsertConversation:c2];
-    
-    NSArray<CMPChatConversation *> *conversations = [NSArray arrayWithObjects:c1, c2, nil];
-    
-    XCTAssertNotNil([_chatStore getConversation:@"a"]);
-    XCTAssertNotNil([_chatStore getConversation:@"b"]);
-    
-    XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
-    
-    [_persistenceController deleteConversations:conversations completion:^(CMPStoreResult<NSNumber *> *result) {
-        XCTAssertNotNil(result.object);
-        [expectation fulfill];
-    }];
-    [self waitForExpectations:@[expectation] timeout:10.0];
-    XCTAssertNil([_chatStore getConversation:@"a"]);
-    XCTAssertNil([_chatStore getConversation:@"b"]);
-}
-
--(void)testProcessMessagesResult {
-    
-    _coreDataManager = [[CMPCoreDataManager alloc] initWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType] completion:^(NSError * _Nullable err) {
-        if (err) {
-            XCTFail();
-        }
-    }];
-    _persistenceController = [[CMPPersistenceController alloc] initWithFactory:_builder adapter:_adapter coreDataManager:_coreDataManager];
-    
-    // saved conversation
-    CMPChatRoles *roles = [[CMPChatRoles alloc] initWithOwnerAttributes:[[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES] participantAttributes:[[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES]];
-    [_chatStore upsertConversation:[[CMPChatConversation alloc] initWithID:@"cId" firstLocalEventID:@1 lastLocalEventID:@2 latestRemoteEventID:@3 eTag:@"eTag" updatedOn:[NSDate dateWithTimeIntervalSince1970:0] name:@"name" conversationDescription:@"desc" roles:roles isPublic:[[NSNumber alloc] initWithInt:1]]];
-    
-    NSDictionary<NSString *,id> *metadata = [[NSDictionary alloc] initWithObjectsAndKeys:@"key", @"value", nil];
-    CMPMessageParticipant *p = [[CMPMessageParticipant alloc] initWithID:@"pId" name:@"pName"];
-    CMPMessageContext *context = [[CMPMessageContext alloc] initWithConversationID:@"cId" from:p sentBy:@"sender" sentOn:[NSDate dateWithTimeIntervalSince1970:1]];
-    
-    CMPMessagePart *part = [[CMPMessagePart alloc] initWithName:@"name" type:@"type" url:nil data:@"data" size:[[NSNumber alloc] initWithInt:1]];
-    NSArray<CMPMessagePart *> *parts = [[NSArray alloc] initWithObjects:part, nil];
-    
-    CMPMessageStatus *status = [[CMPMessageStatus alloc] initWithStatus:CMPMessageDeliveryStatusRead timestamp:[NSDate dateWithTimeIntervalSince1970:1]];
-    NSDictionary<NSString *, CMPMessageStatus *> *statuses = [[NSDictionary alloc] initWithObjectsAndKeys:status, @"pId", nil];
-    
-    CMPMessage *msg = [[CMPMessage alloc] initWithID:@"id" sentEventID:@"4" metadata:metadata context:context parts:parts statusUpdates:statuses];
-    NSArray<CMPMessage *> *messages = [[NSArray alloc] initWithObjects:msg, nil];
-    
-    CMPOrphanedEventPayload *payload = [[CMPOrphanedEventPayload alloc] initWithProfileID:@"pId" messageID:@"mId" conversationID:@"cId" isPublicConversation:[[NSNumber alloc] initWithInt:1] timestamp:[NSDate dateWithTimeIntervalSince1970:1]];
-    CMPOrphanedEventData *data = [[CMPOrphanedEventData alloc] initWithName:@"name" eventID:@"id" profileID:@"pId" payload:payload];
-    CMPOrphanedEvent *e = [[CMPOrphanedEvent alloc] initWithID:@(1) data:data];
-    NSArray<CMPOrphanedEvent *> *events = [[NSArray alloc] initWithObjects:e, nil];
-    
-    CMPGetMessagesResult *result = [[CMPGetMessagesResult alloc] initWithLatestEventID:[[NSNumber alloc] initWithInt:4] earliestEventID:[[NSNumber alloc] initWithInt:3] messages:messages orphanedEvents:events];
-    
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     
     __weak typeof(self) weakSelf = self;
-    [_persistenceController processMessagesResult:@"cId"
-                                           result:result
-                                       completion:^(CMPStoreResult<CMPGetMessagesResult *> *storeResult) {
-                                           XCTAssertEqual(storeResult.object, result);
-                                           
-                                           CMPChatConversation *c = [weakSelf.chatStore getConversation:@"cId"];
-                                           
-                                           XCTAssertEqual(1, c.firstLocalEventID.integerValue);
-                                           XCTAssertEqual(4, c.lastLocalEventID.integerValue);
-                                           XCTAssertTrue([@"name" caseInsensitiveCompare:c.name] == NSOrderedSame);
-                                           XCTAssertTrue([@"desc" caseInsensitiveCompare:c.conversationDescription] == NSOrderedSame);
-                                           XCTAssertTrue([@"eTag" caseInsensitiveCompare:c.eTag] == NSOrderedSame);
-                                           XCTAssertEqual(1, c.isPublic.integerValue);
-                                           int d = [c.updatedOn timeIntervalSince1970];
-                                           XCTAssertEqual(1, d);
-                                           XCTAssertNotNil(c.roles);
-                                           [expectation fulfill];
-                                       }];
+    [CMPCoreDataManager initialiseStackWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType] completion:^(id<CMPCoreDataManagable> _Nullable store, NSError * _Nullable err) {
+        if (err) {
+            XCTFail();
+        }
+        [CMPPersistenceController initialiseWithFactory:weakSelf.builder adapter:weakSelf.adapter coreDataManager:store completion:^(CMPPersistenceController * _Nullable persistenceController, NSError * _Nullable error) {
+            weakSelf.persistenceController = persistenceController;
+            if (err) {
+                XCTFail();
+            }
+            CMPChatConversation *c1 = [[CMPChatConversation alloc] initWithID:@"a" firstLocalEventID:[[NSNumber alloc] initWithInt:1] lastLocalEventID:[[NSNumber alloc] initWithInt:2] latestRemoteEventID:[[NSNumber alloc] initWithInt:3] eTag:@"tagA" updatedOn:nil name:@"nameA" conversationDescription:@"descA" roles:nil isPublic:[[NSNumber alloc] initWithInt:4]];
+            CMPChatConversation *c2 = [[CMPChatConversation alloc] initWithID:@"b" firstLocalEventID:[[NSNumber alloc] initWithInt:11] lastLocalEventID:[[NSNumber alloc] initWithInt:12] latestRemoteEventID:[[NSNumber alloc] initWithInt:13] eTag:@"tagB" updatedOn:nil name:@"nameB" conversationDescription:@"descB" roles:nil isPublic:[[NSNumber alloc] initWithInt:14]];
+            
+            [weakSelf.chatStore upsertConversation:c1];
+            [weakSelf.chatStore upsertConversation:c2];
+            
+            XCTAssertNotNil([weakSelf.chatStore getConversation:@"a"]);
+
+            [weakSelf.persistenceController deleteConversation:@"a" completion:^(CMPStoreResult<NSNumber *> *result) {
+                XCTAssertNotNil(result.object);
+                [expectation fulfill];
+            }];
+            
+            XCTAssertNil([weakSelf.chatStore getConversation:@"a"]);
+        }];
+    }];
+    
     [self waitForExpectations:@[expectation] timeout:10.0];
 }
 
--(void)testProcessOrphanEvents {
+-(void)testDeleteAll {
+    __weak typeof(self) weakSelf = self;
+    [CMPCoreDataManager initialiseStackWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType] completion:^(id<CMPCoreDataManagable> _Nullable store, NSError * _Nullable err) {
+        if (err) {
+            XCTFail();
+        }
+        [CMPPersistenceController initialiseWithFactory:weakSelf.builder adapter:weakSelf.adapter coreDataManager:store completion:^(CMPPersistenceController * _Nullable persistenceController, NSError * _Nullable error) {
+            weakSelf.persistenceController = persistenceController;
+            if (error) {
+                XCTFail();
+            }
+            CMPChatConversation *c1 = [[CMPChatConversation alloc] initWithID:@"a" firstLocalEventID:[[NSNumber alloc] initWithInt:1] lastLocalEventID:[[NSNumber alloc] initWithInt:2] latestRemoteEventID:[[NSNumber alloc] initWithInt:3] eTag:@"tagA" updatedOn:nil name:@"nameA" conversationDescription:@"descA" roles:nil isPublic:[[NSNumber alloc] initWithInt:4]];
+            CMPChatConversation *c2 = [[CMPChatConversation alloc] initWithID:@"b" firstLocalEventID:[[NSNumber alloc] initWithInt:11] lastLocalEventID:[[NSNumber alloc] initWithInt:12] latestRemoteEventID:[[NSNumber alloc] initWithInt:13] eTag:@"tagB" updatedOn:nil name:@"nameB" conversationDescription:@"descB" roles:nil isPublic:[[NSNumber alloc] initWithInt:14]];
+            
+            [weakSelf.chatStore upsertConversation:c1];
+            [weakSelf.chatStore upsertConversation:c2];
+            
+            NSArray<CMPChatConversation *> *conversations = [NSArray arrayWithObjects:c1, c2, nil];
+            
+            XCTAssertNotNil([weakSelf.chatStore getConversation:@"a"]);
+            XCTAssertNotNil([weakSelf.chatStore getConversation:@"b"]);
+            
+            XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
+            
+            [weakSelf.persistenceController deleteConversations:conversations completion:^(CMPStoreResult<NSNumber *> *result) {
+                XCTAssertNotNil(result.object);
+                [expectation fulfill];
+            }];
+            [self waitForExpectations:@[expectation] timeout:10.0];
+            XCTAssertNil([weakSelf.chatStore getConversation:@"a"]);
+            XCTAssertNil([weakSelf.chatStore getConversation:@"b"]);
+        }];
+    }];
+}
+
+-(void)testProcessMessagesResult {
+    XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     
+    __weak typeof(self) weakSelf = self;
+    [CMPCoreDataManager initialiseStackWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType] completion:^(id<CMPCoreDataManagable> _Nullable store, NSError * _Nullable err) {
+        if (err) {
+            XCTFail();
+        }
+        [CMPPersistenceController initialiseWithFactory:weakSelf.builder adapter:weakSelf.adapter coreDataManager:store completion:^(CMPPersistenceController * _Nullable persistenceController, NSError * _Nullable error) {
+            weakSelf.persistenceController = persistenceController;
+            // saved conversation
+            CMPChatRoles *roles = [[CMPChatRoles alloc] initWithOwnerAttributes:[[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES] participantAttributes:[[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES]];
+            [weakSelf.chatStore upsertConversation:[[CMPChatConversation alloc] initWithID:@"cId" firstLocalEventID:@1 lastLocalEventID:@2 latestRemoteEventID:@3 eTag:@"eTag" updatedOn:[NSDate dateWithTimeIntervalSince1970:0] name:@"name" conversationDescription:@"desc" roles:roles isPublic:[[NSNumber alloc] initWithInt:1]]];
+            
+            NSDictionary<NSString *,id> *metadata = [[NSDictionary alloc] initWithObjectsAndKeys:@"key", @"value", nil];
+            CMPMessageParticipant *p = [[CMPMessageParticipant alloc] initWithID:@"pId" name:@"pName"];
+            CMPMessageContext *context = [[CMPMessageContext alloc] initWithConversationID:@"cId" from:p sentBy:@"sender" sentOn:[NSDate dateWithTimeIntervalSince1970:1]];
+            
+            CMPMessagePart *part = [[CMPMessagePart alloc] initWithName:@"name" type:@"type" url:nil data:@"data" size:[[NSNumber alloc] initWithInt:1]];
+            NSArray<CMPMessagePart *> *parts = [[NSArray alloc] initWithObjects:part, nil];
+            
+            CMPMessageStatus *status = [[CMPMessageStatus alloc] initWithStatus:CMPMessageDeliveryStatusRead timestamp:[NSDate dateWithTimeIntervalSince1970:1]];
+            NSDictionary<NSString *, CMPMessageStatus *> *statuses = [[NSDictionary alloc] initWithObjectsAndKeys:status, @"pId", nil];
+            
+            CMPMessage *msg = [[CMPMessage alloc] initWithID:@"id" sentEventID:@(4) metadata:metadata context:context parts:parts statusUpdates:statuses];
+            NSArray<CMPMessage *> *messages = [[NSArray alloc] initWithObjects:msg, nil];
+            
+            CMPOrphanedEventPayload *payload = [[CMPOrphanedEventPayload alloc] initWithProfileID:@"pId" messageID:@"mId" conversationID:@"cId" isPublicConversation:[[NSNumber alloc] initWithInt:1] timestamp:[NSDate dateWithTimeIntervalSince1970:1]];
+            CMPOrphanedEventData *data = [[CMPOrphanedEventData alloc] initWithName:@"name" eventID:@"id" profileID:@"pId" payload:payload];
+            CMPOrphanedEvent *e = [[CMPOrphanedEvent alloc] initWithID:@(1) data:data];
+            NSArray<CMPOrphanedEvent *> *events = [[NSArray alloc] initWithObjects:e, nil];
+            
+            CMPGetMessagesResult *result = [[CMPGetMessagesResult alloc] initWithLatestEventID:[[NSNumber alloc] initWithInt:4] earliestEventID:[[NSNumber alloc] initWithInt:3] messages:messages orphanedEvents:events];
+
+            [weakSelf.persistenceController processMessagesResult:@"cId"
+                                                           result:result
+                                                       completion:^(CMPStoreResult<CMPGetMessagesResult *> *storeResult) {
+                                                           XCTAssertEqual(storeResult.object, result);
+                                                           
+                                                           CMPChatConversation *c = [weakSelf.chatStore getConversation:@"cId"];
+                                                           
+                                                           XCTAssertEqual(1, c.firstLocalEventID.integerValue);
+                                                           XCTAssertEqual(4, c.lastLocalEventID.integerValue);
+                                                           XCTAssertTrue([@"name" caseInsensitiveCompare:c.name] == NSOrderedSame);
+                                                           XCTAssertTrue([@"desc" caseInsensitiveCompare:c.conversationDescription] == NSOrderedSame);
+                                                           XCTAssertTrue([@"eTag" caseInsensitiveCompare:c.eTag] == NSOrderedSame);
+                                                           XCTAssertEqual(1, c.isPublic.integerValue);
+                                                           int d = [c.updatedOn timeIntervalSince1970];
+                                                           XCTAssertEqual(1, d);
+                                                           XCTAssertNotNil(c.roles);
+                                                           [expectation fulfill];
+                                                       }];
+        }];
+    }];
+    
+    [self waitForExpectations:@[expectation] timeout:10.0];
+}
+
+-(void)testProcessOrphanedEvents {
     XCTestExpectation *expectationCoreData = [[XCTestExpectation alloc] initWithDescription:@"core data set"];
     XCTestExpectation *expectation1 = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     XCTestExpectation *expectation2 = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     XCTestExpectation *expectation3 = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     
     __weak typeof(self) weakSelf = self;
-    _coreDataManager = [[CMPCoreDataManager alloc] initWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType] completion:^(NSError * _Nullable err) {
+    [CMPCoreDataManager initialiseStackWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType] completion:^(id<CMPCoreDataManagable> _Nullable store, NSError * _Nullable err) {
         if (err) {
             XCTFail();
         }
         
-        weakSelf.persistenceController = [[CMPPersistenceController alloc] initWithFactory:weakSelf.builder adapter:weakSelf.adapter coreDataManager:weakSelf.coreDataManager];
-        
-        NSManagedObjectContext *ctx = weakSelf.coreDataManager.workerContext;
-        CMPOrphanedEventPayload *payload0 = [[CMPOrphanedEventPayload alloc] initWithProfileID:@"pId" messageID:@"id" conversationID:@"cId" isPublicConversation:[[NSNumber alloc] initWithInt:1] timestamp:[NSDate dateWithTimeIntervalSince1970:1]];
-        CMPOrphanedEventData *data0 = [[CMPOrphanedEventData alloc] initWithName:@"delivered" eventID:@"id" profileID:@"pId" payload:payload0];
-        CMPOrphanedEvent *e0 = [[CMPOrphanedEvent alloc] initWithID:@(0) data:data0];
-        NSArray<CMPOrphanedEvent *> *events0 = [[NSArray alloc] initWithObjects:e0, nil];
-        [ctx upsertOrphanedEvents:events0 completion:^(NSInteger result, NSError *error) {
-            XCTAssertEqual(1, result);
-            [expectation1 fulfill];
-            
-            NSArray<NSNumber *> *ids = [NSArray arrayWithObjects:@"id", nil];
-            NSManagedObjectContext *ctx = weakSelf.coreDataManager.mainContext;
-            [ctx queryOrphanedEventsForIDs:ids completion:^(NSArray<CMPChatManagedOrphanedEvent *> *toDelete, NSError *error) {
-                long count = [toDelete count];
-                NSString *messageID = toDelete[0].messageID;
-                NSString *conversationID = toDelete[0].conversationID;
-                NSString *profileID = toDelete[0].profileID;
-                CMPChatMessageDeliveryStatus s = toDelete[0].eventType;
-                XCTAssertEqual(CMPChatMessageDeliveryStatusDelivered, s);
-                XCTAssertEqual(1, count);
-                XCTAssertTrue([@"id" compare: messageID] == NSOrderedSame);
-                XCTAssertTrue([@"cId" compare: conversationID] == NSOrderedSame);
-                XCTAssertTrue([@"pId" compare: profileID] == NSOrderedSame);
-                [expectation2 fulfill];
+        [CMPPersistenceController initialiseWithFactory:weakSelf.builder adapter:weakSelf.adapter coreDataManager:store completion:^(CMPPersistenceController * _Nullable persistenceController, NSError * _Nullable error) {
+            weakSelf.persistenceController = persistenceController;
+            NSManagedObjectContext *ctx = store.workerContext;
+            CMPOrphanedEventPayload *payload0 = [[CMPOrphanedEventPayload alloc] initWithProfileID:@"pId" messageID:@"id" conversationID:@"cId" isPublicConversation:[[NSNumber alloc] initWithInt:1] timestamp:[NSDate dateWithTimeIntervalSince1970:1]];
+            CMPOrphanedEventData *data0 = [[CMPOrphanedEventData alloc] initWithName:@"delivered" eventID:@"id" profileID:@"pId" payload:payload0];
+            CMPOrphanedEvent *e0 = [[CMPOrphanedEvent alloc] initWithID:@(0) data:data0];
+            NSArray<CMPOrphanedEvent *> *events0 = [[NSArray alloc] initWithObjects:e0, nil];
+            [ctx upsertOrphanedEvents:events0 completion:^(NSInteger result, NSError *error) {
+                XCTAssertEqual(1, result);
+                [expectation1 fulfill];
+                
+                NSArray<NSString *> *ids = [NSArray arrayWithObjects:@"id", nil];
+                NSManagedObjectContext *ctx = store.mainContext;
+                [ctx queryOrphanedEventsForIDs:ids completion:^(NSArray<CMPChatManagedOrphanedEvent *> *toDelete, NSError *error) {
+                    long count = [toDelete count];
+                    NSString *messageID = toDelete[0].messageID;
+                    NSString *conversationID = toDelete[0].conversationID;
+                    NSString *profileID = toDelete[0].profileID;
+                    CMPChatMessageDeliveryStatus s = toDelete[0].eventType;
+                    XCTAssertEqual(CMPChatMessageDeliveryStatusDelivered, s);
+                    XCTAssertEqual(1, count);
+                    XCTAssertTrue([@"id" compare: messageID] == NSOrderedSame);
+                    XCTAssertTrue([@"cId" compare: conversationID] == NSOrderedSame);
+                    XCTAssertTrue([@"pId" compare: profileID] == NSOrderedSame);
+                    [expectation2 fulfill];
+                }];
             }];
-        }];
-        
-        // saved conversation
-        CMPChatRoles *roles = [[CMPChatRoles alloc] initWithOwnerAttributes:[[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES] participantAttributes:[[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES]];
-        [weakSelf.chatStore upsertConversation:[[CMPChatConversation alloc] initWithID:@"cId" firstLocalEventID:@1 lastLocalEventID:@2 latestRemoteEventID:@3 eTag:@"eTag" updatedOn:[NSDate dateWithTimeIntervalSince1970:0] name:@"name" conversationDescription:@"desc" roles:roles isPublic:[[NSNumber alloc] initWithInt:1]]];
-        
-        NSDictionary<NSString *,id> *metadata = [[NSDictionary alloc] initWithObjectsAndKeys:@"key", @"value", nil];
-        CMPMessageParticipant *p = [[CMPMessageParticipant alloc] initWithID:@"pId" name:@"pName"];
-        CMPMessageContext *context = [[CMPMessageContext alloc] initWithConversationID:@"cId" from:p sentBy:@"sender" sentOn:[NSDate dateWithTimeIntervalSince1970:1]];
-        
-        CMPMessagePart *part = [[CMPMessagePart alloc] initWithName:@"name" type:@"type" url:nil data:@"data" size:[[NSNumber alloc] initWithInt:1]];
-        NSArray<CMPMessagePart *> *parts = [[NSArray alloc] initWithObjects:part, nil];
-        
-        CMPMessageStatus *status = [[CMPMessageStatus alloc] initWithStatus:CMPMessageDeliveryStatusRead timestamp:[NSDate dateWithTimeIntervalSince1970:1]];
-        NSDictionary<NSString *, CMPMessageStatus *> *statuses = [[NSDictionary alloc] initWithObjectsAndKeys:status, @"pId", nil];
-        
-        CMPMessage *msg = [[CMPMessage alloc] initWithID:@"id" sentEventID:@"4" metadata:metadata context:context parts:parts statusUpdates:statuses];
-        NSArray<CMPMessage *> *messages = [[NSArray alloc] initWithObjects:msg, nil];
-        
-        CMPOrphanedEventPayload *payload = [[CMPOrphanedEventPayload alloc] initWithProfileID:@"pId2" messageID:@"mId2" conversationID:@"cId" isPublicConversation:[[NSNumber alloc] initWithInt:1] timestamp:[NSDate dateWithTimeIntervalSince1970:1]];
-        CMPOrphanedEventData *data = [[CMPOrphanedEventData alloc] initWithName:@"read" eventID:@"id" profileID:@"pId2" payload:payload];
-        CMPOrphanedEvent *e = [[CMPOrphanedEvent alloc] initWithID:@(1) data:data];
-        NSArray<CMPOrphanedEvent *> *events = [[NSArray alloc] initWithObjects:e, nil];
-        
-        CMPGetMessagesResult *result = [[CMPGetMessagesResult alloc] initWithLatestEventID:[[NSNumber alloc] initWithInt:4] earliestEventID:[[NSNumber alloc] initWithInt:3] messages:messages orphanedEvents:events];
-        
-        [weakSelf.persistenceController processOrphanedEvents:result completion:^(NSError * error) {
             
-            NSArray<NSNumber *> *ids = [NSArray arrayWithObjects:@"mId2", nil];
-            NSManagedObjectContext *ctx = weakSelf.coreDataManager.workerContext;
-            [ctx queryOrphanedEventsForIDs:ids completion:^(NSArray<CMPChatManagedOrphanedEvent *> *toDelete, NSError *error) {
-                long count = [toDelete count];
-                NSString *messageID = toDelete[0].messageID;
-                NSString *conversationID = toDelete[0].conversationID;
-                NSString *profileID = toDelete[0].profileID;
-                CMPChatMessageDeliveryStatus s = toDelete[0].eventType;
-                XCTAssertEqual(CMPChatMessageDeliveryStatusRead, s);
-                XCTAssertEqual(1, count);
-                XCTAssertTrue([@"mId2" compare: messageID] == NSOrderedSame);
-                XCTAssertTrue([@"cId" compare: conversationID] == NSOrderedSame);
-                XCTAssertTrue([@"pId2" compare: profileID] == NSOrderedSame);
-                [expectation3 fulfill];
+            // saved conversation
+            CMPChatRoles *roles = [[CMPChatRoles alloc] initWithOwnerAttributes:[[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES] participantAttributes:[[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES]];
+            [weakSelf.chatStore upsertConversation:[[CMPChatConversation alloc] initWithID:@"cId" firstLocalEventID:@1 lastLocalEventID:@(2) latestRemoteEventID:@(3) eTag:@"eTag" updatedOn:[NSDate dateWithTimeIntervalSince1970:0] name:@"name" conversationDescription:@"desc" roles:roles isPublic:[[NSNumber alloc] initWithInt:1]]];
+            
+            NSDictionary<NSString *,id> *metadata = [[NSDictionary alloc] initWithObjectsAndKeys:@"key", @"value", nil];
+            CMPMessageParticipant *p = [[CMPMessageParticipant alloc] initWithID:@"pId" name:@"pName"];
+            CMPMessageContext *context = [[CMPMessageContext alloc] initWithConversationID:@"cId" from:p sentBy:@"sender" sentOn:[NSDate dateWithTimeIntervalSince1970:1]];
+            
+            CMPMessagePart *part = [[CMPMessagePart alloc] initWithName:@"name" type:@"type" url:nil data:@"data" size:[[NSNumber alloc] initWithInt:1]];
+            NSArray<CMPMessagePart *> *parts = [[NSArray alloc] initWithObjects:part, nil];
+            
+            CMPMessageStatus *status = [[CMPMessageStatus alloc] initWithStatus:CMPMessageDeliveryStatusRead timestamp:[NSDate dateWithTimeIntervalSince1970:1]];
+            NSDictionary<NSString *, CMPMessageStatus *> *statuses = [[NSDictionary alloc] initWithObjectsAndKeys:status, @"pId", nil];
+            
+            CMPMessage *msg = [[CMPMessage alloc] initWithID:@"id" sentEventID:@(4) metadata:metadata context:context parts:parts statusUpdates:statuses];
+            NSArray<CMPMessage *> *messages = [[NSArray alloc] initWithObjects:msg, nil];
+            
+            CMPOrphanedEventPayload *payload = [[CMPOrphanedEventPayload alloc] initWithProfileID:@"pId2" messageID:@"mId2" conversationID:@"cId" isPublicConversation:[[NSNumber alloc] initWithInt:1] timestamp:[NSDate dateWithTimeIntervalSince1970:1]];
+            CMPOrphanedEventData *data = [[CMPOrphanedEventData alloc] initWithName:@"read" eventID:@"id" profileID:@"pId2" payload:payload];
+            CMPOrphanedEvent *e = [[CMPOrphanedEvent alloc] initWithID:@(1) data:data];
+            NSArray<CMPOrphanedEvent *> *events = [[NSArray alloc] initWithObjects:e, nil];
+            
+            CMPGetMessagesResult *result = [[CMPGetMessagesResult alloc] initWithLatestEventID:[[NSNumber alloc] initWithInt:4] earliestEventID:[[NSNumber alloc] initWithInt:3] messages:messages orphanedEvents:events];
+            
+            [weakSelf.persistenceController processOrphanedEvents:result completion:^(NSError * error) {
+                
+                NSArray<NSString *> *ids = [NSArray arrayWithObjects:@"mId2", nil];
+                NSManagedObjectContext *ctx = store.mainContext;
+                [ctx queryOrphanedEventsForIDs:ids completion:^(NSArray<CMPChatManagedOrphanedEvent *> *toDelete, NSError *error) {
+                    long count = [toDelete count];
+                    NSString *messageID = toDelete[0].messageID;
+                    NSString *conversationID = toDelete[0].conversationID;
+                    NSString *profileID = toDelete[0].profileID;
+                    
+                    CMPChatMessageDeliveryStatus s = toDelete[0].eventType;
+                    XCTAssertEqual(CMPChatMessageDeliveryStatusRead, s);
+                    XCTAssertEqual(1, count);
+                    XCTAssertEqualObjects(@"mId2", messageID);
+                    XCTAssertEqualObjects(@"cId", conversationID);
+                    XCTAssertEqualObjects(@"pId2", profileID);
+                    [expectation3 fulfill];
+                }];
             }];
+            [expectationCoreData fulfill];
         }];
-        
-        [expectationCoreData fulfill];
     }];
     
-    [self waitForExpectations:@[expectationCoreData,expectation1, expectation2, expectation3] timeout:20.0];
+    [self waitForExpectations:@[expectationCoreData, expectation1, expectation2, expectation3] timeout:20.0];
     
     [_coreDataManager reset];
 }
@@ -366,12 +386,13 @@
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     
     __weak typeof(self) weakSelf = self;
-    _coreDataManager = [[CMPCoreDataManager alloc] initWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType] completion:^(NSError * _Nullable err) {
+    [CMPCoreDataManager initialiseStackWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType] completion:^(id<CMPCoreDataManagable> _Nullable store, NSError * _Nullable err) {
         if (err) {
             XCTFail();
         }
-        
-        weakSelf.persistenceController = [[CMPPersistenceController alloc] initWithFactory:weakSelf.builder adapter:weakSelf.adapter coreDataManager:weakSelf.coreDataManager];
+        [CMPPersistenceController initialiseWithFactory:weakSelf.builder adapter:weakSelf.adapter coreDataManager:store completion:^(CMPPersistenceController * _Nullable persistenceController, NSError * _Nullable error) {
+            weakSelf.persistenceController = persistenceController;
+        }];
         
         [expectationCoreData fulfill];
         

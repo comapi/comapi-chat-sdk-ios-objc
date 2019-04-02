@@ -34,17 +34,34 @@
 
 @implementation CMPPersistenceController
 
-- (instancetype)initWithFactory:(id<CMPStoreFactoryBuildable>)factory adapter:(CMPModelAdapter *)adapter coreDataManager:(CMPCoreDataManager *)manager {
-    self = [super init];
++ (void)initialiseWithFactory:(id<CMPStoreFactoryBuildable>)factory adapter:(CMPModelAdapter *)adapter coreDataManager:(CMPCoreDataManager *)manager completion:(void (^)(CMPPersistenceController * _Nullable, NSError * _Nullable))completion {
+    CMPPersistenceController *instance = [[CMPPersistenceController alloc] init];
     
-    if (self) {
-        _factory = [[CMPStoreFactory alloc] initWithBuilder:factory];
-        _adapter = adapter;
-        _manager = manager;
-    }
-    
-    return self;
+    instance.adapter = adapter;
+    instance.manager = manager;
+    instance.factory = [[CMPStoreFactory alloc] initWithBuilder:factory];
+    [instance.factory.builder buildWithCompletion:^(id<CMPChatStore> _Nullable store, NSError * _Nullable error) {
+        if (completion) {
+            completion(instance, error);
+        }
+    }];
 }
+
+#pragma mark - private
+
+- (void)setAdapter:(CMPModelAdapter * _Nonnull)adapter {
+    _adapter = adapter;
+}
+
+- (void)setManager:(CMPCoreDataManager * _Nonnull)manager {
+    _manager = manager;
+}
+
+- (void)setFactory:(CMPStoreFactory * _Nonnull)factory {
+    _factory = factory;
+}
+
+#pragma mark - public
 
 - (void)getConversation:(NSString *)conversationID completion:(void(^)(CMPStoreResult<CMPChatConversation *> *))completion {
     [_factory executeTransaction:^(id<CMPChatStore> store, NSError * error) {
@@ -282,7 +299,7 @@
                             [statuses enumerateObjectsUsingBlock:^(CMPChatMessageStatus * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                                 [store updateMessageStatus:obj];
                             }];
-                            NSArray<NSNumber *> *toDeleteIDs = [toDelete map:^id _Nonnull(CMPChatManagedOrphanedEvent * obj) { return obj.id; }];
+                            NSArray<NSString *> *toDeleteIDs = [toDelete map:^id _Nonnull(CMPChatManagedOrphanedEvent * obj) { return obj.messageID; }];
                             [ctx deleteOrphanedEventsForIDs:toDeleteIDs completion:^(NSInteger deleted, NSError * _Nullable error) {
                                 [store endTransaction];
                                 if (error) {
@@ -310,7 +327,7 @@
     }
 }
 
-- (void)deleteOrphanedEvents:(NSArray<NSNumber *> *)IDs completion:(void(^)(CMPStoreResult<NSNumber *> *))completion {
+- (void)deleteOrphanedEvents:(NSArray<NSString *> *)IDs completion:(void(^)(CMPStoreResult<NSNumber *> *))completion {
     NSManagedObjectContext *ctx = _manager.workerContext;
     [ctx deleteOrphanedEventsForIDs:IDs completion:^(NSInteger deleted, NSError * _Nullable error) {
         [ctx saveWithCompletion:^(NSError * _Nullable error) {

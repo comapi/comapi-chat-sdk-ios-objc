@@ -16,9 +16,9 @@
         <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="metadata" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="sentEventID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="statusUpdates" optional="YES" attributeType="Transformable" syncable="YES"/>
         <relationship name="context" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="MessageContext" inverseName="message" inverseEntity="MessageContext" syncable="YES"/>
         <relationship name="parts" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="MessagePart" inverseName="message" inverseEntity="MessagePart" syncable="YES"/>
+        <relationship name="statusUpdates" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="MessageStatus" inverseName="message" inverseEntity="MessageStatus" syncable="YES"/>
     </entity>
     <entity name="MessageContext" representedClassName="MessageContext" syncable="YES">
         <attribute name="conversationID" optional="YES" attributeType="String" syncable="YES"/>
@@ -43,10 +43,11 @@
     <entity name="MessageStatus" representedClassName="MessageStatus" syncable="YES">
         <attribute name="conversationEventID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="conversationID" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="mesageStatus" optional="YES" attributeType="Integer 16" minValueString="0" maxValueString="5" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="messageID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="messageStatus" optional="YES" attributeType="Integer 16" minValueString="0" maxValueString="5" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="profileID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="message" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Message" inverseName="statusUpdates" inverseEntity="Message" syncable="YES"/>
     </entity>
     <entity name="Roles" representedClassName="Roles" syncable="YES">
         <attribute name="ownerCanAddParticipants" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
@@ -59,11 +60,11 @@
     </entity>
     <elements>
         <element name="Conversation" positionX="-107.38671875" positionY="-294.8984375" width="163.8671875" height="193"/>
-        <element name="Message" positionX="135.87109375" positionY="107.48046875" width="128" height="133"/>
-        <element name="MessageContext" positionX="132.921875" positionY="-79.44921875" width="128" height="118"/>
+        <element name="Message" positionX="135.87109375" positionY="107.48046875" width="128" height="135"/>
+        <element name="MessageContext" positionX="132.921875" positionY="-79.44921875" width="128" height="120"/>
         <element name="MessagePart" positionX="-225.66796875" positionY="197.3203125" width="128" height="133"/>
         <element name="MessageParticipant" positionX="137.42578125" positionY="-219.6953125" width="128" height="88"/>
-        <element name="MessageStatus" positionX="348.2578125" positionY="-79.6015625" width="128" height="135"/>
+        <element name="MessageStatus" positionX="348.2578125" positionY="-79.6015625" width="128" height="150"/>
         <element name="Roles" positionX="-95.03515625" positionY="-39.69140625" width="128" height="148"/>
     </elements>
 </model>

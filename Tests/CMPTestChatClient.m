@@ -34,7 +34,6 @@
 
 @interface CMPTestChatClient : XCTestCase
 
-@property (nonatomic, strong, nullable) CMPComapiChatClient *client;
 @property (nonatomic, strong, nullable) CMPMockRequestPerformer *requestPerformer;
 @property (nonatomic, strong, nullable) CMPMockAuthenticationDelegate *authDelegate;
 @property (nonatomic, strong, nullable) CMPMockStoreFactoryBuilder *storeFactoryBuilder;
@@ -56,23 +55,25 @@
     _authDelegate = [[CMPMockAuthenticationDelegate alloc] init];
     _chatStore = [[CMPMockChatStore alloc] init];
     _storeFactoryBuilder = [[CMPMockStoreFactoryBuilder alloc] initWithChatStore:_chatStore];
-    _client = [CMPMockClientFactory instantiateChatClient:_requestPerformer authDelegate:_authDelegate storeFactoryBuilder:_storeFactoryBuilder];
     _chatClientDelegate = [[CMPMockChatClientDelegate alloc] init];
-    
-    _eventDispatcher = [[CMPMockEventDispatcher alloc] initWithClient:_client.foundationClient delegate:_client.eventsController];
 }
 
 - (void)tearDown {
-    [_client.persistenceController.manager reset];
-    
     _requestPerformer = nil;
     _authDelegate = nil;
     _storeFactoryBuilder = nil;
-    _client = nil;
     _chatStore = nil;
     _chatClientDelegate = nil;
     
     [super tearDown];
+}
+
+- (void)createClient:(void(^)(CMPComapiChatClient * _Nullable))completion {
+    [CMPMockClientFactory instantiateChatClient:_requestPerformer authDelegate:_authDelegate storeFactoryBuilder:_storeFactoryBuilder completion:^(CMPComapiChatClient * _Nullable client, NSError * _Nullable error) {
+        if (completion) {
+            completion(client);
+        }
+    }];
 }
 
 - (void)testSetPushToken {
@@ -84,15 +85,15 @@
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     __weak typeof(self) weakSelf = self;
-    [_client.services.session startSessionWithCompletion:^{
-        [weakSelf.client setPushToken:@"token" completion:^(BOOL success, NSError * _Nullable error) {
+    [self createClient:^(CMPComapiChatClient * _Nullable client) {
+        weakSelf.eventDispatcher = [[CMPMockEventDispatcher alloc] initWithClient:client.foundationClient delegate:client.eventsController];
+        
+        [client setPushToken:@"token" completion:^(BOOL success, NSError * _Nullable error) {
             XCTAssertTrue(success);
             XCTAssertNil(error);
             
             [expectation fulfill];
         }];
-    } failure:^(NSError * _Nullable err) {
-        XCTFail();
     }];
     
     [self waitForExpectations:@[expectation] timeout:5.0];
@@ -107,79 +108,78 @@
     
     [self.chatStore upsertConversation:c];
     
-    [_client addTypingDelegate:_chatClientDelegate];
-    [_client addProfileDelegate:_chatClientDelegate];
-    [_client addParticipantDelegate:_chatClientDelegate];
-    
     XCTestExpectation *typingExpectation = [[XCTestExpectation alloc] initWithDescription:@"typing received"];
     XCTestExpectation *typingOffExpectation = [[XCTestExpectation alloc] initWithDescription:@"typing off received"];
     XCTestExpectation *profileUpdateExpectation = [[XCTestExpectation alloc] initWithDescription:@"profile received"];
     XCTestExpectation *participantAddedExpectation = [[XCTestExpectation alloc] initWithDescription:@"participant added received"];
     XCTestExpectation *participantUpdatedExpectation = [[XCTestExpectation alloc] initWithDescription:@"participant updated received"];
     XCTestExpectation *participantRemovedExpectation = [[XCTestExpectation alloc] initWithDescription:@"participant removed received"];
-    
-    _chatClientDelegate.profileUpdateCallback = ^(CMPProfileEventUpdate * _Nonnull update) {
-        [profileUpdateExpectation fulfill];
-    };
-    
-    _chatClientDelegate.typingCallback = ^(NSString * _Nonnull conversationID, NSString * _Nonnull participantID, BOOL isTyping) {
-        if (isTyping) {
-            [typingExpectation fulfill];
-        } else {
-            [typingOffExpectation fulfill];
-        }
-    };
-    
-    _chatClientDelegate.participantAddedCallback = ^(CMPConversationEventParticipantAdded * _Nonnull event) {
-        [participantAddedExpectation fulfill];
-    };
-    
-    _chatClientDelegate.participantUpdatedCallback = ^(CMPConversationEventParticipantUpdated * _Nonnull event) {
-        [participantUpdatedExpectation fulfill];
-    };
-    
-    _chatClientDelegate.participantRemovedCallback = ^(CMPConversationEventParticipantRemoved * _Nonnull event) {
-        [participantRemovedExpectation fulfill];
-    };
-    
-    [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationParticipantTyping];
-    [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationParticipantTypingOff];
-    [_eventDispatcher dispatchEventOfType:CMPEventTypeProfileUpdate];
-    [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationParticipantAdded];
-    [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationParticipantUpdated];
-    [_eventDispatcher dispatchEventOfType:CMPEventTypeConversationParticipantRemoved];
-    
-    [self waitForExpectations:@[typingExpectation, profileUpdateExpectation, participantAddedExpectation, participantUpdatedExpectation, participantRemovedExpectation] timeout:5.0];
-    
-    [_client removeTypingDelegate:_chatClientDelegate];
-    [_client removeProfileDelegate:_chatClientDelegate];
-    [_client removeParticipantDelegate:_chatClientDelegate];
-    
+
     __weak typeof(self) weakSelf = self;
-    _chatClientDelegate.profileUpdateCallback = ^(CMPProfileEventUpdate * _Nonnull update) {
-        id self = weakSelf;
-        XCTFail();
-    };
+    [self createClient:^(CMPComapiChatClient * _Nullable client) {
+        weakSelf.eventDispatcher = [[CMPMockEventDispatcher alloc] initWithClient:client.foundationClient delegate:client.eventsController];
+        
+        [client addTypingDelegate:weakSelf.chatClientDelegate];
+        [client addProfileDelegate:weakSelf.chatClientDelegate];
+        [client addParticipantDelegate:weakSelf.chatClientDelegate];
+        
+        weakSelf.chatClientDelegate.profileUpdateCallback = ^(CMPProfileEventUpdate * _Nonnull update) {
+            [profileUpdateExpectation fulfill];
+        };
+        
+        weakSelf.chatClientDelegate.typingCallback = ^(NSString * _Nonnull conversationID, NSString * _Nonnull participantID, BOOL isTyping) {
+            if (isTyping) {
+                [typingExpectation fulfill];
+            } else {
+                [typingOffExpectation fulfill];
+            }
+        };
+        
+        weakSelf.chatClientDelegate.participantAddedCallback = ^(CMPConversationEventParticipantAdded * _Nonnull event) {
+            [participantAddedExpectation fulfill];
+        };
+        
+        weakSelf.chatClientDelegate.participantUpdatedCallback = ^(CMPConversationEventParticipantUpdated * _Nonnull event) {
+            [participantUpdatedExpectation fulfill];
+        };
+        
+        weakSelf.chatClientDelegate.participantRemovedCallback = ^(CMPConversationEventParticipantRemoved * _Nonnull event) {
+            [participantRemovedExpectation fulfill];
+        };
+        
+        [weakSelf.eventDispatcher dispatchEventOfType:CMPEventTypeConversationParticipantAdded];
+        [weakSelf.eventDispatcher dispatchEventOfType:CMPEventTypeConversationParticipantTyping];
+        [weakSelf.eventDispatcher dispatchEventOfType:CMPEventTypeConversationParticipantTypingOff];
+        [weakSelf.eventDispatcher dispatchEventOfType:CMPEventTypeProfileUpdate];
+        [weakSelf.eventDispatcher dispatchEventOfType:CMPEventTypeConversationParticipantUpdated];
+        [weakSelf.eventDispatcher dispatchEventOfType:CMPEventTypeConversationParticipantRemoved];
+
+        weakSelf.chatClientDelegate.profileUpdateCallback = ^(CMPProfileEventUpdate * _Nonnull update) {
+            XCTFail();
+        };
+        
+        weakSelf.chatClientDelegate.typingCallback = ^(NSString * _Nonnull conversationID, NSString * _Nonnull participantID, BOOL isTyping) {
+            XCTFail();
+        };
+        
+        weakSelf.chatClientDelegate.participantAddedCallback = ^(CMPConversationEventParticipantAdded * _Nonnull event) {
+            XCTFail();
+        };
+        
+        weakSelf.chatClientDelegate.participantUpdatedCallback = ^(CMPConversationEventParticipantUpdated * _Nonnull event) {
+            XCTFail();
+        };
+        
+        weakSelf.chatClientDelegate.participantRemovedCallback = ^(CMPConversationEventParticipantRemoved * _Nonnull event) {
+            XCTFail();
+        };
+        
+        [client removeTypingDelegate:weakSelf.chatClientDelegate];
+        [client removeProfileDelegate:weakSelf.chatClientDelegate];
+        [client removeParticipantDelegate:weakSelf.chatClientDelegate];
+    }];
     
-    _chatClientDelegate.typingCallback = ^(NSString * _Nonnull conversationID, NSString * _Nonnull participantID, BOOL isTyping) {
-        id self = weakSelf;
-        XCTFail();
-    };
-    
-    _chatClientDelegate.participantAddedCallback = ^(CMPConversationEventParticipantAdded * _Nonnull event) {
-        id self = weakSelf;
-        XCTFail();
-    };
-    
-    _chatClientDelegate.participantUpdatedCallback = ^(CMPConversationEventParticipantUpdated * _Nonnull event) {
-        id self = weakSelf;
-        XCTFail();
-    };
-    
-    _chatClientDelegate.participantRemovedCallback = ^(CMPConversationEventParticipantRemoved * _Nonnull event) {
-        id self = weakSelf;
-        XCTFail();
-    };
+    [self waitForExpectations:@[typingExpectation, profileUpdateExpectation, participantAddedExpectation, participantUpdatedExpectation, participantRemovedExpectation] timeout:8.0];
 }
 
 - (void)testStartSession {
@@ -187,17 +187,16 @@
     [self.requestPerformer.completionValues addObject:completionValue];
 
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
-    
-    __weak typeof(self) weakSelf = self;
-    [self.client.services.session startSessionWithCompletion:^{
-        id self = weakSelf;
-        XCTAssertEqualObjects(weakSelf.client.profileID, @"dominik.kowalski");
-        XCTAssertEqual(weakSelf.client.sessionSuccessfullyCreated, YES);
-        
-        [expectation fulfill];
-    } failure:^(NSError * _Nullable error) {
-        XCTFail();
-        [expectation fulfill];
+    [self createClient:^(CMPComapiChatClient * _Nullable client) {
+        [client.services.session startSessionWithCompletion:^{
+            XCTAssertEqualObjects(client.profileID, @"dominik.kowalski");
+            XCTAssertEqual(client.sessionSuccessfullyCreated, YES);
+            
+            [expectation fulfill];
+        } failure:^(NSError * _Nullable error) {
+            XCTFail();
+            [expectation fulfill];
+        }];
     }];
     
     [self waitForExpectations:@[expectation] timeout:10.0];
@@ -209,12 +208,15 @@
     [self.requestPerformer.completionValues addObject:completionValue];
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
-    [self.client.services.session endSessionWithCompletion:^(CMPChatResult * result) {
-        XCTAssertTrue(result.isSuccessful);
-        XCTAssertEqualObjects(result.error, nil);
-        
-        [expectation fulfill];
+    [self createClient:^(CMPComapiChatClient * _Nullable client) {
+        [client.services.session endSessionWithCompletion:^(CMPChatResult * result) {
+            XCTAssertTrue(result.isSuccessful);
+            XCTAssertEqualObjects(result.error, nil);
+            
+            [expectation fulfill];
+        }];
     }];
+    
     
     [self waitForExpectations:@[expectation] timeout:10.0];
 }
@@ -226,19 +228,21 @@
     [self.requestPerformer.completionValues addObject:completionValue];
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
-    [self.client.services.profile getProfileForProfileID:@"" completion:^(CMPResult<CMPProfile *> * _Nonnull result) {
-        XCTAssertTrue(result.error == nil);
-        XCTAssertTrue(result.object != nil);
-        
-        CMPProfile *p = result.object;
-        XCTAssertEqualObjects(p.firstName, @"Dominik");
-        XCTAssertEqualObjects(p.lastName, @"Kowalski");
-        XCTAssertEqualObjects(p.email, @"test@mail.com");
-        XCTAssertEqualObjects(p.phoneNumber, @"48222222222");
-        XCTAssertEqualObjects(p.phoneNumberCountryCode, @"PL");
-        XCTAssertEqualObjects(p.id, @"90419e09-1f5b-4fc2-97c8-b878793c53f0");
-        
-        [expectation fulfill];
+    [self createClient:^(CMPComapiChatClient * _Nullable client) {
+        [client.services.profile getProfileForProfileID:@"" completion:^(CMPResult<CMPProfile *> * _Nonnull result) {
+            XCTAssertTrue(result.error == nil);
+            XCTAssertTrue(result.object != nil);
+            
+            CMPProfile *p = result.object;
+            XCTAssertEqualObjects(p.firstName, @"Dominik");
+            XCTAssertEqualObjects(p.lastName, @"Kowalski");
+            XCTAssertEqualObjects(p.email, @"test@mail.com");
+            XCTAssertEqualObjects(p.phoneNumber, @"48222222222");
+            XCTAssertEqualObjects(p.phoneNumberCountryCode, @"PL");
+            XCTAssertEqualObjects(p.id, @"90419e09-1f5b-4fc2-97c8-b878793c53f0");
+            
+            [expectation fulfill];
+        }];
     }];
     
     [self waitForExpectations:@[expectation] timeout:10.0];
@@ -251,19 +255,21 @@
     [self.requestPerformer.completionValues addObject:completionValue];
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
-    [self.client.services.profile updateProfileWithProfileID:@"" attributes:@{} eTag:@"ETag" completion:^(CMPResult<CMPProfile *> * _Nonnull result) {
-        XCTAssertTrue(result.error == nil);
-        XCTAssertTrue(result.object != nil);
-        
-        CMPProfile *p = result.object;
-        XCTAssertEqualObjects(p.firstName, @"Dominik");
-        XCTAssertEqualObjects(p.lastName, @"Kowalski");
-        XCTAssertEqualObjects(p.email, @"test@mail.com");
-        XCTAssertEqualObjects(p.phoneNumber, @"48222222222");
-        XCTAssertEqualObjects(p.phoneNumberCountryCode, @"PL");
-        XCTAssertEqualObjects(p.id, @"90419e09-1f5b-4fc2-97c8-b878793c53f0");
-        
-        [expectation fulfill];
+    [self createClient:^(CMPComapiChatClient * _Nullable client) {
+        [client.services.profile updateProfileWithProfileID:@"" attributes:@{} eTag:@"ETag" completion:^(CMPResult<CMPProfile *> * _Nonnull result) {
+            XCTAssertTrue(result.error == nil);
+            XCTAssertTrue(result.object != nil);
+            
+            CMPProfile *p = result.object;
+            XCTAssertEqualObjects(p.firstName, @"Dominik");
+            XCTAssertEqualObjects(p.lastName, @"Kowalski");
+            XCTAssertEqualObjects(p.email, @"test@mail.com");
+            XCTAssertEqualObjects(p.phoneNumber, @"48222222222");
+            XCTAssertEqualObjects(p.phoneNumberCountryCode, @"PL");
+            XCTAssertEqualObjects(p.id, @"90419e09-1f5b-4fc2-97c8-b878793c53f0");
+            
+            [expectation fulfill];
+        }];
     }];
     
     [self waitForExpectations:@[expectation] timeout:10.0];
@@ -276,19 +282,21 @@
     [self.requestPerformer.completionValues addObject:completionValue];
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
-    [self.client.services.profile patchProfileWithProfileID:@"" attributes:@{} eTag:@"ETag" completion:^(CMPResult<CMPProfile *> * _Nonnull result) {
-        XCTAssertTrue(result.error == nil);
-        XCTAssertTrue(result.object != nil);
-        
-        CMPProfile *p = result.object;
-        XCTAssertEqualObjects(p.firstName, @"Dominik");
-        XCTAssertEqualObjects(p.lastName, @"Kowalski");
-        XCTAssertEqualObjects(p.email, @"test@mail.com");
-        XCTAssertEqualObjects(p.phoneNumber, @"48222222222");
-        XCTAssertEqualObjects(p.phoneNumberCountryCode, @"PL");
-        XCTAssertEqualObjects(p.id, @"90419e09-1f5b-4fc2-97c8-b878793c53f0");
-        
-        [expectation fulfill];
+    [self createClient:^(CMPComapiChatClient * _Nullable client) {
+        [client.services.profile patchProfileWithProfileID:@"" attributes:@{} eTag:@"ETag" completion:^(CMPResult<CMPProfile *> * _Nonnull result) {
+            XCTAssertTrue(result.error == nil);
+            XCTAssertTrue(result.object != nil);
+            
+            CMPProfile *p = result.object;
+            XCTAssertEqualObjects(p.firstName, @"Dominik");
+            XCTAssertEqualObjects(p.lastName, @"Kowalski");
+            XCTAssertEqualObjects(p.email, @"test@mail.com");
+            XCTAssertEqualObjects(p.phoneNumber, @"48222222222");
+            XCTAssertEqualObjects(p.phoneNumberCountryCode, @"PL");
+            XCTAssertEqualObjects(p.id, @"90419e09-1f5b-4fc2-97c8-b878793c53f0");
+            
+            [expectation fulfill];
+        }];
     }];
     
     [self waitForExpectations:@[expectation] timeout:10.0];
@@ -301,20 +309,22 @@
     [self.requestPerformer.completionValues addObject:completionValue];
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
-    [self.client.services.profile queryProfilesWithQueryElements:@[] completion:^(CMPResult<NSArray<CMPProfile *> *> * _Nonnull result) {
-        XCTAssertTrue(result.error == nil);
-        XCTAssertTrue(result.object != nil);
-        XCTAssertTrue(result.object.count > 0);
-        
-        CMPProfile *p = result.object[0];
-        XCTAssertEqualObjects(p.firstName, @"Dominik");
-        XCTAssertEqualObjects(p.lastName, @"Kowalski");
-        XCTAssertEqualObjects(p.email, @"test@mail.com");
-        XCTAssertEqualObjects(p.phoneNumber, @"48222222222");
-        XCTAssertEqualObjects(p.phoneNumberCountryCode, @"PL");
-        XCTAssertEqualObjects(p.id, @"90419e09-1f5b-4fc2-97c8-b878793c53f0");
-        
-        [expectation fulfill];
+    [self createClient:^(CMPComapiChatClient * _Nullable client) {
+        [client.services.profile queryProfilesWithQueryElements:@[] completion:^(CMPResult<NSArray<CMPProfile *> *> * _Nonnull result) {
+            XCTAssertTrue(result.error == nil);
+            XCTAssertTrue(result.object != nil);
+            XCTAssertTrue(result.object.count > 0);
+            
+            CMPProfile *p = result.object[0];
+            XCTAssertEqualObjects(p.firstName, @"Dominik");
+            XCTAssertEqualObjects(p.lastName, @"Kowalski");
+            XCTAssertEqualObjects(p.email, @"test@mail.com");
+            XCTAssertEqualObjects(p.phoneNumber, @"48222222222");
+            XCTAssertEqualObjects(p.phoneNumberCountryCode, @"PL");
+            XCTAssertEqualObjects(p.id, @"90419e09-1f5b-4fc2-97c8-b878793c53f0");
+            
+            [expectation fulfill];
+        }];
     }];
     
     [self waitForExpectations:@[expectation] timeout:10.0];
@@ -344,31 +354,33 @@
     CMPMockRequestResult *completionValue = [[CMPMockRequestResult alloc] initWithData:data response:response error:nil];
     [self.requestPerformer.completionValues addObject:completionValue];
     
-    [self.client.services.messaging getPreviousMessages:@"1" completion:^(CMPChatResult * _Nonnull result) {
-        XCTAssertTrue(result.error == nil);
-        XCTAssertTrue(result.isSuccessful);
-        
-        NSArray<CMPChatMessage *> *messages = [self.chatStore getMessages:@"1"];
-        
-        XCTAssertNotNil(messages);
-        
-        XCTAssertTrue(messages.count == 2);
-        
-        CMPChatMessage *m1 = [self.chatStore getMessage:@"1"];
-        
-        XCTAssertEqualObjects(m1.id, @"1");
-        
-        CMPChatMessage *m2 = [self.chatStore getMessage:@"2"];
-        
-        XCTAssertEqualObjects(m2.id, @"2");
-        
-        CMPChatConversation *conversation = [self.chatStore getConversation:@"1"];
-        
-        XCTAssertNotNil(conversation);
-        
-        XCTAssertEqualObjects(conversation.firstLocalEventID, @(1));
-        XCTAssertEqualObjects(conversation.lastLocalEventID, @(2));
-        XCTAssertEqualObjects(conversation.latestRemoteEventID, @(2));
+    [self createClient:^(CMPComapiChatClient * _Nullable client) {
+        [client.services.messaging getPreviousMessages:@"1" completion:^(CMPChatResult * _Nonnull result) {
+            XCTAssertTrue(result.error == nil);
+            XCTAssertTrue(result.isSuccessful);
+            
+            NSArray<CMPChatMessage *> *messages = [self.chatStore getMessages:@"1"];
+            
+            XCTAssertNotNil(messages);
+            
+            XCTAssertTrue(messages.count == 2);
+            
+            CMPChatMessage *m1 = [self.chatStore getMessage:@"1"];
+            
+            XCTAssertEqualObjects(m1.id, @"1");
+            
+            CMPChatMessage *m2 = [self.chatStore getMessage:@"2"];
+            
+            XCTAssertEqualObjects(m2.id, @"2");
+            
+            CMPChatConversation *conversation = [self.chatStore getConversation:@"1"];
+            
+            XCTAssertNotNil(conversation);
+            
+            XCTAssertEqualObjects(conversation.firstLocalEventID, @(1));
+            XCTAssertEqualObjects(conversation.lastLocalEventID, @(2));
+            XCTAssertEqualObjects(conversation.latestRemoteEventID, @(2));
+        }];
     }];
 }
 
@@ -383,46 +395,48 @@
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     __weak typeof(self) weakSelf = self;
-    [self.client.services.session startSessionWithCompletion:^{
-        id self = weakSelf;
-        [weakSelf.client.services.messaging sendMessage:@"conversationID" message:message completion:^(CMPChatResult * _Nonnull result) {
-            XCTAssertTrue(result.error == nil);
-            XCTAssertTrue(result.isSuccessful);
-            
-            CMPChatMessage *message = [weakSelf.chatStore getMessage:@"MOCK_ID"];
+    [self createClient:^(CMPComapiChatClient * _Nullable client) {
+        [client.services.session startSessionWithCompletion:^{
+            id self = weakSelf;
+            [client.services.messaging sendMessage:@"conversationID" message:message completion:^(CMPChatResult * _Nonnull result) {
+                XCTAssertTrue(result.error == nil);
+                XCTAssertTrue(result.isSuccessful);
+                
+                CMPChatMessage *message = [weakSelf.chatStore getMessage:@"MOCK_ID"];
 
-            XCTAssertNotNil(message);
-            XCTAssertNotNil(message.parts);
-            XCTAssertNotNil(message.statusUpdates);
-            
-            XCTAssertTrue(message.parts.count == 1);
-            XCTAssertTrue(message.statusUpdates.count == 1);
-            
-            XCTAssertEqualObjects(message.sentEventID, @(1234));
-            XCTAssertEqualObjects(message.metadata[@"dataKey"], @"random info");
-            
-            CMPChatMessagePart *part = message.parts[0];
-            
-            XCTAssertEqualObjects(part.name, @"partName");
-            XCTAssertEqualObjects(part.data, @"data");
-            XCTAssertEqualObjects(part.size, @(@"data".length));
-            XCTAssertEqualObjects(part.url, nil);
-            
-            CMPChatMessageStatus *status = [[message.statusUpdates objectEnumerator] nextObject];
-            
-            XCTAssertNotNil(status);
-            
-            XCTAssertEqual(status.messageStatus, CMPChatMessageDeliveryStatusSent);
-            
-            XCTAssertEqualObjects(status.conversationID, @"conversationID");
-            XCTAssertEqualObjects(status.messageID, @"MOCK_ID");
-            XCTAssertEqualObjects(status.profileID, @"dominik.kowalski");
-            XCTAssertEqualObjects(status.conversationEventID, @(1234));
-            
-            [expectation fulfill];
+                XCTAssertNotNil(message);
+                XCTAssertNotNil(message.parts);
+                XCTAssertNotNil(message.statusUpdates);
+                
+                XCTAssertTrue(message.parts.count == 1);
+                XCTAssertTrue(message.statusUpdates.count == 1);
+                
+                XCTAssertEqualObjects(message.sentEventID, @(1234));
+                XCTAssertEqualObjects(message.metadata[@"dataKey"], @"random info");
+                
+                CMPChatMessagePart *part = message.parts[0];
+                
+                XCTAssertEqualObjects(part.name, @"partName");
+                XCTAssertEqualObjects(part.data, @"data");
+                XCTAssertEqualObjects(part.size, @(@"data".length));
+                XCTAssertEqualObjects(part.url, nil);
+                
+                CMPChatMessageStatus *status = [[message.statusUpdates objectEnumerator] nextObject];
+                
+                XCTAssertNotNil(status);
+                
+                XCTAssertEqual(status.messageStatus, CMPChatMessageDeliveryStatusSent);
+                
+                XCTAssertEqualObjects(status.conversationID, @"conversationID");
+                XCTAssertEqualObjects(status.messageID, @"MOCK_ID");
+                XCTAssertEqualObjects(status.profileID, @"dominik.kowalski");
+                XCTAssertEqualObjects(status.conversationEventID, @(1234));
+                
+                [expectation fulfill];
+            }];
+        } failure:^(NSError * _Nullable error) {
+            XCTFail();
         }];
-    } failure:^(NSError * _Nullable error) {
-        XCTFail();
     }];
     
     
@@ -447,55 +461,55 @@
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     __weak typeof(self) weakSelf = self;
-    [self.client.services.session startSessionWithCompletion:^{
-        id self = weakSelf;
-        [weakSelf.client.services.messaging sendMessage:@"conversationID" message:message attachments:@[attachment] completion:^(CMPChatResult * _Nonnull result) {
-            XCTAssertTrue(result.error == nil);
-            XCTAssertTrue(result.isSuccessful);
-            
-            CMPChatMessage *message = [weakSelf.chatStore getMessage:@"MOCK_ID"];
-            
-            XCTAssertNotNil(message);
-            XCTAssertNotNil(message.parts);
-            XCTAssertNotNil(message.statusUpdates);
-            
-            XCTAssertTrue(message.parts.count == 2);
-            XCTAssertTrue(message.statusUpdates.count == 1);
-            
-            XCTAssertEqualObjects(message.sentEventID, @(1234));
-            XCTAssertEqualObjects(message.metadata[@"dataKey"], @"random info");
-            
-            CMPChatMessagePart *textPart = message.parts[0];
-            
-            XCTAssertEqualObjects(textPart.name, @"partName");
-            XCTAssertEqualObjects(textPart.data, @"data");
-            XCTAssertEqualObjects(textPart.size, @(@"data".length));
-            XCTAssertEqualObjects(textPart.url, nil);
-            
-            CMPChatMessagePart *imagePart = message.parts[1];
-            
-            XCTAssertEqualObjects(imagePart.name, @"image");
-            XCTAssertEqualObjects(imagePart.data, nil);
-            XCTAssertEqualObjects(imagePart.size, @(294));
-            XCTAssertEqualObjects(imagePart.url.absoluteString, @"https://inttest-content.comapi.com/apispaces/2e7dd112-24f6-422b-bcd4-0f2e91315c0b/content/dc02e4fff450a6306e045f5c26801ce31c3efaeb");
-            
-            CMPChatMessageStatus *status = [[message.statusUpdates objectEnumerator] nextObject];
-            
-            XCTAssertNotNil(status);
-            
-            XCTAssertEqual(status.messageStatus, CMPChatMessageDeliveryStatusSent);
-            
-            XCTAssertEqualObjects(status.conversationID, @"conversationID");
-            XCTAssertEqualObjects(status.messageID, @"MOCK_ID");
-            XCTAssertEqualObjects(status.profileID, @"dominik.kowalski");
-            XCTAssertEqualObjects(status.conversationEventID, @(1234));
-            
-            [expectation fulfill];
+    [self createClient:^(CMPComapiChatClient * _Nullable client) {
+        [client.services.session startSessionWithCompletion:^{
+            [client.services.messaging sendMessage:@"conversationID" message:message attachments:@[attachment] completion:^(CMPChatResult * _Nonnull result) {
+                XCTAssertTrue(result.error == nil);
+                XCTAssertTrue(result.isSuccessful);
+                
+                CMPChatMessage *message = [weakSelf.chatStore getMessage:@"MOCK_ID"];
+                
+                XCTAssertNotNil(message);
+                XCTAssertNotNil(message.parts);
+                XCTAssertNotNil(message.statusUpdates);
+                
+                XCTAssertTrue(message.parts.count == 2);
+                XCTAssertTrue(message.statusUpdates.count == 1);
+                
+                XCTAssertEqualObjects(message.sentEventID, @(1234));
+                XCTAssertEqualObjects(message.metadata[@"dataKey"], @"random info");
+                
+                CMPChatMessagePart *textPart = message.parts[0];
+                
+                XCTAssertEqualObjects(textPart.name, @"partName");
+                XCTAssertEqualObjects(textPart.data, @"data");
+                XCTAssertEqualObjects(textPart.size, @(@"data".length));
+                XCTAssertEqualObjects(textPart.url, nil);
+                
+                CMPChatMessagePart *imagePart = message.parts[1];
+                
+                XCTAssertEqualObjects(imagePart.name, @"image");
+                XCTAssertEqualObjects(imagePart.data, nil);
+                XCTAssertEqualObjects(imagePart.size, @(294));
+                XCTAssertEqualObjects(imagePart.url.absoluteString, @"https://inttest-content.comapi.com/apispaces/2e7dd112-24f6-422b-bcd4-0f2e91315c0b/content/dc02e4fff450a6306e045f5c26801ce31c3efaeb");
+                
+                CMPChatMessageStatus *status = [[message.statusUpdates objectEnumerator] nextObject];
+                
+                XCTAssertNotNil(status);
+                
+                XCTAssertEqual(status.messageStatus, CMPChatMessageDeliveryStatusSent);
+                
+                XCTAssertEqualObjects(status.conversationID, @"conversationID");
+                XCTAssertEqualObjects(status.messageID, @"MOCK_ID");
+                XCTAssertEqualObjects(status.profileID, @"dominik.kowalski");
+                XCTAssertEqualObjects(status.conversationEventID, @(1234));
+                
+                [expectation fulfill];
+            }];
+        } failure:^(NSError * _Nullable error) {
+            XCTFail();
         }];
-    } failure:^(NSError * _Nullable error) {
-        XCTFail();
     }];
-    
     
     [self waitForExpectations:@[expectation] timeout:10.0];
 }
@@ -514,9 +528,8 @@
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     __weak typeof(self) weakSelf = self;
-    [self.client.services.session startSessionWithCompletion:^{
-        id self = weakSelf;
-        [weakSelf.client.services.messaging addConversation:newConversation completion:^(CMPChatResult * _Nonnull result) {
+    [self createClient:^(CMPComapiChatClient * _Nullable client) {
+        [client.services.messaging addConversation:newConversation completion:^(CMPChatResult * _Nonnull result) {
             XCTAssertTrue(result.error == nil);
             XCTAssertTrue(result.isSuccessful);
 
@@ -550,8 +563,6 @@
             
             [expectation fulfill];
         }];
-    } failure:^(NSError * _Nullable error) {
-        XCTFail();
     }];
     
     [self waitForExpectations:@[expectation] timeout:10.0];
@@ -577,9 +588,8 @@
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     __weak typeof(self) weakSelf = self;
-    [self.client.services.session startSessionWithCompletion:^{
-        id self = weakSelf;
-        [weakSelf.client.services.messaging addConversation:newConversation completion:^(CMPChatResult * _Nonnull addResult) {
+    [self createClient:^(CMPComapiChatClient * _Nullable client) {
+        [client.services.messaging addConversation:newConversation completion:^(CMPChatResult * _Nonnull addResult) {
             XCTAssertTrue(addResult.error == nil);
             XCTAssertTrue(addResult.isSuccessful);
             
@@ -587,7 +597,7 @@
             
             XCTAssertNotNil(conversation);
             
-            [weakSelf.client.services.messaging deleteConversation:@"support" eTag:nil completion:^(CMPChatResult * _Nonnull deleteResult) {
+            [client.services.messaging deleteConversation:@"support" eTag:nil completion:^(CMPChatResult * _Nonnull deleteResult) {
                 XCTAssertTrue(deleteResult.error == nil);
                 XCTAssertTrue(deleteResult.isSuccessful);
                 
@@ -598,8 +608,6 @@
                 [expectation fulfill];
             }];
         }];
-    } failure:^(NSError * _Nullable error) {
-        XCTFail();
     }];
     
     [self waitForExpectations:@[expectation] timeout:10.0];
@@ -626,9 +634,8 @@
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     __weak typeof(self) weakSelf = self;
-    [self.client.services.session startSessionWithCompletion:^{
-        id self = weakSelf;
-        [weakSelf.client.services.messaging addConversation:newConversation completion:^(CMPChatResult * _Nonnull addResult) {
+    [self createClient:^(CMPComapiChatClient * _Nullable client) {
+        [client.services.messaging addConversation:newConversation completion:^(CMPChatResult * _Nonnull addResult) {
             XCTAssertTrue(addResult.error == nil);
             XCTAssertTrue(addResult.isSuccessful);
             
@@ -638,7 +645,7 @@
             
             XCTAssertEqualObjects(conversation.isPublic, @(NO));
             
-            [weakSelf.client.services.messaging updateConversation:@"support" eTag:nil update:updateConversation completion:^(CMPChatResult * _Nonnull updateResult) {
+            [client.services.messaging updateConversation:@"support" eTag:nil update:updateConversation completion:^(CMPChatResult * _Nonnull updateResult) {
                 XCTAssertTrue(addResult.error == nil);
                 XCTAssertTrue(addResult.isSuccessful);
                 
@@ -673,10 +680,7 @@
                 [expectation fulfill];
             }];
         }];
-    } failure:^(NSError * _Nullable error) {
-        XCTFail();
     }];
-    
     [self waitForExpectations:@[expectation] timeout:10.0];
 }
 
@@ -701,17 +705,14 @@
     CMPNewConversation *newConversation = [[CMPNewConversation alloc] initWithID:@"conversationID" name:@"conversationName" description:@"conversationDescription" roles:roles participants:@[participant] isPublic:@(NO)];
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
-    __weak typeof(self) weakSelf = self;
-    [self.client.services.session startSessionWithCompletion:^{
-        [weakSelf.client.services.messaging addConversation:newConversation completion:^(CMPChatResult * _Nonnull addConversationResult) {
-            [weakSelf.client.services.messaging sendMessage:@"new message" message:message completion:^(CMPChatResult * _Nonnull addMessageResult) {
-                [weakSelf.client.services.messaging synchroniseConversation:@"1" completion:^(CMPChatResult * _Nonnull synchroniseResult) {
+    [self createClient:^(CMPComapiChatClient * _Nullable client) {
+        [client.services.messaging addConversation:newConversation completion:^(CMPChatResult * _Nonnull addConversationResult) {
+            [client.services.messaging sendMessage:@"new message" message:message completion:^(CMPChatResult * _Nonnull addMessageResult) {
+                [client.services.messaging synchroniseConversation:@"1" completion:^(CMPChatResult * _Nonnull synchroniseResult) {
                     [expectation fulfill];
                 }];
             }];
         }];
-    } failure:^(NSError * _Nullable err) {
-        XCTFail();
     }];
     
     [self waitForExpectations:@[expectation] timeout:10.0];
@@ -725,25 +726,26 @@
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     __weak typeof(self) weakSelf = self;
-    [self.client.services.messaging getParticipants:@"conversationID" participantIDs:@[@"1", @"2"] completion:^(NSArray<CMPChatParticipant *> * _Nonnull result) {
-        id self = weakSelf;
-        XCTAssertNotNil(result);
+    [self createClient:^(CMPComapiChatClient * _Nullable client) {
+        [client.services.messaging getParticipants:@"conversationID" participantIDs:@[@"1", @"2"] completion:^(NSArray<CMPChatParticipant *> * _Nonnull result) {
+            id self = weakSelf;
+            XCTAssertNotNil(result);
 
-        XCTAssertEqual(result.count, 2);
-        
-        CMPChatParticipant *p1 = result[0];
-        
-        XCTAssertEqualObjects(p1.id, @"1");
-        XCTAssertEqual(p1.role, CMPChatRoleOwner);
+            XCTAssertEqual(result.count, 2);
+            
+            CMPChatParticipant *p1 = result[0];
+            
+            XCTAssertEqualObjects(p1.id, @"1");
+            XCTAssertEqual(p1.role, CMPChatRoleOwner);
 
-        CMPChatParticipant *p2 = result[1];
-        
-        XCTAssertEqualObjects(p2.id, @"2");
-        XCTAssertEqual(p2.role, CMPChatRoleParticipant);
+            CMPChatParticipant *p2 = result[1];
+            
+            XCTAssertEqualObjects(p2.id, @"2");
+            XCTAssertEqual(p2.role, CMPChatRoleParticipant);
 
-        [expectation fulfill];
+            [expectation fulfill];
+        }];
     }];
-    
     [self waitForExpectations:@[expectation] timeout:10.0];
 }
 
@@ -755,13 +757,14 @@
     [self.requestPerformer.completionValues addObject:completionValue];
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
-    [self.client.services.messaging removeParticipants:@"conversationID" participants:@[] completion:^(CMPChatResult * _Nonnull result) {
-        XCTAssertTrue(result.error == nil);
-        XCTAssertTrue(result.isSuccessful);
-        
-        [expectation fulfill];
+    [self createClient:^(CMPComapiChatClient * _Nullable client) {
+        [client.services.messaging removeParticipants:@"conversationID" participants:@[] completion:^(CMPChatResult * _Nonnull result) {
+            XCTAssertTrue(result.error == nil);
+            XCTAssertTrue(result.isSuccessful);
+            
+            [expectation fulfill];
+        }];
     }];
-    
     [self waitForExpectations:@[expectation] timeout:10.0];
 }
 
@@ -787,9 +790,8 @@
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     __weak typeof(self) weakSelf = self;
-    [self.client.services.session startSessionWithCompletion:^{
-        id self = weakSelf;
-        [weakSelf.client.services.messaging addConversation:newConversation completion:^(CMPChatResult * _Nonnull addResult) {
+    [self createClient:^(CMPComapiChatClient * _Nullable client) {
+        [client.services.messaging addConversation:newConversation completion:^(CMPChatResult * _Nonnull addResult) {
             XCTAssertTrue(addResult.error == nil);
             XCTAssertTrue(addResult.isSuccessful);
             
@@ -797,15 +799,13 @@
             
             XCTAssertNotNil(conversation);
             
-            [weakSelf.client.services.messaging addParticipants:@"support" participants:@[newParticipant] completion:^(CMPChatResult * _Nonnull addParticipantResult) {
+            [client.services.messaging addParticipants:@"support" participants:@[newParticipant] completion:^(CMPChatResult * _Nonnull addParticipantResult) {
                 XCTAssertTrue(addParticipantResult.error == nil);
                 XCTAssertTrue(addParticipantResult.isSuccessful);
                 
                 [expectation fulfill];
             }];
         }];
-    } failure:^(NSError * _Nullable err) {
-        XCTFail();
     }];
     
     [self waitForExpectations:@[expectation] timeout:10.0];

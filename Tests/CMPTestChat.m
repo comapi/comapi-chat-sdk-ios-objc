@@ -67,18 +67,32 @@
 }
 
 - (void)testCreateChatClient {
-    CMPComapiChatClient *client = [CMPChat initialiseWithConfig:_config];
+    XCTestExpectation *exp = [[XCTestExpectation alloc] initWithDescription:@"callback recieved"];
     
-    XCTAssertNotNil(client);
+    [CMPChat initialiseWithConfig:_config completion:^(CMPComapiChatClient * _Nullable client) {
+        XCTAssertNotNil(client);
+        
+        XCTAssertNil(CMPChat.shared);
+        
+        [exp fulfill];
+    }];
     
-    XCTAssertNil(CMPChat.shared);
+    [self waitForExpectations:@[exp] timeout:10.0];
 }
 
 - (void)testCreateChatClientShared {
-    CMPComapiChatClient *client = [CMPChat initialiseSharedWithConfig:_config];
+    XCTestExpectation *exp = [[XCTestExpectation alloc] initWithDescription:@"callback recieved"];
+
+    [CMPChat initialiseSharedWithConfig:_config completion:^(CMPComapiChatClient * _Nullable client) {
+        XCTAssertNotNil(client);
+        XCTAssertNotNil(CMPChat.shared);
+        
+        [exp fulfill];
+    }];
     
-    XCTAssertNotNil(client);
-    XCTAssertNotNil(CMPChat.shared);
+    [self waitForExpectations:@[exp] timeout:10.0];
+
+    
 }
 
 @end

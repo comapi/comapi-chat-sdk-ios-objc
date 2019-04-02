@@ -34,48 +34,46 @@ NSString *const kModelName = @"CMPComapiChat";
 @synthesize workerContext = _workerContext;
 @synthesize persistentContainer = _persistentContainer;
 
-- (instancetype)initWithConfig:(CMPCoreDataConfig *)config completion:(void (^)(NSError * _Nullable))completion {
-    self = [super init];
-    
-    if (self) {
-        NSURL *modelURL = [[NSBundle bundleForClass:self.class] URLForResource:kModelName withExtension:@"momd"];
-        NSAssert(modelURL, @"Failed to locate momd bundle in application");
++ (void)initialiseStackWithConfig:(CMPCoreDataConfig *)config completion:(void (^)(id<CMPCoreDataManagable> _Nullable, NSError * _Nullable))completion  API_AVAILABLE(ios(10.0)) {
+   [CMPCoreDataManager newStack:config completion:^(CMPCoreDataManager * _Nullable stack, NSError * _Nullable error) {
+       if (completion) {
+           completion(stack, error);
+       }
+    }];
+}
 
-        NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
-        NSAssert(mom, @"Failed to initialize mom from URL: %@", modelURL);
-        
-        if (@available(iOS 10.0, *)) {
-            _persistentContainer = [[NSPersistentContainer alloc] initWithName:kModelName managedObjectModel:mom];
-            NSPersistentStoreDescription *psd = _persistentContainer.persistentStoreDescriptions.firstObject;
-            psd.type = config.persistentStoreType;
-            [_persistentContainer loadPersistentStoresWithCompletionHandler:^(NSPersistentStoreDescription * psd, NSError * _Nullable error) {
-                if (error) {
-                    logWithLevel(CMPLogLevelError, @"Core Data: error", error, nil);
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        if (completion) {
-                            completion(error);
-                        }
-                    });
-                } else {
-                    logWithLevel(CMPLogLevelInfo, @"Core Data: initialized.", nil);
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        if (completion) {
-                            completion(nil);
-                        }
-                    });
-                }
-            }];
-        } else {
-            logWithLevel(CMPLogLevelInfo, @"Core Data: unsupported iOS version - %@, minimum supported version - 10.0", UIDevice.currentDevice.systemVersion, nil);
-            dispatch_async(dispatch_get_main_queue(), ^{
++ (void)newStack:(CMPCoreDataConfig *)config completion:(void (^)(CMPCoreDataManager * _Nullable, NSError * _Nullable))completion {
+    CMPCoreDataManager *stack = [[CMPCoreDataManager alloc] init];
+
+    NSURL *modelURL = [[NSBundle bundleForClass:self.class] URLForResource:kModelName withExtension:@"momd"];
+    NSAssert(modelURL, @"Failed to locate momd bundle in application");
+
+    NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
+    NSAssert(mom, @"Failed to initialize mom from URL: %@", modelURL);
+    
+    if (@available(iOS 10.0, *)) {
+        stack.persistentContainer = [[NSPersistentContainer alloc] initWithName:kModelName managedObjectModel:mom];
+        NSPersistentStoreDescription *psd = stack.persistentContainer.persistentStoreDescriptions.firstObject;
+        psd.type = config.persistentStoreType;
+        [stack.persistentContainer loadPersistentStoresWithCompletionHandler:^(NSPersistentStoreDescription * psd, NSError * _Nullable error) {
+            if (error) {
+                logWithLevel(CMPLogLevelError, @"Core Data: error", error, nil);
                 if (completion) {
-                    completion(nil);
+                    completion(nil, error);
                 }
-            });
+            } else {
+                logWithLevel(CMPLogLevelInfo, @"Core Data: initialized.", nil);
+                if (completion) {
+                    completion(stack, nil);
+                }
+            }
+        }];
+    } else {
+        logWithLevel(CMPLogLevelInfo, @"Core Data: unsupported iOS version - %@, minimum supported version - 10.0", UIDevice.currentDevice.systemVersion, nil);
+        if (completion) {
+            completion(nil, nil);
         }
     }
-    
-    return self;
 }
 
 - (NSManagedObjectContext *)mainContext {
@@ -110,6 +108,12 @@ NSString *const kModelName = @"CMPComapiChat";
             }
         }
     }
+}
+
+#pragma mark - private
+
+- (void)setPersistentContainer:(NSPersistentContainer *)persistentContainer API_AVAILABLE(ios(10.0)) {
+    _persistentContainer = persistentContainer;
 }
 
 @end

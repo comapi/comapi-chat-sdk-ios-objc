@@ -68,7 +68,8 @@
         if (error) {
             NSLog(@"%@", error.localizedDescription);
         }
-        [self reload];
+        [weakSelf reload:NO];
+        [weakSelf scrollToLastIndex];
     }];
 }
 
@@ -96,8 +97,8 @@
         [weakSelf.chatView animateOnKeyboardChangeWithNotification:notif completion:nil];
     };
     self.chatView.didTapSendButton = ^(NSString * _Nonnull text) {
+        [weakSelf.chatView.inputMessageView endEditing];
         [weakSelf.viewModel sendMessage:text completion:^(NSError * _Nullable error) {
-            [weakSelf reload];
             weakSelf.viewModel.shouldReloadAttachments();
         }];
     };
@@ -109,6 +110,10 @@
         } pickerPresenter:^(UIViewController * _Nonnull vc) {
             [weakSelf.navigationController presentViewController:vc animated:YES completion:nil];
         }];
+    };
+    self.chatView.didTapNewMessageButton = ^{
+        [weakSelf scrollToLastIndex];
+        [weakSelf.chatView showNewMessageView:NO completion:nil];
     };
     self.viewModel.didTakeNewPhoto = ^(UIImage * _Nonnull image) {
         [weakSelf.viewModel showPhotoCropControllerWithImage:image presenter:^(UIViewController * _Nonnull vc) {
@@ -150,9 +155,17 @@
     self.navigationItem.rightBarButtonItem = addParticipantBarButton;
 }
 
-- (void)reload {
-    [self.chatView scrollToBottomAnimated:YES];
+- (void)reload:(BOOL)showNewMessageView {
     [self.chatView.tableView reloadData];
+    if (showNewMessageView) {
+        if (self.chatView.tableView.contentOffset.y < self.chatView.tableView.contentSize.height) {
+            [self.chatView showNewMessageView:YES completion:nil];
+        }
+    }
+}
+
+- (void)scrollToLastIndex {
+    [self.chatView.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.viewModel.fetchController.sections[0].numberOfObjects - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 }
 
 - (void)addParticipant {
@@ -177,13 +190,13 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    CMPChatMessage *msg = [_viewModel.fetchController objectAtIndexPath:indexPath];
+    CMPChatMessage *msg = [[_viewModel.fetchController objectAtIndexPath:indexPath] chatMessage];
     CMPMessagePartCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
     NSString *fromID = msg.context.from.id;
     NSString *selfID = _viewModel.client.profileID;
 
     BOOL isMine = [fromID isEqualToString:selfID];
-    [cell configureWithMessage:msg ownership:isMine ? CMPMessageOwnershipSelf : CMPMessageOwnershipOther downloader:_viewModel.downloader];
+    [cell configureWithMessage:msg profileID:selfID ownership:isMine ? CMPMessageOwnershipSelf : CMPMessageOwnershipOther downloader:_viewModel.downloader];
 
     return cell;
 }
@@ -191,29 +204,7 @@
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-    [self reload];
-//    switch (type) {
-//        case NSFetchedResultsChangeInsert: {
-//
-//            [self.chatView.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
-//                                           withRowAnimation:UITableViewRowAnimationNone];
-//
-//            break;
-//        }
-//        case NSFetchedResultsChangeDelete: {
-//            [self.chatView.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-//                                           withRowAnimation:UITableViewRowAnimationNone];
-//            break;
-//        }
-//        case NSFetchedResultsChangeMove: {
-//            break;
-//        }
-//        case NSFetchedResultsChangeUpdate: {
-//            [self.chatView.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
-//            break;
-//        }
-//    }
-
+    [self reload:YES];
 }
 
 #pragma mark - UICollectionViewDelegate & UICollectionViewDataSource

@@ -26,6 +26,7 @@
 @dynamic profileID;
 @dynamic messageStatus;
 @dynamic timestamp;
+@dynamic message;
 
 - (CMPChatMessageStatus *)chatMessageStatus {
     CMPChatMessageStatus *chatMessagestatus = [[CMPChatMessageStatus alloc] init];
@@ -41,12 +42,14 @@
 }
 
 - (void)update:(CMPChatMessageStatus *)chatMessageStatus {
+    [self.message willChangeValueForKey:@"statusUpdates"];
     self.conversationEventID = chatMessageStatus.conversationEventID;
     self.conversationID = chatMessageStatus.conversationID;
     self.messageID = chatMessageStatus.messageID;
     self.profileID = chatMessageStatus.profileID;
     self.messageStatus = @(chatMessageStatus.messageStatus);
     self.timestamp = chatMessageStatus.timestamp;
+    [self.message didChangeValueForKey:@"statusUpdates"];
 }
 
 @end

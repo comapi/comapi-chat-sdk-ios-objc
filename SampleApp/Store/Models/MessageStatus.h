@@ -20,6 +20,8 @@
 
 #import <CoreData/CoreData.h>
 
+#import "Message.h"
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface MessageStatus : NSManagedObject
@@ -30,6 +32,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSNumber *conversationEventID;
 @property (nonatomic, strong, nullable) NSNumber *messageStatus;
 @property (nonatomic, strong, nullable) NSDate *timestamp;
+
+@property (nonatomic, strong, nullable) Message *message;
 
 - (CMPChatMessageStatus *)chatMessageStatus;
 

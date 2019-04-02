@@ -96,6 +96,10 @@
     [NSLayoutConstraint activateConstraints:@[uploadTrailing, uploadCenterY, uploadLeading, uploadWidth]];
 }
 
+- (void)endEditing {
+    [self.inputTextView endEditing:YES];
+}
+
 - (void)sendTapped {
     if (self.didTapSendButton) {
         self.didTapSendButton();

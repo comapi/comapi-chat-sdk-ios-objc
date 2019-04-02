@@ -29,7 +29,8 @@ API_AVAILABLE(ios(10.0))
 @property (nonatomic, strong, readonly) NSManagedObjectContext *mainContext;
 @property (nonatomic, strong, readonly) NSManagedObjectContext *workerContext;
 
-- (instancetype)initWithConfig:(CMPCoreDataConfig *)config completion:(void (^)(NSError * _Nullable))completion;
++ (void)initialiseStackWithConfig:(CMPCoreDataConfig *)config completion:(void (^)(id<CMPCoreDataManagable> _Nullable, NSError * _Nullable))completion;
+//- (instancetype)initWithConfig:(CMPCoreDataConfig *)config completion:(void (^)(NSError * _Nullable))completion;
 
 @end
 

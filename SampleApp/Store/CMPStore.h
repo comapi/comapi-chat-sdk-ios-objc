@@ -19,6 +19,8 @@
 #import "CMPStoreManagerStack.h"
 #import "CMPChatStore.h"
 
+#import "Message.h"
+
 #import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -26,6 +28,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface CMPStore : NSObject <CMPChatStore>
 
 - (instancetype)initWithManager:(CMPStoreManagerStack *)manager;
+
+- (Message *)getMessage:(NSString *)messageID;
 
 @end
 

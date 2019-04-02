@@ -83,7 +83,7 @@ CGFloat const kMaxTextViewWidth = 200;
     [NSLayoutConstraint deactivateConstraints:[self.textView constraints]];
 
     NSLayoutConstraint *bubbleTop = [self.bubbleView.topAnchor constraintEqualToAnchor:self.topAnchor constant:4];
-    NSLayoutConstraint *bubbleBottom = [self.bubbleView.bottomAnchor constraintEqualToAnchor:self.bubbleView.superview.bottomAnchor constant:-8];
+    NSLayoutConstraint *bubbleBottom = [self.bubbleView.bottomAnchor constraintEqualToAnchor:self.bubbleView.superview.bottomAnchor constant:-4];
     
     NSLayoutConstraint *bubbleSide;
     if (ownership == CMPMessageOwnershipSelf) {
