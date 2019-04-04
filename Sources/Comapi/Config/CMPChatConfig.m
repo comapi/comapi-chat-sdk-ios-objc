@@ -21,7 +21,7 @@
 @implementation CMPChatConfig
 
 - (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(id<CMPStoreFactoryBuildable>)storeFactory {
-    self = [super initWithApiSpaceID:apiSpaceID authenticationDelegate:authenticationDelegate logLevel:CMPLogLevelVerbose];
+    self = [super initWithApiSpaceID:apiSpaceID authenticationDelegate:authenticationDelegate logLevel:CMPLogLevelWarning];
     
     if (self) {
         self.storeFactory = storeFactory;
