@@ -165,7 +165,11 @@
 }
 
 - (void)scrollToLastIndex {
-    [self.chatView.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.viewModel.fetchController.sections[0].numberOfObjects - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    if (self.viewModel.fetchController.sections[0].numberOfObjects == 0) {
+        return;
+    }
+    NSInteger index = self.viewModel.fetchController.sections[0].numberOfObjects - 1;
+    [self.chatView.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 }
 
 - (void)addParticipant {

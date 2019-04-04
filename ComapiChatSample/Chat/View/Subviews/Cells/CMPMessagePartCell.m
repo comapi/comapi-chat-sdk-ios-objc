@@ -208,18 +208,19 @@
     }
     
     [self.contentView addSubview:self.statusLabel];
-    
-    NSLayoutConstraint *top = [self.statusLabel.topAnchor constraintEqualToAnchor:((UIView *)self.partViews.lastObject).bottomAnchor];
-    NSLayoutConstraint *bottom = [self.statusLabel.bottomAnchor constraintEqualToAnchor:self.contentView.bottomAnchor constant:-8];
-    bottom.priority = 999;
-    NSLayoutConstraint *side;
-    if (ownership == CMPMessageOwnershipSelf) {
-        side = [self.statusLabel.trailingAnchor constraintEqualToAnchor:self.contentView.trailingAnchor constant:-22];
-    } else {
-        side = [self.statusLabel.leadingAnchor constraintEqualToAnchor:self.contentView.leadingAnchor constant:22];
+    if (_partViews && _partViews.count > 0) {
+        NSLayoutConstraint *top = [self.statusLabel.topAnchor constraintEqualToAnchor:((UIView *)self.partViews.lastObject).bottomAnchor];
+        NSLayoutConstraint *bottom = [self.statusLabel.bottomAnchor constraintEqualToAnchor:self.contentView.bottomAnchor constant:-8];
+        bottom.priority = 999;
+        NSLayoutConstraint *side;
+        if (ownership == CMPMessageOwnershipSelf) {
+            side = [self.statusLabel.trailingAnchor constraintEqualToAnchor:self.contentView.trailingAnchor constant:-22];
+        } else {
+            side = [self.statusLabel.leadingAnchor constraintEqualToAnchor:self.contentView.leadingAnchor constant:22];
+        }
+        
+        [NSLayoutConstraint activateConstraints:@[top, bottom, side]];
     }
-    
-    [NSLayoutConstraint activateConstraints:@[top, bottom, side]];
 }
 
 - (void)configurePartsView:(CMPChatMessage *)message ownership:(CMPMessageOwnership)ownership downloader:(CMPImageDownloader *)downloader {

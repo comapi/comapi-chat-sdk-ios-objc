@@ -2,7 +2,7 @@ PODS:
   - Base64 (1.1.2)
   - CMPComapiChat (1.0.0):
     - CMPComapiFoundation
-  - CMPComapiFoundation (1.1.1):
+  - CMPComapiFoundation (1.1.2):
     - SocketRocket
   - JWT (2.2.0):
     - Base64 (~> 1.1.2)
@@ -28,10 +28,10 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
   CMPComapiChat: d43bc83948afc3513316703305d1d73fa6ed8bbc
-  CMPComapiFoundation: 371143949ee2ee8afc2b12b705274ceff3fa0200
+  CMPComapiFoundation: de6d22eafddf4c5f2e7042fbb0a98e93fd1300a6
   JWT: cf73c0ab0dac762df3de8a3f1164352089d97780
   SocketRocket: d57c7159b83c3c6655745cd15302aa24b6bae531
 
-PODFILE CHECKSUM: 7254c01592ea58c02672d600abaf4935fd1a0ef4
+PODFILE CHECKSUM: 1278a8d3c1a862c92e260afdb889249901397c1a
 
 COCOAPODS: 1.5.3

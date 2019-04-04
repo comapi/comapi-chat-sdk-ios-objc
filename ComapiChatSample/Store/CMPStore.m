@@ -189,6 +189,10 @@
 #pragma mark - Message
 
 - (BOOL)upsertMessage:(nonnull CMPChatMessage *)message {
+    if (!message.parts || message.parts.count == 0) {
+        return YES;
+    }
+    
     NSLog(@"Store: upserting message to conversationID - %@", message.context.conversationID);
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
@@ -208,6 +212,7 @@
     } else {
         Message *m = [[Message alloc] initWithContext:_manager.mainContext];
         [m update:message];
+        
         return YES;
     }
     
@@ -307,11 +312,19 @@
         NSLog(@"Store: error retreiving messages - %@", error.localizedDescription);
         return nil;
     }
-    
+    NSMutableArray<Message *> *toDelete = [NSMutableArray new];
     NSMutableArray<CMPChatMessage *> *chatMessages = [NSMutableArray new];
     for (Message * m in messages) {
-        CMPChatMessage *chatMessage = [m chatMessage];
-        [chatMessages addObject:chatMessage];
+        if (m.parts.count == 0) {
+            [toDelete addObject:m];
+        } else {
+            CMPChatMessage *chatMessage = [m chatMessage];
+            [chatMessages addObject:chatMessage];
+        }
+    }
+    
+    for (Message * m in toDelete) {
+        [self deleteMessage:m.context.conversationID messageID:m.id];
     }
     
     return [NSArray arrayWithArray:chatMessages];
