@@ -55,11 +55,7 @@
     CMPOrphanedEvent *e = [[CMPOrphanedEvent alloc] initWithID:@(1) data:data];
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
-    [CMPCoreDataManager initialiseStackWithConfig:_config completion:^(id<CMPCoreDataManagable> _Nullable store, NSError * _Nullable error) {
-        if (error) {
-            XCTFail();
-            return;
-        }
+    CMPCoreDataManager *store = [[CMPCoreDataManager alloc] initWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType]];
         NSManagedObjectContext *newCtx = store.workerContext;
         [newCtx upsertOrphanedEvents:@[e] completion:^(NSInteger inserted, NSError * _Nullable err) {
             XCTAssertNil(err);
@@ -89,18 +85,13 @@
                 [expectation fulfill];
             }];
         }];
-    }];
     
     [self waitForExpectations:@[expectation] timeout:5.0];
 }
 
 - (void)testDeleteOrphanedEvent {
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
-    [CMPCoreDataManager initialiseStackWithConfig:_config completion:^(id<CMPCoreDataManagable> _Nullable store, NSError * _Nullable error) {
-        if (error) {
-            XCTFail();
-            return;
-        }
+    CMPCoreDataManager *store = [[CMPCoreDataManager alloc] initWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType]];
         
         NSDate *date = [NSDate dateWithTimeIntervalSince1970:0];
         CMPOrphanedEventPayload *payload = [[CMPOrphanedEventPayload alloc] initWithProfileID:@"profileId" messageID:@"messageId" conversationID:@"conversationId" isPublicConversation:@(NO) timestamp:date];
@@ -125,19 +116,13 @@
             
             [expectation fulfill];
         }];
-
-    }];
     
     [self waitForExpectations:@[expectation] timeout:5.0];
 }
 
 - (void)testQueryOrphanedEvent {
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
-    [CMPCoreDataManager initialiseStackWithConfig:_config completion:^(id<CMPCoreDataManagable> _Nullable store, NSError * _Nullable error) {
-        if (error) {
-            XCTFail();
-            return;
-        }
+    CMPCoreDataManager *store = [[CMPCoreDataManager alloc] initWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType]];
         
         NSDate *date = [NSDate dateWithTimeIntervalSince1970:0];
         CMPOrphanedEventPayload *payload = [[CMPOrphanedEventPayload alloc] initWithProfileID:@"profileId" messageID:@"messageId" conversationID:@"conversationId" isPublicConversation:@(NO) timestamp:date];
@@ -171,7 +156,6 @@
                 [expectation fulfill];
             }];
         }];
-    }];
     
     [self waitForExpectations:@[expectation] timeout:5.0];
 }

@@ -30,90 +30,111 @@ NSString *const kModelName = @"CMPComapiChat";
 
 @implementation CMPCoreDataManager
 
+@synthesize storeConfig = _storeConfig;
+@synthesize storeCoordinator = _storeCoordinator;
+@synthesize objectModel = _objectModel;
 @synthesize mainContext = _mainContext;
 @synthesize workerContext = _workerContext;
-@synthesize persistentContainer = _persistentContainer;
 
-+ (void)initialiseStackWithConfig:(CMPCoreDataConfig *)config completion:(void (^)(id<CMPCoreDataManagable> _Nullable, NSError * _Nullable))completion  API_AVAILABLE(ios(10.0)) {
-   [CMPCoreDataManager newStack:config completion:^(CMPCoreDataManager * _Nullable stack, NSError * _Nullable error) {
-       if (completion) {
-           completion(stack, error);
-       }
-    }];
+- (instancetype)initWithConfig:(CMPCoreDataConfig *)config {
+    self = [super init];
+    
+    if (self) {
+        _storeConfig = config;
+    }
+    
+    return self;
 }
 
-+ (void)newStack:(CMPCoreDataConfig *)config completion:(void (^)(CMPCoreDataManager * _Nullable, NSError * _Nullable))completion {
-    CMPCoreDataManager *stack = [[CMPCoreDataManager alloc] init];
-
+- (NSManagedObjectModel *)objectModel {
+    if (_objectModel) {
+        return _objectModel;
+    }
+    
     NSURL *modelURL = [[NSBundle bundleForClass:self.class] URLForResource:kModelName withExtension:@"momd"];
     NSAssert(modelURL, @"Failed to locate momd bundle in application");
 
-    NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
-    NSAssert(mom, @"Failed to initialize mom from URL: %@", modelURL);
+    _objectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
+    NSAssert(_objectModel, @"Failed to initialize mom from URL: %@", modelURL);
     
-    if (@available(iOS 10.0, *)) {
-        stack.persistentContainer = [[NSPersistentContainer alloc] initWithName:kModelName managedObjectModel:mom];
-        NSPersistentStoreDescription *psd = stack.persistentContainer.persistentStoreDescriptions.firstObject;
-        psd.type = config.persistentStoreType;
-        [stack.persistentContainer loadPersistentStoresWithCompletionHandler:^(NSPersistentStoreDescription * psd, NSError * _Nullable error) {
-            if (error) {
-                logWithLevel(CMPLogLevelError, @"Core Data: error", error, nil);
-                if (completion) {
-                    completion(nil, error);
-                }
-            } else {
-                logWithLevel(CMPLogLevelInfo, @"Core Data: initialized.", nil);
-                if (completion) {
-                    completion(stack, nil);
-                }
-            }
-        }];
-    } else {
-        logWithLevel(CMPLogLevelInfo, @"Core Data: unsupported iOS version - %@, minimum supported version - 10.0", UIDevice.currentDevice.systemVersion, nil);
-        if (completion) {
-            completion(nil, nil);
-        }
+    return _objectModel;
+}
+
+- (NSPersistentStoreCoordinator *)storeCoordinator {
+    if (_storeCoordinator != nil) {
+        return _storeCoordinator;
     }
+    
+    NSURL *documentsURL = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+    NSURL *storeURL = [documentsURL URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.sqlite", kModelName]];
+    
+    NSError *error = nil;
+    _storeCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self objectModel]];
+    if (![_storeCoordinator addPersistentStoreWithType:self.storeConfig.persistentStoreType configuration:nil URL:storeURL options:nil error:&error]) {
+        logWithLevel(CMPLogLevelError, @"Core Data: error", error, nil);
+        abort();
+    }
+    
+    return _storeCoordinator;
+}
+
+- (void)setStoreConfig:(CMPCoreDataConfig *)storeConfig {
+    _storeConfig = storeConfig;
+}
+
+- (CMPCoreDataConfig *)storeConfig {
+    if (!_storeConfig) {
+        _storeConfig = [[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSSQLiteStoreType];
+    }
+    
+    return _storeConfig;
 }
 
 - (NSManagedObjectContext *)mainContext {
-    NSManagedObjectContext *ctx = _persistentContainer.viewContext;
-    if (@available(iOS 10.0, *)) {
-        ctx.automaticallyMergesChangesFromParent = YES;
-    } else {
-        logWithLevel(CMPLogLevelInfo, @"Core Data: unsupported iOS version - %@, minimum supported version - 10.0", UIDevice.currentDevice.systemVersion, nil);
+    if (_mainContext != nil) {
+        return _mainContext;
     }
     
-    return ctx;
+    NSPersistentStoreCoordinator *coordinator = [self storeCoordinator];
+    if (coordinator != nil) {
+        _mainContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+        _mainContext.persistentStoreCoordinator = coordinator;
+        if (@available(iOS 10.0, *)) {
+            _mainContext.automaticallyMergesChangesFromParent = YES;
+        } else {
+            logWithLevel(CMPLogLevelError, [NSString stringWithFormat:@"Unsupported iOS version, minimum iOS version - %@, device version - %@", @(10.0), UIDevice.currentDevice.systemVersion]);
+            abort();
+        }
+    }
+    
+    return _mainContext;
 }
 
 - (NSManagedObjectContext *)workerContext {
-    NSManagedObjectContext *ctx = [_persistentContainer newBackgroundContext];
+    NSPersistentStoreCoordinator *coordinator = [self storeCoordinator];
+    NSManagedObjectContext *ctx = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+    [ctx setPersistentStoreCoordinator:coordinator];
     ctx.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy;
-    
+
     return ctx;
 }
 
 - (void)reset {
-    NSError *err = nil;
-    for (NSPersistentStore *store in _persistentContainer.persistentStoreCoordinator.persistentStores) {
-        [_persistentContainer.persistentStoreCoordinator removePersistentStore:store error:&err];
-        if (err) {
-            logWithLevel(CMPLogLevelError, @"Core Data: error reseting stack - ", err, nil);
-        }
-        if ([[NSFileManager defaultManager] fileExistsAtPath:store.URL.absoluteString]) {
-            [[NSFileManager defaultManager] removeItemAtURL:store.URL error:&err];
+    if (_storeCoordinator) {
+        NSError *err = nil;
+        for (NSPersistentStore *store in _storeCoordinator.persistentStores) {
+            [_storeCoordinator removePersistentStore:store error:&err];
             if (err) {
                 logWithLevel(CMPLogLevelError, @"Core Data: error reseting stack - ", err, nil);
             }
+            if ([[NSFileManager defaultManager] fileExistsAtPath:store.URL.absoluteString]) {
+                [[NSFileManager defaultManager] removeItemAtURL:store.URL error:&err];
+                if (err) {
+                    logWithLevel(CMPLogLevelError, @"Core Data: error reseting stack - ", err, nil);
+                }
+            }
         }
     }
-}
-
-#pragma mark - private
-
-- (void)setPersistentContainer:(NSPersistentContainer *)persistentContainer API_AVAILABLE(ios(10.0)) {
-    _persistentContainer = persistentContainer;
 }
 
 @end

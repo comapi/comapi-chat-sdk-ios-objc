@@ -51,10 +51,7 @@
     XCTestExpectation *expectation2 = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     
     __weak typeof(self) weakSelf = self;
-    [CMPCoreDataManager initialiseStackWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType] completion:^(id<CMPCoreDataManagable> _Nullable store, NSError * _Nullable err) {
-        if (err) {
-            XCTFail();
-        }
+    CMPCoreDataManager *store = [[CMPCoreDataManager alloc] initWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType]];
         [CMPPersistenceController initialiseWithFactory:weakSelf.builder adapter:weakSelf.adapter coreDataManager:store completion:^(CMPPersistenceController * _Nullable persistenceController, NSError * _Nullable error) {
             weakSelf.persistenceController = persistenceController;
             NSMutableArray<CMPChatConversation *> *conversations = [NSMutableArray array];
@@ -106,7 +103,6 @@
             }];
             
         }];
-    }];
     
     [self waitForExpectations:@[expectation1, expectation2] timeout:10.0];
 }
@@ -116,13 +112,10 @@
     XCTestExpectation *expectation4 = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     
     __weak typeof(self) weakSelf = self;
-    [CMPCoreDataManager initialiseStackWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType] completion:^(id<CMPCoreDataManagable> _Nullable store, NSError * _Nullable err) {
-        if (err) {
-            XCTFail();
-        }
+    CMPCoreDataManager *store = [[CMPCoreDataManager alloc] initWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType]];
         [CMPPersistenceController initialiseWithFactory:weakSelf.builder adapter:weakSelf.adapter coreDataManager:store completion:^(CMPPersistenceController * _Nullable persistenceController, NSError * _Nullable error) {
             weakSelf.persistenceController = persistenceController;
-            if (err) {
+            if (error) {
                 XCTFail();
             }
             CMPChatRoles *roles = [[CMPChatRoles alloc] initWithOwnerAttributes:[[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES] participantAttributes:[[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES]];
@@ -156,7 +149,6 @@
                 [expectation4 fulfill];
             }];
         }];
-    }];
     
     [self waitForExpectations:@[expectation3, expectation4] timeout:10.0];
 }
@@ -165,13 +157,10 @@
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     
     __weak typeof(self) weakSelf = self;
-    [CMPCoreDataManager initialiseStackWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType] completion:^(id<CMPCoreDataManagable> _Nullable store, NSError * _Nullable err) {
-        if (err) {
-            XCTFail();
-        }
+    CMPCoreDataManager *store = [[CMPCoreDataManager alloc] initWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType]];
         [CMPPersistenceController initialiseWithFactory:weakSelf.builder adapter:weakSelf.adapter coreDataManager:store completion:^(CMPPersistenceController * _Nullable persistenceController, NSError * _Nullable error) {
             weakSelf.persistenceController = persistenceController;
-            if (err) {
+            if (error) {
                 XCTFail();
             }
             CMPChatConversation *c1 = [[CMPChatConversation alloc] initWithID:@"a" firstLocalEventID:[[NSNumber alloc] initWithInt:1] lastLocalEventID:[[NSNumber alloc] initWithInt:2] latestRemoteEventID:[[NSNumber alloc] initWithInt:3] eTag:@"tagA" updatedOn:nil name:@"nameA" conversationDescription:@"descA" roles:nil isPublic:[[NSNumber alloc] initWithInt:4]];
@@ -189,17 +178,13 @@
             
             XCTAssertNil([weakSelf.chatStore getConversation:@"a"]);
         }];
-    }];
     
     [self waitForExpectations:@[expectation] timeout:10.0];
 }
 
 -(void)testDeleteAll {
     __weak typeof(self) weakSelf = self;
-    [CMPCoreDataManager initialiseStackWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType] completion:^(id<CMPCoreDataManagable> _Nullable store, NSError * _Nullable err) {
-        if (err) {
-            XCTFail();
-        }
+    CMPCoreDataManager *store = [[CMPCoreDataManager alloc] initWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType]];
         [CMPPersistenceController initialiseWithFactory:weakSelf.builder adapter:weakSelf.adapter coreDataManager:store completion:^(CMPPersistenceController * _Nullable persistenceController, NSError * _Nullable error) {
             weakSelf.persistenceController = persistenceController;
             if (error) {
@@ -226,17 +211,14 @@
             XCTAssertNil([weakSelf.chatStore getConversation:@"a"]);
             XCTAssertNil([weakSelf.chatStore getConversation:@"b"]);
         }];
-    }];
+
 }
 
 -(void)testProcessMessagesResult {
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     
     __weak typeof(self) weakSelf = self;
-    [CMPCoreDataManager initialiseStackWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType] completion:^(id<CMPCoreDataManagable> _Nullable store, NSError * _Nullable err) {
-        if (err) {
-            XCTFail();
-        }
+    CMPCoreDataManager *store = [[CMPCoreDataManager alloc] initWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType]];
         [CMPPersistenceController initialiseWithFactory:weakSelf.builder adapter:weakSelf.adapter coreDataManager:store completion:^(CMPPersistenceController * _Nullable persistenceController, NSError * _Nullable error) {
             weakSelf.persistenceController = persistenceController;
             // saved conversation
@@ -282,7 +264,6 @@
                                                            [expectation fulfill];
                                                        }];
         }];
-    }];
     
     [self waitForExpectations:@[expectation] timeout:10.0];
 }
@@ -294,11 +275,7 @@
     XCTestExpectation *expectation3 = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     
     __weak typeof(self) weakSelf = self;
-    [CMPCoreDataManager initialiseStackWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType] completion:^(id<CMPCoreDataManagable> _Nullable store, NSError * _Nullable err) {
-        if (err) {
-            XCTFail();
-        }
-        
+    CMPCoreDataManager *store = [[CMPCoreDataManager alloc] initWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType]];
         [CMPPersistenceController initialiseWithFactory:weakSelf.builder adapter:weakSelf.adapter coreDataManager:store completion:^(CMPPersistenceController * _Nullable persistenceController, NSError * _Nullable error) {
             weakSelf.persistenceController = persistenceController;
             NSManagedObjectContext *ctx = store.workerContext;
@@ -372,24 +349,17 @@
             }];
             [expectationCoreData fulfill];
         }];
-    }];
-    
+
     [self waitForExpectations:@[expectationCoreData, expectation1, expectation2, expectation3] timeout:20.0];
-    
-    [_coreDataManager reset];
 }
 
 
 -(void)testUpdateStoreWithNewMessage {
-    
     XCTestExpectation *expectationCoreData = [[XCTestExpectation alloc] initWithDescription:@"core data set"];
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     
     __weak typeof(self) weakSelf = self;
-    [CMPCoreDataManager initialiseStackWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType] completion:^(id<CMPCoreDataManagable> _Nullable store, NSError * _Nullable err) {
-        if (err) {
-            XCTFail();
-        }
+    CMPCoreDataManager *store = [[CMPCoreDataManager alloc] initWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType]];
         [CMPPersistenceController initialiseWithFactory:weakSelf.builder adapter:weakSelf.adapter coreDataManager:store completion:^(CMPPersistenceController * _Nullable persistenceController, NSError * _Nullable error) {
             weakSelf.persistenceController = persistenceController;
         }];
@@ -427,11 +397,8 @@
             
             [expectation fulfill];
         }];
-    }];
-    
+
     [self waitForExpectations:@[expectationCoreData,expectation] timeout:20.0];
-    
-    [_coreDataManager reset];
 }
 
 - (void)tearDown {

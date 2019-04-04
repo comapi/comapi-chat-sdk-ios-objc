@@ -22,15 +22,16 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-API_AVAILABLE(ios(10.0))
 @protocol CMPCoreDataManagable <NSObject>
 
-@property (nonatomic, strong, readonly) NSPersistentContainer *persistentContainer;
+@property (nonatomic, strong) CMPCoreDataConfig *storeConfig;
+
+@property (nonatomic, strong, readonly) NSPersistentStoreCoordinator *storeCoordinator;
+@property (nonatomic, strong, readonly) NSManagedObjectModel *objectModel;
 @property (nonatomic, strong, readonly) NSManagedObjectContext *mainContext;
 @property (nonatomic, strong, readonly) NSManagedObjectContext *workerContext;
 
-+ (void)initialiseStackWithConfig:(CMPCoreDataConfig *)config completion:(void (^)(id<CMPCoreDataManagable> _Nullable, NSError * _Nullable))completion;
-//- (instancetype)initWithConfig:(CMPCoreDataConfig *)config completion:(void (^)(NSError * _Nullable))completion;
+- (instancetype)initWithConfig:(CMPCoreDataConfig *)config;
 
 @end
 

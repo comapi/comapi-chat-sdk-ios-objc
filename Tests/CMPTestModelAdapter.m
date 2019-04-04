@@ -41,64 +41,55 @@
 }
 
 - (void)testAdaptingOrphanedEvents {
-    XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"core data set"];
-    __weak typeof(self) weakSelf = self;
-    [CMPCoreDataManager initialiseStackWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType] completion:^(id<CMPCoreDataManagable> _Nullable store, NSError * _Nullable err) {
-        if (err) {
-            XCTFail();
-        }
-        
-        NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-        formatter.numberStyle = NSNumberFormatterNoStyle;
-        
-        NSManagedObjectContext *ctx = store.workerContext;
-        
-        CMPChatManagedOrphanedEvent *event1 = [[CMPChatManagedOrphanedEvent alloc] initWithContext:ctx];
-        event1.conversationID = @"conversationID1";
-        event1.id = [NSNumber numberWithInteger:1];
-        event1.messageID = @"messageID1";
-        event1.profileID = @"profileID1";
-        event1.eventID = @"111";
-        event1.name = @"delivered";
-        event1.isPublicConversation = [NSNumber numberWithInt:1];
-        event1.timestamp = [[NSDate alloc] initWithTimeIntervalSince1970:0];
-        [event1 setType:CMPChatMessageDeliveryStatusDelivered];
-        
-        CMPChatManagedOrphanedEvent *event2 = [[CMPChatManagedOrphanedEvent alloc] initWithContext:ctx];
-        event2.conversationID = @"conversationID2";
-        event2.id = [NSNumber numberWithInteger:2];
-        event2.messageID = @"messageID2";
-        event2.profileID = @"profileID2";
-        event2.eventID = @"222";
-        event2.name = @"read";
-        event2.isPublicConversation = [NSNumber numberWithInt:0];
-        event2.timestamp = [[NSDate alloc] initWithTimeIntervalSince1970:0];
-        [event2 setType:CMPChatMessageDeliveryStatusRead];
-        
-        NSMutableArray<CMPChatManagedOrphanedEvent *> *array = [NSMutableArray array];
-        [array addObject:event1];
-        [array addObject:event2];
-        
-        NSArray<CMPChatMessageStatus *> *result = [weakSelf.adapter adaptEvents:array];
-        
-        XCTAssertEqual([formatter numberFromString:event1.eventID].intValue, result[0].conversationEventID.intValue);
-        XCTAssertEqual(event1.timestamp, result[0].timestamp);
-        XCTAssertTrue([event1.messageID caseInsensitiveCompare:result[0].messageID] == NSOrderedSame);
-        XCTAssertTrue([event1.profileID caseInsensitiveCompare:result[0].profileID] == NSOrderedSame);
-        XCTAssertTrue([event1.conversationID caseInsensitiveCompare:result[0].conversationID] == NSOrderedSame);
-        XCTAssertEqual(CMPChatMessageDeliveryStatusDelivered, result[0].messageStatus);
-        
-        XCTAssertEqual([formatter numberFromString:event2.eventID].intValue, result[1].conversationEventID.intValue);
-        XCTAssertEqual(event2.timestamp, result[1].timestamp);
-        XCTAssertTrue([event2.messageID caseInsensitiveCompare:result[1].messageID] == NSOrderedSame);
-        XCTAssertTrue([event2.profileID caseInsensitiveCompare:result[1].profileID] == NSOrderedSame);
-        XCTAssertTrue([event2.conversationID caseInsensitiveCompare:result[1].conversationID] == NSOrderedSame);
-        XCTAssertEqual(CMPChatMessageDeliveryStatusRead, result[1].messageStatus);
-        
-        [expectation fulfill];
-    }];
+    CMPCoreDataManager *store = [[CMPCoreDataManager alloc] initWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType]];
     
-    [self waitForExpectations:@[expectation] timeout:5.0];
+    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+    formatter.numberStyle = NSNumberFormatterNoStyle;
+    
+    NSManagedObjectContext *ctx = store.workerContext;
+    
+    CMPChatManagedOrphanedEvent *event1 = [[CMPChatManagedOrphanedEvent alloc] initWithContext:ctx];
+    event1.conversationID = @"conversationID1";
+    event1.id = [NSNumber numberWithInteger:1];
+    event1.messageID = @"messageID1";
+    event1.profileID = @"profileID1";
+    event1.eventID = @"111";
+    event1.name = @"delivered";
+    event1.isPublicConversation = [NSNumber numberWithInt:1];
+    event1.timestamp = [[NSDate alloc] initWithTimeIntervalSince1970:0];
+    [event1 setType:CMPChatMessageDeliveryStatusDelivered];
+    
+    CMPChatManagedOrphanedEvent *event2 = [[CMPChatManagedOrphanedEvent alloc] initWithContext:ctx];
+    event2.conversationID = @"conversationID2";
+    event2.id = [NSNumber numberWithInteger:2];
+    event2.messageID = @"messageID2";
+    event2.profileID = @"profileID2";
+    event2.eventID = @"222";
+    event2.name = @"read";
+    event2.isPublicConversation = [NSNumber numberWithInt:0];
+    event2.timestamp = [[NSDate alloc] initWithTimeIntervalSince1970:0];
+    [event2 setType:CMPChatMessageDeliveryStatusRead];
+    
+    NSMutableArray<CMPChatManagedOrphanedEvent *> *array = [NSMutableArray array];
+    [array addObject:event1];
+    [array addObject:event2];
+    
+    NSArray<CMPChatMessageStatus *> *result = [_adapter adaptEvents:array];
+    
+    XCTAssertEqual([formatter numberFromString:event1.eventID].intValue, result[0].conversationEventID.intValue);
+    XCTAssertEqual(event1.timestamp, result[0].timestamp);
+    XCTAssertTrue([event1.messageID caseInsensitiveCompare:result[0].messageID] == NSOrderedSame);
+    XCTAssertTrue([event1.profileID caseInsensitiveCompare:result[0].profileID] == NSOrderedSame);
+    XCTAssertTrue([event1.conversationID caseInsensitiveCompare:result[0].conversationID] == NSOrderedSame);
+    XCTAssertEqual(CMPChatMessageDeliveryStatusDelivered, result[0].messageStatus);
+    
+    XCTAssertEqual([formatter numberFromString:event2.eventID].intValue, result[1].conversationEventID.intValue);
+    XCTAssertEqual(event2.timestamp, result[1].timestamp);
+    XCTAssertTrue([event2.messageID caseInsensitiveCompare:result[1].messageID] == NSOrderedSame);
+    XCTAssertTrue([event2.profileID caseInsensitiveCompare:result[1].profileID] == NSOrderedSame);
+    XCTAssertTrue([event2.conversationID caseInsensitiveCompare:result[1].conversationID] == NSOrderedSame);
+    XCTAssertEqual(CMPChatMessageDeliveryStatusRead, result[1].messageStatus);
+
 }
 
 - (void)testAdaptStatuses {

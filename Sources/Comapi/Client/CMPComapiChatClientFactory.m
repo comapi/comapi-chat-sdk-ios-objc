@@ -49,29 +49,25 @@
     CMPCoreDataConfig *config = chatConfig.storeConfig != nil ? chatConfig.storeConfig : [[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSSQLiteStoreType];
 
     CMPAttachmentController *attachmentController = [[CMPAttachmentController alloc] initWithClient:client];
-    [CMPCoreDataManager initialiseStackWithConfig:config completion:^(id<CMPCoreDataManagable> _Nullable coreDataManager, NSError * _Nullable error) {
+    CMPCoreDataManager *coreDataManager = [[CMPCoreDataManager alloc] initWithConfig:config];
+    [CMPPersistenceController initialiseWithFactory:chatConfig.storeFactory adapter:adapter coreDataManager:coreDataManager completion:^(CMPPersistenceController * _Nullable persistenceController, NSError * _Nullable error) {
         if (error) {
-            logWithLevel(CMPLogLevelError, @"Error configuring CoreData stack.", nil);
+            logWithLevel(CMPLogLevelError, @"Error configuring persistence stack.", nil);
         }
-        [CMPPersistenceController initialiseWithFactory:chatConfig.storeFactory adapter:adapter coreDataManager:coreDataManager completion:^(CMPPersistenceController * _Nullable persistenceController, NSError * _Nullable error) {
-            if (error) {
-                logWithLevel(CMPLogLevelError, @"Error configuring persistence stack.", nil);
-            }
-            chatClient.persistenceController = persistenceController;
-            chatClient.attachmentController = attachmentController;
-            CMPChatController *chatController = [[CMPChatController alloc] initWithClient:client persistenceController:persistenceController attachmentController:attachmentController adapter:adapter config:chatConfig.internalConfig];
-            chatClient.chatController = chatController;
-            CMPEventsController *eventsController = [[CMPEventsController alloc] initWithPersistenceController:persistenceController chatController:chatController missingEventsTracker:tracker chatConfig:chatConfig];
-            chatClient.eventsController = eventsController;
-            
-            chatClient.services = [[CMPChatServices alloc] initWithFoundation:chatClient.foundationClient chatController:chatController persistenceController:persistenceController modelAdapter:adapter];
-            
-            [chatClient.foundationClient addEventDelegate:eventsController];
-            
-            if (completion) {
-                completion(chatClient);
-            }
-        }];
+        chatClient.persistenceController = persistenceController;
+        chatClient.attachmentController = attachmentController;
+        CMPChatController *chatController = [[CMPChatController alloc] initWithClient:client persistenceController:persistenceController attachmentController:attachmentController adapter:adapter config:chatConfig.internalConfig];
+        chatClient.chatController = chatController;
+        CMPEventsController *eventsController = [[CMPEventsController alloc] initWithPersistenceController:persistenceController chatController:chatController missingEventsTracker:tracker chatConfig:chatConfig];
+        chatClient.eventsController = eventsController;
+        
+        chatClient.services = [[CMPChatServices alloc] initWithFoundation:chatClient.foundationClient chatController:chatController persistenceController:persistenceController modelAdapter:adapter];
+        
+        [chatClient.foundationClient addEventDelegate:eventsController];
+        
+        if (completion) {
+            completion(chatClient);
+        }
     }];
 }
 

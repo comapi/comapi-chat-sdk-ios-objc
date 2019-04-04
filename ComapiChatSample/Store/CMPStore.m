@@ -148,7 +148,7 @@
 
 - (BOOL)deleteConversation:(nonnull CMPChatConversation *)conversation {
     NSLog(@"Store: deleting converastion for ID - %@", conversation.id);
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Converastion"];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Conversation"];
     request.predicate = [NSPredicate predicateWithFormat:@"%K = %@", @"id", conversation.id];
     
     NSError *error;
