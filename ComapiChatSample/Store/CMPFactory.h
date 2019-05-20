@@ -16,12 +16,12 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 #import "CMPStoreManagerStack.h"
-#import "CMPStoreFactory.h"
+#import "CMPChatStoreFactory.h"
 #import "CMPStore.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPFactory : CMPStoreFactory <CMPStoreFactoryBuildable>
+@interface CMPFactory : CMPChatStoreFactory <CMPChatStoreFactoryBuilderProvider>
 
 @property (nonatomic, strong, readonly) CMPStore *store;
 

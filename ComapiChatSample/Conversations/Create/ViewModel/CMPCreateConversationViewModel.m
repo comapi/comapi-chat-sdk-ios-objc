@@ -32,7 +32,7 @@
 }
 
 - (BOOL)validate {
-    return self.conversation.name != nil;
+    return self.conversation.id != nil && self.conversation.name != nil;
 }
 
 - (CMPRoles *)createRoles {
@@ -75,17 +75,15 @@
     if ([self validate] && profileID != nil) {
         CMPConversationParticipant *me = [[CMPConversationParticipant alloc] initWithID:profileID role:CMPRoleOwner];
         CMPRoles *roles = [self createRoles];
-        NSString *id = [[NSUUID UUID] UUIDString];
-        
+
         self.conversation.participants = @[me];
         self.conversation.isPublic = [NSNumber numberWithBool:isPublic];
         self.conversation.roles = roles;
-        self.conversation.id = id;
         
         __weak typeof(self) weakSelf = self;
         [self.client.services.messaging addConversation:self.conversation completion:^(CMPChatResult * result) {
             if (result.isSuccessful) {
-                CMPChatConversation *conversation = [weakSelf.store getConversation:id];
+                CMPChatConversation *conversation = [weakSelf.store getConversation:weakSelf.conversation.id];
                 completion(conversation, nil);
             } else {
                 completion(nil, result.error);

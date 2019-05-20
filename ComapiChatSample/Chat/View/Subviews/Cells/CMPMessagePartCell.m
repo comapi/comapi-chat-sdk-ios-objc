@@ -23,7 +23,7 @@
 
 @interface CMPMessagePartCell ()
 
-@property (nonatomic, strong) NSMutableArray<id<CMPMessagePartConfigurable>> *partViews;
+@property (nonatomic, strong) NSMutableArray<UIView *> *partViews;
 
 @end
 
@@ -82,74 +82,49 @@
     UIView *view = [UIView new];
     view.translatesAutoresizingMaskIntoConstraints = NO;
     for (int i = 0; i < parts.count; i++) {
+        UIView *partView;
         switch ([self partTypeForMessagePart:parts[i]]) {
             case CMPPartTypeText: {
-                CMPTextPartView *partView = [[CMPTextPartView alloc] init];
-                [view addSubview:partView];
-                NSLayoutConstraint *top;
-                if (i == 0) {
-                    top = [partView.topAnchor constraintEqualToAnchor:view.topAnchor constant:0];
-                } else {
-                    top = [partView.topAnchor constraintEqualToAnchor:((UIView *)self.partViews[i - 1]).bottomAnchor constant:0];
-                }
-                NSLayoutConstraint *leading = [partView.leadingAnchor constraintEqualToAnchor:view.leadingAnchor constant:0];
-                NSLayoutConstraint *trailing = [partView.trailingAnchor constraintEqualToAnchor:view.trailingAnchor constant:0];
-                NSLayoutConstraint *bottom;
-                if (i == parts.count - 1) {
-                    bottom = [partView.bottomAnchor constraintEqualToAnchor:view.bottomAnchor constant:-2];
-                }
-                
-                NSMutableArray<NSLayoutConstraint *> *constraints = [NSMutableArray new];
-                [constraints addObject:leading];
-                [constraints addObject:trailing];
-                [constraints addObject:top];
-                
-                if (bottom) {
-                    [constraints addObject:bottom];
-                }
-                
-                [NSLayoutConstraint activateConstraints:constraints];
-                [self.partViews addObject:partView];
-                
+                partView = [[CMPTextPartView alloc] init];
                 break;
             }
             case CMPPartTypeImage: {
-                CMPImagePartView *partView = [[CMPImagePartView alloc] init];
-                [view addSubview:partView];
-                NSLayoutConstraint *top;
-                if (i == 0) {
-                    top = [partView.topAnchor constraintEqualToAnchor:view.topAnchor constant:0];
-                } else {
-                    top = [partView.topAnchor constraintEqualToAnchor:((UIView *)self.partViews[i - 1]).bottomAnchor constant:0];
-                }
-                NSLayoutConstraint *leading = [partView.leadingAnchor constraintEqualToAnchor:view.leadingAnchor constant:0];
-                NSLayoutConstraint *trailing = [partView.trailingAnchor constraintEqualToAnchor:view.trailingAnchor constant:0];
-                NSLayoutConstraint *bottom;
-                if (i == parts.count - 1) {
-                    bottom = [partView.bottomAnchor constraintEqualToAnchor:view.bottomAnchor];
-                }
-                
-                NSMutableArray<NSLayoutConstraint *> *constraints = [NSMutableArray new];
-                [constraints addObject:leading];
-                [constraints addObject:trailing];
-                [constraints addObject:top];
-                
-                if (bottom) {
-                    [constraints addObject:bottom];
-                }
-                
-                [NSLayoutConstraint activateConstraints:constraints];
-                [self.partViews addObject:partView];
+                partView = [[CMPImagePartView alloc] init];
                 break;
             }
             case CMPPartTypeUnknown: {
-                
+                partView = [UIView new];
                 break;
             }
         }
+        [view addSubview:partView];
+        NSLayoutConstraint *top;
+        if (i == 0) {
+            top = [partView.topAnchor constraintEqualToAnchor:view.topAnchor constant:0];
+        } else {
+            top = [partView.topAnchor constraintEqualToAnchor:((UIView *)self.partViews[i - 1]).bottomAnchor constant:0];
+        }
+        NSLayoutConstraint *leading = [partView.leadingAnchor constraintEqualToAnchor:view.leadingAnchor constant:0];
+        NSLayoutConstraint *trailing = [partView.trailingAnchor constraintEqualToAnchor:view.trailingAnchor constant:0];
+        NSLayoutConstraint *bottom;
+        if (i == parts.count - 1) {
+            bottom = [partView.bottomAnchor constraintEqualToAnchor:view.bottomAnchor];
+        }
+        
+        NSMutableArray<NSLayoutConstraint *> *constraints = [NSMutableArray new];
+        [constraints addObject:leading];
+        [constraints addObject:trailing];
+        [constraints addObject:top];
+        
+        if (bottom) {
+            [constraints addObject:bottom];
+        }
+        
+        [NSLayoutConstraint activateConstraints:constraints];
+        [self.partViews addObject:(UIView *)partView];
     }
     
-    return view;;
+    return view;
 }
 
 - (void)configureProfileLabel:(NSString *)profile ownership:(CMPMessageOwnership)ownership {
@@ -253,9 +228,9 @@
 
     for (int i = 0; i < message.parts.count; i++) {
         if ([_partViews[i] isKindOfClass:CMPTextPartView.class]) {
-            [_partViews[i] configureWithMessagePart:message.parts[i] ownership:ownership];
+            [(id<CMPMessagePartConfigurable>)_partViews[i] configureWithMessagePart:message.parts[i] ownership:ownership];
         } else if ([_partViews[i] isKindOfClass:CMPImagePartView.class]) {
-            [_partViews[i] configureWithMessagePart:message.parts[i] ownership:ownership downloader:downloader];
+            [(id<CMPMessagePartConfigurable>)_partViews[i] configureWithMessagePart:message.parts[i] ownership:ownership downloader:downloader];
         }
     }
 }

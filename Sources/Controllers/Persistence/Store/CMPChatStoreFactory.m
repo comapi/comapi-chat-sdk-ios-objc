@@ -16,15 +16,31 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPMockChatStore.h"
-#import "CMPChatStoreFactoryBuilderProvider.h"
+#import "CMPChatStoreFactory.h"
 
-NS_ASSUME_NONNULL_BEGIN
+#import <CMPComapiFoundation/CMPLogger.h>
 
-@interface CMPMockStoreFactoryBuilder : NSObject <CMPChatStoreFactoryBuilderProvider>
+@implementation CMPChatStoreFactory
 
-- (instancetype)initWithChatStore:(id<CMPChatStore>)chatStore;
+- (instancetype)initWithBuilder:(id<CMPChatStoreFactoryBuilderProvider>)builder {
+    self = [super init];
+    
+    if (self) {
+        _builder = builder;
+    }
+    
+    return self;
+}
+
+- (void)executeTransaction:(nonnull CMPChatStoreTransaction)transaction {
+    [_builder buildWithCompletion:^(id<CMPChatStore> _Nullable store, NSError * _Nullable error) {
+        if (error) {
+            logWithLevel(CMPLogLevelError, @"");
+            transaction(nil, error);
+        } else {
+            transaction(store, nil);
+        }
+    }];
+}
 
 @end
-
-NS_ASSUME_NONNULL_END

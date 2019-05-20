@@ -16,15 +16,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPMockChatStore.h"
-#import "CMPChatStoreFactoryBuilderProvider.h"
+#import "CMPChatStore.h"
 
-NS_ASSUME_NONNULL_BEGIN
+#import <Foundation/Foundation.h>
 
-@interface CMPMockStoreFactoryBuilder : NSObject <CMPChatStoreFactoryBuilderProvider>
-
-- (instancetype)initWithChatStore:(id<CMPChatStore>)chatStore;
-
-@end
-
-NS_ASSUME_NONNULL_END
+typedef void(^CMPChatStoreTransaction)(id<CMPChatStore> _Nullable, NSError * _Nullable);

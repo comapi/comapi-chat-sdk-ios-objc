@@ -34,7 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPMockClientFactory : NSObject
 
-+ (void)instantiateChatClient:(id<CMPRequestPerforming>)requestPerformer authDelegate:(nonnull id<CMPAuthenticationDelegate>)authDelegate storeFactoryBuilder:(id<CMPStoreFactoryBuildable>)storeFactoryBuilder completion:(void (^)(CMPComapiChatClient * _Nullable, NSError * _Nullable))completion;
++ (void)instantiateChatClient:(id<CMPRequestPerforming>)requestPerformer authDelegate:(nonnull id<CMPAuthenticationDelegate>)authDelegate storeFactoryBuilder:(id<CMPChatStoreFactoryBuilderProvider>)storeFactoryBuilder completion:(void (^)(CMPComapiChatClient * _Nullable, NSError * _Nullable))completion;
 
 
 @end

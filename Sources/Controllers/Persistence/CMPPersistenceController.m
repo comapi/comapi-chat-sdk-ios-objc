@@ -34,12 +34,12 @@
 
 @implementation CMPPersistenceController
 
-+ (void)initialiseWithFactory:(id<CMPStoreFactoryBuildable>)factory adapter:(CMPModelAdapter *)adapter coreDataManager:(CMPCoreDataManager *)manager completion:(void (^)(CMPPersistenceController * _Nullable, NSError * _Nullable))completion {
++ (void)initialiseWithFactory:(id<CMPChatStoreFactoryBuilderProvider>)factory adapter:(CMPModelAdapter *)adapter coreDataManager:(CMPCoreDataManager *)manager completion:(void (^)(CMPPersistenceController * _Nullable, NSError * _Nullable))completion {
     CMPPersistenceController *instance = [[CMPPersistenceController alloc] init];
     
     instance.adapter = adapter;
     instance.manager = manager;
-    instance.factory = [[CMPStoreFactory alloc] initWithBuilder:factory];
+    instance.factory = [[CMPChatStoreFactory alloc] initWithBuilder:factory];
     [instance.factory.builder buildWithCompletion:^(id<CMPChatStore> _Nullable store, NSError * _Nullable error) {
         if (completion) {
             completion(instance, error);
@@ -57,14 +57,14 @@
     _manager = manager;
 }
 
-- (void)setFactory:(CMPStoreFactory * _Nonnull)factory {
+- (void)setFactory:(CMPChatStoreFactory * _Nonnull)factory {
     _factory = factory;
 }
 
 #pragma mark - public
 
 - (void)getConversation:(NSString *)conversationID completion:(void(^)(CMPStoreResult<CMPChatConversation *> *))completion {
-    [_factory executeTransaction:^(id<CMPChatStore> store, NSError * error) {
+    [_factory executeTransaction:^(id<CMPChatStore> _Nullable store, NSError * _Nullable error) {
         if (error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 completion([CMPStoreResult resultWithObject:nil error:error]);

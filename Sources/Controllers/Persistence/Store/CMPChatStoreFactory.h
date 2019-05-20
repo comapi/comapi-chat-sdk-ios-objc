@@ -16,24 +16,18 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+#import "CMPChatStoreTransactionProvider.h"
+#import "CMPChatStoreFactoryBuilderProvider.h"
 #import "CMPChatStore.h"
 #import "CMPStoreResult.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol CMPStoreFactoryBuildable <NSObject>
+@interface CMPChatStoreFactory : NSObject <CMPChatStoreTransactionProvider>
 
-- (void)buildWithCompletion:(void(^)(id<CMPChatStore> _Nullable, NSError * _Nullable))completion;
+@property (nonatomic, weak) id<CMPChatStoreFactoryBuilderProvider> builder;
 
-@end
-
-@interface CMPStoreFactory : NSObject
-
-@property (nonatomic, weak) id<CMPStoreFactoryBuildable> builder;
-
-- (instancetype)initWithBuilder:(id<CMPStoreFactoryBuildable>)builder;
-
-- (void)executeTransaction:(void(^)(id<CMPChatStore> _Nullable, NSError * _Nullable))transaction;
+- (instancetype)initWithBuilder:(id<CMPChatStoreFactoryBuilderProvider>)builder;
 
 @end
 

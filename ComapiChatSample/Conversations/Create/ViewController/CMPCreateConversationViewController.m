@@ -106,16 +106,16 @@
     CMPTitledInputCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
     switch (indexPath.row) {
         case 0: {
-            [cell configureWithTitle:@"Name" value:@""];
+            [cell configureWithTitle:@"ID" value:@""];
             cell.didChangeText = ^(NSString * text) {
-                self.viewModel.conversation.name = text;
+                self.viewModel.conversation.id = text;
             };
             break;
         }
         case 1: {
-            [cell configureWithTitle:@"Description" value:@""];
+            [cell configureWithTitle:@"Name" value:@""];
             cell.didChangeText = ^(NSString * text) {
-                self.viewModel.conversation.conversationDescription = text;
+                self.viewModel.conversation.name = text;
             };
             break;
         }

@@ -115,11 +115,9 @@ NSString *const kCMPOrphanedEventEntityName = @"CMPChatManagedOrphanedEvent";
         NSArray<CMPChatManagedOrphanedEvent *> *result = [weakSelf executeFetchRequest:request error:&err];
         if (err) {
             logWithLevel(CMPLogLevelError, @"Core Data: error", err, nil);
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (completion) {
-                    completion(0, err);
-                }
-            });
+            if (completion) {
+                completion(0, err);
+            }
         } else if (result) {
             __block NSInteger deleted = 0;
             [result enumerateObjectsUsingBlock:^(CMPChatManagedOrphanedEvent * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {

@@ -16,7 +16,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPStoreFactory.h"
+#import "CMPChatStoreFactory.h"
 #import "CMPStoreResult.h"
 #import "CMPModelAdapter.h"
 #import "CMPCoreDataManager.h"
@@ -29,11 +29,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPPersistenceController : NSObject
 
-@property (nonatomic, strong, readonly) CMPStoreFactory *factory;
+@property (nonatomic, strong, readonly) CMPChatStoreFactory *factory;
 @property (nonatomic, strong, readonly) CMPModelAdapter *adapter;
 @property (nonatomic, strong, readonly) CMPCoreDataManager *manager;
 
-+ (void)initialiseWithFactory:(id<CMPStoreFactoryBuildable>)factory adapter:(CMPModelAdapter *)adapter coreDataManager:(CMPCoreDataManager *)manager completion:(void (^ _Nullable)(CMPPersistenceController * _Nullable, NSError * _Nullable))completion;
++ (void)initialiseWithFactory:(id<CMPChatStoreFactoryBuilderProvider>)factory adapter:(CMPModelAdapter *)adapter coreDataManager:(CMPCoreDataManager *)manager completion:(void (^ _Nullable)(CMPPersistenceController * _Nullable, NSError * _Nullable))completion;
 
 - (void)getConversation:(NSString *)conversationID completion:(void(^)(CMPStoreResult<CMPChatConversation *> *))completion;
 - (void)getAllConversations:(void(^)(CMPStoreResult<NSArray<CMPChatConversation *> *> *))completion;

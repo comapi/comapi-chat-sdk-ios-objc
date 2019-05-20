@@ -7,9 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0BA68F197E2F3954B96E3F7C /* Pods_CMPComapiChatTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A53E470D20D2C5E2D978FB /* Pods_CMPComapiChatTests.framework */; };
-		1B55D057DD289859B9931165 /* Pods_CMPComapiChat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66058537CD9EE3CEA6AC4264 /* Pods_CMPComapiChat.framework */; };
-		20FAACCA63B367C9465B3A24 /* Pods_ComapiChatSample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F39E6CB64B9E0F209AD1E50 /* Pods_ComapiChatSample.framework */; };
+		59DB69A1748F12A8F9856085 /* Pods_CMPComapiChat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E825774818E2F066A0560ED /* Pods_CMPComapiChat.framework */; };
+		74A779D809D368553B9F15FB /* Pods_ComapiChatSample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE777BD784897D1D08B73A7 /* Pods_ComapiChatSample.framework */; };
 		8903697B224907EB00960762 /* CMPNewMessageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8903697A224907EB00960762 /* CMPNewMessageView.m */; };
 		890F81312209F15F006EF1A6 /* CMPImagePartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 890F81302209F15F006EF1A6 /* CMPImagePartView.m */; };
 		890F81342209F16C006EF1A6 /* CMPTextPartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 890F81332209F16C006EF1A6 /* CMPTextPartView.m */; };
@@ -34,6 +33,7 @@
 		892F49CA21BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 892F49C821BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.h */; };
 		892F49CB21BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 892F49C921BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.m */; };
 		8933AC3B2201C6FB000855C1 /* CMPTestMessageProcessing.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933AC3A2201C6FB000855C1 /* CMPTestMessageProcessing.m */; };
+		89477E55228DADC4000E9344 /* CMPChatStoreFactoryBuilderProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 89477E54228DADC4000E9344 /* CMPChatStoreFactoryBuilderProvider.h */; };
 		89510DE422367B5C0094C1F3 /* CMPMockChatClientDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 89510DE322367B5C0094C1F3 /* CMPMockChatClientDelegate.m */; };
 		89510DE6223684860094C1F3 /* Event.conversation.participantTyping.json in Resources */ = {isa = PBXBuildFile; fileRef = 89510DE5223684860094C1F3 /* Event.conversation.participantTyping.json */; };
 		89510DE82236863D0094C1F3 /* Event.conversation.participantTypingOff.json in Resources */ = {isa = PBXBuildFile; fileRef = 89510DE72236863D0094C1F3 /* Event.conversation.participantTypingOff.json */; };
@@ -111,6 +111,8 @@
 		896015DB21B931C400370AF2 /* CMPCoreDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 896015D921B931C400370AF2 /* CMPCoreDataManager.m */; };
 		8961391721CBED0A00FA41C1 /* CMPChatConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 8961391521CBED0A00FA41C1 /* CMPChatConfig.h */; };
 		8961391821CBED0A00FA41C1 /* CMPChatConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 8961391621CBED0A00FA41C1 /* CMPChatConfig.m */; };
+		8967B3F62292AC940067F73D /* CMPChatStoreTransaction.h in Headers */ = {isa = PBXBuildFile; fileRef = 8967B3F42292AC940067F73D /* CMPChatStoreTransaction.h */; };
+		8967B4012292D49D0067F73D /* CMPChatStoreTransactionProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 8967B4002292D49D0067F73D /* CMPChatStoreTransactionProvider.h */; };
 		8969DBFB21DCF3860047449C /* CMPRetryManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 8969DBF921DCF3860047449C /* CMPRetryManager.h */; };
 		8969DBFC21DCF3860047449C /* CMPRetryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8969DBFA21DCF3860047449C /* CMPRetryManager.m */; };
 		8969DC0021DE71170047449C /* CMPConversationComparison.h in Headers */ = {isa = PBXBuildFile; fileRef = 8969DBFE21DE71170047449C /* CMPConversationComparison.h */; };
@@ -143,8 +145,8 @@
 		896CB98A21B97AFC003FB3DF /* CMPChatMessageParticipant.m in Sources */ = {isa = PBXBuildFile; fileRef = 896CB98821B97AFC003FB3DF /* CMPChatMessageParticipant.m */; };
 		896CB98D21B97C02003FB3DF /* CMPChatMessageContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 896CB98B21B97C02003FB3DF /* CMPChatMessageContext.h */; };
 		896CB98E21B97C02003FB3DF /* CMPChatMessageContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 896CB98C21B97C02003FB3DF /* CMPChatMessageContext.m */; };
-		896CB99021BA7EFC003FB3DF /* CMPStoreFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 896CB98F21BA7EFC003FB3DF /* CMPStoreFactory.h */; };
-		896CB99221BA981C003FB3DF /* CMPStoreFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 896CB99121BA981C003FB3DF /* CMPStoreFactory.m */; };
+		896CB99021BA7EFC003FB3DF /* CMPChatStoreFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 896CB98F21BA7EFC003FB3DF /* CMPChatStoreFactory.h */; };
+		896CB99221BA981C003FB3DF /* CMPChatStoreFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 896CB99121BA981C003FB3DF /* CMPChatStoreFactory.m */; };
 		896CB99B21BA9966003FB3DF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 896CB99A21BA9966003FB3DF /* AppDelegate.m */; };
 		896CB9A321BA9968003FB3DF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 896CB9A221BA9968003FB3DF /* Assets.xcassets */; };
 		896CB9A621BA9968003FB3DF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 896CB9A421BA9968003FB3DF /* LaunchScreen.storyboard */; };
@@ -243,6 +245,7 @@
 		89E824A4222FE95F006D1324 /* CMPTestOrphanedEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 89E824A3222FE95F006D1324 /* CMPTestOrphanedEvent.m */; };
 		89E824A622300D82006D1324 /* CMPTestChat.m in Sources */ = {isa = PBXBuildFile; fileRef = 89E824A522300D82006D1324 /* CMPTestChat.m */; };
 		89EE87AA21FF64860089F606 /* NSManagedObject+CMPUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = 89EE87A921FF64860089F606 /* NSManagedObject+CMPUpdate.m */; };
+		FCE20874ACC238E905037FA2 /* Pods_CMPComapiChatTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE75DFC1D8AC319AF619F215 /* Pods_CMPComapiChatTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -275,13 +278,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0F39E6CB64B9E0F209AD1E50 /* Pods_ComapiChatSample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ComapiChatSample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		1D5D39EA86A729C0FA3F02DC /* Pods-CMPComapiChatTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CMPComapiChatTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CMPComapiChatTests/Pods-CMPComapiChatTests.debug.xcconfig"; sourceTree = "<group>"; };
-		2B7AA95E2A49E30BD42E018E /* Pods-ComapiChatSample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ComapiChatSample.release.xcconfig"; path = "Pods/Target Support Files/Pods-ComapiChatSample/Pods-ComapiChatSample.release.xcconfig"; sourceTree = "<group>"; };
-		47A53E470D20D2C5E2D978FB /* Pods_CMPComapiChatTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CMPComapiChatTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		5A0A92985CD7CC00A3EBC626 /* Pods-CMPComapiChat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CMPComapiChat.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CMPComapiChat/Pods-CMPComapiChat.debug.xcconfig"; sourceTree = "<group>"; };
-		66058537CD9EE3CEA6AC4264 /* Pods_CMPComapiChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CMPComapiChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		81EE50819A0EC1F52F8E2650 /* Pods-ComapiChatSample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ComapiChatSample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ComapiChatSample/Pods-ComapiChatSample.debug.xcconfig"; sourceTree = "<group>"; };
+		2CE777BD784897D1D08B73A7 /* Pods_ComapiChatSample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ComapiChatSample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3E825774818E2F066A0560ED /* Pods_CMPComapiChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CMPComapiChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		496522CFA982456C7F240E84 /* Pods-CMPComapiChat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CMPComapiChat.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CMPComapiChat/Pods-CMPComapiChat.debug.xcconfig"; sourceTree = "<group>"; };
+		6ED7F740912F433391476EB1 /* Pods-ComapiChatSample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ComapiChatSample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ComapiChatSample/Pods-ComapiChatSample.debug.xcconfig"; sourceTree = "<group>"; };
 		89036979224907EB00960762 /* CMPNewMessageView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPNewMessageView.h; sourceTree = "<group>"; };
 		8903697A224907EB00960762 /* CMPNewMessageView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPNewMessageView.m; sourceTree = "<group>"; };
 		890F812F2209F15F006EF1A6 /* CMPImagePartView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPImagePartView.h; sourceTree = "<group>"; };
@@ -315,6 +315,7 @@
 		892F49C821BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPChatManagedOrphanedEvent.h; sourceTree = "<group>"; };
 		892F49C921BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPChatManagedOrphanedEvent.m; sourceTree = "<group>"; };
 		8933AC3A2201C6FB000855C1 /* CMPTestMessageProcessing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPTestMessageProcessing.m; sourceTree = "<group>"; };
+		89477E54228DADC4000E9344 /* CMPChatStoreFactoryBuilderProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPChatStoreFactoryBuilderProvider.h; sourceTree = "<group>"; };
 		89510DE12236782A0094C1F3 /* CMPComapiChatClient+TestHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CMPComapiChatClient+TestHelper.h"; sourceTree = "<group>"; };
 		89510DE222367B5C0094C1F3 /* CMPMockChatClientDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPMockChatClientDelegate.h; sourceTree = "<group>"; };
 		89510DE322367B5C0094C1F3 /* CMPMockChatClientDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPMockChatClientDelegate.m; sourceTree = "<group>"; };
@@ -451,6 +452,8 @@
 		896015D921B931C400370AF2 /* CMPCoreDataManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPCoreDataManager.m; sourceTree = "<group>"; };
 		8961391521CBED0A00FA41C1 /* CMPChatConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPChatConfig.h; sourceTree = "<group>"; };
 		8961391621CBED0A00FA41C1 /* CMPChatConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPChatConfig.m; sourceTree = "<group>"; };
+		8967B3F42292AC940067F73D /* CMPChatStoreTransaction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPChatStoreTransaction.h; sourceTree = "<group>"; };
+		8967B4002292D49D0067F73D /* CMPChatStoreTransactionProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPChatStoreTransactionProvider.h; sourceTree = "<group>"; };
 		8969DBF921DCF3860047449C /* CMPRetryManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPRetryManager.h; sourceTree = "<group>"; };
 		8969DBFA21DCF3860047449C /* CMPRetryManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPRetryManager.m; sourceTree = "<group>"; };
 		8969DBFE21DE71170047449C /* CMPConversationComparison.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPConversationComparison.h; sourceTree = "<group>"; };
@@ -483,8 +486,8 @@
 		896CB98821B97AFC003FB3DF /* CMPChatMessageParticipant.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPChatMessageParticipant.m; sourceTree = "<group>"; };
 		896CB98B21B97C02003FB3DF /* CMPChatMessageContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPChatMessageContext.h; sourceTree = "<group>"; };
 		896CB98C21B97C02003FB3DF /* CMPChatMessageContext.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPChatMessageContext.m; sourceTree = "<group>"; };
-		896CB98F21BA7EFC003FB3DF /* CMPStoreFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPStoreFactory.h; sourceTree = "<group>"; };
-		896CB99121BA981C003FB3DF /* CMPStoreFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPStoreFactory.m; sourceTree = "<group>"; };
+		896CB98F21BA7EFC003FB3DF /* CMPChatStoreFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPChatStoreFactory.h; sourceTree = "<group>"; };
+		896CB99121BA981C003FB3DF /* CMPChatStoreFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPChatStoreFactory.m; sourceTree = "<group>"; };
 		896CB99721BA9966003FB3DF /* ComapiChatSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ComapiChatSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		896CB99921BA9966003FB3DF /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		896CB99A21BA9966003FB3DF /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -603,8 +606,11 @@
 		89E824A9223168D8006D1324 /* CMPChatController+TestHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CMPChatController+TestHelper.h"; sourceTree = "<group>"; };
 		89EE87A821FF64860089F606 /* NSManagedObject+CMPUpdate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+CMPUpdate.h"; sourceTree = "<group>"; };
 		89EE87A921FF64860089F606 /* NSManagedObject+CMPUpdate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+CMPUpdate.m"; sourceTree = "<group>"; };
-		C52E57A89AE86EA6E894EF40 /* Pods-CMPComapiChatTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CMPComapiChatTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-CMPComapiChatTests/Pods-CMPComapiChatTests.release.xcconfig"; sourceTree = "<group>"; };
-		C7F073EA8E3557B43B52D0C3 /* Pods-CMPComapiChat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CMPComapiChat.release.xcconfig"; path = "Pods/Target Support Files/Pods-CMPComapiChat/Pods-CMPComapiChat.release.xcconfig"; sourceTree = "<group>"; };
+		8B25ABA439C22192FF5CFBB7 /* Pods-ComapiChatSample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ComapiChatSample.release.xcconfig"; path = "Pods/Target Support Files/Pods-ComapiChatSample/Pods-ComapiChatSample.release.xcconfig"; sourceTree = "<group>"; };
+		93EBADAB57CF49C40E450BAC /* Pods-CMPComapiChat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CMPComapiChat.release.xcconfig"; path = "Pods/Target Support Files/Pods-CMPComapiChat/Pods-CMPComapiChat.release.xcconfig"; sourceTree = "<group>"; };
+		9923262F3855A8E750CEBFC7 /* Pods-CMPComapiChatTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CMPComapiChatTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CMPComapiChatTests/Pods-CMPComapiChatTests.debug.xcconfig"; sourceTree = "<group>"; };
+		BE75DFC1D8AC319AF619F215 /* Pods_CMPComapiChatTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CMPComapiChatTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		EF067626433A46CE50153368 /* Pods-CMPComapiChatTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CMPComapiChatTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-CMPComapiChatTests/Pods-CMPComapiChatTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -612,7 +618,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				20FAACCA63B367C9465B3A24 /* Pods_ComapiChatSample.framework in Frameworks */,
+				74A779D809D368553B9F15FB /* Pods_ComapiChatSample.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -620,7 +626,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1B55D057DD289859B9931165 /* Pods_CMPComapiChat.framework in Frameworks */,
+				59DB69A1748F12A8F9856085 /* Pods_CMPComapiChat.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -629,32 +635,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				8998F4B321B8012F00BD6C52 /* CMPComapiChat.framework in Frameworks */,
-				0BA68F197E2F3954B96E3F7C /* Pods_CMPComapiChatTests.framework in Frameworks */,
+				FCE20874ACC238E905037FA2 /* Pods_CMPComapiChatTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		66C8407370CE7E04569261A3 /* Pods */ = {
+		04E90819A022040740F36283 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				5A0A92985CD7CC00A3EBC626 /* Pods-CMPComapiChat.debug.xcconfig */,
-				C7F073EA8E3557B43B52D0C3 /* Pods-CMPComapiChat.release.xcconfig */,
-				1D5D39EA86A729C0FA3F02DC /* Pods-CMPComapiChatTests.debug.xcconfig */,
-				C52E57A89AE86EA6E894EF40 /* Pods-CMPComapiChatTests.release.xcconfig */,
-				81EE50819A0EC1F52F8E2650 /* Pods-ComapiChatSample.debug.xcconfig */,
-				2B7AA95E2A49E30BD42E018E /* Pods-ComapiChatSample.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
-		77510ED84A104FB0AC7F4544 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				66058537CD9EE3CEA6AC4264 /* Pods_CMPComapiChat.framework */,
-				47A53E470D20D2C5E2D978FB /* Pods_CMPComapiChatTests.framework */,
-				0F39E6CB64B9E0F209AD1E50 /* Pods_ComapiChatSample.framework */,
+				3E825774818E2F066A0560ED /* Pods_CMPComapiChat.framework */,
+				BE75DFC1D8AC319AF619F215 /* Pods_CMPComapiChatTests.framework */,
+				2CE777BD784897D1D08B73A7 /* Pods_ComapiChatSample.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1316,8 +1309,11 @@
 				898EB14B2216CE4C002CD17D /* CMPCoreDataConfig.h */,
 				898EB14C2216CE4C002CD17D /* CMPCoreDataConfig.m */,
 				896015CF21B929A200370AF2 /* CMPChatStore.h */,
-				896CB98F21BA7EFC003FB3DF /* CMPStoreFactory.h */,
-				896CB99121BA981C003FB3DF /* CMPStoreFactory.m */,
+				89477E54228DADC4000E9344 /* CMPChatStoreFactoryBuilderProvider.h */,
+				8967B4002292D49D0067F73D /* CMPChatStoreTransactionProvider.h */,
+				8967B3F42292AC940067F73D /* CMPChatStoreTransaction.h */,
+				896CB98F21BA7EFC003FB3DF /* CMPChatStoreFactory.h */,
+				896CB99121BA981C003FB3DF /* CMPChatStoreFactory.m */,
 				896CB9AD21BAA7A3003FB3DF /* CMPStoreResult.h */,
 				896CB9AE21BAA7A3003FB3DF /* CMPStoreResult.m */,
 			);
@@ -1610,8 +1606,8 @@
 				896015AF21B82D6600370AF2 /* Tests */,
 				896CB99821BA9966003FB3DF /* ComapiChatSample */,
 				8998F49E21B800AA00BD6C52 /* Products */,
-				66C8407370CE7E04569261A3 /* Pods */,
-				77510ED84A104FB0AC7F4544 /* Frameworks */,
+				CAD2E5C8DD974CD4C928265A /* Pods */,
+				04E90819A022040740F36283 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1661,6 +1657,19 @@
 			path = Category;
 			sourceTree = "<group>";
 		};
+		CAD2E5C8DD974CD4C928265A /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				496522CFA982456C7F240E84 /* Pods-CMPComapiChat.debug.xcconfig */,
+				93EBADAB57CF49C40E450BAC /* Pods-CMPComapiChat.release.xcconfig */,
+				9923262F3855A8E750CEBFC7 /* Pods-CMPComapiChatTests.debug.xcconfig */,
+				EF067626433A46CE50153368 /* Pods-CMPComapiChatTests.release.xcconfig */,
+				6ED7F740912F433391476EB1 /* Pods-ComapiChatSample.debug.xcconfig */,
+				8B25ABA439C22192FF5CFBB7 /* Pods-ComapiChatSample.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -1668,8 +1677,10 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89477E55228DADC4000E9344 /* CMPChatStoreFactoryBuilderProvider.h in Headers */,
 				8969DC0E21DFA0D10047449C /* CMPChatServices.h in Headers */,
 				896CB97921B96CD1003FB3DF /* CMPChatMessage.h in Headers */,
+				8967B4012292D49D0067F73D /* CMPChatStoreTransactionProvider.h in Headers */,
 				8995262121C1187800C368DF /* NSManagedObjectContext+CMPOrphanedEvent.h in Headers */,
 				892F49BB21BE981A00FA52C9 /* CMPChatMessageDeliveryStatus.h in Headers */,
 				896CB9AF21BAA7A3003FB3DF /* CMPStoreResult.h in Headers */,
@@ -1692,10 +1703,11 @@
 				89D0224521E8EC0900E85A85 /* CMPProfileDelegate.h in Headers */,
 				896CB96921B957E8003FB3DF /* CMPChatRoleAttributes.h in Headers */,
 				896015BE21B82D6600370AF2 /* CMPComapiChatClient.h in Headers */,
-				896CB99021BA7EFC003FB3DF /* CMPStoreFactory.h in Headers */,
+				896CB99021BA7EFC003FB3DF /* CMPChatStoreFactory.h in Headers */,
 				896CB97521B9624F003FB3DF /* CMPChatParticipant.h in Headers */,
 				896015BB21B82D6600370AF2 /* CMPInternalConfig.h in Headers */,
 				8969DC0021DE71170047449C /* CMPConversationComparison.h in Headers */,
+				8967B3F62292AC940067F73D /* CMPChatStoreTransaction.h in Headers */,
 				89D0223721E619DA00E85A85 /* CMPMessageProcessor.h in Headers */,
 				896015C321B83D9F00370AF2 /* CMPChat.h in Headers */,
 				8969DC1D21DFBE8B0047449C /* CMPChatMessagingServices.h in Headers */,
@@ -1728,11 +1740,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 896CB9AA21BA9968003FB3DF /* Build configuration list for PBXNativeTarget "ComapiChatSample" */;
 			buildPhases = (
-				9EB88B7CFB97C66481E96AAA /* [CP] Check Pods Manifest.lock */,
+				F61EBCEF1DFCABBB7F2464EA /* [CP] Check Pods Manifest.lock */,
 				896CB99321BA9966003FB3DF /* Sources */,
 				896CB99421BA9966003FB3DF /* Frameworks */,
 				896CB99521BA9966003FB3DF /* Resources */,
-				F90F9CEFDDE29C42947BA1C3 /* [CP] Embed Pods Frameworks */,
+				A4FD44028C381DC4E40C99AE /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1747,7 +1759,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8998F4A521B800AA00BD6C52 /* Build configuration list for PBXNativeTarget "CMPComapiChat" */;
 			buildPhases = (
-				37D12A174E8D2E4696310985 /* [CP] Check Pods Manifest.lock */,
+				62F5D53921644A776E6E27E3 /* [CP] Check Pods Manifest.lock */,
 				8998F49821B800AA00BD6C52 /* Headers */,
 				8998F49921B800AA00BD6C52 /* Sources */,
 				8998F49A21B800AA00BD6C52 /* Frameworks */,
@@ -1767,11 +1779,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8998F4B621B8012F00BD6C52 /* Build configuration list for PBXNativeTarget "CMPComapiChatTests" */;
 			buildPhases = (
-				9B559A1BB072DFA76E7D9DDE /* [CP] Check Pods Manifest.lock */,
+				0875B61C8AFE90FFA73D8387 /* [CP] Check Pods Manifest.lock */,
 				8998F4AA21B8012F00BD6C52 /* Sources */,
 				8998F4AB21B8012F00BD6C52 /* Frameworks */,
 				8998F4AC21B8012F00BD6C52 /* Resources */,
-				BBCA20F723CE1F1C16D539DC /* [CP] Embed Pods Frameworks */,
+				3AD4A52D8101F8A4CD0984D2 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1904,25 +1916,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		37D12A174E8D2E4696310985 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-CMPComapiChat-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		9B559A1BB072DFA76E7D9DDE /* [CP] Check Pods Manifest.lock */ = {
+		0875B61C8AFE90FFA73D8387 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1940,25 +1934,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		9EB88B7CFB97C66481E96AAA /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ComapiChatSample-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		BBCA20F723CE1F1C16D539DC /* [CP] Embed Pods Frameworks */ = {
+		3AD4A52D8101F8A4CD0984D2 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1980,7 +1956,25 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CMPComapiChatTests/Pods-CMPComapiChatTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F90F9CEFDDE29C42947BA1C3 /* [CP] Embed Pods Frameworks */ = {
+		62F5D53921644A776E6E27E3 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-CMPComapiChat-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A4FD44028C381DC4E40C99AE /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2004,6 +1998,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ComapiChatSample/Pods-ComapiChatSample-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F61EBCEF1DFCABBB7F2464EA /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ComapiChatSample-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -2097,7 +2109,7 @@
 				8969DC1E21DFBE8B0047449C /* CMPChatMessagingServices.m in Sources */,
 				896CB97A21B96CD1003FB3DF /* CMPChatMessage.m in Sources */,
 				89D0223F21E61A6100E85A85 /* NSString+CMPBase64.m in Sources */,
-				896CB99221BA981C003FB3DF /* CMPStoreFactory.m in Sources */,
+				896CB99221BA981C003FB3DF /* CMPChatStoreFactory.m in Sources */,
 				89279993224E769400FCD247 /* CMPComapiChatClientFactory.m in Sources */,
 				896E30FD21C93EDB008CC785 /* CMPAttachmentController.m in Sources */,
 				8969DC0F21DFA0D10047449C /* CMPChatServices.m in Sources */,
@@ -2193,7 +2205,7 @@
 /* Begin XCBuildConfiguration section */
 		896CB9AB21BA9968003FB3DF /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 81EE50819A0EC1F52F8E2650 /* Pods-ComapiChatSample.debug.xcconfig */;
+			baseConfigurationReference = 6ED7F740912F433391476EB1 /* Pods-ComapiChatSample.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ComapiChatSample/ComapiChatSample.entitlements;
@@ -2216,7 +2228,7 @@
 		};
 		896CB9AC21BA9968003FB3DF /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2B7AA95E2A49E30BD42E018E /* Pods-ComapiChatSample.release.xcconfig */;
+			baseConfigurationReference = 8B25ABA439C22192FF5CFBB7 /* Pods-ComapiChatSample.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ComapiChatSample/ComapiChatSample.entitlements;
@@ -2360,7 +2372,7 @@
 		};
 		8998F4A621B800AA00BD6C52 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5A0A92985CD7CC00A3EBC626 /* Pods-CMPComapiChat.debug.xcconfig */;
+			baseConfigurationReference = 496522CFA982456C7F240E84 /* Pods-CMPComapiChat.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -2390,7 +2402,7 @@
 		};
 		8998F4A721B800AA00BD6C52 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C7F073EA8E3557B43B52D0C3 /* Pods-CMPComapiChat.release.xcconfig */;
+			baseConfigurationReference = 93EBADAB57CF49C40E450BAC /* Pods-CMPComapiChat.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -2419,7 +2431,7 @@
 		};
 		8998F4B721B8012F00BD6C52 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1D5D39EA86A729C0FA3F02DC /* Pods-CMPComapiChatTests.debug.xcconfig */;
+			baseConfigurationReference = 9923262F3855A8E750CEBFC7 /* Pods-CMPComapiChatTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
@@ -2443,7 +2455,7 @@
 		};
 		8998F4B821B8012F00BD6C52 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C52E57A89AE86EA6E894EF40 /* Pods-CMPComapiChatTests.release.xcconfig */;
+			baseConfigurationReference = EF067626433A46CE50153368 /* Pods-CMPComapiChatTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;

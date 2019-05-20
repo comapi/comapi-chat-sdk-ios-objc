@@ -20,7 +20,7 @@
 
 @implementation CMPChatConfig
 
-- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(id<CMPStoreFactoryBuildable>)storeFactory {
+- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(id<CMPChatStoreFactoryBuilderProvider>)storeFactory {
     self = [super initWithApiSpaceID:apiSpaceID authenticationDelegate:authenticationDelegate logLevel:CMPLogLevelWarning];
     
     if (self) {
@@ -32,7 +32,7 @@
     return self;
 }
 
-- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate logLevel:(CMPLogLevel)logLevel storeFactory:(id<CMPStoreFactoryBuildable>)factory internalConfig:(CMPInternalConfig *)config {
+- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate logLevel:(CMPLogLevel)logLevel storeFactory:(id<CMPChatStoreFactoryBuilderProvider>)factory internalConfig:(CMPInternalConfig *)config {
     self = [super initWithApiSpaceID:apiSpaceID authenticationDelegate:authenticationDelegate logLevel:logLevel];
     
     if (self) {
@@ -44,7 +44,7 @@
     return self;
 }
 
-- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate logLevel:(CMPLogLevel)logLevel storeFactory:(id<CMPStoreFactoryBuildable>)factory internalConfig:(CMPInternalConfig *)config storeConfig:(CMPCoreDataConfig *)storeConfig {
+- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate logLevel:(CMPLogLevel)logLevel storeFactory:(id<CMPChatStoreFactoryBuilderProvider>)factory internalConfig:(CMPInternalConfig *)config storeConfig:(CMPCoreDataConfig *)storeConfig {
     self = [super initWithApiSpaceID:apiSpaceID authenticationDelegate:authenticationDelegate logLevel:logLevel];
     
     if (self) {
@@ -56,7 +56,7 @@
     return self;
 }
 
-- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(id<CMPStoreFactoryBuildable>)factory internalConfig:(CMPInternalConfig *)config {
+- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(id<CMPChatStoreFactoryBuilderProvider>)factory internalConfig:(CMPInternalConfig *)config {
     self = [super initWithApiSpaceID:apiSpaceID authenticationDelegate:authenticationDelegate];
     
     if (self) {
@@ -68,7 +68,7 @@
     return self;
 }
 
-- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(id<CMPStoreFactoryBuildable>)factory internalConfig:(CMPInternalConfig *)config storeConfig:(CMPCoreDataConfig *)storeConfig {
+- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(id<CMPChatStoreFactoryBuilderProvider>)factory internalConfig:(CMPInternalConfig *)config storeConfig:(CMPCoreDataConfig *)storeConfig {
     self = [super initWithApiSpaceID:apiSpaceID authenticationDelegate:authenticationDelegate];
     
     if (self) {

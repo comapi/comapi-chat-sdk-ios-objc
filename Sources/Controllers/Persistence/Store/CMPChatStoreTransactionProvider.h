@@ -16,14 +16,15 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPMockChatStore.h"
-#import "CMPChatStoreFactoryBuilderProvider.h"
+#import "CMPChatStoreTransaction.h"
+
+#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPMockStoreFactoryBuilder : NSObject <CMPChatStoreFactoryBuilderProvider>
+@protocol CMPChatStoreTransactionProvider <NSObject>
 
-- (instancetype)initWithChatStore:(id<CMPChatStore>)chatStore;
+- (void)executeTransaction:(CMPChatStoreTransaction)transaction;
 
 @end
 
