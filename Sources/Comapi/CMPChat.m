@@ -17,9 +17,11 @@
 //
 
 #import "CMPChat.h"
+#import "CMPComapiChatClientFactory.h"
+#import "CMPComapiChatClient.h"
+#import "CMPChatConfig.h"
 
 #import <CMPComapiFoundation/CMPComapi.h>
-
 
 @implementation CMPChat
 
@@ -49,12 +51,16 @@ static CMPComapiChatClient *_shared = nil;
 + (void)initialiseSharedWithConfig:(CMPChatConfig *)chatConfig completion:(void (^ _Nullable)(CMPComapiChatClient * _Nullable))completion {
     if (CMPChat.shared) {
         logWithLevel(CMPLogLevelWarning, @"Client already initialised, returnig current client...", nil);
-        completion(CMPChat.shared);
+        if (completion) {
+            completion(CMPChat.shared);
+        }
     }
 
     [CMPChat initialiseWithConfig:chatConfig completion:^(CMPComapiChatClient * _Nullable client) {
         CMPChat.shared = client;
-        completion(client);
+        if (completion) {
+            completion(client);
+        }
     }];
 }
 

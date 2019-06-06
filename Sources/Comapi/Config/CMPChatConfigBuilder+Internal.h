@@ -16,19 +16,15 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
+#import "CMPChatConfigBuilder.h"
 
-@class CMPComapiChatClient;
-@class CMPChatConfig;
+@class CMPCoreDataConfig;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChat : NSObject
+@interface CMPChatConfigBuilder ()
 
-@property (class, nonatomic, strong, nullable, readonly) CMPComapiChatClient *shared;
-
-+ (void)initialiseWithConfig:(CMPChatConfig *)chatConfig completion:(void (^ _Nullable)(CMPComapiChatClient * _Nullable))completion;
-+ (void)initialiseSharedWithConfig:(CMPChatConfig *)chatConfig completion:(void (^ _Nullable)(CMPComapiChatClient * _Nullable))completion;
+- (instancetype)setStoreConfig:(CMPCoreDataConfig *)storeConfig;
 
 @end
 

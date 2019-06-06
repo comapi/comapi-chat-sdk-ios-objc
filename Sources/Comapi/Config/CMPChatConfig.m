@@ -17,71 +17,84 @@
 //
 
 #import "CMPChatConfig.h"
+#import "CMPChatConfig+Internal.h"
+#import "CMPChatConfigBuilder.h"
+#import "CMPInternalConfig.h"
+#import "CMPChatStoreFactoryBuilderProvider.h"
+#import "CMPChatStoreFactory.h"
+#import "CMPTypingDelegate.h"
+#import "CMPParticipantDelegate.h"
+#import "CMPProfileDelegate.h"
+#import "CMPCoreDataConfig.h"
 
 @implementation CMPChatConfig
 
-- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(id<CMPChatStoreFactoryBuilderProvider>)storeFactory {
-    self = [super initWithApiSpaceID:apiSpaceID authenticationDelegate:authenticationDelegate logLevel:CMPLogLevelWarning];
-    
-    if (self) {
-        self.storeFactory = storeFactory;
-        self.storeConfig = [[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSSQLiteStoreType];
-        self.internalConfig = [[CMPInternalConfig alloc] init];
-    }
-    
-    return self;
++ (CMPChatConfigBuilder *)builder {
+    return [CMPChatConfigBuilder new];
 }
 
-- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate logLevel:(CMPLogLevel)logLevel storeFactory:(id<CMPChatStoreFactoryBuilderProvider>)factory internalConfig:(CMPInternalConfig *)config {
-    self = [super initWithApiSpaceID:apiSpaceID authenticationDelegate:authenticationDelegate logLevel:logLevel];
-    
-    if (self) {
-        _storeFactory = factory;
-        _internalConfig = config;
-        _storeConfig = [[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSSQLiteStoreType];
-    }
-    
-    return self;
-}
-
-- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate logLevel:(CMPLogLevel)logLevel storeFactory:(id<CMPChatStoreFactoryBuilderProvider>)factory internalConfig:(CMPInternalConfig *)config storeConfig:(CMPCoreDataConfig *)storeConfig {
-    self = [super initWithApiSpaceID:apiSpaceID authenticationDelegate:authenticationDelegate logLevel:logLevel];
-    
-    if (self) {
-        _storeFactory = factory;
-        _internalConfig = config;
-        _storeConfig = storeConfig;
-    }
-    
-    return self;
-}
-
-- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(id<CMPChatStoreFactoryBuilderProvider>)factory internalConfig:(CMPInternalConfig *)config {
-    self = [super initWithApiSpaceID:apiSpaceID authenticationDelegate:authenticationDelegate];
-    
-    if (self) {
-        _storeFactory = factory;
-        _internalConfig = config;
-        _storeConfig = [[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSSQLiteStoreType];
-    }
-    
-    return self;
-}
-
-- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(id<CMPChatStoreFactoryBuilderProvider>)factory internalConfig:(CMPInternalConfig *)config storeConfig:(CMPCoreDataConfig *)storeConfig {
-    self = [super initWithApiSpaceID:apiSpaceID authenticationDelegate:authenticationDelegate];
-    
-    if (self) {
-        _storeFactory = factory;
-        _internalConfig = config;
-        _storeConfig = storeConfig;
-    }
-    
-    return self;
-}
-
-- (CMPComapiConfig *)foundationConfig {
-    return [[CMPComapiConfig alloc] initWithApiSpaceID:self.id authenticationDelegate:self.authDelegate logLevel:self.logLevel];
-}
+//- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(id<CMPChatStoreFactoryBuilderProvider>)storeFactory {
+//    self = [super initWithApiSpaceID:apiSpaceID authenticationDelegate:authenticationDelegate logLevel:CMPLogLevelWarning];
+//
+//    if (self) {
+//        self.storeFactory = storeFactory;
+//        self.storeConfig = [[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSSQLiteStoreType];
+//        self.internalConfig = [[CMPInternalConfig alloc] init];
+//    }
+//
+//    return self;
+//}
+//
+//- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate logLevel:(CMPLogLevel)logLevel storeFactory:(id<CMPChatStoreFactoryBuilderProvider>)factory internalConfig:(CMPInternalConfig *)config {
+//    self = [super initWithApiSpaceID:apiSpaceID authenticationDelegate:authenticationDelegate logLevel:logLevel];
+//
+//    if (self) {
+//        _storeFactory = factory;
+//        _internalConfig = config;
+//        _storeConfig = [[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSSQLiteStoreType];
+//    }
+//
+//    return self;
+//}
+//
+//- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate logLevel:(CMPLogLevel)logLevel storeFactory:(id<CMPChatStoreFactoryBuilderProvider>)factory internalConfig:(CMPInternalConfig *)config storeConfig:(CMPCoreDataConfig *)storeConfig {
+//    self = [super initWithApiSpaceID:apiSpaceID authenticationDelegate:authenticationDelegate logLevel:logLevel];
+//
+//    if (self) {
+//        _storeFactory = factory;
+//        _internalConfig = config;
+//        _storeConfig = storeConfig;
+//    }
+//
+//    return self;
+//}
+//
+//- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(id<CMPChatStoreFactoryBuilderProvider>)factory internalConfig:(CMPInternalConfig *)config {
+//    self = [super initWithApiSpaceID:apiSpaceID authenticationDelegate:authenticationDelegate];
+//
+//    if (self) {
+//        _storeFactory = factory;
+//        _internalConfig = config;
+//        _storeConfig = [[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSSQLiteStoreType];
+//    }
+//
+//    return self;
+//}
+//
+//- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(id<CMPChatStoreFactoryBuilderProvider>)factory internalConfig:(CMPInternalConfig *)config storeConfig:(CMPCoreDataConfig *)storeConfig {
+//    self = [super initWithApiSpaceID:apiSpaceID authenticationDelegate:authenticationDelegate];
+//
+//    if (self) {
+//        _storeFactory = factory;
+//        _internalConfig = config;
+//        _storeConfig = storeConfig;
+//    }
+//
+//    return self;
+//}
+//
+//- (CMPComapiConfig *)foundationConfig {
+//    return [[CMPComapiConfig alloc] initWithApiSpaceID:self.id authenticationDelegate:self.authDelegate logLevel:self.logLevel];
+//}
 
 @end

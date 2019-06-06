@@ -17,15 +17,20 @@
 //
 
 #import "CMPLifecycleDelegate.h"
-#import "CMPTypingDelegate.h"
-#import "CMPProfileDelegate.h"
-#import "CMPParticipantDelegate.h"
-#import "CMPChatController.h"
-#import "CMPEventsController.h"
-#import "CMPChatServices.h"
-#import "CMPChatConfig.h"
 
-#import <CMPComapiFoundation/CMPSession.h>
+@import Foundation;
+@import CMPComapiFoundation.CMPBroadcastDelegate;
+
+@class CMPComapiClient;
+@class CMPChatController;
+@class CMPEventsController;
+@class CMPChatServices;
+@class CMPChatConfig;
+
+@protocol CMPTypingDelegate;
+@protocol CMPParticipantDelegate;
+@protocol CMPProfileDelegate;
+@protocol CMPStateDelegate;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -39,6 +44,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, readonly, nullable) NSString *profileID;
 @property (nonatomic, readonly) BOOL sessionSuccessfullyCreated;
 
+@property (nonatomic, strong, readonly) CMPBroadcastDelegate<id<CMPStateDelegate>> *stateDelegates;
+
 - (void)setPushToken:(NSString *)deviceToken completion:(void(^)(BOOL, NSError * _Nullable))completion NS_SWIFT_NAME(set(pushToken:completion:));
 
 - (void)addTypingDelegate:(id<CMPTypingDelegate>)delegate;
@@ -49,6 +56,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)addParticipantDelegate:(id<CMPParticipantDelegate>)delegate;
 - (void)removeParticipantDelegate:(id<CMPParticipantDelegate>)delegate;
+
+- (void)addStateDelegate:(id<CMPStateDelegate>)delegate;
+- (void)removeStateDelegate:(id<CMPStateDelegate>)delegate;
 
 @end
 

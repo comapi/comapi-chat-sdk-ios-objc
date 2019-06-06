@@ -98,7 +98,6 @@
 #pragma mark - CMPEventDelegate
 
 - (void)client:(nonnull CMPComapiClient *)client didReceiveEvent:(nonnull CMPEvent *)event {
-    __weak typeof(self) weakSelf = self;
     switch (event.type) {
         case CMPEventTypeConversationCreate: {
             CMPChatConversation *conversation = [[CMPChatConversation alloc] initWithConversationCreateEvent:(CMPConversationEventCreate *)event];

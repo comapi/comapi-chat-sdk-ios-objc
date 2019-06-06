@@ -16,16 +16,19 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatStoreFactoryBuilderProvider.h"
-#import "CMPChatStoreFactory.h"
-#import "CMPInternalConfig.h"
-#import "CMPTypingDelegate.h"
-#import "CMPParticipantDelegate.h"
-#import "CMPProfileDelegate.h"
-#import "CMPCoreDataConfig.h"
+@import CMPComapiFoundation.CMPComapiConfig;
+//#import <CMPComapiFoundation/CMPComapiClient.h>
 
-#import <CMPComapiFoundation/CMPComapiConfig.h>
-#import <CMPComapiFoundation/CMPComapiClient.h>
+@class CMPComapiClient;
+
+@class CMPChatStoreFactory,
+       CMPInternalConfig,
+       CMPCoreDataConfig,
+       CMPChatConfigBuilder;
+
+@protocol CMPChatStoreFactoryBuilderProvider,
+          CMPTypingDelegate,
+          CMPProfileDelegate;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -33,15 +36,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) id<CMPChatStoreFactoryBuilderProvider> storeFactory;
 @property (nonatomic, strong) CMPInternalConfig *internalConfig;
-@property (nonatomic, strong) CMPCoreDataConfig *storeConfig;
 
-- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(CMPChatStoreFactory *)storeFactory;
++ (CMPChatConfigBuilder *)builder;
 
-- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate logLevel:(CMPLogLevel)logLevel storeFactory:(id<CMPChatStoreFactoryBuilderProvider>)factory internalConfig:(CMPInternalConfig *)config;
-- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(id<CMPChatStoreFactoryBuilderProvider>)factory internalConfig:(CMPInternalConfig *)config;
-- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(id<CMPChatStoreFactoryBuilderProvider>)factory internalConfig:(CMPInternalConfig *)config storeConfig:(CMPCoreDataConfig *)storeConfig;
-- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate logLevel:(CMPLogLevel)logLevel storeFactory:(id<CMPChatStoreFactoryBuilderProvider>)factory internalConfig:(CMPInternalConfig *)config storeConfig:(CMPCoreDataConfig *)storeConfig;
-- (CMPComapiConfig *)foundationConfig;
+//- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(CMPChatStoreFactory *)storeFactory;
+//
+//- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate logLevel:(CMPLogLevel)logLevel storeFactory:(id<CMPChatStoreFactoryBuilderProvider>)factory internalConfig:(CMPInternalConfig *)config;
+//- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(id<CMPChatStoreFactoryBuilderProvider>)factory internalConfig:(CMPInternalConfig *)config;
+//- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate storeFactory:(id<CMPChatStoreFactoryBuilderProvider>)factory internalConfig:(CMPInternalConfig *)config storeConfig:(CMPCoreDataConfig *)storeConfig;
+//- (instancetype)initWithApiSpaceID:(NSString *)apiSpaceID authenticationDelegate:(id<CMPAuthenticationDelegate>)authenticationDelegate logLevel:(CMPLogLevel)logLevel storeFactory:(id<CMPChatStoreFactoryBuilderProvider>)factory internalConfig:(CMPInternalConfig *)config storeConfig:(CMPCoreDataConfig *)storeConfig;
+//- (CMPComapiConfig *)foundationConfig;
 
 @end
 

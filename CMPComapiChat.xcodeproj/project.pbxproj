@@ -7,14 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		59DB69A1748F12A8F9856085 /* Pods_CMPComapiChat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E825774818E2F066A0560ED /* Pods_CMPComapiChat.framework */; };
-		74A779D809D368553B9F15FB /* Pods_ComapiChatSample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE777BD784897D1D08B73A7 /* Pods_ComapiChatSample.framework */; };
+		314492723C09836BF5808886 /* Pods_CMPComapiChatTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53BA29CA6A806AD9B9A6FBEA /* Pods_CMPComapiChatTests.framework */; };
 		8903697B224907EB00960762 /* CMPNewMessageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8903697A224907EB00960762 /* CMPNewMessageView.m */; };
 		890F81312209F15F006EF1A6 /* CMPImagePartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 890F81302209F15F006EF1A6 /* CMPImagePartView.m */; };
 		890F81342209F16C006EF1A6 /* CMPTextPartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 890F81332209F16C006EF1A6 /* CMPTextPartView.m */; };
 		890F8139220B42D7006EF1A6 /* CMPMessagePartCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 890F8138220B42D7006EF1A6 /* CMPMessagePartCell.m */; };
 		890F813D2211B650006EF1A6 /* CMPAttachmentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 890F813C2211B650006EF1A6 /* CMPAttachmentsView.m */; };
 		8915FEA02256572800EB9A4A /* CMPComapiChat.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8915FE9E2256572800EB9A4A /* CMPComapiChat.xcdatamodeld */; };
+		891A1F5822A027460075D63D /* CMPChatConfigBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 891A1F5622A027460075D63D /* CMPChatConfigBuilder.h */; };
+		891A1F5922A027460075D63D /* CMPChatConfigBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 891A1F5722A027460075D63D /* CMPChatConfigBuilder.m */; };
 		89279992224E769400FCD247 /* CMPComapiChatClientFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 89279990224E769400FCD247 /* CMPComapiChatClientFactory.h */; };
 		89279993224E769400FCD247 /* CMPComapiChatClientFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 89279991224E769400FCD247 /* CMPComapiChatClientFactory.m */; };
 		892C860A222443A400A596BC /* CMPTestConversationComparator.m in Sources */ = {isa = PBXBuildFile; fileRef = 892C8605222443A300A596BC /* CMPTestConversationComparator.m */; };
@@ -74,6 +75,8 @@
 		89512B2721F727B300AA9C5D /* CMPProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89512B1E21F727B300AA9C5D /* CMPProfileViewController.m */; };
 		89512B2821F727B300AA9C5D /* CMPTitledCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 89512B2121F727B300AA9C5D /* CMPTitledCell.m */; };
 		89512B2921F727B300AA9C5D /* CMPProfileView.m in Sources */ = {isa = PBXBuildFile; fileRef = 89512B2421F727B300AA9C5D /* CMPProfileView.m */; };
+		8953AE2222A809EC00CCA183 /* CMPChatConfig+Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 8953AE2022A809EC00CCA183 /* CMPChatConfig+Internal.h */; };
+		8953AE2522A80A4F00CCA183 /* CMPChatConfigBuilder+Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 8953AE2422A80A4F00CCA183 /* CMPChatConfigBuilder+Internal.h */; };
 		8957E585223A8BC600A1C926 /* ConversationSynchronised.json in Resources */ = {isa = PBXBuildFile; fileRef = 8957E584223A8BC600A1C926 /* ConversationSynchronised.json */; };
 		8957E587223A8D7700A1C926 /* GetMessagesResult-SynchroniseConversation.json in Resources */ = {isa = PBXBuildFile; fileRef = 8957E586223A8D7700A1C926 /* GetMessagesResult-SynchroniseConversation.json */; };
 		8957E58A223AAC8300A1C926 /* Events-ProcessEventsQuery.json in Resources */ = {isa = PBXBuildFile; fileRef = 8957E589223AAC8300A1C926 /* Events-ProcessEventsQuery.json */; };
@@ -245,7 +248,8 @@
 		89E824A4222FE95F006D1324 /* CMPTestOrphanedEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 89E824A3222FE95F006D1324 /* CMPTestOrphanedEvent.m */; };
 		89E824A622300D82006D1324 /* CMPTestChat.m in Sources */ = {isa = PBXBuildFile; fileRef = 89E824A522300D82006D1324 /* CMPTestChat.m */; };
 		89EE87AA21FF64860089F606 /* NSManagedObject+CMPUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = 89EE87A921FF64860089F606 /* NSManagedObject+CMPUpdate.m */; };
-		FCE20874ACC238E905037FA2 /* Pods_CMPComapiChatTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE75DFC1D8AC319AF619F215 /* Pods_CMPComapiChatTests.framework */; };
+		8B5197ECD4E41556ACBF47F8 /* Pods_CMPComapiChat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9180054ADE98A6AB84445274 /* Pods_CMPComapiChat.framework */; };
+		C41BAEB4E8B0E2A5E2968A37 /* Pods_ComapiChatSample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAC9AB2146F2DFD3D78B27CB /* Pods_ComapiChatSample.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -278,10 +282,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		2CE777BD784897D1D08B73A7 /* Pods_ComapiChatSample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ComapiChatSample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		3E825774818E2F066A0560ED /* Pods_CMPComapiChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CMPComapiChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		496522CFA982456C7F240E84 /* Pods-CMPComapiChat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CMPComapiChat.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CMPComapiChat/Pods-CMPComapiChat.debug.xcconfig"; sourceTree = "<group>"; };
-		6ED7F740912F433391476EB1 /* Pods-ComapiChatSample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ComapiChatSample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ComapiChatSample/Pods-ComapiChatSample.debug.xcconfig"; sourceTree = "<group>"; };
+		4E0F656A213815E313D294C8 /* Pods-CMPComapiChatTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CMPComapiChatTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CMPComapiChatTests/Pods-CMPComapiChatTests.debug.xcconfig"; sourceTree = "<group>"; };
+		53BA29CA6A806AD9B9A6FBEA /* Pods_CMPComapiChatTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CMPComapiChatTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		68FD0DBC855D2645FCD462A3 /* Pods-CMPComapiChat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CMPComapiChat.release.xcconfig"; path = "Pods/Target Support Files/Pods-CMPComapiChat/Pods-CMPComapiChat.release.xcconfig"; sourceTree = "<group>"; };
+		6DD2A16399AC12E95FE1A1E1 /* Pods-ComapiChatSample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ComapiChatSample.release.xcconfig"; path = "Pods/Target Support Files/Pods-ComapiChatSample/Pods-ComapiChatSample.release.xcconfig"; sourceTree = "<group>"; };
+		8468402BA691232B75D091CC /* Pods-CMPComapiChatTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CMPComapiChatTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-CMPComapiChatTests/Pods-CMPComapiChatTests.release.xcconfig"; sourceTree = "<group>"; };
 		89036979224907EB00960762 /* CMPNewMessageView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPNewMessageView.h; sourceTree = "<group>"; };
 		8903697A224907EB00960762 /* CMPNewMessageView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPNewMessageView.m; sourceTree = "<group>"; };
 		890F812F2209F15F006EF1A6 /* CMPImagePartView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPImagePartView.h; sourceTree = "<group>"; };
@@ -296,6 +301,8 @@
 		890F813C2211B650006EF1A6 /* CMPAttachmentsView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPAttachmentsView.m; sourceTree = "<group>"; };
 		8915FE9D2256144A00EB9A4A /* ComapiChatSample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ComapiChatSample.entitlements; sourceTree = "<group>"; };
 		8915FE9F2256572800EB9A4A /* CMPComapiChat.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CMPComapiChat.xcdatamodel; sourceTree = "<group>"; };
+		891A1F5622A027460075D63D /* CMPChatConfigBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPChatConfigBuilder.h; sourceTree = "<group>"; };
+		891A1F5722A027460075D63D /* CMPChatConfigBuilder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPChatConfigBuilder.m; sourceTree = "<group>"; };
 		89279990224E769400FCD247 /* CMPComapiChatClientFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPComapiChatClientFactory.h; sourceTree = "<group>"; };
 		89279991224E769400FCD247 /* CMPComapiChatClientFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPComapiChatClientFactory.m; sourceTree = "<group>"; };
 		892C8605222443A300A596BC /* CMPTestConversationComparator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPTestConversationComparator.m; sourceTree = "<group>"; };
@@ -396,6 +403,8 @@
 		89512B2221F727B300AA9C5D /* CMPTitledCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPTitledCell.h; sourceTree = "<group>"; };
 		89512B2421F727B300AA9C5D /* CMPProfileView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPProfileView.m; sourceTree = "<group>"; };
 		89512B2521F727B300AA9C5D /* CMPProfileView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPProfileView.h; sourceTree = "<group>"; };
+		8953AE2022A809EC00CCA183 /* CMPChatConfig+Internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CMPChatConfig+Internal.h"; sourceTree = "<group>"; };
+		8953AE2422A80A4F00CCA183 /* CMPChatConfigBuilder+Internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CMPChatConfigBuilder+Internal.h"; sourceTree = "<group>"; };
 		8957E584223A8BC600A1C926 /* ConversationSynchronised.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ConversationSynchronised.json; sourceTree = "<group>"; };
 		8957E586223A8D7700A1C926 /* GetMessagesResult-SynchroniseConversation.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "GetMessagesResult-SynchroniseConversation.json"; sourceTree = "<group>"; };
 		8957E588223A9AC400A1C926 /* CMPCoreDataManager+TestHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CMPCoreDataManager+TestHelper.h"; sourceTree = "<group>"; };
@@ -606,11 +615,10 @@
 		89E824A9223168D8006D1324 /* CMPChatController+TestHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CMPChatController+TestHelper.h"; sourceTree = "<group>"; };
 		89EE87A821FF64860089F606 /* NSManagedObject+CMPUpdate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+CMPUpdate.h"; sourceTree = "<group>"; };
 		89EE87A921FF64860089F606 /* NSManagedObject+CMPUpdate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+CMPUpdate.m"; sourceTree = "<group>"; };
-		8B25ABA439C22192FF5CFBB7 /* Pods-ComapiChatSample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ComapiChatSample.release.xcconfig"; path = "Pods/Target Support Files/Pods-ComapiChatSample/Pods-ComapiChatSample.release.xcconfig"; sourceTree = "<group>"; };
-		93EBADAB57CF49C40E450BAC /* Pods-CMPComapiChat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CMPComapiChat.release.xcconfig"; path = "Pods/Target Support Files/Pods-CMPComapiChat/Pods-CMPComapiChat.release.xcconfig"; sourceTree = "<group>"; };
-		9923262F3855A8E750CEBFC7 /* Pods-CMPComapiChatTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CMPComapiChatTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CMPComapiChatTests/Pods-CMPComapiChatTests.debug.xcconfig"; sourceTree = "<group>"; };
-		BE75DFC1D8AC319AF619F215 /* Pods_CMPComapiChatTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CMPComapiChatTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		EF067626433A46CE50153368 /* Pods-CMPComapiChatTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CMPComapiChatTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-CMPComapiChatTests/Pods-CMPComapiChatTests.release.xcconfig"; sourceTree = "<group>"; };
+		9180054ADE98A6AB84445274 /* Pods_CMPComapiChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CMPComapiChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A0DF62907A2693BD28BE0C94 /* Pods-CMPComapiChat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CMPComapiChat.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CMPComapiChat/Pods-CMPComapiChat.debug.xcconfig"; sourceTree = "<group>"; };
+		B45CA51F6C22F5087BA3581E /* Pods-ComapiChatSample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ComapiChatSample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ComapiChatSample/Pods-ComapiChatSample.debug.xcconfig"; sourceTree = "<group>"; };
+		FAC9AB2146F2DFD3D78B27CB /* Pods_ComapiChatSample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ComapiChatSample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -618,7 +626,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				74A779D809D368553B9F15FB /* Pods_ComapiChatSample.framework in Frameworks */,
+				C41BAEB4E8B0E2A5E2968A37 /* Pods_ComapiChatSample.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -626,7 +634,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				59DB69A1748F12A8F9856085 /* Pods_CMPComapiChat.framework in Frameworks */,
+				8B5197ECD4E41556ACBF47F8 /* Pods_CMPComapiChat.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -635,21 +643,24 @@
 			buildActionMask = 2147483647;
 			files = (
 				8998F4B321B8012F00BD6C52 /* CMPComapiChat.framework in Frameworks */,
-				FCE20874ACC238E905037FA2 /* Pods_CMPComapiChatTests.framework in Frameworks */,
+				314492723C09836BF5808886 /* Pods_CMPComapiChatTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		04E90819A022040740F36283 /* Frameworks */ = {
+		4C658C602C16C94446179B34 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				3E825774818E2F066A0560ED /* Pods_CMPComapiChat.framework */,
-				BE75DFC1D8AC319AF619F215 /* Pods_CMPComapiChatTests.framework */,
-				2CE777BD784897D1D08B73A7 /* Pods_ComapiChatSample.framework */,
+				A0DF62907A2693BD28BE0C94 /* Pods-CMPComapiChat.debug.xcconfig */,
+				68FD0DBC855D2645FCD462A3 /* Pods-CMPComapiChat.release.xcconfig */,
+				4E0F656A213815E313D294C8 /* Pods-CMPComapiChatTests.debug.xcconfig */,
+				8468402BA691232B75D091CC /* Pods-CMPComapiChatTests.release.xcconfig */,
+				B45CA51F6C22F5087BA3581E /* Pods-ComapiChatSample.debug.xcconfig */,
+				6DD2A16399AC12E95FE1A1E1 /* Pods-ComapiChatSample.release.xcconfig */,
 			);
-			name = Frameworks;
+			name = Pods;
 			sourceTree = "<group>";
 		};
 		892F49B421BE7C1C00FA52C9 /* Adapter */ = {
@@ -1219,6 +1230,10 @@
 				896015B421B82D6600370AF2 /* CMPInternalConfig.m */,
 				8961391521CBED0A00FA41C1 /* CMPChatConfig.h */,
 				8961391621CBED0A00FA41C1 /* CMPChatConfig.m */,
+				8953AE2022A809EC00CCA183 /* CMPChatConfig+Internal.h */,
+				891A1F5622A027460075D63D /* CMPChatConfigBuilder.h */,
+				891A1F5722A027460075D63D /* CMPChatConfigBuilder.m */,
+				8953AE2422A80A4F00CCA183 /* CMPChatConfigBuilder+Internal.h */,
 			);
 			path = Config;
 			sourceTree = "<group>";
@@ -1606,8 +1621,8 @@
 				896015AF21B82D6600370AF2 /* Tests */,
 				896CB99821BA9966003FB3DF /* ComapiChatSample */,
 				8998F49E21B800AA00BD6C52 /* Products */,
-				CAD2E5C8DD974CD4C928265A /* Pods */,
-				04E90819A022040740F36283 /* Frameworks */,
+				4C658C602C16C94446179B34 /* Pods */,
+				E7647D15400AC8B8F2DBE57C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1657,17 +1672,14 @@
 			path = Category;
 			sourceTree = "<group>";
 		};
-		CAD2E5C8DD974CD4C928265A /* Pods */ = {
+		E7647D15400AC8B8F2DBE57C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				496522CFA982456C7F240E84 /* Pods-CMPComapiChat.debug.xcconfig */,
-				93EBADAB57CF49C40E450BAC /* Pods-CMPComapiChat.release.xcconfig */,
-				9923262F3855A8E750CEBFC7 /* Pods-CMPComapiChatTests.debug.xcconfig */,
-				EF067626433A46CE50153368 /* Pods-CMPComapiChatTests.release.xcconfig */,
-				6ED7F740912F433391476EB1 /* Pods-ComapiChatSample.debug.xcconfig */,
-				8B25ABA439C22192FF5CFBB7 /* Pods-ComapiChatSample.release.xcconfig */,
+				9180054ADE98A6AB84445274 /* Pods_CMPComapiChat.framework */,
+				53BA29CA6A806AD9B9A6FBEA /* Pods_CMPComapiChatTests.framework */,
+				FAC9AB2146F2DFD3D78B27CB /* Pods_ComapiChatSample.framework */,
 			);
-			name = Pods;
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1697,6 +1709,7 @@
 				896E30E121C3F561008CC785 /* CMPEventsController.h in Headers */,
 				89BFC61C21CCF0200089B079 /* CMPCallLimiter.h in Headers */,
 				896015D121B929A200370AF2 /* CMPChatStore.h in Headers */,
+				8953AE2222A809EC00CCA183 /* CMPChatConfig+Internal.h in Headers */,
 				896015CC21B9290000370AF2 /* CMPPersistenceController.h in Headers */,
 				892F49B721BE7C3100FA52C9 /* CMPModelAdapter.h in Headers */,
 				8969DC1921DFBE750047449C /* CMPChatSessionServices.h in Headers */,
@@ -1718,6 +1731,7 @@
 				892F49CA21BEA60B00FA52C9 /* CMPChatManagedOrphanedEvent.h in Headers */,
 				898EB14D2216CE4C002CD17D /* CMPCoreDataConfig.h in Headers */,
 				896E310421C955D6008CC785 /* CMPMissingEventsDelegate.h in Headers */,
+				8953AE2522A80A4F00CCA183 /* CMPChatConfigBuilder+Internal.h in Headers */,
 				896E310021C954B1008CC785 /* CMPMissingEventsTracker.h in Headers */,
 				8961391721CBED0A00FA41C1 /* CMPChatConfig.h in Headers */,
 				896E30F821C93ECD008CC785 /* CMPChatController.h in Headers */,
@@ -1730,6 +1744,7 @@
 				896CB97D21B97121003FB3DF /* CMPChatMessageStatus.h in Headers */,
 				89C0143621C2CA6600799B3B /* NSManagedObjectContext+CMPUtility.h in Headers */,
 				896CB98D21B97C02003FB3DF /* CMPChatMessageContext.h in Headers */,
+				891A1F5822A027460075D63D /* CMPChatConfigBuilder.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1740,11 +1755,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 896CB9AA21BA9968003FB3DF /* Build configuration list for PBXNativeTarget "ComapiChatSample" */;
 			buildPhases = (
-				F61EBCEF1DFCABBB7F2464EA /* [CP] Check Pods Manifest.lock */,
+				D61D91521D492754DBF62343 /* [CP] Check Pods Manifest.lock */,
 				896CB99321BA9966003FB3DF /* Sources */,
 				896CB99421BA9966003FB3DF /* Frameworks */,
 				896CB99521BA9966003FB3DF /* Resources */,
-				A4FD44028C381DC4E40C99AE /* [CP] Embed Pods Frameworks */,
+				825EB8204A5360FEF4651D5F /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1759,7 +1774,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8998F4A521B800AA00BD6C52 /* Build configuration list for PBXNativeTarget "CMPComapiChat" */;
 			buildPhases = (
-				62F5D53921644A776E6E27E3 /* [CP] Check Pods Manifest.lock */,
+				D14FED11F00067AAE425B9EF /* [CP] Check Pods Manifest.lock */,
 				8998F49821B800AA00BD6C52 /* Headers */,
 				8998F49921B800AA00BD6C52 /* Sources */,
 				8998F49A21B800AA00BD6C52 /* Frameworks */,
@@ -1779,11 +1794,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8998F4B621B8012F00BD6C52 /* Build configuration list for PBXNativeTarget "CMPComapiChatTests" */;
 			buildPhases = (
-				0875B61C8AFE90FFA73D8387 /* [CP] Check Pods Manifest.lock */,
+				105F500F259D4CD3F416B28B /* [CP] Check Pods Manifest.lock */,
 				8998F4AA21B8012F00BD6C52 /* Sources */,
 				8998F4AB21B8012F00BD6C52 /* Frameworks */,
 				8998F4AC21B8012F00BD6C52 /* Resources */,
-				3AD4A52D8101F8A4CD0984D2 /* [CP] Embed Pods Frameworks */,
+				708EA876104D1DFA01AE484E /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1916,7 +1931,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0875B61C8AFE90FFA73D8387 /* [CP] Check Pods Manifest.lock */ = {
+		105F500F259D4CD3F416B28B /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1934,7 +1949,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		3AD4A52D8101F8A4CD0984D2 /* [CP] Embed Pods Frameworks */ = {
+		708EA876104D1DFA01AE484E /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1956,25 +1971,7 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CMPComapiChatTests/Pods-CMPComapiChatTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		62F5D53921644A776E6E27E3 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-CMPComapiChat-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		A4FD44028C381DC4E40C99AE /* [CP] Embed Pods Frameworks */ = {
+		825EB8204A5360FEF4651D5F /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2000,7 +1997,25 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ComapiChatSample/Pods-ComapiChatSample-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F61EBCEF1DFCABBB7F2464EA /* [CP] Check Pods Manifest.lock */ = {
+		D14FED11F00067AAE425B9EF /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-CMPComapiChat-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D61D91521D492754DBF62343 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2123,6 +2138,7 @@
 				896E30E221C3F561008CC785 /* CMPEventsController.m in Sources */,
 				892F49B821BE7C3100FA52C9 /* CMPModelAdapter.m in Sources */,
 				8969DC0121DE71170047449C /* CMPConversationComparison.m in Sources */,
+				891A1F5922A027460075D63D /* CMPChatConfigBuilder.m in Sources */,
 				896E30F921C93ECD008CC785 /* CMPChatController.m in Sources */,
 				89C0143321C2A3FA00799B3B /* NSArray+CMPUtility.m in Sources */,
 				896CB98621B97979003FB3DF /* CMPChatMessagePart.m in Sources */,
@@ -2205,7 +2221,7 @@
 /* Begin XCBuildConfiguration section */
 		896CB9AB21BA9968003FB3DF /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6ED7F740912F433391476EB1 /* Pods-ComapiChatSample.debug.xcconfig */;
+			baseConfigurationReference = B45CA51F6C22F5087BA3581E /* Pods-ComapiChatSample.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ComapiChatSample/ComapiChatSample.entitlements;
@@ -2228,7 +2244,7 @@
 		};
 		896CB9AC21BA9968003FB3DF /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8B25ABA439C22192FF5CFBB7 /* Pods-ComapiChatSample.release.xcconfig */;
+			baseConfigurationReference = 6DD2A16399AC12E95FE1A1E1 /* Pods-ComapiChatSample.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ComapiChatSample/ComapiChatSample.entitlements;
@@ -2372,7 +2388,7 @@
 		};
 		8998F4A621B800AA00BD6C52 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 496522CFA982456C7F240E84 /* Pods-CMPComapiChat.debug.xcconfig */;
+			baseConfigurationReference = A0DF62907A2693BD28BE0C94 /* Pods-CMPComapiChat.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -2402,7 +2418,7 @@
 		};
 		8998F4A721B800AA00BD6C52 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 93EBADAB57CF49C40E450BAC /* Pods-CMPComapiChat.release.xcconfig */;
+			baseConfigurationReference = 68FD0DBC855D2645FCD462A3 /* Pods-CMPComapiChat.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -2431,7 +2447,7 @@
 		};
 		8998F4B721B8012F00BD6C52 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9923262F3855A8E750CEBFC7 /* Pods-CMPComapiChatTests.debug.xcconfig */;
+			baseConfigurationReference = 4E0F656A213815E313D294C8 /* Pods-CMPComapiChatTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
@@ -2455,7 +2471,7 @@
 		};
 		8998F4B821B8012F00BD6C52 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EF067626433A46CE50153368 /* Pods-CMPComapiChatTests.release.xcconfig */;
+			baseConfigurationReference = 8468402BA691232B75D091CC /* Pods-CMPComapiChatTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;

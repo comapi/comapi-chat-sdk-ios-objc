@@ -16,7 +16,19 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+#import "CMPChatServices.h"
+#import "CMPEventsController.h"
+#import "CMPChatController.h"
+#import "CMPPersistenceController.h"
+#import "CMPAttachmentController.h"
+#import "CMPMissingEventsTracker.h"
+#import "CMPModelAdapter.h"
+#import "CMPChatConfig+Internal.h"
+#import "CMPComapiChatClient.h"
 #import "CMPComapiChatClientFactory.h"
+
+#import <CMPComapiFoundation/CMPComapiClient.h>
+#import <CMPComapiFoundation/CMPLogger.h>
 
 @interface CMPComapiChatClient ()
 

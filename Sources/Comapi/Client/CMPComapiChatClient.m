@@ -16,6 +16,14 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+#import "CMPLifecycleDelegate.h"
+#import "CMPTypingDelegate.h"
+#import "CMPProfileDelegate.h"
+#import "CMPParticipantDelegate.h"
+#import "CMPChatController.h"
+#import "CMPEventsController.h"
+#import "CMPChatServices.h"
+#import "CMPChatConfig.h"
 #import "CMPComapiChatClient.h"
 #import "CMPChatConfig.h"
 #import "CMPPersistenceController.h"
@@ -23,6 +31,8 @@
 #import "CMPModelAdapter.h"
 #import "CMPAttachmentController.h"
 
+#import <CMPComapiFoundation/CMPStateDelegate.h>
+#import <CMPComapiFoundation/CMPSession.h>
 #import <CMPComapiFoundation/CMPComapiClient.h>
 #import <CMPComapiFoundation/CMPBroadcastDelegate.h>
 
@@ -73,6 +83,10 @@
     return [_foundationClient getProfileID];
 }
 
+- (CMPBroadcastDelegate<id<CMPStateDelegate>> *)stateDelegates {
+    return [_foundationClient stateDelegates];
+}
+
 - (void)setPushToken:(NSString *)deviceToken completion:(void (^)(BOOL, NSError * _Nullable))completion {
     [_foundationClient setPushToken:deviceToken completion:completion];
 }
@@ -99,6 +113,14 @@
 
 - (void)removeParticipantDelegate:(id<CMPParticipantDelegate>)delegate {
     [_eventsController.participantDelegates removeDelegate:delegate];
+}
+
+- (void)addStateDelegate:(id<CMPStateDelegate>)delegate {
+    [self.foundationClient addStateDelegate:delegate];
+}
+
+- (void)removeStateDelegate:(id<CMPStateDelegate>)delegate {
+    [self.foundationClient removeStateDelegate:delegate];
 }
 
 #pragma mark - CMPLifecycleDelegate
