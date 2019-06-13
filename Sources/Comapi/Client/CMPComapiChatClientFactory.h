@@ -26,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPComapiChatClientFactory : NSObject
 
-+ (void)initialiseClient:(CMPComapiClient *)client chatConfig:(CMPChatConfig *)chatConfig completion:(void(^ _Nullable)(CMPComapiChatClient * _Nullable))completion;
++ (void)initialiseClient:(CMPComapiClient *)client chatConfig:(__kindof CMPChatConfig *)chatConfig completion:(void(^ _Nullable)(CMPComapiChatClient * _Nullable))completion;
 
 @end
 

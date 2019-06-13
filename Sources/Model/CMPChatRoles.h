@@ -16,10 +16,10 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatRoleAttributes.h"
-
 #import <CMPComapiFoundation/CMPJSONRepresentable.h>
 #import <CMPComapiFoundation/CMPRoles.h>
+
+@class CMPChatRoleAttributes;
 
 NS_ASSUME_NONNULL_BEGIN
 

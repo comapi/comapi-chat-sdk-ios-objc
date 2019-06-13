@@ -36,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)updateConversation:(NSString *)conversationID eTag:(nullable NSString *)eTag update:(CMPConversationUpdate *)update completion:(void(^)(CMPChatResult *))completion;
 - (void)synchroniseConversation:(NSString *)conversationID completion:(void(^)(CMPChatResult *))completion;
 
-- (void)getParticipants:(NSString *)conversationID participantIDs:(NSArray<NSString *> *)participantsIDs completion:(void(^)(NSArray<CMPChatParticipant *> *))completion;
+- (void)getParticipants:(NSString *)conversationID completion:(void(^)(NSArray<CMPChatParticipant *> *))completion;
 - (void)removeParticipants:(NSString *)conversationID participants:(NSArray<CMPConversationParticipant *> *)participants completion:(void(^)(CMPChatResult *))completion;
 - (void)addParticipants:(NSString *)conversationID participants:(NSArray<CMPConversationParticipant *> *)participants completion:(void(^)(CMPChatResult *))completion;
 - (void)participantIsTyping:(NSString *)conversationID isTyping:(BOOL)isTyping completion:(void(^)(CMPChatResult *))completion;

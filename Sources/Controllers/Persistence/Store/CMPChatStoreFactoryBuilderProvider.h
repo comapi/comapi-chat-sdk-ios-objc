@@ -16,13 +16,16 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
+@import Foundation;
 
 @protocol CMPChatStore;
+@protocol CMPStateDelegate;
 
 NS_ASSUME_NONNULL_BEGIN
 
 @protocol CMPChatStoreFactoryBuilderProvider <NSObject>
+
+@property (nonatomic, weak, nullable) id<CMPStateDelegate> stateDelegate;
 
 - (void)buildWithCompletion:(void(^)(id<CMPChatStore> _Nullable, NSError * _Nullable))completion;
 

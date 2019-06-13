@@ -69,7 +69,7 @@
 
 #pragma mark - Participants
 
-- (void)getParticipants:(NSString *)conversationID participantIDs:(NSArray<NSString *> *)participantsIDs completion:(void(^)(NSArray<CMPChatParticipant *> *))completion {
+- (void)getParticipants:(NSString *)conversationID completion:(void(^)(NSArray<CMPChatParticipant *> *))completion {
     __weak typeof(self) weakSelf = self;
     [_foundation.services.messaging getParticipantsWithConversationID:conversationID completion:^(CMPResult<NSArray<CMPConversationParticipant *> *> * result) {
         if (completion) {

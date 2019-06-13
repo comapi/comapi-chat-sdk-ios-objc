@@ -18,7 +18,6 @@
 
 #import "CMPLifecycleDelegate.h"
 
-@import Foundation;
 @import CMPComapiFoundation.CMPBroadcastDelegate;
 
 @class CMPComapiClient;
@@ -45,6 +44,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) BOOL sessionSuccessfullyCreated;
 
 @property (nonatomic, strong, readonly) CMPBroadcastDelegate<id<CMPStateDelegate>> *stateDelegates;
+
+- (NSData *)getFileLogs;
 
 - (void)setPushToken:(NSString *)deviceToken completion:(void(^)(BOOL, NSError * _Nullable))completion NS_SWIFT_NAME(set(pushToken:completion:));
 

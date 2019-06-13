@@ -17,7 +17,8 @@
 //
 
 #import <CMPComapiFoundation/CMPJSONRepresentable.h>
-#import <CMPComapiFoundation/CMPMessageParticipant.h>
+
+@class CMPMessageParticipant;
 
 NS_ASSUME_NONNULL_BEGIN
 

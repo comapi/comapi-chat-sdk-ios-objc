@@ -51,7 +51,7 @@
 
 @implementation CMPComapiChatClientFactory
 
-+ (void)initialiseClient:(CMPComapiClient *)client chatConfig:(CMPChatConfig *)chatConfig completion:(void (^)(CMPComapiChatClient * _Nullable))completion {
++ (void)initialiseClient:(CMPComapiClient *)client chatConfig:(__kindof CMPChatConfig *)chatConfig completion:(void (^)(CMPComapiChatClient * _Nullable))completion {
     CMPComapiChatClient *chatClient = [[CMPComapiChatClient alloc] init];
     
     chatClient.foundationClient = client;

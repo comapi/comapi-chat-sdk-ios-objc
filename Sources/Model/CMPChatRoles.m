@@ -18,6 +18,8 @@
 
 #import "CMPChatRoles.h"
 
+#import "CMPChatRoleAttributes.h"
+
 @implementation CMPChatRoles
 
 - (instancetype)initWithOwnerAttributes:(CMPChatRoleAttributes *)ownerAttributes participantAttributes:(CMPChatRoleAttributes *)participantAttributes {

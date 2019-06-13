@@ -93,7 +93,7 @@
 
 - (void)didEndSessionWithError:(NSError * _Nullable)error {}
 
-- (void)didStartSession {}
+- (void)didStartSessionWithProfileID:(NSString *)profileID {}
 
 #pragma mark - CMPEventDelegate
 

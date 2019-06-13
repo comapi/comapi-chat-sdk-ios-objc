@@ -18,6 +18,8 @@
 
 #import "CMPChatMessageParticipant.h"
 
+#import <CMPComapiFoundation/CMPMessageParticipant.h>
+
 @implementation CMPChatMessageParticipant
 
 - (instancetype)initWithID:(NSString *)id name:(NSString *)name {

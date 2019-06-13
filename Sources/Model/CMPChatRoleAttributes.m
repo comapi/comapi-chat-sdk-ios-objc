@@ -18,6 +18,8 @@
 
 #import "CMPChatRoleAttributes.h"
 
+#import <CMPComapiFoundation/CMPRoleAttributes.h>
+
 @implementation CMPChatRoleAttributes
 
 - (instancetype)initWithCanSend:(BOOL)canSend canAddParticipants:(BOOL)canAddParticipants canRemoveParticipants:(BOOL)canRemoveParticipants {

@@ -75,6 +75,10 @@
 
 #pragma mark - public methods
 
+- (NSData *)getFileLogs {
+    return [_foundationClient getFileLogs];
+}
+
 - (BOOL)sessionSuccessfullyCreated {
     return [_foundationClient isSessionSuccessfullyCreated];
 }

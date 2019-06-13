@@ -17,7 +17,8 @@
 //
 
 #import <CMPComapiFoundation/CMPJSONRepresentable.h>
-#import <CMPComapiFoundation/CMPRoleAttributes.h>
+
+@class CMPRoleAttributes;
 
 NS_ASSUME_NONNULL_BEGIN
 
