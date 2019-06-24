@@ -21,6 +21,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(CoreDataConfig)
 @interface CMPCoreDataConfig : NSObject
 
 @property (nonatomic) NSString *persistentStoreType;

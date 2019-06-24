@@ -26,6 +26,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(ChatServices)
 @interface CMPChatServices : NSObject
 
 @property (nonatomic, strong, readonly) CMPChatProfileServices *profile;

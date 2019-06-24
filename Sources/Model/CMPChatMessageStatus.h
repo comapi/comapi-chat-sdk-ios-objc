@@ -24,6 +24,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(ChatMessageStatus)
 @interface CMPChatMessageStatus : NSObject <NSCoding, CMPJSONRepresentable>
 
 @property (nonatomic, strong, nullable) NSString *conversationID;

@@ -23,6 +23,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(ChatStoreFactoryBuilderProvider)
 @protocol CMPChatStoreFactoryBuilderProvider <NSObject>
 
 @property (nonatomic, weak, nullable) id<CMPStateDelegate> stateDelegate;

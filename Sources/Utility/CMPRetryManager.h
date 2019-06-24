@@ -20,6 +20,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(RetryManager)
 @interface CMPRetryManager : NSObject
 
 + (void)retryBlock:(void (^)(void(^)(BOOL)))block attempts:(NSUInteger)attempts interval:(NSUInteger)interval;

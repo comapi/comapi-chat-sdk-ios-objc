@@ -23,6 +23,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(Chat)
 @interface CMPChat : NSObject
 
 @property (class, nonatomic, strong, nullable, readonly) CMPComapiChatClient *shared;

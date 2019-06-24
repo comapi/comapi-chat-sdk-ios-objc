@@ -20,6 +20,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(TypingDelegate)
 @protocol CMPTypingDelegate <NSObject>
 
 - (void)participantTyping:(NSString *)conversationID participantID:(NSString *)participantID isTyping:(BOOL)isTyping;

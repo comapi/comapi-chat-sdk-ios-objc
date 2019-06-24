@@ -24,6 +24,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(ChatSessionServices)
 @interface CMPChatSessionServices : NSObject
 
 - (instancetype)initWithFoundation:(CMPComapiClient *)foundation persistenceController:(CMPPersistenceController *)persistenceController;

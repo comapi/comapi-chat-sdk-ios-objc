@@ -23,6 +23,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(ChatManagedOrphanedEvent)
 @interface CMPChatManagedOrphanedEvent : NSManagedObject
 
 @property (nonatomic, strong, nullable) NSNumber *id;

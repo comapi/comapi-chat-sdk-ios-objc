@@ -22,11 +22,6 @@
 #import <CMPComapiFoundation/CMPContentData.h>
 #import <Foundation/Foundation.h>
 
-NSString * const kPartTypeUploading = @"comapi/upl";
-NSString * const kPartTypeError = @"comapi/err";
-NSString * const kAttFolderName = @"attachments";
-NSUInteger const kMaxPartDataLength = 1333;
-
 @interface CMPMessageProcessor()
 
 @property (nonatomic, strong, readonly) CMPModelAdapter *adapter;
@@ -114,7 +109,7 @@ NSUInteger const kMaxPartDataLength = 1333;
 
 - (CMPSendableMessage *)createMessageToSend {
     NSMutableDictionary<NSString *, id> *newMetadata = [[NSMutableDictionary alloc] initWithDictionary:_metadata];
-    [newMetadata setObject:_tempMessageId forKey:kCMPMessageTemporaryId];
+    [newMetadata setObject:_tempMessageId forKey:CMPIDTemporaryMessage];
     return [[CMPSendableMessage alloc] initWithMetadata:newMetadata parts:[_adapter adaptChatMessageParts:_finalParts] alert:_alert];
 }
 
@@ -126,12 +121,12 @@ NSUInteger const kMaxPartDataLength = 1333;
 }
 
 - (CMPChatMessagePart *) createTempPart: (CMPChatAttachment *) attachament {
-    return [[CMPChatMessagePart alloc] initWithName:attachament.name type:kPartTypeUploading url:nil data:nil size:attachament.size];
+    return [[CMPChatMessagePart alloc] initWithName:attachament.name type:CMPDirectoryLocationAttachments url:nil data:nil size:attachament.size];
 }
 
 - (CMPChatMessagePart *) createFinalPart: (CMPChatAttachment *) attachament {
     if (attachament.error != nil) {
-        return [[CMPChatMessagePart alloc] initWithName:nil type:kPartTypeError url:nil data:attachament.type size:0];
+        return [[CMPChatMessagePart alloc] initWithName:nil type:CMPPartTypeError url:nil data:attachament.type size:0];
     } else {
         return [[CMPChatMessagePart alloc] initWithName: (attachament.name != nil ? attachament.name : attachament.attachmentId) type:attachament.type url:attachament.url data:nil size:attachament.size];
     }
@@ -142,7 +137,7 @@ NSUInteger const kMaxPartDataLength = 1333;
     [combinedParts addObjectsFromArray:parts];
     
     NSMutableDictionary *mutableMetadata = [[NSMutableDictionary alloc] initWithDictionary:metadata];
-    [mutableMetadata setObject:_tempMessageId forKey:kCMPMessageTemporaryId];
+    [mutableMetadata setObject:_tempMessageId forKey:CMPIDTemporaryMessage];
     
     return [[CMPChatMessage alloc] initWithID:_tempMessageId sentEventID:nil metadata:[[NSDictionary alloc] initWithDictionary:mutableMetadata] context:context parts:combinedParts statusUpdates:nil];
 }
@@ -165,7 +160,7 @@ NSUInteger const kMaxPartDataLength = 1333;
             CMPChatMessagePart *part = adaptedInitialParts[i];
             if (part.data != nil && part.data.length > _maxPartSize) {
                 NSString *str = [part.data toBase64String];
-                CMPChatAttachment  *largeAtachment = [[CMPChatAttachment alloc] initWithContentData: [[CMPContentData alloc] initWithBase64Data:str type:part.type name:part.name] folder:kAttFolderName];
+                CMPChatAttachment  *largeAtachment = [[CMPChatAttachment alloc] initWithContentData: [[CMPContentData alloc] initWithBase64Data:str type:part.type name:part.name] folder:CMPDirectoryLocationAttachments];
                 [largeAttachments addObject:largeAtachment];
                 [removedParts addObject:part];
             }

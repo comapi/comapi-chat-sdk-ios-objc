@@ -18,6 +18,8 @@
 
 #import "Roles.h"
 
+#import "CMPChatRoleAttributes.h"
+
 @implementation Roles
 
 @dynamic ownerCanSend;

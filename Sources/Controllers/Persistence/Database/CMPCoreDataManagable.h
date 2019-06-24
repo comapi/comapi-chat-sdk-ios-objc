@@ -22,6 +22,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(CoreDataManagable)
 @protocol CMPCoreDataManagable <NSObject>
 
 @property (nonatomic, strong) CMPCoreDataConfig *storeConfig;

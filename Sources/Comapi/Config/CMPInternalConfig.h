@@ -20,6 +20,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(InternalConfig)
 @interface CMPInternalConfig : NSObject
 
 @property (nonatomic) NSInteger maxMessagesPerPage;

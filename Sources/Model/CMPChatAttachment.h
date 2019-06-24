@@ -21,6 +21,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(ChatAttachment)
 @interface CMPChatAttachment: NSObject
 
 @property (nonatomic, nullable, readonly) NSString *folder;

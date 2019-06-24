@@ -31,6 +31,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(EventsController)
 @interface CMPEventsController : NSObject <CMPStateDelegate, CMPEventDelegate, CMPMissingEventsDelegate>
 
 @property (nonatomic, strong, readonly) CMPBroadcastDelegate<id<CMPTypingDelegate>> *typingDelegates;

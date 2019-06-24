@@ -348,7 +348,7 @@
             __block BOOL success = YES;
             [store beginTransaction];
             CMPChatConversation *conversation = [store getConversation:message.context.conversationID];
-            NSString *tempID = message.metadata ? message.metadata[kCMPMessageTemporaryId] : nil;
+            NSString *tempID = message.metadata ? message.metadata[CMPIDTemporaryMessage] : nil;
             if (tempID && ![tempID isEqualToString:@""]) {
                 [store deleteMessage:message.context.conversationID messageID:tempID];
             }

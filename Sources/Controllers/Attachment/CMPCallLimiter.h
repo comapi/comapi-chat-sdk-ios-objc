@@ -20,6 +20,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(CMPCallLimiter)
 @interface CMPCallLimiter : NSObject
 
 - (instancetype)initWithLargeTimeFrame:(NSTimeInterval)largeTimeFrame largeCallsLimit:(NSInteger)largeCallsLimit smallTimeFrame:(NSTimeInterval)smallTimeFrame smallCallLimit:(NSInteger)smallCallLimit shutdownPeriod:(NSTimeInterval)shutdownPeriod;

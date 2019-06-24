@@ -22,6 +22,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(ConversationComparison)
 @interface CMPConversationComparison : NSObject
 
 @property (nonatomic) BOOL remoteCallSuccessful;

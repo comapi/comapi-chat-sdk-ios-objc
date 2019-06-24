@@ -20,6 +20,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(ParticipantDelegate)
 @protocol CMPParticipantDelegate <NSObject>
 
 - (void)didAddParticipant:(CMPConversationEventParticipantAdded *)event;

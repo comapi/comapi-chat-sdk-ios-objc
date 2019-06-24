@@ -20,4 +20,4 @@
 
 #import <Foundation/Foundation.h>
 
-typedef void(^CMPChatStoreTransaction)(id<CMPChatStore> _Nullable, NSError * _Nullable);
+typedef void(^CMPChatStoreTransaction)(id<CMPChatStore> _Nullable, NSError * _Nullable) NS_SWIFT_NAME(ChatStoreTransaction);

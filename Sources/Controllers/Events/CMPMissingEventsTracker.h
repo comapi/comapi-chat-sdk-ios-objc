@@ -20,6 +20,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(MissingEventsTracker)
 @interface CMPMissingEventsTracker : NSObject
 
 - (instancetype)init;

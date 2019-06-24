@@ -27,6 +27,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(PersistenceController)
 @interface CMPPersistenceController : NSObject
 
 @property (nonatomic, strong, readonly) CMPChatStoreFactory *factory;

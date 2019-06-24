@@ -23,10 +23,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-extern NSString *const kPartTypeUploading;
-extern NSString *const kPartTypeError;
-extern NSUInteger const kMaxPartDataLength;
-
+NS_SWIFT_NAME(MessageProcessor)
 @interface CMPMessageProcessor : NSObject
 
 @property (nonatomic, strong, readonly) NSString *conversationId;
@@ -37,7 +34,7 @@ extern NSUInteger const kMaxPartDataLength;
 
 - (CMPChatMessage *)createPreUploadMessage;
 - (CMPChatMessage *)createPostUploadMessageWithAttachments:(NSArray<CMPChatAttachment *> *) attachments;
--(CMPChatMessage *)createFinalMessageWithID:(NSString *) messageId eventID:(NSNumber *) eventID;
+- (CMPChatMessage *)createFinalMessageWithID:(NSString *) messageId eventID:(NSNumber *) eventID;
 - (CMPSendableMessage *)createMessageToSend;
 - (NSArray<CMPChatAttachment *> *) getAttachmentsToSend;
 

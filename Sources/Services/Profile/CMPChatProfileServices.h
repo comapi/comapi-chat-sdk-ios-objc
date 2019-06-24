@@ -23,14 +23,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(ChatProfileServices)
 @interface CMPChatProfileServices : NSObject
 
 - (instancetype)initWithFoundation:(CMPComapiClient *)foundation;
 
-- (void)getProfileForProfileID:(NSString *)ID completion:(void (^)(CMPResult<CMPProfile *> *))completion;
-- (void)updateProfileWithProfileID:(NSString *)ID attributes:(NSDictionary<NSString *, NSString *> *)attributes eTag:(NSString * _Nullable)eTag completion:(void(^)(CMPResult<CMPProfile *> *))completion;
-- (void)patchProfileWithProfileID:(NSString *)ID attributes:(NSDictionary<NSString *, NSString *> *)attributes eTag:(NSString * _Nullable)eTag completion:(void(^)(CMPResult<CMPProfile *> *))completion;
-- (void)queryProfilesWithQueryElements:(NSArray<CMPQueryElements *> *)queryElements completion:(void (^)(CMPResult<NSArray<CMPProfile *> *> *))completion;
+- (void)getProfileForProfileID:(NSString *)ID completion:(void (^)(CMPResult<CMPProfile *> *))completion NS_SWIFT_NAME(getProfile(with:completion:));
+- (void)updateProfileWithProfileID:(NSString *)ID attributes:(NSDictionary<NSString *, NSString *> *)attributes eTag:(NSString * _Nullable)eTag completion:(void(^)(CMPResult<CMPProfile *> *))completion NS_SWIFT_NAME(updateProfile(with:attributes:eTag:completion:));
+- (void)patchProfileWithProfileID:(NSString *)ID attributes:(NSDictionary<NSString *, NSString *> *)attributes eTag:(NSString * _Nullable)eTag completion:(void(^)(CMPResult<CMPProfile *> *))completion NS_SWIFT_NAME(patchProfile(with:attributes:eTag:completion:));
+- (void)queryProfilesWithQueryElements:(NSArray<CMPQueryElements *> *)queryElements completion:(void (^)(CMPResult<NSArray<CMPProfile *> *> *))completion NS_SWIFT_NAME(queryProfile(with:completion:));
 
 @end
 

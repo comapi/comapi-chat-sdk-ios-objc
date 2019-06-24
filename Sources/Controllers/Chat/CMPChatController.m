@@ -23,6 +23,7 @@
 #import "CMPChatResult.h"
 #import "CMPRetryManager.h"
 #import "CMPChatMessage.h"
+#import "CMPChatConstants.h"
 
 #import <CMPComapiFoundation/CMPConversationMessageEvents.h>
 #import <CMPComapiFoundation/CMPMessageStatusUpdate.h>
@@ -161,7 +162,7 @@ NSInteger const kETagNotValid = 412;
     NSString *profileId = [_client getProfileID];
     if (profileId != nil) {
         
-        CMPMessageProcessor *processor = [[CMPMessageProcessor alloc] initWithModelAdapter:_adapter message:message attachments:attachments toConversationWithID:conversationId from:profileId maxPartSize:kMaxPartDataLength];
+        CMPMessageProcessor *processor = [[CMPMessageProcessor alloc] initWithModelAdapter:_adapter message:message attachments:attachments toConversationWithID:conversationId from:profileId maxPartSize:CMPMaxPartDataLength];
 
         __weak typeof(self) weakSelf = self;
         [_persistenceController updateStoreWithNewMessage:[processor createPreUploadMessage] completion:^(CMPStoreResult<NSNumber *> * result) {

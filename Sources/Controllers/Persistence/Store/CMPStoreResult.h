@@ -20,6 +20,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(StoreResult)
 @interface CMPStoreResult<T> : NSObject
 
 @property (nonatomic, strong, nullable) T object;

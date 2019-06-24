@@ -22,6 +22,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(ChatStoreTransactionProvider)
 @protocol CMPChatStoreTransactionProvider <NSObject>
 
 - (void)executeTransaction:(CMPChatStoreTransaction)transaction;

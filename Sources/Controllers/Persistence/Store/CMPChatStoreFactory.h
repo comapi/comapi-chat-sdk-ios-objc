@@ -23,6 +23,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(ChatStoreFactory)
 @interface CMPChatStoreFactory<__covariant Builder : id<CMPChatStoreFactoryBuilderProvider>> : NSObject <CMPChatStoreTransactionProvider>
 
 @property (nonatomic, weak) Builder builder;

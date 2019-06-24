@@ -24,6 +24,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(ChatConfigBuilder)
 @interface CMPChatConfigBuilder : CMPComapiConfigBuilder
 
 - (instancetype)setChatStoreFactory:(id<CMPChatStoreFactoryBuilderProvider>)chatStoreFactory;

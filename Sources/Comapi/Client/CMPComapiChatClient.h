@@ -33,11 +33,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(ComapiChatClient)
 @interface CMPComapiChatClient : NSObject <CMPLifecycleDelegate>
 
 @property (nonatomic, strong, readonly) CMPComapiClient *foundationClient;
-
-@property (nonatomic, weak) id<CMPLifecycleDelegate> lifecycleDelegate;
 
 @property (nonatomic, strong, readonly) CMPChatServices *services;
 @property (nonatomic, strong, readonly, nullable) NSString *profileID;
@@ -49,17 +48,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)setPushToken:(NSString *)deviceToken completion:(void(^)(BOOL, NSError * _Nullable))completion NS_SWIFT_NAME(set(pushToken:completion:));
 
-- (void)addTypingDelegate:(id<CMPTypingDelegate>)delegate;
-- (void)removeTypingDelegate:(id<CMPTypingDelegate>)delegate;
+- (void)addTypingDelegate:(id<CMPTypingDelegate>)delegate NS_SWIFT_NAME(add(typingDelegate:));
+- (void)removeTypingDelegate:(id<CMPTypingDelegate>)delegate NS_SWIFT_NAME(remove(typingDelegate:));
 
-- (void)addProfileDelegate:(id<CMPProfileDelegate>)delegate;
-- (void)removeProfileDelegate:(id<CMPProfileDelegate>)delegate;
+- (void)addProfileDelegate:(id<CMPProfileDelegate>)delegate NS_SWIFT_NAME(add(profileDelegate:));
+- (void)removeProfileDelegate:(id<CMPProfileDelegate>)delegate NS_SWIFT_NAME(remove(profileDelegate:));
 
-- (void)addParticipantDelegate:(id<CMPParticipantDelegate>)delegate;
-- (void)removeParticipantDelegate:(id<CMPParticipantDelegate>)delegate;
+- (void)addParticipantDelegate:(id<CMPParticipantDelegate>)delegate NS_SWIFT_NAME(add(participantDelegate:));
+- (void)removeParticipantDelegate:(id<CMPParticipantDelegate>)delegate NS_SWIFT_NAME(remove(participantDelegate:));
 
-- (void)addStateDelegate:(id<CMPStateDelegate>)delegate;
-- (void)removeStateDelegate:(id<CMPStateDelegate>)delegate;
+- (void)addStateDelegate:(id<CMPStateDelegate>)delegate NS_SWIFT_NAME(add(stateDelegate:));
+- (void)removeStateDelegate:(id<CMPStateDelegate>)delegate NS_SWIFT_NAME(remove(stateDelegate:));
 
 @end
 

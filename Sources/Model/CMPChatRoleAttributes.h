@@ -22,6 +22,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(ChatRolesAttributes)
 @interface CMPChatRoleAttributes : NSObject <CMPJSONRepresentable, NSCopying>
 
 @property (nonatomic) BOOL canSend;

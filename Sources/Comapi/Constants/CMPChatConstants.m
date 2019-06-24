@@ -18,4 +18,18 @@
 
 #import "CMPChatConstants.h"
 
-NSString *const kCMPMessageTemporaryId = @"tempIdiOS";
+NSUInteger const CMPMaxPartDataLength = 1333;
+
+CMPDirectoryLocation const CMPDirectoryLocationAttachments = @"attachments";
+
+CMPPartType const CMPPartTypeUploading = @"comapi/upl";
+CMPPartType const CMPPartTypeError = @"comapi/err";
+CMPPartType const CMPPartTypePNG = @"image/png";
+CMPPartType const CMPPartTypeJPG = @"image/jpg";
+CMPPartType const CMPPartTypeBMP = @"image/bmp";
+CMPPartType const CMPPartTypeText = @"text/plain";
+CMPPartType const CMPPartTypePDF = @"application/pdf";
+CMPPartType const CMPPartTypeDOC = @"application/msword";
+CMPPartType const CMPPartTypeXLS = @"application/xml";
+
+CMPID const CMPIDTemporaryMessage = @"com.comapi.message.tempid";

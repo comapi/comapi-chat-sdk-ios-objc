@@ -22,6 +22,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(ChatMessageParticipant)
 @interface CMPChatMessageParticipant : NSObject <CMPJSONRepresentable>
 
 @property (nonatomic, strong, nullable) NSString *id;

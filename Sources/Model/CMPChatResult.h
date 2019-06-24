@@ -22,6 +22,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(ChatResult)
 @interface CMPChatResult : NSObject
 
 @property (nonatomic, readonly) BOOL isSuccessful;

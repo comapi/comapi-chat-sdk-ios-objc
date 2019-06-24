@@ -20,6 +20,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(LifecycleDelegate)
 @protocol CMPLifecycleDelegate <NSObject>
 
 - (void)applicationDidEnterBackground:(UIApplication *)application;

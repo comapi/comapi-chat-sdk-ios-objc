@@ -16,10 +16,30 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
+#import <CMPComapiFoundation/CMPConstants.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-extern NSString *const kCMPMessageTemporaryId;
+extern NSUInteger const CMPMaxPartDataLength NS_SWIFT_NAME(MaxPartDataLength);
+
+typedef NSString * CMPDirectoryLocation NS_TYPED_EXTENSIBLE_ENUM NS_SWIFT_NAME(DirectoryLocation);
+
+extern CMPDirectoryLocation const CMPDirectoryLocationAttachments NS_SWIFT_NAME(attachments);
+
+typedef NSString * CMPPartType NS_TYPED_EXTENSIBLE_ENUM NS_SWIFT_NAME(PartType);
+
+extern CMPPartType const CMPPartTypeUploading NS_SWIFT_NAME(uploading);
+extern CMPPartType const CMPPartTypeError NS_SWIFT_NAME(error);
+extern CMPPartType const CMPPartTypePNG NS_SWIFT_NAME(png);
+extern CMPPartType const CMPPartTypeJPG NS_SWIFT_NAME(jpg);
+extern CMPPartType const CMPPartTypeBMP NS_SWIFT_NAME(bmp);
+extern CMPPartType const CMPPartTypeText NS_SWIFT_NAME(text);
+extern CMPPartType const CMPPartTypePDF NS_SWIFT_NAME(pdf);
+extern CMPPartType const CMPPartTypeDOC NS_SWIFT_NAME(doc);
+extern CMPPartType const CMPPartTypeXLS NS_SWIFT_NAME(xls);
+
+typedef NSString * CMPID NS_TYPED_EXTENSIBLE_ENUM NS_SWIFT_NAME(ID);
+
+extern CMPID const CMPIDTemporaryMessage NS_SWIFT_NAME(temporaryMessage);
 
 NS_ASSUME_NONNULL_END

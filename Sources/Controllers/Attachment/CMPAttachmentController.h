@@ -21,8 +21,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef void (^CMPUploadCompleted)(NSArray<CMPChatAttachment *> *);
+typedef void (^CMPUploadCompleted)(NSArray<CMPChatAttachment *> *) NS_SWIFT_NAME(UploadCompleted);
 
+NS_SWIFT_NAME(AttachmentController)
 @interface CMPAttachmentController : NSObject
 
 - (instancetype)initWithClient:(CMPComapiClient *)client;

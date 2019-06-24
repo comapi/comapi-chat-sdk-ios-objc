@@ -25,6 +25,7 @@ typedef NS_ENUM(NSInteger, CMPChatRole) {
     CMPChatRoleParticipant
 } NS_SWIFT_NAME(ChatRole);
 
+NS_SWIFT_NAME(ChatRoleParser)
 @interface CMPChatRoleParser : NSObject
 
 + (NSString *)parseChatRole:(CMPChatRole)role;
