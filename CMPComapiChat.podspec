@@ -13,11 +13,10 @@ For more information about the integration please visit [the website](http://doc
   s.source           = { :git => 'https://github.com/comapi/comapi-chat-sdk-ios-objc.git', :branch => 'dev' }
   s.social_media_url = 'https://twitter.com/comapimessaging'
 
-  s.platform     = :ios, '9.0'
-  s.requires_arc = true
-
-  s.source_files = 'Sources/**/*.{h,m}'
-  s.resources = 'Sources/Resources/*'
+  s.ios.deployment_target = '10.0'
+  s.requires_arc          = true
+  s.source_files          = 'Sources/**/*.{h,m}'
+  s.resources             = 'Sources/Core/Resources/*'
 
   s.dependency 'CMPComapiFoundation'
   

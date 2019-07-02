@@ -20,6 +20,8 @@
 #import "CMPTitledCell.h"
 #import "CMPCreateConversationViewController.h"
 #import "CMPChatViewController.h"
+#import "CMPChatServices.h"
+
 #import "AppDelegate.h"
 
 @interface CMPConversationsViewController ()

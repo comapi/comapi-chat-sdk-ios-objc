@@ -19,6 +19,8 @@
 #import "CMPStore.h"
 #import "CMPComapiChatClient.h"
 
+@import CMPComapiFoundation;
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPCreateConversationViewModel : NSObject

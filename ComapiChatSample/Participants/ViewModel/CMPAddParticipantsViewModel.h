@@ -20,7 +20,7 @@
 #import "CMPChatParticipant.h"
 #import "CMPStore.h"
 
-#import <CMPComapiFoundation/CMPConversationParticipant.h>
+@import CMPComapiFoundation;
 
 NS_ASSUME_NONNULL_BEGIN
 

@@ -21,6 +21,11 @@
 #import "CMPProfileViewController.h"
 #import "AppDelegate.h"
 #import "CMPFactory.h"
+#import "CMPChatConfig.h"
+#import "CMPChatServices.h"
+
+#import <CMPComapiFoundation/CMPComapiConfigBuilder.h>
+#import "CMPComapiConfigBuilder+CMPChatConfigBuilder.h"
 
 @interface CMPLoginViewModel ()
 
@@ -61,8 +66,8 @@
 
 - (void)login:(void(^)(CMPComapiChatClient * _Nullable, CMPStore * _Nullable, NSError * _Nullable))completion {
     if (self.loginBundle && [self.loginBundle isValid]) {
-        CMPChatConfig *config = [[CMPChatConfig alloc] initWithApiSpaceID:self.loginBundle.apiSpaceID authenticationDelegate:self storeFactory:_factory];
-        config.apiConfig = [[CMPAPIConfiguration alloc] initWithScheme:@"https" host:@"stage-api.comapi.com" port:443];
+        CMPComapiConfigBuilder<CMPChatConfig *> *builder = [CMPChatConfig builder];
+        CMPChatConfig *config = [[[[[builder setApiSpaceID:self.loginBundle.apiSpaceID] setAuthDelegate:self] setChatStoreFactory:_factory] setApiConfig:[[CMPAPIConfiguration alloc] initWithScheme:@"https" host:@"stage-api.comapi.com" port:443]] build];
         __weak typeof(self) weakSelf = self;
         [CMPChat initialiseWithConfig:config completion:^(CMPComapiChatClient * _Nullable client) {
             AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
