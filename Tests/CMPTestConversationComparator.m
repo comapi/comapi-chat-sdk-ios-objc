@@ -6,12 +6,11 @@
 //  Copyright © 2019 Donky Networks Limited. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import <XCTest/XCTest.h>
+#import "CMPChatTest.h"
 
-#import "CMPConversationComparison.h"
+@import CMPComapiChat;
 
-@interface CMPTestConversationComparator : XCTestCase
+@interface CMPTestConversationComparator : CMPChatTest
 
 @end
 

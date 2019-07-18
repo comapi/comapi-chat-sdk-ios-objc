@@ -16,12 +16,11 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
-#import <XCTest/XCTest.h>
+#import "CMPChatTest.h"
 
-#import "CMPCallLimiter.h"
+@import CMPComapiChat;
 
-@interface CMPTestCallLimiter : XCTestCase
+@interface CMPTestCallLimiter : CMPChatTest
 @end
 
 @implementation CMPTestCallLimiter

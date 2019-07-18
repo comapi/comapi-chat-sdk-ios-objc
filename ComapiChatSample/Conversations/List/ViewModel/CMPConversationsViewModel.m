@@ -17,7 +17,6 @@
 //
 
 #import "CMPConversationsViewModel.h"
-#import "CMPChatServices.h"
 
 #import <UserNotifications/UserNotifications.h>
 

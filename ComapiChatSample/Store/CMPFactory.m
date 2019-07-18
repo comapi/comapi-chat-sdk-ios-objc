@@ -21,6 +21,8 @@
 
 @implementation CMPFactory
 
+@synthesize stateDelegate;
+
 - (instancetype)init {
     self = [super init];
     
@@ -39,5 +41,7 @@
     }
     completion(_store, nil);
 }
+
+
 
 @end

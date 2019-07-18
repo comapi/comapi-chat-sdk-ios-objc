@@ -18,6 +18,8 @@
 
 #import "CMPChatConfig.h"
 
+#import "CMPChatConfig+Internal.h"
+
 @implementation CMPChatConfig
 
 @end

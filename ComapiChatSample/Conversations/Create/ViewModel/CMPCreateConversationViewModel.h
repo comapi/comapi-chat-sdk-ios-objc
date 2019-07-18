@@ -16,10 +16,9 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPStore.h"
-#import "CMPComapiChatClient.h"
+@import CMPComapiChat;
 
-@import CMPComapiFoundation;
+#import "CMPStore.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

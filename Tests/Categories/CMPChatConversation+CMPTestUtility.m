@@ -16,8 +16,6 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatConversation.h"
-
 #import "CMPChatConversation+CMPTestUtility.h"
 
 @implementation CMPChatConversation (CMPTestUtility)

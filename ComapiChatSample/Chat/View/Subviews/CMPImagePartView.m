@@ -18,7 +18,7 @@
 
 #import "CMPImagePartView.h"
 
-//CGFloat const kMaxImageViewSize = 250;
+@import CMPComapiChat;
 
 @interface CMPImagePartView ()
 

@@ -18,6 +18,8 @@
 
 #import "Conversation.h"
 
+#import "Roles.h"
+
 @implementation Conversation
 
 @dynamic id;

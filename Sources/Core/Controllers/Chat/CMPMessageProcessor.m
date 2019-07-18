@@ -126,7 +126,7 @@
 }
 
 - (CMPChatMessagePart *) createTempPart: (CMPChatAttachment *) attachament {
-    return [[CMPChatMessagePart alloc] initWithName:attachament.name type:CMPDirectoryLocationAttachments url:nil data:nil size:attachament.size];
+    return [[CMPChatMessagePart alloc] initWithName:attachament.name type:CMPPartTypeUploading url:nil data:nil size:attachament.size];
 }
 
 - (CMPChatMessagePart *) createFinalPart: (CMPChatAttachment *) attachament {

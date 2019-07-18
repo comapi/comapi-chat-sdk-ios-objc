@@ -17,6 +17,7 @@
 //
 
 #import "CMPAddParticipantsViewController.h"
+
 #import "CMPTitledInputCell.h"
 
 @interface CMPAddParticipantsViewController ()

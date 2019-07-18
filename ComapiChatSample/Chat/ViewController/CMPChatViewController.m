@@ -21,7 +21,6 @@
 #import "CMPMessagePartCell.h"
 #import "CMPAttachmentCell.h"
 
-
 @interface CMPChatViewController ()
 
 @end

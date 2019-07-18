@@ -16,9 +16,10 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPComapiChatClient.h"
+
+#import "CMPChatTest.h"
+
 #import "CMPMockAuthenticationDelegate.h"
-#import "CMPTestMocks.h"
 #import "CMPMockRequestPerformer.h"
 #import "CMPMockClientFactory.h"
 #import "CMPMockChatClientDelegate.h"
@@ -27,12 +28,9 @@
 #import "CMPComapiChatClient+TestHelper.h"
 #import "CMPCoreDataManager+TestHelper.h"
 
-#import <XCTest/XCTest.h>
+@import CMPComapiChat;
 
-#import <CMPComapiFoundation/CMPComapi.h>
-#import <CMPComapiFoundation/CMPKeychain.h>
-
-@interface CMPTestChatClient : XCTestCase
+@interface CMPTestChatClient : CMPChatTest
 
 @property (nonatomic, strong, nullable) CMPMockRequestPerformer *requestPerformer;
 @property (nonatomic, strong, nullable) CMPMockAuthenticationDelegate *authDelegate;
@@ -147,36 +145,13 @@
             [participantRemovedExpectation fulfill];
         };
         
-        [weakSelf.eventDispatcher dispatchEventOfType:CMPEventTypeConversationParticipantAdded];
         [weakSelf.eventDispatcher dispatchEventOfType:CMPEventTypeConversationParticipantTyping];
         [weakSelf.eventDispatcher dispatchEventOfType:CMPEventTypeConversationParticipantTypingOff];
         [weakSelf.eventDispatcher dispatchEventOfType:CMPEventTypeProfileUpdate];
+        [weakSelf.eventDispatcher dispatchEventOfType:CMPEventTypeConversationParticipantAdded];
         [weakSelf.eventDispatcher dispatchEventOfType:CMPEventTypeConversationParticipantUpdated];
         [weakSelf.eventDispatcher dispatchEventOfType:CMPEventTypeConversationParticipantRemoved];
-
-        weakSelf.chatClientDelegate.profileUpdateCallback = ^(CMPProfileEventUpdate * _Nonnull update) {
-            XCTFail();
-        };
         
-        weakSelf.chatClientDelegate.typingCallback = ^(NSString * _Nonnull conversationID, NSString * _Nonnull participantID, BOOL isTyping) {
-            XCTFail();
-        };
-        
-        weakSelf.chatClientDelegate.participantAddedCallback = ^(CMPConversationEventParticipantAdded * _Nonnull event) {
-            XCTFail();
-        };
-        
-        weakSelf.chatClientDelegate.participantUpdatedCallback = ^(CMPConversationEventParticipantUpdated * _Nonnull event) {
-            XCTFail();
-        };
-        
-        weakSelf.chatClientDelegate.participantRemovedCallback = ^(CMPConversationEventParticipantRemoved * _Nonnull event) {
-            XCTFail();
-        };
-        
-        [client removeTypingDelegate:weakSelf.chatClientDelegate];
-        [client removeProfileDelegate:weakSelf.chatClientDelegate];
-        [client removeParticipantDelegate:weakSelf.chatClientDelegate];
     }];
     
     [self waitForExpectations:@[typingExpectation, profileUpdateExpectation, participantAddedExpectation, participantUpdatedExpectation, participantRemovedExpectation] timeout:8.0];
@@ -727,7 +702,7 @@
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     __weak typeof(self) weakSelf = self;
     [self createClient:^(CMPComapiChatClient * _Nullable client) {
-        [client.services.messaging getParticipants:@"conversationID" participantIDs:@[@"1", @"2"] completion:^(NSArray<CMPChatParticipant *> * _Nonnull result) {
+        [client.services.messaging getParticipants:@"conversationID" completion:^(NSArray<CMPChatParticipant *> * _Nonnull result) {
             id self = weakSelf;
             XCTAssertNotNil(result);
 

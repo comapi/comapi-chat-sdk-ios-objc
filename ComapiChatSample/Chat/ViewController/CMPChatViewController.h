@@ -21,6 +21,8 @@
 #import "CMPChatViewModel.h"
 #import "CMPChatView.h"
 
+@import CMPComapiChat;
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPChatViewController : CMPBaseViewController <CMPViewControllerConfiguring, UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource>

@@ -16,7 +16,9 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
+@import Foundation;
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPLoginBundle : NSObject <NSCoding>
 
@@ -31,3 +33,5 @@
 - (BOOL)isValid;
 
 @end
+
+NS_ASSUME_NONNULL_END

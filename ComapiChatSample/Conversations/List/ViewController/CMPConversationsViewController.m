@@ -20,9 +20,9 @@
 #import "CMPTitledCell.h"
 #import "CMPCreateConversationViewController.h"
 #import "CMPChatViewController.h"
-#import "CMPChatServices.h"
-
 #import "AppDelegate.h"
+
+@import CMPComapiChat;
 
 @interface CMPConversationsViewController ()
 
@@ -82,7 +82,9 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kCMPPushRegistrationStatusChangedNotification object:nil];
     
     if (self.isMovingFromParentViewController) {
-        [_viewModel.client.services.session endSessionWithCompletion:nil];
+        [_viewModel.client.services.session endSessionWithCompletion:^(CMPChatResult * _Nonnull result) {
+            NSLog(@"success - %@", @(result.isSuccessful));
+        }];
     }
 }
 

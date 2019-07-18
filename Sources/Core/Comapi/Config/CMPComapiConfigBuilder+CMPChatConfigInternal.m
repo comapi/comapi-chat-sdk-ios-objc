@@ -16,4 +16,16 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <CMPComapiChat/CMPComapiChat.h>
+#import "CMPComapiConfigBuilder+CMPChatConfigInternal.h"
+
+#import "CMPChatConfig.h"
+#import "CMPChatConfig+Internal.h"
+
+@implementation CMPComapiConfigBuilder (CMPChatConfigInternal)
+
+- (instancetype)setStoreConfig:(CMPCoreDataConfig *)storeConfig {
+    ((CMPChatConfig *)self.config).storeConfig = storeConfig;
+    return self;
+}
+
+@end

@@ -16,15 +16,13 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
-#import <XCTest/XCTest.h>
+#import "CMPChatTest.h"
 
-#import "CMPModelAdapter.h"
-#import "CMPCoreDataManager.h"
-#import "CMPConversationMessageEvents.h"
+@import CMPComapiChat;
+
 #import "CMPCoreDataManager+TestHelper.h"
 
-@interface CMPTestModelAdapter : XCTestCase
+@interface CMPTestModelAdapter : CMPChatTest
 
 @property (nonatomic, strong) CMPModelAdapter *adapter;
 

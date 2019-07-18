@@ -16,17 +16,14 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-
-#import "CMPCoreDataManager.h"
-#import "NSManagedObjectContext+CMPOrphanedEvent.h"
-#import "NSManagedObjectContext+CMPUtility.h"
+#import "CMPChatTest.h"
 
 #import "CMPCoreDataManager+TestHelper.h"
 
-#import <CoreData/CoreData.h>
-#import <XCTest/XCTest.h>
+@import CoreData;
+@import CMPComapiChat;
 
-@interface CMPTestOrphanedEvent : XCTestCase
+@interface CMPTestOrphanedEvent : CMPChatTest
 
 @property (nonatomic, strong) CMPOrphanedEvent *event;
 @property (nonatomic, strong) CMPCoreDataConfig *config;

@@ -18,6 +18,8 @@
 
 #import "CMPTextPartView.h"
 
+@import CMPComapiChat;
+
 CGFloat const kMaxTextViewWidth = 200;
 
 @interface CMPTextPartView ()

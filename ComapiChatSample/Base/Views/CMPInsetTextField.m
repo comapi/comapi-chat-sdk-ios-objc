@@ -17,6 +17,7 @@
 //
 
 #import "CMPInsetTextField.h"
+
 #import "UIToolbar+CMPUtilities.h"
 
 @implementation CMPInsetTextField

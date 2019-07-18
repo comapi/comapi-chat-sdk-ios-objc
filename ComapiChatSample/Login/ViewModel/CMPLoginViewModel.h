@@ -16,15 +16,14 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+@import CMPComapiChat;
+
 #import "CMPLoginBundle.h"
 #import "CMPAuthenticationManager.h"
-#import "CMPChat.h"
 #import "CMPStore.h"
 #import "CMPFactory.h"
-#import "CMPComapiChatClient.h"
 
-#import <CMPComapiFoundation/CMPProfile.h>
-#import <CMPComapiFoundation/CMPAuthenticationDelegate.h>
+NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPLoginViewModel : NSObject <CMPAuthenticationDelegate>
 
@@ -44,4 +43,5 @@
 
 @end
 
+NS_ASSUME_NONNULL_END
 

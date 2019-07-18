@@ -21,7 +21,6 @@
 #import "CMPProfileViewModel.h"
 #import "CMPViewControllerConfiguring.h"
 
-
 @interface CMPProfileViewController : CMPBaseViewController <CMPViewControllerConfiguring, UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong, readonly) CMPProfileViewModel *viewModel;

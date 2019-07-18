@@ -18,9 +18,6 @@
 
 #import "CMPCreateConversationViewModel.h"
 
-#import "CMPChatServices.h"
-
-
 @implementation CMPCreateConversationViewModel
 
 - (instancetype)initWithClient:(CMPComapiChatClient *)client store:(CMPStore *)store {

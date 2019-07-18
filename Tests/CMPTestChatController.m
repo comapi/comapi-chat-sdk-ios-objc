@@ -16,10 +16,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPPersistenceController.h"
-#import "CMPChatController.h"
-#import "CMPModelAdapter.h"
-#import "CMPCoreDataManager.h"
+#import "CMPChatTest.h"
+
 #import "CMPMockStoreFactoryBuilder.h"
 #import "CMPMockChatStore.h"
 #import "CMPMockClientFactory.h"
@@ -27,9 +25,7 @@
 #import "CMPChatConversation+CMPTestUtility.h"
 #import "CMPChatController+TestHelper.h"
 
-#import <CMPComapiFoundation/CMPEventParser.h>
-
-#import <XCTest/XCTest.h>
+@import CMPComapiChat;
 
 @interface CMPComapiChatClient ()
 
@@ -38,7 +34,7 @@
 
 @end
 
-@interface CMPTestChatController : XCTestCase
+@interface CMPTestChatController : CMPChatTest
 
 @property (nonatomic, strong) CMPMockRequestPerformer *requestPerformer;
 @property (nonatomic, strong) CMPMockAuthenticationDelegate *authDelegate;

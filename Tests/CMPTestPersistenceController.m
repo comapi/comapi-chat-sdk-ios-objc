@@ -16,17 +16,14 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <XCTest/XCTest.h>
+#import "CMPChatTest.h"
 
-#import "CMPPersistenceController.h"
 #import "CMPMockStoreFactoryBuilder.h"
-#import "NSArray+CMPUtility.h"
-#import "NSManagedObjectContext+CMPOrphanedEvent.h"
-#import "NSManagedObjectContext+CMPUtility.h"
 #import "CMPCoreDataManager+TestHelper.h"
-#import "CMPChatConstants.h"
 
-@interface CMPTestPersistenceController : XCTestCase
+@import CMPComapiChat;
+
+@interface CMPTestPersistenceController : CMPChatTest
 
 @property (nonatomic, strong) CMPPersistenceController *persistenceController;
 @property (nonatomic, strong) CMPMockChatStore *chatStore;
@@ -370,7 +367,7 @@
         CMPChatRoles *roles = [[CMPChatRoles alloc] initWithOwnerAttributes:[[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES] participantAttributes:[[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES]];
         [weakSelf.chatStore upsertConversation:[[CMPChatConversation alloc] initWithID:@"cId" firstLocalEventID:@(1) lastLocalEventID:@(2) latestRemoteEventID:@(3) eTag:@"eTag" updatedOn:[NSDate dateWithTimeIntervalSince1970:0] name:@"name" conversationDescription:@"desc" roles:roles isPublic:[[NSNumber alloc] initWithInt:1]]];
         
-        NSDictionary<NSString *,id> *metadata = [[NSDictionary alloc] initWithObjectsAndKeys: @"tempID",kCMPMessageTemporaryId, nil];
+        NSDictionary<NSString *,id> *metadata = [[NSDictionary alloc] initWithObjectsAndKeys: @"tempID",CMPIDTemporaryMessage, nil];
         CMPMessageParticipant *p = [[CMPMessageParticipant alloc] initWithID:@"pId" name:@"pName"];
         CMPMessageContext *context = [[CMPMessageContext alloc] initWithConversationID:@"cId" from:p sentBy:@"sender" sentOn:[NSDate dateWithTimeIntervalSince1970:1]];
         
@@ -390,7 +387,7 @@
         [weakSelf.chatStore upsertMessage:chatMessageTemp];
         [weakSelf.persistenceController updateStoreWithNewMessage:adaptedMessages[0] completion:^(CMPStoreResult<NSNumber *> *result) {
             
-            CMPChatMessage *msgTemp = [weakSelf.chatStore getMessage:kCMPMessageTemporaryId];
+            CMPChatMessage *msgTemp = [weakSelf.chatStore getMessage:CMPIDTemporaryMessage];
             XCTAssertNil(msgTemp);
             CMPChatMessage *msg = [weakSelf.chatStore getMessage:@"id"];
             XCTAssertNotNil(msg);

@@ -16,11 +16,14 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPComapiChatClient.h"
+@import CMPComapiChat;
+
 #import "CMPFactory.h"
 
 #import <UIKit/UIKit.h>
 #import <UserNotifications/UserNotifications.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 extern NSString * const kCMPPushRegistrationStatusChangedNotification;
 
@@ -32,3 +35,4 @@ extern NSString * const kCMPPushRegistrationStatusChangedNotification;
 
 @end
 
+NS_ASSUME_NONNULL_END

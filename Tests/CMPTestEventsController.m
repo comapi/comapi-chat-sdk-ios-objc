@@ -16,18 +16,17 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+#import "CMPChatTest.h"
+
 #import "CMPMockClientFactory.h"
-#import "CMPEventsController.h"
 #import "CMPMockEventDispatcher.h"
-#import "CMPComapiChatClient.h"
 
 #import "CMPCoreDataManager+TestHelper.h"
 #import "CMPComapiChatClient+TestHelper.h"
 
-#import <CMPComapiFoundation/CMPKeychain.h>
-#import <XCTest/XCTest.h>
+@import CMPComapiChat;
 
-@interface CMPTestEventsController : XCTestCase
+@interface CMPTestEventsController : CMPChatTest
 
 @property (nonatomic, strong, nullable) CMPComapiChatClient *client;
 @property (nonatomic, strong, nullable) CMPMockRequestPerformer *requestPerformer;

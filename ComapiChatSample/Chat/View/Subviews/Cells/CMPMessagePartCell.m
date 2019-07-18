@@ -17,9 +17,9 @@
 //
 
 #import "CMPMessagePartCell.h"
+
 #import "CMPImagePartView.h"
 #import "CMPTextPartView.h"
-#import "NSDate+CMPUtility.h"
 
 @interface CMPMessagePartCell ()
 
@@ -68,13 +68,15 @@
 - (CMPPartType)partTypeForMessagePart:(CMPChatMessagePart *)messagePart {
     if ([messagePart.type isEqualToString:@"text/plain"]) {
         return CMPPartTypeText;
-    } else if ([messagePart.type isEqualToString:@"comapi/upl"] ||
-               [messagePart.type isEqualToString:@"image/jpg"] ||
-               [messagePart.type isEqualToString:@"image/png"]) {
-        return CMPPartTypeImage;
+    } else if ([messagePart.type isEqualToString:@"comapi/upl"]) {
+        return CMPPartTypeUploading;
+    } else if ([messagePart.type isEqualToString:@"image/jpg"]) {
+        return CMPPartTypeJPG;
+    } else if ([messagePart.type isEqualToString:@"image/png"]) {
+        return CMPPartTypePNG;
     }
     
-    return CMPPartTypeUnknown;
+    return CMPPartTypeText;
 }
 
 - (UIView *)generatePartsView:(NSArray<CMPChatMessagePart *> *)parts {
@@ -83,19 +85,13 @@
     view.translatesAutoresizingMaskIntoConstraints = NO;
     for (int i = 0; i < parts.count; i++) {
         UIView *partView;
-        switch ([self partTypeForMessagePart:parts[i]]) {
-            case CMPPartTypeText: {
-                partView = [[CMPTextPartView alloc] init];
-                break;
-            }
-            case CMPPartTypeImage: {
-                partView = [[CMPImagePartView alloc] init];
-                break;
-            }
-            case CMPPartTypeUnknown: {
-                partView = [UIView new];
-                break;
-            }
+        CMPPartType type = parts[i].type;
+        if ([type isEqualToString:CMPPartTypeText]) {
+            partView = [[CMPTextPartView alloc] init];
+        } else if ([type isEqualToString:CMPPartTypePNG] || [type isEqualToString:CMPPartTypeJPG] || [type isEqualToString:CMPPartTypeBMP] || [type isEqualToString:CMPPartTypeUploading]) {
+            partView = [[CMPImagePartView alloc] init];
+        } else {
+            partView = [UIView new];
         }
         [view addSubview:partView];
         NSLayoutConstraint *top;

@@ -17,7 +17,10 @@
 //
 
 #import "Message.h"
+
 #import "MessageStatus.h"
+#import "MessageContext.h"
+#import "MessagePart.h"
 
 @implementation Message
 

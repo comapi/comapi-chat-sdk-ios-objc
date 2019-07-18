@@ -17,11 +17,10 @@
 //
 
 
-#import "MessageParticipant.h"
-#import "CMPChatMessageContext.h"
+@import CMPComapiChat;
+@import CoreData;
 
-#import <CoreData/CoreData.h>
-
+@class MessageParticipant;
 @class Message;
 
 NS_ASSUME_NONNULL_BEGIN

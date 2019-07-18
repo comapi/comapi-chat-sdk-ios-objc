@@ -16,16 +16,15 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChat.h"
-#import "CMPInternalConfig.h"
-#import "CMPTestMocks.h"
+#import "CMPChatTest.h"
+
 #import "CMPMockAuthenticationDelegate.h"
 #import "CMPMockStoreFactoryBuilder.h"
 #import "CMPMockChatStore.h"
 
-#import <XCTest/XCTest.h>
+@import CMPComapiChat;
 
-@interface CMPTestChat : XCTestCase
+@interface CMPTestChat : CMPChatTest
 
 @property (nonatomic, strong, nullable) CMPMockAuthenticationDelegate *authDelegate;
 @property (nonatomic, strong, nullable) CMPMockStoreFactoryBuilder *storeFactoryBuilder;
@@ -43,7 +42,7 @@
     _storeFactoryBuilder = [[CMPMockStoreFactoryBuilder alloc] initWithChatStore:_chatStore];
     _internalConfig = [[CMPInternalConfig alloc] init];
     
-    _config = [[CMPChatConfig alloc] initWithApiSpaceID:[CMPTestMocks mockApiSpaceID] authenticationDelegate:_authDelegate storeFactory:_storeFactoryBuilder internalConfig:_internalConfig];
+    _config = [[[[[[CMPChatConfig builder] setApiSpaceID:[CMPTestMocks mockApiSpaceID]] setAuthDelegate:_authDelegate] setChatStoreFactory:_storeFactoryBuilder] setInternalConfig:_internalConfig] build];
 }
 
 - (void)tearDown {
@@ -57,13 +56,13 @@
     XCTAssertEqual(_config.internalConfig.maxPartDataSize, 13333);
     XCTAssertEqual(_config.internalConfig.maxConversationsSynced, 20);
     
-    XCTAssertEqualObjects(_config.foundationConfig.authDelegate, _authDelegate);
+    XCTAssertEqualObjects(_config.authDelegate, _authDelegate);
     
     XCTAssertEqualObjects(_config.id, @"MOCK_API_SPACE_ID");
     
-    XCTAssertEqualObjects(_config.foundationConfig.apiConfig.scheme, @"https");
-    XCTAssertEqualObjects(_config.foundationConfig.apiConfig.host, @"api.comapi.com");
-    XCTAssertEqual(_config.foundationConfig.apiConfig.port, 443);
+    XCTAssertEqualObjects(_config.apiConfig.scheme, @"https");
+    XCTAssertEqualObjects(_config.apiConfig.host, @"api.comapi.com");
+    XCTAssertEqual(_config.apiConfig.port, 443);
 }
 
 - (void)testCreateChatClient {

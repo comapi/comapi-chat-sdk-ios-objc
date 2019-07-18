@@ -16,12 +16,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <CMPComapiFoundation/CMPEvent.h>
-#import <CMPComapiFoundation/CMPSocketEvents.h>
-#import <CMPComapiFoundation/CMPConversationEvents.h>
-#import <CMPComapiFoundation/CMPProfileEvents.h>
-#import <CMPComapiFoundation/CMPConversationMessageEvents.h>
-#import <CMPComapiFoundation/CMPComapiClient.h>
+@import CMPComapiFoundation;
 
 NS_ASSUME_NONNULL_BEGIN
 

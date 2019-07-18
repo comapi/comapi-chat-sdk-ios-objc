@@ -16,13 +16,11 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
-#import <XCTest/XCTest.h>
+#import "CMPChatTest.h"
 
-#import "CMPMissingEventsTracker.h"
-#import "CMPMissingEventsDelegate.h"
+@import CMPComapiChat;
 
-@interface CMPTestEventTracker : XCTestCase <CMPMissingEventsDelegate>
+@interface CMPTestEventTracker : CMPChatTest <CMPMissingEventsDelegate>
 
 @property(nonatomic, strong) NSString *missingInConversation;
 @property(nonatomic, assign) NSInteger from;

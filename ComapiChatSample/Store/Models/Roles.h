@@ -16,9 +16,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatRoles.h"
-
-#import <CoreData/CoreData.h>
+@import CMPComapiChat;
+@import CoreData;
 
 NS_ASSUME_NONNULL_BEGIN
 

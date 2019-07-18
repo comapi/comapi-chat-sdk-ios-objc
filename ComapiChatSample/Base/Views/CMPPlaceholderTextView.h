@@ -17,7 +17,10 @@
 //
 
 #import <UIKit/UIKit.h>
+
 #import "CMPViewConfiguring.h"
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPPlaceholderTextView : UITextView <CMPViewConfiguring, UITextViewDelegate>
 
@@ -35,3 +38,5 @@
 - (void)dismiss;
 
 @end
+
+NS_ASSUME_NONNULL_END

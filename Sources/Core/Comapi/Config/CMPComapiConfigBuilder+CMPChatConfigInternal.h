@@ -18,11 +18,15 @@
 
 @import CMPComapiFoundation;
 
+@class CMPCoreDataConfig;
+
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPComapiConfigBuilder ()
+@interface CMPComapiConfigBuilder (CMPChatConfigInternal)
 
 - (instancetype)setStoreConfig:(CMPCoreDataConfig *)storeConfig;
+
+- (void)fillEmpty;
 
 @end
 

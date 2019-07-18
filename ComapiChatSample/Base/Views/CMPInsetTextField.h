@@ -17,6 +17,7 @@
 //
 
 #import <UIKit/UIKit.h>
+
 #import "CMPViewConfiguring.h"
 
 @interface CMPInsetTextField : UITextField <CMPViewConfiguring, UITextFieldDelegate>

@@ -16,20 +16,14 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPMessageProcessor.h"
-#import "CMPModelAdapter.h"
-#import "CMPMessageAlert.h"
-#import "CMPSendableMessage.h"
-#import "CMPMessageAlert.h"
-#import "CMPContentData.h"
-#import "NSString+CMPBase64.h"
+#import "CMPChatTest.h"
 
-#import <XCTest/XCTest.h>
+@import CMPComapiChat;
 
 NSString * const kAttName = @"attName";
 NSString * const kAttType = @"attType";
 
-@interface CMPTestMessageProcessing : XCTestCase
+@interface CMPTestMessageProcessing : CMPChatTest
 
 @property (nonatomic, strong, readwrite) CMPMessageProcessor *processor;
 @property (nonatomic, strong, readwrite) CMPSendableMessage *message;
@@ -87,13 +81,13 @@ NSString * const kAttType = @"attType";
             XCTAssertNil(part.url);
             XCTAssertEqual(4, [part.size intValue]);
         } else if ([part.name caseInsensitiveCompare:@"large"] == NSOrderedSame) {
-            XCTAssertTrue([part.type caseInsensitiveCompare:kPartTypeUploading] == NSOrderedSame);
+            XCTAssertTrue([part.type caseInsensitiveCompare:CMPPartTypeUploading] == NSOrderedSame);
             XCTAssertNil(part.data);
             XCTAssertNil(part.url);
             XCTAssertEqual(12, [part.size intValue]);
         } else if ([part.name caseInsensitiveCompare:@"att"] == NSOrderedSame) {
             XCTAssertTrue([part.name caseInsensitiveCompare:@"att"] == NSOrderedSame);
-            XCTAssertTrue([part.type caseInsensitiveCompare:kPartTypeUploading] == NSOrderedSame);
+            XCTAssertTrue([part.type caseInsensitiveCompare:CMPPartTypeUploading] == NSOrderedSame);
             XCTAssertNil(part.data);
             XCTAssertNil(part.url);
             XCTAssertEqual(4, [part.size intValue]);

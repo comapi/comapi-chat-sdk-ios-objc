@@ -16,12 +16,11 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
-#import <XCTest/XCTest.h>
+#import "CMPChatTest.h"
 
-#import "CMPRetryManager.h"
+@import CMPComapiChat;
 
-@interface CMPTestRetries : XCTestCase
+@interface CMPTestRetries : CMPChatTest
 @end
 
 @implementation CMPTestRetries

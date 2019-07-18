@@ -16,13 +16,13 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPComapiChatClient.h"
+@import CMPComapiChat;
+@import UIKit;
+
 #import "CMPPhotoCropViewController.h"
 #import "CMPImageDownloader.h"
 #import "CMPStore.h"
-#import "CMPChatAttachment.h"
 #import "Message.h"
-#import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

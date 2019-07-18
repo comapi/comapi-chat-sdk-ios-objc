@@ -16,18 +16,13 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+@import CMPComapiChat;
+
 #import "CMPBaseCell.h"
-#import "CMPChatMessage.h"
 #import "CMPMessageOwnership.h"
 #import "CMPImageDownloader.h"
 
 NS_ASSUME_NONNULL_BEGIN
-
-typedef NS_ENUM(NSUInteger, CMPPartType) {
-    CMPPartTypeText,
-    CMPPartTypeImage,
-    CMPPartTypeUnknown
-};
 
 @interface CMPMessagePartCell : CMPBaseCell
 

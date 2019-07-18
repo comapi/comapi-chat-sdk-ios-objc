@@ -16,10 +16,10 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "Roles.h"
-#import "CMPChatConversation.h"
+@import CMPComapiChat;
+@import CoreData;
 
-#import <CoreData/CoreData.h>
+@class Roles;
 
 NS_ASSUME_NONNULL_BEGIN
 

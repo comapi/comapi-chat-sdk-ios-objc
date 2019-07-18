@@ -18,6 +18,9 @@
 
 #import "MessageContext.h"
 
+#import "Message.h"
+#import "MessageParticipant.h"
+
 @implementation MessageContext
 
 @dynamic conversationID;

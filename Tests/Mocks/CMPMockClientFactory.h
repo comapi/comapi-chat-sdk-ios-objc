@@ -16,13 +16,12 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPComapiChatClient.h"
+@import CMPComapiChat;
+
 #import "CMPTestMocks.h"
 #import "CMPMockAuthenticationDelegate.h"
 #import "CMPMockRequestPerformer.h"
 #import "CMPMockStoreFactoryBuilder.h"
-#import "CMPEventsController.h"
-#import "CMPComapiChatClientFactory.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

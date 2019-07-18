@@ -18,6 +18,8 @@
 
 #import "MessagePart.h"
 
+#import "Message.h"
+
 @implementation MessagePart
 
 @dynamic data;

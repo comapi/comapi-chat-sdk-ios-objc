@@ -6,19 +6,13 @@
 //  Copyright © 2018 Donky Networks Limited. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
-//! Project version number for CMPComapiChat.
-FOUNDATION_EXPORT double CMPComapiChatVersionNumber;
-
-//! Project version string for CMPComapiChat.
-FOUNDATION_EXPORT const unsigned char CMPComapiChatVersionString[];
-
 #import <CMPComapiChat/CMPComapiChatClient.h>
 #import <CMPComapiChat/CMPComapiChatClientFactory.h>
 #import <CMPComapiChat/CMPChat.h>
 #import <CMPComapiChat/CMPChatConfig.h>
 #import <CMPComapiChat/CMPChatConfig+Internal.h>
+#import <CMPComapiChat/CMPComapiConfigBuilder+CMPChatConfigBuilder.h>
+#import <CMPComapiChat/CMPComapiConfigBuilder+CMPChatConfigInternal.h>
 #import <CMPComapiChat/CMPInternalConfig.h>
 #import <CMPComapiChat/CMPChatConstants.h>
 #import <CMPComapiChat/CMPLifecycleDelegate.h>

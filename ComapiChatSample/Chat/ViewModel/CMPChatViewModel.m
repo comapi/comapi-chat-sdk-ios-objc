@@ -17,11 +17,9 @@
 //
 
 #import "CMPChatViewModel.h"
-#import "CMPEventParser.h"
-#import "CMPConversationMessageEvents.h"
+
 #import "CMPPhotoVideoManager.h"
 #import "UIImage+CMPUtilities.h"
-#import "CMPChatServices.h"
 
 @implementation CMPChatViewModel
 

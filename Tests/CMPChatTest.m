@@ -16,21 +16,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-@import CoreData;
+#import "CMPChatTest.h"
 
-NS_ASSUME_NONNULL_BEGIN
-
-@interface CMPStoreManagerStack : NSObject
-
-@property (class, nonatomic, strong, readonly) CMPStoreManagerStack *shared;
-
-@property (nonatomic, strong, readonly) NSPersistentContainer *persistentContainer;
-@property (nonatomic, strong, readonly) NSManagedObjectContext *mainContext;
-
-- (instancetype)initWithCompletion:(void(^ _Nullable)(NSError * _Nullable))completion;
-
-- (void)saveToDisk:(void (^ _Nullable)(NSError * _Nullable))completion;
+@implementation CMPChatTest
 
 @end
-
-NS_ASSUME_NONNULL_END

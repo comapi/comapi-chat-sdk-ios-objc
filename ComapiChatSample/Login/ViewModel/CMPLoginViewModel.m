@@ -21,11 +21,6 @@
 #import "CMPProfileViewController.h"
 #import "AppDelegate.h"
 #import "CMPFactory.h"
-#import "CMPChatConfig.h"
-#import "CMPChatServices.h"
-
-#import <CMPComapiFoundation/CMPComapiConfigBuilder.h>
-#import "CMPComapiConfigBuilder+CMPChatConfigBuilder.h"
 
 @interface CMPLoginViewModel ()
 

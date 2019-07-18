@@ -18,7 +18,8 @@
 
 #import "CMPPhotoCropViewController.h"
 #import "CMPChatViewController.h"
-#import "CMPChatAttachment.h"
+
+@import CMPComapiChat;
 
 @implementation CMPPhotoCropViewController
 

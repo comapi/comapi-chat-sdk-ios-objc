@@ -16,12 +16,12 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+@import CMPComapiChat;
+@import CoreData;
+
 #import "CMPStoreManagerStack.h"
-#import "CMPChatStore.h"
 
-#import "Message.h"
-
-#import <Foundation/Foundation.h>
+@class Message;
 
 NS_ASSUME_NONNULL_BEGIN
 

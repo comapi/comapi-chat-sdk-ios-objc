@@ -172,7 +172,6 @@
             }];
             break;
         }
-        
         case CMPEventTypeConversationParticipantAdded: {
             CMPConversationEventParticipantAdded *e = (CMPConversationEventParticipantAdded *)event;
             [_chatController handleParticipantsAdded:e.payload.conversationID completion:^(CMPChatResult * chatResult) {

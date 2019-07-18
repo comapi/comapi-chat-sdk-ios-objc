@@ -16,9 +16,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatMessageParticipant.h"
-
-#import <CoreData/CoreData.h>
+@import CMPComapiChat;
+@import CoreData;
 
 @class MessageContext;
 

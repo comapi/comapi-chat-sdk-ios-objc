@@ -18,10 +18,12 @@
 
 #import "CMPComapiConfigBuilder+CMPChatConfigBuilder.h"
 
+#import "CMPComapiConfigBuilder+CMPChatConfigInternal.h"
 #import "CMPChatConfig.h"
 #import "CMPChatConfig+Internal.h"
 #import "CMPCoreDataConfig.h"
 #import "CMPInternalConfig.h"
+
 
 @import CMPComapiFoundation;
 @import ObjectiveC.runtime;
@@ -30,6 +32,7 @@
 
 - (instancetype)init {
     self = [super init];
+    
     if (self) {
         self.config = [[CMPChatConfig alloc] init];
         
@@ -41,24 +44,25 @@
             method_exchangeImplementations(chatBuild, build);
         });
     }
+    
     return self;
 }
 
-- (CMPComapiConfig *)chatBuild {
+- (void)chatFillEmpty {
     CMPChatConfig *cnf = (CMPChatConfig *)self.config;
     if (!cnf.internalConfig)
         cnf.internalConfig = [[CMPInternalConfig alloc] init];
     if (!cnf.storeFactory)
         logWithLevel(CMPLogLevelWarning, [NSString stringWithFormat:@"Config: chat store factory not set... SDK will not start without its implementation."]);
-    
-    cnf = [self build];
-    
-    return cnf;
+    if (!cnf.storeConfig)
+        cnf.storeConfig = [[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSSQLiteStoreType];
 }
 
-- (instancetype)setStoreConfig:(CMPCoreDataConfig *)storeConfig {
-    ((CMPChatConfig *)self.config).storeConfig = storeConfig;
-    return self;
+- (CMPComapiConfig *)chatBuild {
+    [self fillEmpty];
+    [self chatFillEmpty];
+    
+    return self.config;
 }
 
 - (instancetype)setInternalConfig:(CMPInternalConfig *)internalConfig {

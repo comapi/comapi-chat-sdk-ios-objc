@@ -16,12 +16,11 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "CMPChatMessage.h"
+#import <UIKit/UIKit.h>
+
 #import "CMPViewConfiguring.h"
 #import "CMPMessageOwnership.h"
 #import "CMPMessagePartConfigurable.h"
-
-#import <UIKit/UIKit.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
