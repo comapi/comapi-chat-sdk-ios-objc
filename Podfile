@@ -2,7 +2,7 @@ platform :ios, '10.0'
 use_frameworks!
 inhibit_all_warnings!
 
-$env=ENV['ComapiXcodeEnvironment']
+$env=ENV['COMAPI_XCODE_ENVIRONMENT']
 
 target 'CMPComapiChat' do
   if $env == 'production'
