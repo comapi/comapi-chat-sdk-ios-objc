@@ -2,13 +2,27 @@ platform :ios, '10.0'
 use_frameworks!
 inhibit_all_warnings!
 
+$env=ENV['ComapiXcodeEnvironment']
+
 target 'CMPComapiChat' do
-  pod 'CMPComapiFoundation', :path => '/Users/dominik.kowalski/Documents/comapi-sdk-ios-objc'
+  if env == 'production'
+    pod 'CMPComapiFoundation'
+  elsif env == 'development'
+    pod 'CMPComapiFoundation', :git => 'https://github.com/comapi/comapi-sdk-ios-objc', :branch => 'dev'
+  else
+    pod 'CMPComapiFoundation', :path => '/Users/dominik.kowalski/Documents/comapi-sdk-ios-objc'
+  end
 end
 
 abstract_target 'Shared' do
   pod 'JWT'
-  pod 'CMPComapiChat', :path => '/Users/dominik.kowalski/Documents/comapi-chat-sdk-ios-objc'
+  if env == 'production'
+    pod 'CMPComapiChat'
+  elsif env == 'development'
+    pod 'CMPComapiChat', :git => 'https://github.com/comapi/comapi-chat-sdk-ios-objc', :branch => 'dev'
+  else
+    pod 'CMPComapiChat', :path => '/Users/dominik.kowalski/Documents/comapi-chat-sdk-ios-objc'
+  end
   
   target 'ComapiChatSample' do
     target 'CMPComapiChatTests' do
