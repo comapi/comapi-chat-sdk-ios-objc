@@ -16,15 +16,13 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-@import CMPComapiFoundation;
-
-@class CMPCoreDataConfig;
+#import <CMPComapiFoundation/CMPComapiFoundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPComapiConfigBuilder (CMPChatConfigInternal)
+@interface CMPComapiConfigBuilder ()
 
-- (instancetype)setStoreConfig:(CMPCoreDataConfig *)storeConfig;
+- (void)fillEmpty;
 
 @end
 

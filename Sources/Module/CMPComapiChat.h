@@ -13,6 +13,7 @@
 #import <CMPComapiChat/CMPChatConfig+Internal.h>
 #import <CMPComapiChat/CMPComapiConfigBuilder+CMPChatConfigBuilder.h>
 #import <CMPComapiChat/CMPComapiConfigBuilder+CMPChatConfigInternal.h>
+#import <CMPComapiChat/CMPComapiConfigBuilder+CMPInternalExtension.h>
 #import <CMPComapiChat/CMPInternalConfig.h>
 #import <CMPComapiChat/CMPChatConstants.h>
 #import <CMPComapiChat/CMPLifecycleDelegate.h>

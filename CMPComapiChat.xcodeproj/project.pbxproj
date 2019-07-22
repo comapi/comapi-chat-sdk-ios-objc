@@ -15,6 +15,7 @@
 		890F81342209F16C006EF1A6 /* CMPTextPartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 890F81332209F16C006EF1A6 /* CMPTextPartView.m */; };
 		890F8139220B42D7006EF1A6 /* CMPMessagePartCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 890F8138220B42D7006EF1A6 /* CMPMessagePartCell.m */; };
 		890F813D2211B650006EF1A6 /* CMPAttachmentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 890F813C2211B650006EF1A6 /* CMPAttachmentsView.m */; };
+		89130EB222E5D6D200B65C22 /* CMPComapiConfigBuilder+CMPInternalExtension.h in Headers */ = {isa = PBXBuildFile; fileRef = 89130EB122E5D6D200B65C22 /* CMPComapiConfigBuilder+CMPInternalExtension.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8915FEA02256572800EB9A4A /* CMPComapiChat.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8915FE9E2256572800EB9A4A /* CMPComapiChat.xcdatamodeld */; };
 		89279992224E769400FCD247 /* CMPComapiChatClientFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 89279990224E769400FCD247 /* CMPComapiChatClientFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		89279993224E769400FCD247 /* CMPComapiChatClientFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 89279991224E769400FCD247 /* CMPComapiChatClientFactory.m */; };
@@ -303,6 +304,7 @@
 		890F8138220B42D7006EF1A6 /* CMPMessagePartCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPMessagePartCell.m; sourceTree = "<group>"; };
 		890F813B2211B650006EF1A6 /* CMPAttachmentsView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPAttachmentsView.h; sourceTree = "<group>"; };
 		890F813C2211B650006EF1A6 /* CMPAttachmentsView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPAttachmentsView.m; sourceTree = "<group>"; };
+		89130EB122E5D6D200B65C22 /* CMPComapiConfigBuilder+CMPInternalExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CMPComapiConfigBuilder+CMPInternalExtension.h"; sourceTree = "<group>"; };
 		8915FE9D2256144A00EB9A4A /* ComapiChatSample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ComapiChatSample.entitlements; sourceTree = "<group>"; };
 		8915FE9F2256572800EB9A4A /* CMPComapiChat.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CMPComapiChat.xcdatamodel; sourceTree = "<group>"; };
 		89279990224E769400FCD247 /* CMPComapiChatClientFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPComapiChatClientFactory.h; sourceTree = "<group>"; };
@@ -1267,6 +1269,7 @@
 				8953AE2022A809EC00CCA183 /* CMPChatConfig+Internal.h */,
 				89D4A34722C250740094B149 /* CMPComapiConfigBuilder+CMPChatConfigBuilder.h */,
 				89D4A34822C250740094B149 /* CMPComapiConfigBuilder+CMPChatConfigBuilder.m */,
+				89130EB122E5D6D200B65C22 /* CMPComapiConfigBuilder+CMPInternalExtension.h */,
 				893FD7D122CCD5D9005E5FBC /* CMPComapiConfigBuilder+CMPChatConfigInternal.h */,
 				893FD7D222CCD5D9005E5FBC /* CMPComapiConfigBuilder+CMPChatConfigInternal.m */,
 			);
@@ -1784,6 +1787,7 @@
 				896E30FC21C93EDB008CC785 /* CMPAttachmentController.h in Headers */,
 				896CB97D21B97121003FB3DF /* CMPChatMessageStatus.h in Headers */,
 				89C0143621C2CA6600799B3B /* NSManagedObjectContext+CMPUtility.h in Headers */,
+				89130EB222E5D6D200B65C22 /* CMPComapiConfigBuilder+CMPInternalExtension.h in Headers */,
 				896CB98D21B97C02003FB3DF /* CMPChatMessageContext.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

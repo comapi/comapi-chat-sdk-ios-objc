@@ -18,6 +18,7 @@
 
 #import "CMPComapiConfigBuilder+CMPChatConfigBuilder.h"
 
+#import "CMPComapiConfigBuilder+CMPInternalExtension.h"
 #import "CMPComapiConfigBuilder+CMPChatConfigInternal.h"
 #import "CMPChatConfig.h"
 #import "CMPChatConfig+Internal.h"
