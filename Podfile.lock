@@ -9,8 +9,8 @@ PODS:
   - SocketRocket (0.5.1)
 
 DEPENDENCIES:
-  - CMPComapiChat (from `https://github.com/comapi/comapi-chat-sdk-ios-objc`, branch `dev`)
-  - CMPComapiFoundation (from `https://github.com/comapi/comapi-sdk-ios-objc`, branch `dev`)
+  - CMPComapiChat (from `/Users/dominik.kowalski/Documents/comapi-chat-sdk-ios-objc`)
+  - CMPComapiFoundation (from `/Users/dominik.kowalski/Documents/comapi-sdk-ios-objc`)
   - JWT
 
 SPEC REPOS:
@@ -21,19 +21,9 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   CMPComapiChat:
-    :branch: dev
-    :git: https://github.com/comapi/comapi-chat-sdk-ios-objc
+    :path: "/Users/dominik.kowalski/Documents/comapi-chat-sdk-ios-objc"
   CMPComapiFoundation:
-    :branch: dev
-    :git: https://github.com/comapi/comapi-sdk-ios-objc
-
-CHECKOUT OPTIONS:
-  CMPComapiChat:
-    :commit: ab22a17c1af0ae14342be785dc7d972207db5841
-    :git: https://github.com/comapi/comapi-chat-sdk-ios-objc
-  CMPComapiFoundation:
-    :commit: fe78fb994be031fe88dfdadb2f4af3e1595f7e4d
-    :git: https://github.com/comapi/comapi-sdk-ios-objc
+    :path: "/Users/dominik.kowalski/Documents/comapi-sdk-ios-objc"
 
 SPEC CHECKSUMS:
   Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
@@ -42,6 +32,6 @@ SPEC CHECKSUMS:
   JWT: cf73c0ab0dac762df3de8a3f1164352089d97780
   SocketRocket: d57c7159b83c3c6655745cd15302aa24b6bae531
 
-PODFILE CHECKSUM: ac5eeae63a12f8fff1defe62f13c986f10534595
+PODFILE CHECKSUM: 9c9393df48c6e5829f6c4af39def6e2eaea4b973
 
 COCOAPODS: 1.7.3
