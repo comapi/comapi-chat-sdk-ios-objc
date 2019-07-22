@@ -3,7 +3,7 @@ use_frameworks!
 inhibit_all_warnings!
 
 $env=ENV['COMAPI_XCODE_ENVIRONMENT']
-$src=ENV['Build.Repository.LocalPath']
+$src=ENV['BUILD_REPOSITORY_LOCALPATH']
 $path = "#{$src}"
 
 target 'CMPComapiChat' do
