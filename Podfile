@@ -3,6 +3,8 @@ use_frameworks!
 inhibit_all_warnings!
 
 $env=ENV['COMAPI_XCODE_ENVIRONMENT']
+$src=ENV['Build.SourcesDirectory']
+$path = "#{$src}"
 
 target 'CMPComapiChat' do
   if $env == 'production'
@@ -21,7 +23,7 @@ abstract_target 'Shared' do
   elsif $env == 'development'
     pod 'CMPComapiChat', :git => 'https://github.com/comapi/comapi-chat-sdk-ios-objc', :branch => 'dev'
   elsif $env == 'agent'
-    pod 'CMPComapiChat', :path => '$(Build.SourcesDirectory)' 
+    pod 'CMPComapiChat', :path => $path
   else
     pod 'CMPComapiChat', :path => '/Users/dominik.kowalski/Documents/comapi-chat-sdk-ios-objc'
   end
