@@ -276,11 +276,13 @@
         [CMPPersistenceController initialiseWithFactory:weakSelf.builder adapter:weakSelf.adapter coreDataManager:store completion:^(CMPPersistenceController * _Nullable persistenceController, NSError * _Nullable error) {
             weakSelf.persistenceController = persistenceController;
             
-            NSManagedObjectContext *ctx = store.workerContext;
+            NSManagedObjectContext *ctx = store.mainContext;
+            
             CMPOrphanedEventPayload *payload0 = [[CMPOrphanedEventPayload alloc] initWithProfileID:@"pId" messageID:@"id" conversationID:@"cId" isPublicConversation:[[NSNumber alloc] initWithInt:1] timestamp:[NSDate dateWithTimeIntervalSince1970:1]];
             CMPOrphanedEventData *data0 = [[CMPOrphanedEventData alloc] initWithName:@"delivered" eventID:@"id" profileID:@"pId" payload:payload0];
             CMPOrphanedEvent *e0 = [[CMPOrphanedEvent alloc] initWithID:@(0) data:data0];
             NSArray<CMPOrphanedEvent *> *events0 = [[NSArray alloc] initWithObjects:e0, nil];
+            
             [ctx upsertOrphanedEvents:events0 completion:^(NSInteger result, NSError *error) {
                 XCTAssertEqual(1, result);
                 [expectation1 fulfill];
