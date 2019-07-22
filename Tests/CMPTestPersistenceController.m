@@ -267,14 +267,15 @@
 
 -(void)testProcessOrphanedEvents {
     XCTestExpectation *expectationCoreData = [[XCTestExpectation alloc] initWithDescription:@"core data set"];
-    XCTestExpectation *expectation1 = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
-    XCTestExpectation *expectation2 = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
-    XCTestExpectation *expectation3 = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
+    XCTestExpectation *expectation1 = [[XCTestExpectation alloc] initWithDescription:@"callback 1"];
+    XCTestExpectation *expectation2 = [[XCTestExpectation alloc] initWithDescription:@"callback 2"];
+    XCTestExpectation *expectation3 = [[XCTestExpectation alloc] initWithDescription:@"callback 3"];
     
     __weak typeof(self) weakSelf = self;
     CMPCoreDataManager *store = [[CMPCoreDataManager alloc] initWithConfig:[[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSInMemoryStoreType]];
         [CMPPersistenceController initialiseWithFactory:weakSelf.builder adapter:weakSelf.adapter coreDataManager:store completion:^(CMPPersistenceController * _Nullable persistenceController, NSError * _Nullable error) {
             weakSelf.persistenceController = persistenceController;
+            
             NSManagedObjectContext *ctx = store.workerContext;
             CMPOrphanedEventPayload *payload0 = [[CMPOrphanedEventPayload alloc] initWithProfileID:@"pId" messageID:@"id" conversationID:@"cId" isPublicConversation:[[NSNumber alloc] initWithInt:1] timestamp:[NSDate dateWithTimeIntervalSince1970:1]];
             CMPOrphanedEventData *data0 = [[CMPOrphanedEventData alloc] initWithName:@"delivered" eventID:@"id" profileID:@"pId" payload:payload0];
@@ -294,22 +295,23 @@
                     CMPChatMessageDeliveryStatus s = toDelete[0].eventType;
                     XCTAssertEqual(CMPChatMessageDeliveryStatusDelivered, s);
                     XCTAssertEqual(1, count);
-                    XCTAssertTrue([@"id" compare: messageID] == NSOrderedSame);
-                    XCTAssertTrue([@"cId" compare: conversationID] == NSOrderedSame);
-                    XCTAssertTrue([@"pId" compare: profileID] == NSOrderedSame);
+                    XCTAssertEqualObjects(@"id", messageID);
+                    XCTAssertEqualObjects(@"cId", conversationID);
+                    XCTAssertEqualObjects(@"pId", profileID);
+
                     [expectation2 fulfill];
                 }];
             }];
             
             // saved conversation
             CMPChatRoles *roles = [[CMPChatRoles alloc] initWithOwnerAttributes:[[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES] participantAttributes:[[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES]];
-            [weakSelf.chatStore upsertConversation:[[CMPChatConversation alloc] initWithID:@"cId" firstLocalEventID:@1 lastLocalEventID:@(2) latestRemoteEventID:@(3) eTag:@"eTag" updatedOn:[NSDate dateWithTimeIntervalSince1970:0] name:@"name" conversationDescription:@"desc" roles:roles isPublic:[[NSNumber alloc] initWithInt:1]]];
+            [weakSelf.chatStore upsertConversation:[[CMPChatConversation alloc] initWithID:@"cId" firstLocalEventID:@(1) lastLocalEventID:@(2) latestRemoteEventID:@(3) eTag:@"eTag" updatedOn:[NSDate dateWithTimeIntervalSince1970:0] name:@"name" conversationDescription:@"desc" roles:roles isPublic:[[NSNumber alloc] initWithInt:1]]];
             
             NSDictionary<NSString *,id> *metadata = [[NSDictionary alloc] initWithObjectsAndKeys:@"key", @"value", nil];
             CMPMessageParticipant *p = [[CMPMessageParticipant alloc] initWithID:@"pId" name:@"pName"];
             CMPMessageContext *context = [[CMPMessageContext alloc] initWithConversationID:@"cId" from:p sentBy:@"sender" sentOn:[NSDate dateWithTimeIntervalSince1970:1]];
             
-            CMPMessagePart *part = [[CMPMessagePart alloc] initWithName:@"name" type:@"type" url:nil data:@"data" size:[[NSNumber alloc] initWithInt:1]];
+            CMPMessagePart *part = [[CMPMessagePart alloc] initWithName:@"name" type:@"type" url:nil data:@"data" size:@(1)];
             NSArray<CMPMessagePart *> *parts = [[NSArray alloc] initWithObjects:part, nil];
             
             CMPMessageStatus *status = [[CMPMessageStatus alloc] initWithStatus:CMPMessageDeliveryStatusRead timestamp:[NSDate dateWithTimeIntervalSince1970:1]];
@@ -318,15 +320,14 @@
             CMPMessage *msg = [[CMPMessage alloc] initWithID:@"id" sentEventID:@(4) metadata:metadata context:context parts:parts statusUpdates:statuses];
             NSArray<CMPMessage *> *messages = [[NSArray alloc] initWithObjects:msg, nil];
             
-            CMPOrphanedEventPayload *payload = [[CMPOrphanedEventPayload alloc] initWithProfileID:@"pId2" messageID:@"mId2" conversationID:@"cId" isPublicConversation:[[NSNumber alloc] initWithInt:1] timestamp:[NSDate dateWithTimeIntervalSince1970:1]];
+            CMPOrphanedEventPayload *payload = [[CMPOrphanedEventPayload alloc] initWithProfileID:@"pId2" messageID:@"mId2" conversationID:@"cId" isPublicConversation:@(1) timestamp:[NSDate dateWithTimeIntervalSince1970:1]];
             CMPOrphanedEventData *data = [[CMPOrphanedEventData alloc] initWithName:@"read" eventID:@"id" profileID:@"pId2" payload:payload];
             CMPOrphanedEvent *e = [[CMPOrphanedEvent alloc] initWithID:@(1) data:data];
             NSArray<CMPOrphanedEvent *> *events = [[NSArray alloc] initWithObjects:e, nil];
             
-            CMPGetMessagesResult *result = [[CMPGetMessagesResult alloc] initWithLatestEventID:[[NSNumber alloc] initWithInt:4] earliestEventID:[[NSNumber alloc] initWithInt:3] messages:messages orphanedEvents:events];
+            CMPGetMessagesResult *result = [[CMPGetMessagesResult alloc] initWithLatestEventID:@(4) earliestEventID:@(3) messages:messages orphanedEvents:events];
             
             [weakSelf.persistenceController processOrphanedEvents:result completion:^(NSError * error) {
-                
                 NSArray<NSString *> *ids = [NSArray arrayWithObjects:@"mId2", nil];
                 NSManagedObjectContext *ctx = store.mainContext;
                 [ctx queryOrphanedEventsForIDs:ids completion:^(NSArray<CMPChatManagedOrphanedEvent *> *toDelete, NSError *error) {
@@ -344,6 +345,7 @@
                     [expectation3 fulfill];
                 }];
             }];
+            
             [expectationCoreData fulfill];
         }];
 
