@@ -220,7 +220,7 @@
             weakSelf.persistenceController = persistenceController;
             // saved conversation
             CMPChatRoles *roles = [[CMPChatRoles alloc] initWithOwnerAttributes:[[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES] participantAttributes:[[CMPChatRoleAttributes alloc] initWithCanSend:YES canAddParticipants:YES canRemoveParticipants:YES]];
-            [weakSelf.chatStore upsertConversation:[[CMPChatConversation alloc] initWithID:@"cId" firstLocalEventID:@1 lastLocalEventID:@2 latestRemoteEventID:@3 eTag:@"eTag" updatedOn:[NSDate dateWithTimeIntervalSince1970:0] name:@"name" conversationDescription:@"desc" roles:roles isPublic:[[NSNumber alloc] initWithInt:1]]];
+            [weakSelf.chatStore upsertConversation:[[CMPChatConversation alloc] initWithID:@"cId" firstLocalEventID:@(1) lastLocalEventID:@(2) latestRemoteEventID:@(3) eTag:@"eTag" updatedOn:[NSDate dateWithTimeIntervalSince1970:0] name:@"name" conversationDescription:@"desc" roles:roles isPublic:[[NSNumber alloc] initWithInt:1]]];
             
             NSDictionary<NSString *,id> *metadata = [[NSDictionary alloc] initWithObjectsAndKeys:@"key", @"value", nil];
             CMPMessageParticipant *p = [[CMPMessageParticipant alloc] initWithID:@"pId" name:@"pName"];
