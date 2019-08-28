@@ -33,7 +33,16 @@
 
     if (self) {
         self.factory = factory;
-        self.loginBundle = [[CMPLoginBundle alloc] initWithApiSpaceID:@"f28a3453-bfb7-4c68-a9fc-1096538f1e7d" profileID:@"" issuer:@"Issuer" audience:@"Audience" secret:@"Secret"];
+        NSDictionary<NSString *, id> *info = [NSBundle.mainBundle infoDictionary];
+        NSString *apiSpace = info[@"API_SPACE"];
+        NSString *secret = info[@"SECRET"];
+        NSString *audience = info[@"AUDIENCE"];
+        NSString *issuer = info[@"ISSUER"];
+        if (apiSpace && secret && audience && issuer) {
+            self.loginBundle = [[CMPLoginBundle alloc] initWithApiSpaceID:apiSpace profileID:@"" issuer:issuer audience:audience secret:secret];
+        } else {
+            self.loginBundle = [[CMPLoginBundle alloc] init];
+        }
     }
     
     return self;
@@ -67,10 +76,19 @@
 
 - (void)login:(void(^)(CMPComapiChatClient * _Nullable, CMPStore * _Nullable, NSError * _Nullable))completion {
     if (self.loginBundle && [self.loginBundle isValid]) {
+        
+        NSDictionary<NSString *, id> *info = [NSBundle.mainBundle infoDictionary];
+        NSString *scheme = info[@"SERVER_SCHEME"];
+        NSString *host = info[@"SERVER_HOST"];
+        NSNumber *port = info[@"SERVER_PORT"];
+        
+        CMPAPIConfiguration *apiConfig = [[CMPAPIConfiguration alloc] initWithScheme:scheme host:host port:port.integerValue];
+        
+        
         CMPComapiConfigBuilder<CMPChatConfig *> *builder = [CMPChatConfig builder];
         CMPChatConfig *config = [[[[[[builder setApiSpaceID:self.loginBundle.apiSpaceID]
                                             setAuthDelegate:self] setChatStoreFactory:_factory]
-                                            setApiConfig:[[CMPAPIConfiguration alloc] initWithScheme:@"https" host:@"stage-api.comapi.com" port:443]]
+                                            setApiConfig:apiConfig]
                                             setLogLevel:CMPLogLevelVerbose]
                                             build];
         __weak typeof(self) weakSelf = self;

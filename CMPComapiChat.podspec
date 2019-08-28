@@ -18,6 +18,8 @@ For more information about the integration please visit [the website](http://doc
   s.source_files          = 'Sources/**/*.{h,m}'
   s.resources             = 'Sources/Core/Resources/*'
   s.module_map            = 'Sources/Module/module.modulemap'
+  s.preserve_path         = 'Sources/Module/module.modulemap'
   s.module_name           = s.name
+  
   s.dependency 'CMPComapiFoundation'
 end

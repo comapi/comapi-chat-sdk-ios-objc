@@ -80,7 +80,13 @@
     if (loginInfo && [loginInfo isValid]) {
         self.loginInfo = loginInfo;
         
-        CMPAPIConfiguration *apiConfig = [[CMPAPIConfiguration alloc] initWithScheme:@"https" host:@"stage-api.comapi.com" port:443];
+        NSDictionary<NSString *, id> *info = [NSBundle.mainBundle infoDictionary];
+        NSString *scheme = info[@"SERVER_SCHEME"];
+        NSString *host = info[@"SERVER_HOST"];
+        NSNumber *port = info[@"SERVER_PORT"];
+        
+        CMPAPIConfiguration *apiConfig = [[CMPAPIConfiguration alloc] initWithScheme:scheme host:host port:port.integerValue];
+        
         CMPChatConfig *config = [[[[[[[CMPChatConfig builder] setApiSpaceID:loginInfo.apiSpaceID] setApiConfig:apiConfig] setAuthDelegate:self] setLogLevel:CMPLogLevelDebug] setChatStoreFactory:factory] build];
         
         __weak typeof(self) weakSelf = self;
