@@ -49,6 +49,7 @@
         self.conversationDescription = conversation.conversationDescription;
         self.roles = [[CMPChatRoles alloc] initWithRoles:conversation.roles];
         self.isPublic = conversation.isPublic;
+        self.latestRemoteEventID = conversation.latestSentEventID;
     }
     
     return self;

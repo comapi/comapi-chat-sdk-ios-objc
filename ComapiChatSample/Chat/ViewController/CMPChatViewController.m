@@ -20,6 +20,9 @@
 #import "CMPAddParticipantsViewController.h"
 #import "CMPMessagePartCell.h"
 #import "CMPAttachmentCell.h"
+#import "CMPConversationsViewController.h"
+
+#import "AppDelegate.h"
 
 @interface CMPChatViewController ()
 
@@ -32,7 +35,6 @@
     
     if (self) {
         _viewModel = viewModel;
-        _viewModel.fetchController.delegate = self;
         
         [self navigation];
         [self delegates];
@@ -51,7 +53,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -59,17 +60,17 @@
     [self registerForKeyboardNotifications];
     
     __weak typeof(self) weakSelf = self;
-    [weakSelf.viewModel getPreviousMessages:^(NSError * _Nullable error) {
-        if (error) {
-            NSLog(@"%@", error.localizedDescription);
+    [weakSelf.viewModel getPreviousMessages:^(NSError * _Nullable err) {
+        if (err) {
+            NSLog(@"%@", err.localizedDescription);
         }
-        [self.viewModel.fetchController performFetch:&error];
-        if (error) {
-            NSLog(@"%@", error.localizedDescription);
-        }
-        [weakSelf reload:NO];
-        [weakSelf scrollToLastIndex];
+        [weakSelf.viewModel getParticipantsWithCompletion:^(NSArray<CMPChatParticipant *> * _Nullable participants, NSError * _Nullable error) {
+            [weakSelf.viewModel.fetchController performFetch:&error];
+            [weakSelf reload:NO];
+            [weakSelf scrollToLastIndex];
+        }];
     }];
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -101,6 +102,11 @@
             weakSelf.viewModel.shouldReloadAttachments();
         }];
     };
+    self.chatView.didBeginEditing = ^{
+        [weakSelf.viewModel markReadWithCompletion:^(NSError * _Nullable error) {
+            
+        }];
+    };
     self.chatView.didTapUploadButton = ^{
         [weakSelf.viewModel showPhotoSourceControllerWithPresenter:^(UIViewController * _Nonnull vc) {
             [weakSelf.navigationController presentViewController:vc animated:YES completion:nil];
@@ -110,9 +116,49 @@
             [weakSelf.navigationController presentViewController:vc animated:YES completion:nil];
         }];
     };
+    self.viewModel.shouldReloadDataAtIndex = ^(BOOL showNewMessage, NSFetchedResultsChangeType changeType, NSInteger idx) {
+        NSArray *indices = @[[NSIndexPath indexPathForRow:idx inSection:0]];
+        [UIView performWithoutAnimation:^{
+            switch (changeType) {
+                case NSFetchedResultsChangeInsert: {
+                    [weakSelf.chatView.tableView insertRowsAtIndexPaths:indices withRowAnimation:UITableViewRowAnimationNone];
+                    break;
+                }
+                case NSFetchedResultsChangeDelete: {
+                    [weakSelf.chatView.tableView deleteRowsAtIndexPaths:indices withRowAnimation:UITableViewRowAnimationNone];
+                    break;
+                }
+                case NSFetchedResultsChangeUpdate:
+                    [weakSelf.chatView.tableView reloadRowsAtIndexPaths:indices withRowAnimation:UITableViewRowAnimationNone];
+                    break;
+                default:
+                    break;
+            }
+        }];
+        
+        if (showNewMessage) {
+            if (weakSelf.chatView.tableView.contentOffset.y < weakSelf.chatView.tableView.contentSize.height) {
+                [weakSelf.chatView showNewMessageView:YES completion:nil];
+            }
+        } else {
+            [weakSelf scrollToLastIndex];
+        }
+    };
+    self.viewModel.shouldReloadData = ^(BOOL showNewMessage) {
+        if (!showNewMessage) {
+            [weakSelf reload:NO];
+            [weakSelf scrollToLastIndex];
+        } else {
+            [weakSelf reload:YES];
+        }
+    };
     self.chatView.didTapNewMessageButton = ^{
         [weakSelf scrollToLastIndex];
-        [weakSelf.chatView showNewMessageView:NO completion:nil];
+        [weakSelf.chatView showNewMessageView:NO completion:^{
+            [weakSelf.viewModel markReadWithCompletion:^(NSError * _Nullable err) {
+                
+            }];
+        }];
     };
     self.viewModel.didTakeNewPhoto = ^(UIImage * _Nonnull image) {
         [weakSelf.viewModel showPhotoCropControllerWithImage:image presenter:^(UIViewController * _Nonnull vc) {
@@ -163,6 +209,14 @@
     }
 }
 
+- (void)back {
+    AppDelegate *del = (AppDelegate *)UIApplication.sharedApplication.delegate;
+    UINavigationController *nav = (UINavigationController *)del.window.rootViewController;
+    CMPConversationsViewController *vc = nav.viewControllers[1];
+    vc.loadContent = YES;
+    [nav popViewControllerAnimated:YES];
+}
+
 - (void)scrollToLastIndex {
     if (self.viewModel.fetchController.sections[0].numberOfObjects == 0) {
         return;
@@ -199,15 +253,9 @@
     NSString *selfID = _viewModel.client.profileID;
 
     BOOL isMine = [fromID isEqualToString:selfID];
-    [cell configureWithMessage:msg profileID:selfID ownership:isMine ? CMPMessageOwnershipSelf : CMPMessageOwnershipOther downloader:_viewModel.downloader];
+    [cell configureWithMessage:msg participants:_viewModel.participants ownership:isMine ? CMPMessageOwnershipSelf : CMPMessageOwnershipOther downloader:_viewModel.downloader];
 
     return cell;
-}
-
-#pragma mark - NSFetchedResultsControllerDelegate
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-    [self reload:YES];
 }
 
 #pragma mark - UICollectionViewDelegate & UICollectionViewDataSource

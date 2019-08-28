@@ -19,6 +19,7 @@
 @import CMPComapiChat;
 
 #import "CMPFactory.h"
+#import "CMPAppConfigurator.h"
 
 #import <UIKit/UIKit.h>
 #import <UserNotifications/UserNotifications.h>
@@ -30,8 +31,7 @@ extern NSString * const kCMPPushRegistrationStatusChangedNotification;
 @interface AppDelegate : UIResponder <UIApplicationDelegate, UNUserNotificationCenterDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
-@property (strong, nonatomic, nullable) CMPComapiChatClient *client;
-@property (strong, nonatomic, nullable) CMPFactory *factory;
+@property (strong, nonatomic) CMPAppConfigurator *configurator;
 
 @end
 

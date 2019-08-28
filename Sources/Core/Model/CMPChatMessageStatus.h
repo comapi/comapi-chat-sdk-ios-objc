@@ -19,8 +19,6 @@
 #import "CMPChatMessageDeliveryStatus.h"
 
 @import CMPComapiFoundation;
-@import CMPComapiFoundation;
-@import CMPComapiFoundation;
 
 NS_ASSUME_NONNULL_BEGIN
 

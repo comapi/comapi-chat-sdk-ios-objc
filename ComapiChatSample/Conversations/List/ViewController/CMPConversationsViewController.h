@@ -25,9 +25,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPConversationsViewController : CMPBaseViewController <CMPViewControllerConfiguring, UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate>
 
+@property BOOL loadContent;
+
 @property (nonatomic, strong, readonly) CMPConversationsViewModel *viewModel;
 
-- (instancetype)initWithViewModel:(CMPConversationsViewModel *)viewModel;
+- (instancetype)initWithViewModel:(CMPConversationsViewModel *)viewModel loadContent:(BOOL)loadContent;
 
 - (CMPConversationsView *)conversationsView;
 - (void)reload;

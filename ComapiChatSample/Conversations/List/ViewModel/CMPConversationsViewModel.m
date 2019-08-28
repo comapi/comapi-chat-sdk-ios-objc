@@ -17,6 +17,7 @@
 //
 
 #import "CMPConversationsViewModel.h"
+#import "AppDelegate.h"
 
 #import <UserNotifications/UserNotifications.h>
 
@@ -46,6 +47,22 @@
                                               sectionNameKeyPath:nil
                                               cacheName:nil];
     return controller;
+}
+
+- (void)logoutWithCompletion:(void(^)(void))completion {
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        AppDelegate *del = (AppDelegate *)UIApplication.sharedApplication.delegate;
+        [del.configurator clearLocalStorage];
+        
+        [UIApplication.sharedApplication unregisterForRemoteNotifications];
+        
+        [weakSelf.store clearDatabase];
+        
+        if (completion) {
+            completion();
+        }
+    });
 }
 
 - (void)getConversationsWithCompletion:(void (^)(NSError * _Nullable))completion {

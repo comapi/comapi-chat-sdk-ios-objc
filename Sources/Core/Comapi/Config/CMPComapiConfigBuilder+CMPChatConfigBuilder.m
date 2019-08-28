@@ -54,7 +54,7 @@
     if (!cnf.internalConfig)
         cnf.internalConfig = [[CMPInternalConfig alloc] init];
     if (!cnf.storeFactory)
-        logWithLevel(CMPLogLevelWarning, [NSString stringWithFormat:@"Config: chat store factory not set... SDK will not start without its implementation."]);
+        logWithLevel(CMPLogLevelWarning, [NSString stringWithFormat:@"Config: chat store factory not set... SDK will not start without its implementation."], nil);
     if (!cnf.storeConfig)
         cnf.storeConfig = [[CMPCoreDataConfig alloc] initWithPersistentStoreType:NSSQLiteStoreType];
 }

@@ -18,6 +18,8 @@
 
 #import "CMPChatMessage.h"
 
+#import "CMPChatConstants.h"
+
 @implementation CMPChatMessage
 
 - (instancetype)initWithID:(nullable NSString *)ID sentEventID:(nullable NSNumber *)sentEventID metadata:(nullable NSDictionary<NSString *, id> *)metadata context:(nullable CMPChatMessageContext *)context parts:(nullable NSArray<CMPChatMessagePart *> *)parts statusUpdates:(nullable NSDictionary<NSString *, CMPChatMessageStatus *> *)statusUpdates {
@@ -48,6 +50,7 @@
             [parts addObject:[[CMPChatMessagePart alloc] initWithMessagePart:obj]];
         }];
         self.parts = parts;
+        self.statusUpdates = message.statusUpdates;
     }
     
     return self;
@@ -72,13 +75,14 @@
 }
 
 - (void)addStatusUpdate:(CMPChatMessageStatus *)statusUpdate {
-    NSString *unique = [NSUUID UUID].UUIDString;
+    NSString *key = CMPIDSendingMessageStatus;
     if (!_statusUpdates) {
         _statusUpdates = [NSDictionary new];
     }
+    
     NSMutableDictionary *newDict = [NSMutableDictionary new];
     [newDict addEntriesFromDictionary:_statusUpdates];
-    [newDict setValue:statusUpdate forKey:unique];
+    [newDict setValue:statusUpdate forKey:key];
     _statusUpdates = [NSDictionary dictionaryWithDictionary:newDict];
 }
 

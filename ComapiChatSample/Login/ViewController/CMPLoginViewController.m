@@ -78,7 +78,7 @@
             } else {
                 [weakSelf.viewModel getProfile:client completion:^(CMPProfile * _Nullable profile, NSError * _Nullable error) {
                     CMPConversationsViewModel *vm = [[CMPConversationsViewModel alloc] initWithClient:client store:store profile:profile];
-                    CMPConversationsViewController *vc = [[CMPConversationsViewController alloc] initWithViewModel:vm];
+                    CMPConversationsViewController *vc = [[CMPConversationsViewController alloc] initWithViewModel:vm loadContent:YES];
                     
                     UINavigationController *nav = (UINavigationController *)UIApplication.sharedApplication.delegate.window.rootViewController;
                     [nav pushViewController:vc animated:YES];
@@ -97,7 +97,10 @@
 }
 
 - (void)navigation {
-    self.navigationItem.title = @"Login";
+    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+    NSString *build = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+    
+    self.navigationItem.title = [NSString stringWithFormat:@"Chat ObjC - v.%@ (%@)", version, build];
 }
 
 - (void)reload {

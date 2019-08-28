@@ -33,6 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) void(^didTapSendButton)(NSString *);
 @property (nonatomic, copy, nullable) void(^didTapUploadButton)(void);
 @property (nonatomic, copy, nullable) void(^didTapNewMessageButton)(void);
+@property (nonatomic, copy, nullable) void(^didBeginEditing)(void);
 
 @property (nonatomic, strong) NSLayoutConstraint *animatableConstraint;
 

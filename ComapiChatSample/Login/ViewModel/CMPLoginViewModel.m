@@ -33,10 +33,16 @@
 
     if (self) {
         self.factory = factory;
-        self.loginBundle = [[CMPLoginBundle alloc] initWithApiSpaceID:@"e4d01003-b024-4bc6-bbfd-f33bff820dab" profileID:@"" issuer:@"Issuer" audience:@"Audience" secret:@"Secret"];
+        self.loginBundle = [[CMPLoginBundle alloc] initWithApiSpaceID:@"f28a3453-bfb7-4c68-a9fc-1096538f1e7d" profileID:@"" issuer:@"Issuer" audience:@"Audience" secret:@"Secret"];
     }
     
     return self;
+}
+
+- (void)saveLocally {
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.loginBundle];
+    [NSUserDefaults.standardUserDefaults setObject:data forKey:@"loginInfo"];
+    [NSUserDefaults.standardUserDefaults synchronize];
 }
 
 - (void)setIssuer:(NSString *)value {
@@ -62,19 +68,23 @@
 - (void)login:(void(^)(CMPComapiChatClient * _Nullable, CMPStore * _Nullable, NSError * _Nullable))completion {
     if (self.loginBundle && [self.loginBundle isValid]) {
         CMPComapiConfigBuilder<CMPChatConfig *> *builder = [CMPChatConfig builder];
-        CMPChatConfig *config = [[[[[builder setApiSpaceID:self.loginBundle.apiSpaceID] setAuthDelegate:self] setChatStoreFactory:_factory] setApiConfig:[[CMPAPIConfiguration alloc] initWithScheme:@"https" host:@"stage-api.comapi.com" port:443]] build];
+        CMPChatConfig *config = [[[[[[builder setApiSpaceID:self.loginBundle.apiSpaceID]
+                                            setAuthDelegate:self] setChatStoreFactory:_factory]
+                                            setApiConfig:[[CMPAPIConfiguration alloc] initWithScheme:@"https" host:@"stage-api.comapi.com" port:443]]
+                                            setLogLevel:CMPLogLevelVerbose]
+                                            build];
         __weak typeof(self) weakSelf = self;
         [CMPChat initialiseWithConfig:config completion:^(CMPComapiChatClient * _Nullable client) {
             AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-            delegate.client = client;
+            delegate.configurator.client = client;
+            
             if (!client) {
                 NSLog(@"failed client init");
                 completion(nil, nil, nil);
             }
             [client.services.session startSessionWithCompletion:^{
-                [client.services.profile getProfileForProfileID:client.profileID completion:^(CMPResult<CMPProfile *> * result) {
-                    completion(client, weakSelf.factory.store, nil);
-                }];
+                [weakSelf saveLocally];
+                completion(client, weakSelf.factory.store, nil);
             } failure:^(NSError * _Nullable error) {
                 completion(nil, nil, error);
             }];

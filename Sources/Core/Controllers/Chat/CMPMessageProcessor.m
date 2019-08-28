@@ -52,18 +52,22 @@
 @implementation CMPMessageProcessor
 
 - (instancetype)initWithModelAdapter:(CMPModelAdapter *)adapter message:(CMPSendableMessage *) message attachments:(NSArray<CMPChatAttachment *> *) attachments  toConversationWithID:(NSString *) conversationId from:(NSString *) sender maxPartSize:(NSUInteger) maxSize {
-    _adapter = adapter;
-    _conversationId = conversationId;
-    _sender = sender;
-    _tempMessageId = [[NSUUID UUID] UUIDString];
-    _maxPartSize = maxSize;
-    _context = [self createContext];
-    if (message != nil) {
-        _alert = message.alert;
-        _metadata = message.metadata;
-        [self convertLargePartsToAttachments:message.parts combineWithAttachments:attachments];
-    } else {
-        [self convertLargePartsToAttachments:nil combineWithAttachments:attachments];
+    self = [super init];
+    
+    if (self) {
+        _adapter = adapter;
+        _conversationId = conversationId;
+        _sender = sender;
+        _tempMessageId = [[NSUUID UUID] UUIDString];
+        _maxPartSize = maxSize;
+        _context = [self createContext];
+        if (message != nil) {
+            _alert = message.alert;
+            _metadata = message.metadata;
+            [self convertLargePartsToAttachments:message.parts combineWithAttachments:attachments];
+        } else {
+            [self convertLargePartsToAttachments:nil combineWithAttachments:attachments];
+        }
     }
     
     return self;

@@ -53,7 +53,12 @@
     self.inputTextView.inputAccessoryView = nil;
     [self.inputTextView setPlaceholderWithText:@"New message..."];
     self.inputTextView.translatesAutoresizingMaskIntoConstraints = NO;
-    
+    __weak typeof(self) weakSelf = self;
+    self.inputTextView.didBeginEditing = ^(UITextView * _Nonnull tv) {
+        if (weakSelf.didBeginEditing) {
+            weakSelf.didBeginEditing();
+        }
+    };
     self.sendButton.enabled = NO;
     [self.sendButton setTitle:@"Send" forState:0];
     self.sendButton.titleLabel.font = [UIFont systemFontOfSize:20];

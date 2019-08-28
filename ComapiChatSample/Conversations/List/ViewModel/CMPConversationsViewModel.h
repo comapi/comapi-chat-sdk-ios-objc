@@ -32,6 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithClient:(CMPComapiChatClient *)client store:(CMPStore *)store profile:(CMPProfile *)profile;
 - (void)getConversationsWithCompletion:(void(^)(NSError * _Nullable))completion;
 - (void)registerForRemoteNotificationsWithCompletion:(void (^)(BOOL, NSError * _Nonnull))completion;
+- (void)logoutWithCompletion:(void(^)(void))completion;
 
 @end
 

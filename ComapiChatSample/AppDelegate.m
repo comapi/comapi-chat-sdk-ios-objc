@@ -20,6 +20,7 @@
 
 #import "CMPLoginViewController.h"
 #import "CMPChatViewController.h"
+#import "CMPChatViewModel.h"
 
 NSString * const kCMPPushRegistrationStatusChangedNotification = @"CMPPushRegistrationStatusChangedNotification";
 
@@ -31,13 +32,11 @@ NSString * const kCMPPushRegistrationStatusChangedNotification = @"CMPPushRegist
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [UNUserNotificationCenter currentNotificationCenter].delegate = self;
-    _factory = [[CMPFactory alloc] init];
-    CMPLoginViewModel *vm = [[CMPLoginViewModel alloc] initWithFactory:_factory];
-    CMPLoginViewController *vc = [[CMPLoginViewController alloc] initWithViewModel:vm];
-    
-    _window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
-    _window.rootViewController = [[UINavigationController alloc] initWithRootViewController:vc];
-    [_window makeKeyAndVisible];
+    self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
+    self.configurator = [[CMPAppConfigurator alloc] initWithWindow:self.window];
+    if (!launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey]) {
+        [self.configurator start:nil];
+    }
 
     return YES;
 }
@@ -51,8 +50,8 @@ NSString * const kCMPPushRegistrationStatusChangedNotification = @"CMPPushRegist
     }
     
     if (token) {
-        if (self.client) {
-            [self.client setPushToken:token completion:^(BOOL success, NSError * error) {
+        if (self.configurator.client) {
+            [self.configurator.client setPushToken:token completion:^(BOOL success, NSError * error) {
                 if (error || !success) {
                     NSLog(@"%@", error.localizedDescription);
                     [[NSNotificationCenter defaultCenter] postNotificationName:kCMPPushRegistrationStatusChangedNotification object:@(NO) userInfo:nil];
@@ -74,21 +73,9 @@ NSString * const kCMPPushRegistrationStatusChangedNotification = @"CMPPushRegist
 }
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler {
-    if ([_client sessionSuccessfullyCreated]) {
-        NSString *conversationID = response.notification.request.content.userInfo[@"conversationId"];
-        UINavigationController *nav = (UINavigationController *)_window.rootViewController;
-        UIViewController *topVC = nav.topViewController;
-        if ([nav.topViewController isKindOfClass:CMPChatViewController.class]) {
-            [(CMPChatViewController *)topVC reload:YES];
-        } else {
-            CMPChatConversation *conversation = [_factory.store getConversation:conversationID];
-            CMPChatViewModel *vm = [[CMPChatViewModel alloc] initWithClient:_client store:_factory.store conversation:conversation];
-            CMPChatViewController *vc = [[CMPChatViewController alloc] initWithViewModel:vm];
-            [nav pushViewController:vc animated:YES];
-        }
-    }
-    
-    completionHandler();
+    [self.configurator startFromNotification:response completion:^(CMPComapiChatClient * _Nullable client, CMPFactory * _Nullable factory, NSError * _Nullable error) {
+        completionHandler();
+    }];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -97,11 +84,11 @@ NSString * const kCMPPushRegistrationStatusChangedNotification = @"CMPPushRegist
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    [_client applicationDidEnterBackground:application];
+//    [_client applicationDidEnterBackground:application];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    [_client applicationWillEnterForeground:application];
+   // [_client applicationWillEnterForeground:application];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {

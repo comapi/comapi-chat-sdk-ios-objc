@@ -66,6 +66,11 @@
         }
         [weakSelf.inputMessageView.inputTextView clearInput];
     };
+    self.inputMessageView.didBeginEditing = ^{
+        if (weakSelf.didBeginEditing) {
+            weakSelf.didBeginEditing();
+        }
+    };
     self.inputMessageView.inputTextView.didChangeText = ^(UITextView *textView) {
         [weakSelf adjustTableViewContentInset];
         weakSelf.inputMessageView.sendButton.enabled = ![textView.text isEqualToString:@""];
@@ -206,9 +211,6 @@
     [UIView animateWithDuration:duration delay:0.0 options: curve << 16 animations:^{
         [self layoutIfNeeded];
     } completion:^(BOOL finished) {
-//        if ([name isEqualToString:UIKeyboardWillShowNotification]) {
-//            [self scrollToBottomAnimated:YES];
-//        }
         if (completion) {
             completion();
         }

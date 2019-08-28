@@ -32,4 +32,7 @@ CMPPartType const CMPPartTypePDF = @"application/pdf";
 CMPPartType const CMPPartTypeDOC = @"application/msword";
 CMPPartType const CMPPartTypeXLS = @"application/xml";
 
-CMPID const CMPIDTemporaryMessage = @"com.comapi.message.tempid";
+CMPID const CMPIDTemporaryMessage = @"ComapiMessageTempId";
+CMPID const CMPIDSendingMessageStatus = @"ComapiMessageSendingStatus";
+
+CMPChatSDKInfo const CMPChatSDKInfoVersion = @"1.0.0";

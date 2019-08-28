@@ -30,10 +30,11 @@
 
 @implementation CMPConversationsViewController
 
-- (instancetype)initWithViewModel:(CMPConversationsViewModel *)viewModel {
+- (instancetype)initWithViewModel:(CMPConversationsViewModel *)viewModel loadContent:(BOOL)loadContent {
     self = [super init];
     
     if (self) {
+        _loadContent = loadContent;
         _viewModel = viewModel;
         _viewModel.fetchController.delegate = self;
         
@@ -56,36 +57,32 @@
     [super viewWillAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifcationStatusChanged:) name:kCMPPushRegistrationStatusChangedNotification object:nil];
     
-    __weak typeof(self) weakSelf = self;
-    [self.viewModel getConversationsWithCompletion:^(NSError * _Nullable error) {
-        if (error) {
-            NSLog(@"%@", error.localizedDescription);
-        }
-        [weakSelf.viewModel.fetchController performFetch:&error];
-        if (error) {
-            NSLog(@"%@", error.localizedDescription);
-        } else {
-            [weakSelf reload];
-            [weakSelf.viewModel registerForRemoteNotificationsWithCompletion:^(BOOL success, NSError * _Nonnull error) {
-                if (!error && success) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [UIApplication.sharedApplication registerForRemoteNotifications];
-                    });
-                }
-            }];
-        }
-    }];
+    if (_loadContent) {
+        __weak typeof(self) weakSelf = self;
+        [self.viewModel getConversationsWithCompletion:^(NSError * _Nullable error) {
+            if (error) {
+                NSLog(@"%@", error.localizedDescription);
+            }
+            [weakSelf.viewModel.fetchController performFetch:&error];
+            if (error) {
+                NSLog(@"%@", error.localizedDescription);
+            } else {
+                [weakSelf reload];
+                [weakSelf.viewModel registerForRemoteNotificationsWithCompletion:^(BOOL success, NSError * _Nonnull error) {
+                    if (!error && success) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [UIApplication.sharedApplication registerForRemoteNotifications];
+                        });
+                    }
+                }];
+            }
+        }];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kCMPPushRegistrationStatusChangedNotification object:nil];
-    
-    if (self.isMovingFromParentViewController) {
-        [_viewModel.client.services.session endSessionWithCompletion:^(CMPChatResult * _Nonnull result) {
-            NSLog(@"success - %@", @(result.isSuccessful));
-        }];
-    }
 }
 
 - (void)delegates {
@@ -123,6 +120,12 @@
 
 - (void)reload {
     [self.conversationsView.tableView reloadData];
+}
+
+- (void)back {
+    [self.viewModel logoutWithCompletion:^{
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    }];
 }
 
 - (void)notifcationStatusChanged:(NSNotification *)notification {

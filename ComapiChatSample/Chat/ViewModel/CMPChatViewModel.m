@@ -33,7 +33,6 @@
         self.fetchController = [self setupFetchController];
         self.downloader = [[CMPImageDownloader alloc] init];
         self.imageAttachments = [NSMutableArray new];
-        
     }
     
     return self;
@@ -50,6 +49,7 @@
                                               managedObjectContext:context
                                               sectionNameKeyPath:nil
                                               cacheName:nil];
+    controller.delegate = self;
     return controller;
 }
 
@@ -59,9 +59,51 @@
     }];
 }
 
+- (void)getParticipantsWithCompletion:(void (^)(NSArray<CMPChatParticipant *> * _Nullable, NSError * _Nullable))completion {
+    __weak typeof(self) weakSelf = self;
+    [self.client.services.messaging getParticipants:self.conversation.id completion:^(NSArray<CMPChatParticipant *> * _Nonnull participants) {
+        weakSelf.participants = [NSMutableArray arrayWithArray:participants];
+        completion(participants, nil);
+    }];
+}
+
 - (void)synchroniseConversation:(void (^)(NSError * _Nullable))completion {
     [self.client.services.messaging synchroniseConversation:self.conversation.id completion:^(CMPChatResult * result) {
         completion(result.error);
+    }];
+}
+
+
+- (nullable CMPChatParticipant *)otherParticipant {
+    for (CMPChatParticipant *p in self.participants) {
+        if (![p.id isEqualToString:_client.profileID]) {
+            return p;
+        }
+    }
+    
+    return nil;
+}
+
+- (void)markReadWithCompletion:(void (^)(NSError * _Nullable))completion {
+    NSArray<Message *> * messages = _fetchController.fetchedObjects;
+    NSMutableArray<NSString *> *toUpdate = [NSMutableArray new];
+    
+    for (Message *m in messages) {
+        if (m.statusUpdates.count == 0) {
+            [toUpdate addObject:m.id];
+        } else {
+            for (MessageStatus *ms in m.statusUpdates) {
+                if ([ms.profileID isEqualToString:_client.profileID] && [ms.messageStatus isEqualToNumber:@(CMPChatMessageDeliveryStatusDelivered)]) {
+                    [toUpdate addObject:m.id];
+                }
+            }
+        }
+    }
+    
+    [self.client.services.messaging markMessagesAsRead:_conversation.id messageIDs:toUpdate completion:^(CMPChatResult * _Nonnull result) {
+        if (result.error) {
+            completion(result.error);
+        }
     }];
 }
 
@@ -77,11 +119,26 @@
     return attachments;
 }
 
+- (CMPMessageAlert *)createAlert {
+    NSDictionary<NSString *, id> *apns = @{@"alert" : @"yes",
+                                           @"badge" : @(1),
+                                           @"payload" : @{@"conversationId" : _conversation.id}};
+    NSDictionary<NSString *, id> *fcm = @{@"\"collapse_key\"" : @"\"\"",
+                                          @"badge" : @(1),
+                                          @"data" : @{@"conversationId" : _conversation.id},
+                                          @"notification" : @{@"body" : @"yes",
+                                                              @"title" : @"New Message"}
+                                          };
+    CMPMessageAlertPlatforms *platforms = [[CMPMessageAlertPlatforms alloc] initWithApns:apns fcm:fcm];
+    CMPMessageAlert *alert = [[CMPMessageAlert alloc] initWithPlatforms:platforms];
+    return alert;
+}
+
 - (void)sendMessage:(NSString *)message completion:(void (^)(NSError * _Nullable))completion {
     NSArray<CMPChatAttachment *> *attachments = [self convertImagesToAttachments];
     if (message) {
         CMPMessagePart *textPart = [[CMPMessagePart alloc] initWithName:@"" type:@"text/plain" url:nil data:message size:@(message.length)];
-        CMPSendableMessage *newMessage = [[CMPSendableMessage alloc] initWithMetadata:nil parts:@[textPart] alert:nil];
+        CMPSendableMessage *newMessage = [[CMPSendableMessage alloc] initWithMetadata:nil parts:@[textPart] alert:[self createAlert]];
         __weak typeof(self) weakSelf = self;
         [self.client.services.messaging sendMessage:_conversation.id message:newMessage attachments:attachments completion:^(CMPChatResult * result) {
             weakSelf.imageAttachments = [NSMutableArray new];
@@ -163,6 +220,24 @@
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     [picker dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - NSFetchResultsControllerDelegate
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+    Message *msg = (Message *)anObject;
+
+    NSString *profileID = msg.context.from.id;
+    BOOL isMyOwn = [profileID isEqualToString:_client.profileID];
+    if (type == NSFetchedResultsChangeInsert) {
+        self.shouldReloadDataAtIndex(!isMyOwn, NSFetchedResultsChangeInsert, newIndexPath.row);
+    } else if (type == NSFetchedResultsChangeUpdate) {
+        
+        
+        self.shouldReloadDataAtIndex(NO, NSFetchedResultsChangeUpdate, newIndexPath.row);
+    } else if (type == NSFetchedResultsChangeDelete) {
+        self.shouldReloadDataAtIndex(NO, NSFetchedResultsChangeDelete, indexPath.row);
+    }
 }
 
 @end

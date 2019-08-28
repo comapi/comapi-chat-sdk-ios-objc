@@ -35,6 +35,7 @@
     if (self) {
         self.dateLabel = [UILabel new];
         self.profileLabel = [UILabel new];
+        self.sendingImage = [UIImageView new];
         self.statusLabel = [UILabel new];
         self.partViews = [NSMutableArray new];
         
@@ -57,6 +58,7 @@
     self.profileLabel.text = nil;
     self.dateLabel.text = nil;
     self.statusLabel.text = nil;
+    self.sendingImage.image = [UIImage imageNamed:@"sending"];
 }
 
 - (void)configureSelf {
@@ -88,11 +90,12 @@
         CMPPartType type = parts[i].type;
         if ([type isEqualToString:CMPPartTypeText]) {
             partView = [[CMPTextPartView alloc] init];
-        } else if ([type isEqualToString:CMPPartTypePNG] || [type isEqualToString:CMPPartTypeJPG] || [type isEqualToString:CMPPartTypeBMP] || [type isEqualToString:CMPPartTypeUploading]) {
+        } else if ([type isEqualToString:CMPPartTypePNG] || [type isEqualToString:CMPPartTypeJPG] || [type isEqualToString:CMPPartTypeBMP] || [type isEqualToString:CMPPartTypeUploading] || [type isEqualToString:@"image/jpeg"]) {
             partView = [[CMPImagePartView alloc] init];
         } else {
             partView = [UIView new];
         }
+        partView.translatesAutoresizingMaskIntoConstraints = NO;
         [view addSubview:partView];
         NSLayoutConstraint *top;
         if (i == 0) {
@@ -105,6 +108,7 @@
         NSLayoutConstraint *bottom;
         if (i == parts.count - 1) {
             bottom = [partView.bottomAnchor constraintEqualToAnchor:view.bottomAnchor];
+            bottom.priority = 999;
         }
         
         NSMutableArray<NSLayoutConstraint *> *constraints = [NSMutableArray new];
@@ -160,35 +164,112 @@
     [NSLayoutConstraint activateConstraints:@[top, side]];
 }
 
-- (void)configureStatusLabel:(CMPChatMessageDeliveryStatus)status ownership:(CMPMessageOwnership)ownership {
+- (void)configureSendingImage:(CMPChatMessage *)message {
+    self.sendingImage.contentMode = UIViewContentModeScaleAspectFit;
+    self.sendingImage.translatesAutoresizingMaskIntoConstraints = NO;
+    
+//    NSLog(@"CONFIGURING MESSAGE WITH ID - %@", message.id);
+//    [message.statusUpdates enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, CMPChatMessageStatus * _Nonnull obj, BOOL * _Nonnull stop) {
+//        switch (obj.messageStatus) {
+//            case CMPChatMessageDeliveryStatusSending: {
+//                NSLog(@"KEY - %@, VALUE - %@", key, @"Sending");
+//                break;
+//            }
+//            case CMPChatMessageDeliveryStatusSent: {
+//                NSLog(@"KEY - %@, VALUE - %@", key, @"Sent");
+//                break;
+//            }
+//            case CMPChatMessageDeliveryStatusDelivered: {
+//                NSLog(@"KEY - %@, VALUE - %@", key, @"Delivered");
+//                break;
+//            }
+//            case CMPChatMessageDeliveryStatusRead: {
+//                NSLog(@"KEY - %@, VALUE - %@", key, @"Read");
+//                break;
+//            }
+//            case CMPChatMessageDeliveryStatusError: {
+//                NSLog(@"KEY - %@, VALUE - %@", key, @"Error");
+//                break;
+//            }
+//            case CMPChatMessageDeliveryStatusUnknown: {
+//                NSLog(@"KEY - %@, VALUE - %@", key, @"Unknown");
+//                break;
+//            }
+//        }
+//    }];
+    
+    NSDictionary<NSString *, CMPChatMessageStatus *> *statuses = message.statusUpdates;
+    if (statuses == nil || statuses.count == 0) {
+        self.sendingImage.image = [UIImage imageNamed:@"sending"];
+    } else {
+        CMPChatMessageDeliveryStatus status = message.statusUpdates[CMPIDSendingMessageStatus].messageStatus;
+        switch (status) {
+            case CMPChatMessageDeliveryStatusSending:
+                self.sendingImage.image = [UIImage imageNamed:@"sending"];
+                break;
+            case CMPChatMessageDeliveryStatusSent:
+                self.sendingImage.image = [UIImage imageNamed:@"sent"];
+                break;
+            case CMPChatMessageDeliveryStatusError:
+                self.sendingImage.image = [UIImage imageNamed:@"error"];
+                break;
+            default:
+                break;
+        }
+    }
+    
+    [self.contentView addSubview:self.sendingImage];
+    
+    NSLayoutConstraint *height = [self.sendingImage.heightAnchor constraintEqualToConstant:12];
+    NSLayoutConstraint *width = [self.sendingImage.widthAnchor constraintEqualToConstant:12];
+    NSLayoutConstraint *top = [self.sendingImage.topAnchor constraintEqualToAnchor:((UIView *)self.partViews.lastObject).bottomAnchor];
+    NSLayoutConstraint *bottom = [self.sendingImage.bottomAnchor constraintEqualToAnchor:self.contentView.bottomAnchor constant:-8];
+    bottom.priority = 999;
+    NSLayoutConstraint *side = [self.sendingImage.trailingAnchor constraintEqualToAnchor:self.contentView.trailingAnchor constant:-14];
+
+    [NSLayoutConstraint activateConstraints:@[top, bottom, side, width, height]];
+}
+
+- (void)configureStatusLabel:(CMPChatMessage *)message participants:(NSArray<CMPChatParticipant *> *)participants ownership:(CMPMessageOwnership)ownership {
     self.statusLabel.textColor = ownership == CMPMessageOwnershipSelf ? UIColor.whiteColor : UIColor.blackColor;
     self.statusLabel.textAlignment = ownership == CMPMessageOwnershipSelf ? NSTextAlignmentRight : NSTextAlignmentLeft;
     self.statusLabel.font = [UIFont systemFontOfSize:9];
     self.statusLabel.numberOfLines = 0;
     self.statusLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    switch (status) {
-        case CMPChatMessageDeliveryStatusDelivered:
-            self.statusLabel.text = @"delivered";
-            break;
-        case CMPChatMessageDeliveryStatusRead:
-            self.statusLabel.text = @"read";
-            break;
-        default:
-            self.statusLabel.text = @"";
-            break;
+    
+    NSDictionary<NSString *, CMPChatMessageStatus *> *statuses = message.statusUpdates;
+    
+    if (statuses == nil || statuses.count == 0) {
+        self.statusLabel.text = @"";
+    } else {
+        for (CMPConversationParticipant *p in participants) {
+            if (![p.id isEqualToString:message.context.from.id]) {
+                if (message.statusUpdates[p.id] != nil) {
+                    CMPChatMessageDeliveryStatus status = message.statusUpdates[p.id].messageStatus;
+                    switch (status) {
+                        case CMPChatMessageDeliveryStatusDelivered:
+                            self.statusLabel.text = @"delivered";
+                            break;
+                        case CMPChatMessageDeliveryStatusRead:
+                            self.statusLabel.text = @"read";
+                            break;
+                        default:
+                            self.statusLabel.text = @"";
+                            break;
+                    }
+                    break;
+                }
+            }
+        }
     }
     
     [self.contentView addSubview:self.statusLabel];
+    
     if (_partViews && _partViews.count > 0) {
         NSLayoutConstraint *top = [self.statusLabel.topAnchor constraintEqualToAnchor:((UIView *)self.partViews.lastObject).bottomAnchor];
         NSLayoutConstraint *bottom = [self.statusLabel.bottomAnchor constraintEqualToAnchor:self.contentView.bottomAnchor constant:-8];
         bottom.priority = 999;
-        NSLayoutConstraint *side;
-        if (ownership == CMPMessageOwnershipSelf) {
-            side = [self.statusLabel.trailingAnchor constraintEqualToAnchor:self.contentView.trailingAnchor constant:-22];
-        } else {
-            side = [self.statusLabel.leadingAnchor constraintEqualToAnchor:self.contentView.leadingAnchor constant:22];
-        }
+        NSLayoutConstraint *side = [self.statusLabel.trailingAnchor constraintEqualToAnchor:self.sendingImage.leadingAnchor constant:-4];
         
         [NSLayoutConstraint activateConstraints:@[top, bottom, side]];
     }
@@ -201,27 +282,27 @@
     
     NSLayoutConstraint *top = [partsView.topAnchor constraintEqualToAnchor:self.dateLabel.bottomAnchor constant:4];
     NSLayoutConstraint *side;
+    NSLayoutConstraint *bottom;
     if (ownership == CMPMessageOwnershipSelf) {
         side = [partsView.trailingAnchor constraintEqualToAnchor:self.contentView.trailingAnchor constant:0];
+        [NSLayoutConstraint activateConstraints:@[top, side]];
     } else {
         side = [partsView.leadingAnchor constraintEqualToAnchor:self.contentView.leadingAnchor constant:0];
+        bottom = [partsView.bottomAnchor constraintEqualToAnchor:self.contentView.bottomAnchor constant:-8];
+        [NSLayoutConstraint activateConstraints:@[top, bottom, side]];
     }
-    
-    [NSLayoutConstraint activateConstraints:@[top, side]];
 }
 
-- (void)configureWithMessage:(CMPChatMessage *)message profileID:(NSString *)profileID ownership:(CMPMessageOwnership)ownership downloader:(CMPImageDownloader *)downloader {
+- (void)configureWithMessage:(CMPChatMessage *)message participants:(NSArray<CMPChatParticipant *> *)participants ownership:(CMPMessageOwnership)ownership downloader:(CMPImageDownloader *)downloader {
     [self configureProfileLabel:message.context.from.id ownership:ownership];
     [self configureDateLabel:message.context.sentOn ownership:ownership];
     [self configurePartsView:message ownership:ownership downloader:downloader];
     
-    if ([profileID isEqualToString:message.context.from.id]) {
-        CMPChatMessageDeliveryStatus status = [[message.statusUpdates objectEnumerator] nextObject].messageStatus;
-        [self configureStatusLabel:status ownership:ownership];
-    } else {
-        [self configureStatusLabel:CMPChatMessageDeliveryStatusSent ownership:ownership];
+    if (ownership == CMPMessageOwnershipSelf) {
+        [self configureSendingImage:message];
+        [self configureStatusLabel:message participants:participants ownership:ownership];
     }
-
+    
     for (int i = 0; i < message.parts.count; i++) {
         if ([_partViews[i] isKindOfClass:CMPTextPartView.class]) {
             [(id<CMPMessagePartConfigurable>)_partViews[i] configureWithMessagePart:message.parts[i] ownership:ownership];
@@ -230,6 +311,5 @@
         }
     }
 }
-
 
 @end

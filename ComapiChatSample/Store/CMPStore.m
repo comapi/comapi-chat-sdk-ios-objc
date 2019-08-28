@@ -146,10 +146,10 @@
     }
 }
 
-- (BOOL)deleteConversation:(nonnull CMPChatConversation *)conversation {
-    NSLog(@"Store: deleting converastion for ID - %@", conversation.id);
+- (BOOL)deleteConversation:(NSString *)ID {
+    NSLog(@"Store: deleting converastion for ID - %@", ID);
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Conversation"];
-    request.predicate = [NSPredicate predicateWithFormat:@"%K = %@", @"id", conversation.id];
+    request.predicate = [NSPredicate predicateWithFormat:@"%K = %@", @"id", ID];
     
     NSError *error;
     NSArray<Conversation *> *conversations = [_manager.mainContext executeFetchRequest:request error:&error];
@@ -259,7 +259,7 @@
     NSLog(@"Store: updating messageStatus for messageID - %@", messageStatus.messageID);
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"MessageStatus"];
-    request.predicate = [NSPredicate predicateWithFormat:@"%K = %@", @"messageID", messageStatus.messageID];
+    request.predicate = [NSPredicate predicateWithFormat:@"%K = %@ AND %K = %@ AND %K = %@", @"messageID", messageStatus.messageID, @"profileID", messageStatus.profileID, @"conversationID", messageStatus.conversationID];
     
     NSError *error;
     NSArray<MessageStatus *> *existing = (NSArray<MessageStatus *> *)[_manager.mainContext executeFetchRequest:request error:&error];
@@ -270,6 +270,9 @@
     
     if (existing.count > 0) {
         MessageStatus *ms = existing[0];
+        if ([ms.messageStatus isEqualToNumber:@(CMPChatMessageDeliveryStatusRead)] && messageStatus.messageStatus != CMPChatMessageDeliveryStatusRead && ![messageStatus.profileID isEqualToString:CMPIDSendingMessageStatus]) {
+            messageStatus.messageStatus = CMPChatMessageDeliveryStatusRead;
+        }
         Message *m = [self getMessage:messageStatus.messageID];
         ms.message = m;
         [ms update:messageStatus];

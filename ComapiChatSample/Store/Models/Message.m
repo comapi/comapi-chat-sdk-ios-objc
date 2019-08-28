@@ -39,7 +39,12 @@
     chatMessage.sentEventID = self.sentEventID;
     NSMutableDictionary<NSString *, CMPChatMessageStatus *> *statusUpdates = [NSMutableDictionary new];
     for (MessageStatus *ms in self.statusUpdates) {
-        [statusUpdates setObject:[ms chatMessageStatus] forKey:ms.profileID];
+        CMPChatMessageDeliveryStatus s = ms.messageStatus.integerValue;
+        if (s == CMPChatMessageDeliveryStatusSent || s == CMPChatMessageDeliveryStatusSending || s == CMPChatMessageDeliveryStatusError) {
+            [statusUpdates setObject:[ms chatMessageStatus] forKey:CMPIDSendingMessageStatus];
+        } else {
+            [statusUpdates setObject:[ms chatMessageStatus] forKey:ms.profileID];
+        }
     }
     chatMessage.statusUpdates = statusUpdates;
     chatMessage.context = [self.context chatMessageContext];
@@ -62,6 +67,7 @@
         [ms update:obj];
         [statusArray addObject:ms];
     }];
+    [statusArray addObjectsFromArray:[self.statusUpdates array]];
     self.statusUpdates = [NSOrderedSet orderedSetWithArray:statusArray];
     if (self.context == nil) {
         self.context = [[MessageContext alloc] initWithContext:self.managedObjectContext];

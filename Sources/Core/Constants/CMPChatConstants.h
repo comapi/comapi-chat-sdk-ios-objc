@@ -41,5 +41,10 @@ extern CMPPartType const CMPPartTypeXLS NS_SWIFT_NAME(xls);
 typedef NSString * CMPID NS_TYPED_EXTENSIBLE_ENUM NS_SWIFT_NAME(ID);
 
 extern CMPID const CMPIDTemporaryMessage NS_SWIFT_NAME(temporaryMessage);
+extern CMPID const CMPIDSendingMessageStatus NS_SWIFT_NAME(sendingMessageStatus);
+
+typedef NSString * CMPChatSDKInfo NS_TYPED_ENUM NS_SWIFT_NAME(ChatSDKInfo);
+
+extern CMPChatSDKInfo const CMPChatSDKInfoVersion NS_SWIFT_NAME(version);
 
 NS_ASSUME_NONNULL_END

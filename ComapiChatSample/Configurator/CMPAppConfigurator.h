@@ -16,22 +16,26 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-@import CMPComapiChat;
+#import "CMPLoginViewController.h"
 
-#import "CMPBaseCell.h"
-#import "CMPMessageOwnership.h"
-#import "CMPImageDownloader.h"
+#import <UserNotifications/UserNotifications.h>
+
+@import CMPComapiChat;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPMessagePartCell : CMPBaseCell
+@interface CMPAppConfigurator : NSObject <CMPAuthenticationDelegate>
 
-@property (nonatomic, strong) UILabel *dateLabel;
-@property (nonatomic, strong) UIImageView *sendingImage;
-@property (nonatomic, strong) UILabel *statusLabel;
-@property (nonatomic, strong) UILabel *profileLabel;
+@property (nonatomic, strong) UIWindow *window;
 
-- (void)configureWithMessage:(CMPChatMessage *)message participants:(NSArray<CMPChatParticipant *> *)participants ownership:(CMPMessageOwnership)ownership downloader:(CMPImageDownloader *)downloader;
+@property (nonatomic, strong, nullable) CMPComapiChatClient *client;
+
+- (instancetype)initWithWindow:(UIWindow *)window;
+
+- (void)startFromNotification:(UNNotificationResponse *)response completion:(void(^)(CMPComapiChatClient * _Nullable, CMPFactory * _Nullable, NSError * _Nullable ))completion;
+- (void)start:(void(^ _Nullable)(CMPComapiChatClient * _Nullable, CMPFactory * _Nullable, NSError * _Nullable))completion;
+- (void)restart;
+- (void)clearLocalStorage;
 
 @end
 

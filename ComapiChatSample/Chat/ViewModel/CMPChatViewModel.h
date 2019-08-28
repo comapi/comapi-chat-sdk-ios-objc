@@ -23,27 +23,35 @@
 #import "CMPImageDownloader.h"
 #import "CMPStore.h"
 #import "Message.h"
+#import "MessageContext.h"
+#import "MessageStatus.h"
+#import "MessageParticipant.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CMPChatViewModel : NSObject <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface CMPChatViewModel : NSObject <UIImagePickerControllerDelegate, UINavigationControllerDelegate, NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) CMPStore *store;
 @property (nonatomic, strong) CMPComapiChatClient *client;
 @property (nonatomic, strong) CMPChatConversation *conversation;
 @property (nonatomic, strong) CMPImageDownloader *downloader;
 @property (nonatomic, strong) NSFetchedResultsController<Message *> *fetchController;
-@property (nonatomic, strong) NSMutableArray<UIImage *> *imageAttachments;
+
+@property (atomic, strong) NSMutableArray<UIImage *> *imageAttachments;
+@property (atomic, strong) NSMutableArray<CMPChatParticipant *> *participants;
 
 @property (nonatomic, copy) void(^shouldReloadAttachments)(void);
-@property (nonatomic, copy) void(^shouldReloadData)(void);
+@property (nonatomic, copy) void(^shouldReloadDataAtIndex)(BOOL, NSFetchedResultsChangeType, NSInteger);
+@property (nonatomic, copy) void(^shouldReloadData)(BOOL);
 @property (nonatomic, copy) void(^didTakeNewPhoto)(UIImage *);
 
 - (instancetype)initWithClient:(CMPComapiChatClient *)client store:(CMPStore *)store conversation:(CMPChatConversation *)conversation;
 
+- (void)getParticipantsWithCompletion:(void(^)(NSArray<CMPChatParticipant *> * _Nullable, NSError * _Nullable))completion;
 - (void)getPreviousMessages:(void (^)(NSError * _Nullable))completion;
 - (void)synchroniseConversation:(void (^)(NSError * _Nullable))completion;
 - (void)sendMessage:(NSString *)message completion:(void(^)(NSError * _Nullable))completion;
+- (void)markReadWithCompletion:(void (^)(NSError * _Nullable))completion;
 - (void)showPhotoSourceControllerWithPresenter:(void (^)(UIViewController *))presenter alertPresenter:(void (^)(UIViewController *))alertPresenter pickerPresenter:(void (^)(UIViewController *))pickerPresenter;
 - (void)showPhotoCropControllerWithImage:(UIImage *)image presenter:(void(^)(UIViewController *))presenter;
 

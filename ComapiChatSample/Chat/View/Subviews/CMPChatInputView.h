@@ -28,8 +28,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) UIButton *sendButton;
 @property (nonatomic, strong) UIButton *uploadButton;
 
-@property (nonatomic, strong) void(^didTapSendButton)(void);
-@property (nonatomic, strong) void(^didTapUploadButton)(void);
+@property (nonatomic, copy) void(^didTapSendButton)(void);
+@property (nonatomic, copy) void(^didTapUploadButton)(void);
+@property (nonatomic, copy) void(^didBeginEditing)(void);
 
 - (instancetype)init;
 
