@@ -1,0 +1,47 @@
+{
+	"eventId": "2e611475-e12c-4d2f-9430-1f30cf6b4064",
+	"apiSpaceId": "MOCK_API_SPACE_ID",
+	"name": "conversationMessage.sent",
+	"context": {
+		"createdBy": "dominik.kowalski"
+	},
+	"messageId": "myId",
+	"conversationEventId":-1,
+	"publishedOn":"2016-10-06T06:45:26.904Z",
+	"payload": {
+		"messageId":"myId",
+		"metadata":{
+            "color" : "red",
+            "count" : 3,
+            "other" : 3.553
+		},
+		"context":{
+			"from":{
+				"id":"dominik.kowalski",
+				"name":"dominik.kowalski"
+			},
+			"conversationId":"myConversation",
+			"sentBy":"dominik.kowalski",
+			"sentOn":"2016-10-06T06:45:26.502Z"
+		},
+		"parts":[
+						 {
+						 "name":"PART_NAME",
+						 "type":"image/jpeg",
+						 "url":"http://url.test",
+						 "data":"base64EncodedData",
+						 "size":12535
+						 }
+						 ],
+		"alert":{
+			"platforms":{
+				"apns":{
+					"apnsKey1": "apnsValue1"
+				},
+				"fcm":{
+					"fcmKey1": "fcmValue1"
+				}
+			}
+		}
+	}
+}
