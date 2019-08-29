@@ -50,7 +50,12 @@
             [parts addObject:[[CMPChatMessagePart alloc] initWithMessagePart:obj]];
         }];
         self.parts = parts;
-        self.statusUpdates = message.statusUpdates;
+        NSMutableDictionary<NSString *, CMPChatMessageStatus *> *statuses = [NSMutableDictionary new];
+        [message.statusUpdates enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, CMPMessageStatus * _Nonnull obj, BOOL * _Nonnull stop) {
+            CMPChatMessageStatus *status = [[CMPChatMessageStatus alloc] initWithConversationID:message.context.conversationID messageID:message.id profileID:message.context.from.id conversationEventID:message.sentEventID timestamp:obj.timestamp messageStatus:[CMPChatMessageDeliveryStatusParser parseStatus:obj.status]];
+            statuses[key] = status;
+        }];
+        self.statusUpdates = statuses;
     }
     
     return self;

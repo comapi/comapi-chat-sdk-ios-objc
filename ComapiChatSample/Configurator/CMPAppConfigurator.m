@@ -50,7 +50,7 @@
 
 - (CMPLoginBundle *)checkForLoginInfo {
     NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
-    NSData *data = [defaults objectForKey:@"loginInfo"];
+    NSData *data = [defaults objectForKey:@"chatLoginInfo"];
     [defaults synchronize];
     CMPLoginBundle *bundle = [NSKeyedUnarchiver unarchiveObjectWithData:data];
     if (bundle) {
@@ -157,7 +157,13 @@
     if (loginInfo && [loginInfo isValid]) {
         self.loginInfo = loginInfo;
         
-        CMPAPIConfiguration *apiConfig = [[CMPAPIConfiguration alloc] initWithScheme:@"https" host:@"stage-api.comapi.com" port:443];
+        NSDictionary<NSString *, id> *info = [NSBundle.mainBundle infoDictionary];
+        NSString *scheme = info[@"SERVER_SCHEME"];
+        NSString *host = info[@"SERVER_HOST"];
+        NSNumber *port = info[@"SERVER_PORT"];
+        
+        CMPAPIConfiguration *apiConfig = [[CMPAPIConfiguration alloc] initWithScheme:scheme host:host port:port.integerValue];
+        
         CMPChatConfig *config = [[[[[[[CMPChatConfig builder] setApiSpaceID:loginInfo.apiSpaceID] setApiConfig:apiConfig] setAuthDelegate:self] setLogLevel:CMPLogLevelDebug] setChatStoreFactory:factory] build];
         
         __weak typeof(self) weakSelf = self;
@@ -194,7 +200,7 @@
 
 - (void)restart {
     NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
-    [defaults setObject:nil forKey:@"loginInfo"];
+    [defaults setObject:nil forKey:@"chatLoginInfo"];
     [defaults synchronize];
     
     logWithLevel(CMPLogLevelWarning, @"restarting...", nil);

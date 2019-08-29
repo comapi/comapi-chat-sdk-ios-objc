@@ -232,8 +232,6 @@
     if (type == NSFetchedResultsChangeInsert) {
         self.shouldReloadDataAtIndex(!isMyOwn, NSFetchedResultsChangeInsert, newIndexPath.row);
     } else if (type == NSFetchedResultsChangeUpdate) {
-        
-        
         self.shouldReloadDataAtIndex(NO, NSFetchedResultsChangeUpdate, newIndexPath.row);
     } else if (type == NSFetchedResultsChangeDelete) {
         self.shouldReloadDataAtIndex(NO, NSFetchedResultsChangeDelete, indexPath.row);

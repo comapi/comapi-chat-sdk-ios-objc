@@ -26,6 +26,8 @@
 
 @implementation CMPMockStoreFactoryBuilder
 
+@synthesize stateDelegate = _stateDelegate;
+
 - (instancetype)initWithChatStore:(id<CMPChatStore>)chatStore {
     self = [super init];
     
@@ -39,5 +41,7 @@
 - (void)buildWithCompletion:(void (^)(id<CMPChatStore> _Nullable, NSError * _Nullable))completion {
     completion(self.store, nil);
 }
+
+
 
 @end

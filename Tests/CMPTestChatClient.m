@@ -38,6 +38,7 @@
 @property (nonatomic, strong, nullable) CMPMockChatStore *chatStore;
 @property (nonatomic, strong, nullable) CMPMockChatClientDelegate *chatClientDelegate;
 @property (nonatomic, strong, nullable) CMPMockEventDispatcher *eventDispatcher;
+@property (nonatomic, strong, nullable) CMPComapiChatClient *client;
 
 @end
 
@@ -62,6 +63,7 @@
     _storeFactoryBuilder = nil;
     _chatStore = nil;
     _chatClientDelegate = nil;
+    _client = nil;
     
     [super tearDown];
 }
@@ -328,9 +330,10 @@
     NSHTTPURLResponse *response = [NSHTTPURLResponse mockedWithURL:[CMPTestMocks mockBaseURL]];
     CMPMockRequestResult *completionValue = [[CMPMockRequestResult alloc] initWithData:data response:response error:nil];
     [self.requestPerformer.completionValues addObject:completionValue];
-    
-    [self createClient:^(CMPComapiChatClient * _Nullable client) {
-        [client.services.messaging getPreviousMessages:@"1" completion:^(CMPChatResult * _Nonnull result) {
+    __weak typeof(self) weakSelf = self;
+    [weakSelf createClient:^(CMPComapiChatClient * _Nullable client) {
+        weakSelf.client = client;
+        [weakSelf.client.services.messaging getPreviousMessages:@"1" completion:^(CMPChatResult * _Nonnull result) {
             XCTAssertTrue(result.error == nil);
             XCTAssertTrue(result.isSuccessful);
             
@@ -370,10 +373,10 @@
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     __weak typeof(self) weakSelf = self;
-    [self createClient:^(CMPComapiChatClient * _Nullable client) {
-        [client.services.session startSessionWithCompletion:^{
-            id self = weakSelf;
-            [client.services.messaging sendMessage:@"conversationID" message:message completion:^(CMPChatResult * _Nonnull result) {
+    [weakSelf createClient:^(CMPComapiChatClient * _Nullable client) {
+        weakSelf.client = client;
+        [weakSelf.client.services.session startSessionWithCompletion:^{
+            [weakSelf.client.services.messaging sendMessage:@"conversationID" message:message completion:^(CMPChatResult * _Nonnull result) {
                 XCTAssertTrue(result.error == nil);
                 XCTAssertTrue(result.isSuccessful);
                 
@@ -436,9 +439,10 @@
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     __weak typeof(self) weakSelf = self;
-    [self createClient:^(CMPComapiChatClient * _Nullable client) {
-        [client.services.session startSessionWithCompletion:^{
-            [client.services.messaging sendMessage:@"conversationID" message:message attachments:@[attachment] completion:^(CMPChatResult * _Nonnull result) {
+    [weakSelf createClient:^(CMPComapiChatClient * _Nullable client) {
+        weakSelf.client = client;
+        [weakSelf.client.services.session startSessionWithCompletion:^{
+            [weakSelf.client.services.messaging sendMessage:@"conversationID" message:message attachments:@[attachment] completion:^(CMPChatResult * _Nonnull result) {
                 XCTAssertTrue(result.error == nil);
                 XCTAssertTrue(result.isSuccessful);
                 
@@ -503,8 +507,9 @@
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     __weak typeof(self) weakSelf = self;
-    [self createClient:^(CMPComapiChatClient * _Nullable client) {
-        [client.services.messaging addConversation:newConversation completion:^(CMPChatResult * _Nonnull result) {
+    [weakSelf createClient:^(CMPComapiChatClient * _Nullable client) {
+        weakSelf.client = client;
+        [weakSelf.client.services.messaging addConversation:newConversation completion:^(CMPChatResult * _Nonnull result) {
             XCTAssertTrue(result.error == nil);
             XCTAssertTrue(result.isSuccessful);
 
@@ -563,8 +568,10 @@
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     __weak typeof(self) weakSelf = self;
-    [self createClient:^(CMPComapiChatClient * _Nullable client) {
-        [client.services.messaging addConversation:newConversation completion:^(CMPChatResult * _Nonnull addResult) {
+    [weakSelf createClient:^(CMPComapiChatClient * _Nullable client) {
+        weakSelf.client = client;
+        [weakSelf.client.services.messaging addConversation:newConversation completion:^(CMPChatResult * _Nonnull addResult) {
+
             XCTAssertTrue(addResult.error == nil);
             XCTAssertTrue(addResult.isSuccessful);
             
@@ -572,7 +579,7 @@
             
             XCTAssertNotNil(conversation);
             
-            [client.services.messaging deleteConversation:@"support" eTag:nil completion:^(CMPChatResult * _Nonnull deleteResult) {
+            [weakSelf.client.services.messaging deleteConversation:@"support" eTag:nil completion:^(CMPChatResult * _Nonnull deleteResult) {
                 XCTAssertTrue(deleteResult.error == nil);
                 XCTAssertTrue(deleteResult.isSuccessful);
                 
@@ -609,8 +616,9 @@
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     __weak typeof(self) weakSelf = self;
-    [self createClient:^(CMPComapiChatClient * _Nullable client) {
-        [client.services.messaging addConversation:newConversation completion:^(CMPChatResult * _Nonnull addResult) {
+    [weakSelf createClient:^(CMPComapiChatClient * _Nullable client) {
+        weakSelf.client = client;
+        [weakSelf.client.services.messaging addConversation:newConversation completion:^(CMPChatResult * _Nonnull addResult) {
             XCTAssertTrue(addResult.error == nil);
             XCTAssertTrue(addResult.isSuccessful);
             
@@ -620,7 +628,7 @@
             
             XCTAssertEqualObjects(conversation.isPublic, @(NO));
             
-            [client.services.messaging updateConversation:@"support" eTag:nil update:updateConversation completion:^(CMPChatResult * _Nonnull updateResult) {
+            [weakSelf.client.services.messaging updateConversation:@"support" eTag:nil update:updateConversation completion:^(CMPChatResult * _Nonnull updateResult) {
                 XCTAssertTrue(addResult.error == nil);
                 XCTAssertTrue(addResult.isSuccessful);
                 
@@ -680,10 +688,12 @@
     CMPNewConversation *newConversation = [[CMPNewConversation alloc] initWithID:@"conversationID" name:@"conversationName" description:@"conversationDescription" roles:roles participants:@[participant] isPublic:@(NO)];
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
-    [self createClient:^(CMPComapiChatClient * _Nullable client) {
-        [client.services.messaging addConversation:newConversation completion:^(CMPChatResult * _Nonnull addConversationResult) {
-            [client.services.messaging sendMessage:@"new message" message:message completion:^(CMPChatResult * _Nonnull addMessageResult) {
-                [client.services.messaging synchroniseConversation:@"1" completion:^(CMPChatResult * _Nonnull synchroniseResult) {
+    __weak typeof(self) weakSelf = self;
+    [weakSelf createClient:^(CMPComapiChatClient * _Nullable client) {
+        weakSelf.client = client;
+        [weakSelf.client.services.messaging addConversation:newConversation completion:^(CMPChatResult * _Nonnull addConversationResult) {
+            [weakSelf.client.services.messaging sendMessage:@"new message" message:message completion:^(CMPChatResult * _Nonnull addMessageResult) {
+                [weakSelf.client.services.messaging synchroniseConversation:@"1" completion:^(CMPChatResult * _Nonnull synchroniseResult) {
                     [expectation fulfill];
                 }];
             }];
@@ -701,8 +711,9 @@
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     __weak typeof(self) weakSelf = self;
-    [self createClient:^(CMPComapiChatClient * _Nullable client) {
-        [client.services.messaging getParticipants:@"conversationID" completion:^(NSArray<CMPChatParticipant *> * _Nonnull result) {
+    [weakSelf createClient:^(CMPComapiChatClient * _Nullable client) {
+        weakSelf.client = client;
+        [weakSelf.client.services.messaging getParticipants:@"conversationID" completion:^(NSArray<CMPChatParticipant *> * _Nonnull result) {
             id self = weakSelf;
             XCTAssertNotNil(result);
 
@@ -765,8 +776,9 @@
     
     XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"callback received"];
     __weak typeof(self) weakSelf = self;
-    [self createClient:^(CMPComapiChatClient * _Nullable client) {
-        [client.services.messaging addConversation:newConversation completion:^(CMPChatResult * _Nonnull addResult) {
+    [weakSelf createClient:^(CMPComapiChatClient * _Nullable client) {
+        weakSelf.client = client;
+        [weakSelf.client.services.messaging addConversation:newConversation completion:^(CMPChatResult * _Nonnull addResult) {
             XCTAssertTrue(addResult.error == nil);
             XCTAssertTrue(addResult.isSuccessful);
             
@@ -774,7 +786,7 @@
             
             XCTAssertNotNil(conversation);
             
-            [client.services.messaging addParticipants:@"support" participants:@[newParticipant] completion:^(CMPChatResult * _Nonnull addParticipantResult) {
+            [weakSelf.client.services.messaging addParticipants:@"support" participants:@[newParticipant] completion:^(CMPChatResult * _Nonnull addParticipantResult) {
                 XCTAssertTrue(addParticipantResult.error == nil);
                 XCTAssertTrue(addParticipantResult.isSuccessful);
                 

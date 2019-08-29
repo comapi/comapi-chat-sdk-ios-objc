@@ -50,7 +50,7 @@
 
 - (void)saveLocally {
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.loginBundle];
-    [NSUserDefaults.standardUserDefaults setObject:data forKey:@"loginInfo"];
+    [NSUserDefaults.standardUserDefaults setObject:data forKey:@"chatLoginInfo"];
     [NSUserDefaults.standardUserDefaults synchronize];
 }
 

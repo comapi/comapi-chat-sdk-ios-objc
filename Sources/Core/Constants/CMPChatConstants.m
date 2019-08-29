@@ -35,4 +35,4 @@ CMPPartType const CMPPartTypeXLS = @"application/xml";
 CMPID const CMPIDTemporaryMessage = @"ComapiMessageTempId";
 CMPID const CMPIDSendingMessageStatus = @"ComapiMessageSendingStatus";
 
-CMPChatSDKInfo const CMPChatSDKInfoVersion = @"1.0.0";
+CMPChatSDKInfo const CMPChatSDKInfoVersion = @"1.0.1";
