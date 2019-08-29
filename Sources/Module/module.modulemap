@@ -1,6 +1,0 @@
-framework module CMPComapiChat {
-    umbrella header "CMPComapiChat.h"
-    
-    export *
-    module * { export * }
-}
