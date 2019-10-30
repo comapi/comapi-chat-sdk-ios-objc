@@ -43,9 +43,17 @@ NSString *const kModelName = @"CMPComapiChat";
     
     if (self) {
         _storeConfig = config;
+        
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(contextDidSaveWithNotifcation:) name:NSManagedObjectContextDidSaveNotification object:nil];
     }
     
     return self;
+}
+
+- (void)contextDidSaveWithNotifcation:(NSNotification *)notification {
+    [self.mainContext performBlock:^{
+        [self.mainContext mergeChangesFromContextDidSaveNotification:notification];
+    }];
 }
 
 - (NSManagedObjectModel *)objectModel {
@@ -101,12 +109,6 @@ NSString *const kModelName = @"CMPComapiChat";
     if (coordinator != nil) {
         _mainContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
         _mainContext.persistentStoreCoordinator = coordinator;
-        if (@available(iOS 10.0, *)) {
-            _mainContext.automaticallyMergesChangesFromParent = YES;
-        } else {
-            logWithLevel(CMPLogLevelError, [NSString stringWithFormat:@"Unsupported iOS version, minimum iOS version - %@, device version - %@", @(10.0), UIDevice.currentDevice.systemVersion]);
-            abort();
-        }
     }
     
     return _mainContext;
@@ -116,7 +118,6 @@ NSString *const kModelName = @"CMPComapiChat";
     NSPersistentStoreCoordinator *coordinator = [self storeCoordinator];
     NSManagedObjectContext *ctx = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
     [ctx setPersistentStoreCoordinator:coordinator];
-    ctx.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy;
 
     return ctx;
 }

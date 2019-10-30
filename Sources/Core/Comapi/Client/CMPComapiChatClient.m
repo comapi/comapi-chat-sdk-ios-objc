@@ -92,6 +92,10 @@
     [_foundationClient setPushToken:deviceToken completion:completion];
 }
 
+- (void)handleNotificationResponse:(UNNotificationResponse *)notificationResponse completion:(void (^)(BOOL))completion {
+    [_foundationClient handleNotificationResponse:notificationResponse completion:completion];
+}
+
 - (void)addTypingDelegate:(id<CMPTypingDelegate>)delegate {
     [_eventsController addTypingDelegate:delegate];
 }

@@ -84,13 +84,11 @@
         
         CMPAPIConfiguration *apiConfig = [[CMPAPIConfiguration alloc] initWithScheme:scheme host:host port:port.integerValue];
         
-        
-        CMPComapiConfigBuilder<CMPChatConfig *> *builder = [CMPChatConfig builder];
-        CMPChatConfig *config = [[[[[[builder setApiSpaceID:self.loginBundle.apiSpaceID]
-                                            setAuthDelegate:self] setChatStoreFactory:_factory]
-                                            setApiConfig:apiConfig]
-                                            setLogLevel:CMPLogLevelVerbose]
-                                            build];
+        CMPChatConfig *config = [[[[[[[CMPChatConfig alloc] init]
+                                    setApiSpaceID:self.loginBundle.apiSpaceID]
+                                    setAuthDelegate:self] setChatStoreFactory:_factory]
+                                    setApiConfig:apiConfig]
+                                    setLogLevel:CMPLogLevelVerbose];
         __weak typeof(self) weakSelf = self;
         [CMPChat initialiseWithConfig:config completion:^(CMPComapiChatClient * _Nullable client) {
             AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;

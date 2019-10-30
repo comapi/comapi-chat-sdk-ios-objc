@@ -87,7 +87,12 @@
         
         CMPAPIConfiguration *apiConfig = [[CMPAPIConfiguration alloc] initWithScheme:scheme host:host port:port.integerValue];
         
-        CMPChatConfig *config = [[[[[[[CMPChatConfig builder] setApiSpaceID:loginInfo.apiSpaceID] setApiConfig:apiConfig] setAuthDelegate:self] setLogLevel:CMPLogLevelDebug] setChatStoreFactory:factory] build];
+        CMPChatConfig *config = [[CMPChatConfig alloc] init];
+        [config setApiSpaceID:loginInfo.apiSpaceID];
+        [config setAuthDelegate:self];
+        [config setApiConfig:apiConfig];
+        [config setLogLevel:CMPLogLevelVerbose];
+        [config setChatStoreFactory:factory];
         
         __weak typeof(self) weakSelf = self;
         [CMPChat initialiseWithConfig:config completion:^(CMPComapiChatClient * _Nullable client) {
@@ -164,7 +169,11 @@
         
         CMPAPIConfiguration *apiConfig = [[CMPAPIConfiguration alloc] initWithScheme:scheme host:host port:port.integerValue];
         
-        CMPChatConfig *config = [[[[[[[CMPChatConfig builder] setApiSpaceID:loginInfo.apiSpaceID] setApiConfig:apiConfig] setAuthDelegate:self] setLogLevel:CMPLogLevelDebug] setChatStoreFactory:factory] build];
+        CMPChatConfig *config = [[[[[[[CMPChatConfig alloc] init]
+                                     setApiSpaceID:loginInfo.apiSpaceID]
+                                    setAuthDelegate:self] setChatStoreFactory:factory]
+                                  setApiConfig:apiConfig]
+                                 setLogLevel:CMPLogLevelVerbose];
         
         __weak typeof(self) weakSelf = self;
         [CMPChat initialiseWithConfig:config completion:^(CMPComapiChatClient * _Nullable client) {

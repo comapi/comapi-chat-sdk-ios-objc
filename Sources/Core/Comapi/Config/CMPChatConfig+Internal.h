@@ -24,7 +24,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CMPChatConfig ()
 
-@property (nonatomic, strong) CMPCoreDataConfig *storeConfig;
+@property (nonatomic, strong, readonly) CMPCoreDataConfig *storeConfig;
+
+- (instancetype)setStoreConfig:(CMPCoreDataConfig *)storeConfig;
 
 @end
 

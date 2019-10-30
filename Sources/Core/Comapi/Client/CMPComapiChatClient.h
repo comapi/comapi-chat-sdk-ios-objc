@@ -47,6 +47,7 @@ NS_SWIFT_NAME(ComapiChatClient)
 - (NSData *)getFileLogs;
 
 - (void)setPushToken:(NSString *)deviceToken completion:(void(^)(BOOL, NSError * _Nullable))completion NS_SWIFT_NAME(set(pushToken:completion:));
+- (void)handleNotificationResponse:(UNNotificationResponse *)notificationResponse completion:(void (^)(BOOL))completion NS_SWIFT_NAME(handle(notificationResponse:completion:));
 
 - (void)addTypingDelegate:(id<CMPTypingDelegate>)delegate NS_SWIFT_NAME(add(typingDelegate:));
 - (void)removeTypingDelegate:(id<CMPTypingDelegate>)delegate NS_SWIFT_NAME(remove(typingDelegate:));

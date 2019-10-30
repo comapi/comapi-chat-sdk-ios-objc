@@ -171,8 +171,8 @@
     CMPMessagePart *part2 = [[CMPMessagePart alloc] initWithName:@"name2" type:@"type2" url:URL2 data:@"data" size:@2];
     NSArray<CMPMessagePart *> *parts = [NSArray arrayWithObjects:part1, part2, nil];
   
-    CMPMessageParticipant *p1 = [[CMPMessageParticipant alloc] initWithID:@"pId1" name:@"pName1"];
-    CMPMessageParticipant *p2 = [[CMPMessageParticipant alloc] initWithID:@"pId2" name:@"pName2"];
+    CMPMessageParticipant *p1 = [[CMPMessageParticipant alloc] initWithID:@"pId1" name:@"pName1" avatarURL:@"pAvatar1"];
+    CMPMessageParticipant *p2 = [[CMPMessageParticipant alloc] initWithID:@"pId2" name:@"pName2" avatarURL:@"pAvatar2"];
 
     NSDictionary<NSString *,id> *metadata = [NSDictionary dictionaryWithObject:@"value" forKey:@"key"];
     CMPMessageContext *context1 = [[CMPMessageContext alloc] initWithConversationID:@"cId1" from:p1 sentBy:@"sender1" sentOn:[NSDate dateWithTimeIntervalSince1970:1]];
@@ -227,8 +227,8 @@
 
 - (void)testAdaptParticipants {
     
-    CMPMessageParticipant *p1 = [[CMPMessageParticipant alloc] initWithID:@"pId1" name:@"pName1"];
-    CMPMessageParticipant *p2 = [[CMPMessageParticipant alloc] initWithID:@"pId2" name:@"pName2"];
+    CMPMessageParticipant *p1 = [[CMPMessageParticipant alloc] initWithID:@"pId1" name:@"pName1" avatarURL:@"pAvatar1"];
+    CMPMessageParticipant *p2 = [[CMPMessageParticipant alloc] initWithID:@"pId2" name:@"pName2" avatarURL:@"pAvatar2"];
     
     NSArray *participants = [NSArray arrayWithObjects:p1, p2, nil];
     

@@ -281,7 +281,7 @@
     [self.requestPerformer.completionValues addObject:completionValue];
     
     NSDate *date = [NSDate dateWithTimeIntervalSince1970:0];
-    CMPChatMessageParticipant *participant = [[CMPChatMessageParticipant alloc] initWithID:@"participantID" name:@"participantName"];
+    CMPChatMessageParticipant *participant = [[CMPChatMessageParticipant alloc] initWithID:@"participantID" name:@"participantName" avatarURL:@"participantAvatar"];
     CMPChatMessageContext *context = [[CMPChatMessageContext alloc] initWithConversationID:@"conversationID" from:participant sentBy:@"participantID" sentOn:date];
     CMPChatMessagePart *part = [[CMPChatMessagePart alloc] initWithName:@"partName" type:@"partType" url:[NSURL URLWithString:@"http://url"] data:@"data" size:@(123)];
     CMPChatMessageStatus * status = [[CMPChatMessageStatus alloc] initWithConversationID:@"conversationID" messageID:@"messageID" profileID:@"profileID" conversationEventID:@(1) timestamp:date messageStatus:CMPChatMessageDeliveryStatusSent];

@@ -27,8 +27,9 @@ NS_SWIFT_NAME(ChatMessageParticipant)
 
 @property (nonatomic, strong, nullable) NSString *id;
 @property (nonatomic, strong, nullable) NSString *name;
+@property (nonatomic, strong, nullable) NSString *avatarURL;
 
-- (instancetype)initWithID:(NSString *)id name:(nullable NSString *)name;
+- (instancetype)initWithID:(NSString *)id name:(nullable NSString *)name avatarURL:(nullable NSString *)avatarURL;
 - (instancetype)initWithMessageParticipant:(CMPMessageParticipant *)participant;
 
 @end

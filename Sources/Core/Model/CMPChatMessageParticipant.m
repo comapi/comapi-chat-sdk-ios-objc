@@ -22,12 +22,13 @@
 
 @implementation CMPChatMessageParticipant
 
-- (instancetype)initWithID:(NSString *)id name:(NSString *)name {
+- (instancetype)initWithID:(NSString *)id name:(NSString *)name avatarURL:(NSString *)avatarURL {
     self = [super init];
     
     if (self) {
         self.id = id;
         self.name = name;
+        self.avatarURL = avatarURL;
     }
     
     return self;
@@ -39,6 +40,7 @@
     if (self) {
         self.id = participant.id;
         self.name = participant.name;
+        self.avatarURL = participant.avatarURL;
     }
     
     return self;
@@ -51,6 +53,7 @@
     
     [dict setValue:self.id forKey:@"id"];
     [dict setValue:self.name forKey:@"name"];
+    [dict setValue:self.avatarURL forKey:@"avatarUrl"];
     
     return dict;
 }

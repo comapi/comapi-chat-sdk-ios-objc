@@ -22,4 +22,29 @@
 
 @implementation CMPChatConfig
 
+- (instancetype)init {
+    self = [super init];
+    
+    if (self) {
+        
+    }
+    
+    return self;
+}
+
+- (instancetype)setInternalConfig:(CMPInternalConfig *)internalConfig {
+    _internalConfig = internalConfig;
+    return self;
+}
+
+- (instancetype)setChatStoreFactory:(id<CMPChatStoreFactoryBuilderProvider>)chatStoreFactory {
+    _storeFactory = chatStoreFactory;
+    return self;
+}
+
+- (instancetype)setStoreConfig:(CMPCoreDataConfig *)storeConfig {
+    _storeConfig = storeConfig;
+    return self;
+}
+
 @end

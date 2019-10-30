@@ -316,7 +316,7 @@
     [self.chatStore upsertConversation:conversation];
     
     CMPChatMessagePart *part = [[CMPChatMessagePart alloc] initWithName:@"part1" type:@"text/plain" url:nil data:@"message 1" size:@(@"message 1".length)];
-    CMPChatMessageParticipant *sender = [[CMPChatMessageParticipant alloc] initWithID:@"1" name:@"owner"];
+    CMPChatMessageParticipant *sender = [[CMPChatMessageParticipant alloc] initWithID:@"1" name:@"owner" avatarURL:@"avatar"];
     CMPChatMessageContext *ctx = [[CMPChatMessageContext alloc] initWithConversationID:@"1" from:sender sentBy:@"dominik.kowalski" sentOn:[NSDate new]];
     CMPChatMessage *message = [[CMPChatMessage alloc] initWithID:@"1" sentEventID:@(1) metadata:@{} context:ctx parts:@[part] statusUpdates:nil];
     

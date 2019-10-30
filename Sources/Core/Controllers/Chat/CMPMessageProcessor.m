@@ -78,7 +78,7 @@
 }
 
 - (CMPChatMessageContext *)createContext {
-    CMPChatMessageParticipant *from = [[CMPChatMessageParticipant alloc] initWithID:_sender name:nil];
+    CMPChatMessageParticipant *from = [[CMPChatMessageParticipant alloc] initWithID:_sender name:nil avatarURL:nil];
     CMPChatMessageContext *ctx = [[CMPChatMessageContext alloc] initWithConversationID:_conversationId from:from sentBy:_sender sentOn:[NSDate date]];
 
     return ctx;
